@@ -1,0 +1,89 @@
+@import '../../../../variables';
+
+mat-slider {
+    width: 72%;
+    left: 35%;
+    transform: translateX(-50%);
+}
+
+input {
+    margin-left: 4px;
+    width: 25px;
+    border-radius: 5px;
+    text-align: right;
+    background-color: $gray;
+    box-shadow:  0px 0px 0px !important;
+    color: $font-color-gray;
+    padding: 4px 4px 4px 0px;
+}
+
+span {
+    vertical-align: middle;
+}
+
+mat-icon {
+    color: $icon-color;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.slider-icon {
+    font-size: 20px;
+}
+
+#brightness {
+    height: 30px;
+}
+
+#contrast {
+    height: 30px;
+}
+
+.unit {
+    margin-left: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    color: $font-color-gray;
+}
+
+#preprocessing{
+    margin-top: 15px;
+}
+
+select {
+    margin-top: 6px;
+    width: 100%;
+    background-color: $gray;
+    color: $font-color-gray;
+    font-size: 14px;
+    border: none;
+    box-shadow: inset 2px 2px 2px #505050;
+}
+
+#button-flip {
+    line-height: 0px !important;
+    min-width: 0px !important;
+    padding: 0px !important;
+    box-shadow: 2px 2px 2px $shadow-color !important;
+    position: absolute;
+    right: 3%;
+}
+
+.mat-button {
+    background-color: $gray;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+mat-checkbox {
+    height: 19px !important;
+    margin-right: 7px;
+    vertical-align: bottom;
+    text-align: right;
+    float:right;
+}
+

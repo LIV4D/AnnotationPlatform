@@ -1,0 +1,11 @@
+@import '../../variables';
+
+.mat-toolbar.mat-primary {
+  height: 30px;
+  background: $gray-dark;
+}
+
+span {
+    cursor: pointer !important;
+    font-size: 14px;
+}

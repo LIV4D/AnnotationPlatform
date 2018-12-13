@@ -1,0 +1,15 @@
+{
+    "entityName": "ImageType",
+    "items": [
+        {
+            "id": 1,
+            "name": "Fundus",
+            "description": "Interior surface of the eye containing the optic disc, macula, retina."
+        },
+        {
+            "id": 2,
+            "name": "OCT",
+            "description": "Image taken using light waves to take cross-section pictures of the retina."
+        }
+    ]
+}

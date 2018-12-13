@@ -1,0 +1,8 @@
+<div class="biomarkers" (window:keydown)="onKeyDown($event)">
+    <span>Biomarkers</span>
+    <app-biomarkers *ngIf="loaded" app-biomarkers #biomarkers></app-biomarkers>
+    <app-visualization (flip)="flipHorizontal()" [canvas]="canvas"></app-visualization>
+    <app-comments *ngIf="!appService.localEditing"></app-comments>
+    <button mat-button (click)="saveLocal()" *ngIf="appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Save</button>
+    <button mat-button (click)="saveDB()" *ngIf="!appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button>
+</div>

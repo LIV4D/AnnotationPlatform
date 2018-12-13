@@ -1,0 +1,88 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'variables';
+
+body {
+    margin: 0;
+    color: $font-color-light;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    font-family: "Roboto" !important;
+    background-color: $gray-light;
+}
+
+input {
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+}
+
+mat-dialog-container {
+    padding: 4px !important;
+    background-color: $icon-color !important;
+}
+
+.mat-expansion-panel-body {
+    padding: 0px !important;
+}
+
+.mat-slider-thumb {
+    background-color: $font-color-gray !important;
+    border-color: rgba(0,0,0,.5) !important;
+}
+
+.mat-slider-thumb-label {
+    background-color: $font-color-light !important;
+}
+
+.mat-slider-track-fill {
+    background-color: $font-color-gray !important;
+    //border: 5px solid white !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+// .mat-checked:not(.mat-disabled)  {
+//     background-color: $font-color-gray;
+// }
+
+// .mat-checked:not(.mat-disabled)  {
+//     background-color: rgba(204,204,204,0.5);
+// }
+
+.mat-checkbox-background {
+    background-color: unset !important;
+}
+
+#toolpropcontainer .mat-slider-horizontal .mat-slider-wrapper {
+    top: 16px !important;
+}
+
+.mat-tooltip {
+    background-color: $input-background-color;
+    color: $shadow-color !important;
+    font-weight: bold !important;
+    text-align: justify;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.mat-expansion-indicator::after {
+    color: $font-color-light !important;
+}

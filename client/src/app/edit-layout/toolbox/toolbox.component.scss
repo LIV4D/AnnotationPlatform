@@ -1,0 +1,24 @@
+@import "../../../variables.scss";
+
+.flex-container {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 2px;
+}
+span {
+    color: $font-color-gray;
+}
+
+mat-panel-title {
+    padding: 8px;
+}
+
+app-tool {
+    width: 28px;
+    height: 28px;
+    margin: 0 auto;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    cursor: pointer;
+}
+

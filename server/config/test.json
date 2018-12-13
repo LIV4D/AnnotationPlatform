@@ -1,0 +1,7 @@
+{
+    "database": {
+        "host": "localhost",
+        "database": "test",
+        "entities": ["./app/models/*.model.ts"]
+    }
+}

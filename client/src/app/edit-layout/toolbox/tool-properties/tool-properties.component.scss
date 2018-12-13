@@ -1,0 +1,53 @@
+@import "../../../../variables.scss";
+.sliderValue {
+    margin-left: 5px;
+}
+
+mat-slider {
+    padding: 0px !important;
+}
+
+mat-checkbox {
+    margin-left: 10px;
+}
+
+span {
+    vertical-align: middle;
+}
+
+#toolpropcontainer{
+    position: relative;
+    width: 250px;
+    height: 80px;
+    top: 5px;
+    margin-left: 5px;
+    background-color: $gray-medium;
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 2px $shadow-color;
+}
+
+.mat-slider-horizontal {
+    height: 30px !important;
+}
+
+
+.toolprops {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 15px;
+}
+
+#toolproptitle {
+    color: $icon-color;
+    font-weight: bold;
+}
+
+.noprop {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: $gray-dark;
+    font-size: 20px;
+}

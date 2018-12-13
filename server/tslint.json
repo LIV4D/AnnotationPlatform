@@ -1,0 +1,50 @@
+{
+  "extends": "tslint:recommended",
+  "rulesDirectory": [
+    "node_modules/tslint-eslint-rules/dist/rules",
+    "node_modules/tslint-microsoft-contrib"
+  ],
+  "rules": {
+    "arrow-parens": false,
+    "cyclomatic-complexity": {
+      "options": [15]
+    },
+    "max-line-length": {
+      "options": [140]
+    },
+    "member-access": false,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "static-field",
+          "instance-field",
+          "constructor",
+          "static-method",
+          "instance-method"
+        ]
+      }
+    ],
+    "no-console": [
+      true,
+      "debug",
+      "info",
+      "time",
+      "timeEnd",
+      "trace"
+    ],
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
+    "no-string-literal": false,
+    "object-curly-spacing": true,
+    "object-literal-sort-keys": false,
+    "prefer-const": true,
+    "ordered-imports": false,
+    "quotemark": [
+      true,
+      "single"
+    ]
+  }
+}

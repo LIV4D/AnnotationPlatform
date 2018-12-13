@@ -1,0 +1,8 @@
+
+<mat-toolbar color="primary">
+    <span style="margin-right: 10px"(click)="goToEditor()">Editor</span>
+    <span style="margin-right: 10px" (click)="goToGallery()">Gallery</span>
+    <span (click)="goToTasks()">Tasks</span>
+    <span style="right: 40px; position: absolute;" (click)="logout()"> Logout</span>
+    <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" (click)="toggleFullScreen()" >fullscreen</mat-icon>
+</mat-toolbar>

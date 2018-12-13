@@ -1,0 +1,52 @@
+@import '../../../variables';
+
+app-biomarkers {
+    margin-top: 18px;
+    position: absolute;
+    width: 90%;
+    height: 30%;
+    background-color: $gray;
+    top: 3%;
+    left: 50%;
+    transform: translateX(-50%); 
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 2px $shadow-color;
+    //overflow: hidden;
+}
+
+app-visualization {
+    position: absolute;
+    width: 90%;
+    height: 20%;
+    top: 43%;
+    left: 50%;
+    transform: translateX(-50%); 
+}
+
+.biomarkers {
+    padding: 10px;
+}
+
+app-comments {
+    position:absolute;
+    width: 90%;
+    height: 24%;
+    top: 63%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+button {
+    border-radius: 5px;
+    color : $font-color-light;
+    line-height: 0px;
+    position: absolute;
+    top: 93%;
+    height: 5%;
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);    
+    background-color: $register-color;
+}
+
+

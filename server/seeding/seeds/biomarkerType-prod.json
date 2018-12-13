@@ -1,0 +1,188 @@
+{
+    "entityName": "BiomarkerType",
+    "items": [
+        {
+            "id": 1,
+            "parent": null,
+            "name": "Lesions",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 2,
+            "parent": {
+                "id": 1
+            },
+            "name": "Bright",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 3,
+            "parent": {
+                "id": 2
+            },
+            "name": "Cotton Wool Spots",
+            "color": "#7a9d32",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 4,
+            "parent": {
+                "id": 2
+            },
+            "name": "Drusen",
+            "color": "#3cb371",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 5,
+            "parent": {
+                "id": 2
+            },
+            "name": "Exudates",
+            "color": "#85ffa6",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 6,
+            "parent": {
+                "id": 1
+            },
+            "name": "Others",
+            "color": "#fff4ee",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 7,
+            "parent": {
+                "id": 1
+            },
+            "name": "Red",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 8,
+            "parent": {
+                "id": 7
+            },
+            "name": "Hemorrhages",
+            "color": "#4b18ff",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 9,
+            "parent": {
+                "id": 7
+            },
+            "name": "Microaneurysms",
+            "color": "#2a63fd",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 10,
+            "parent": null,
+            "name": "Normal",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 11,
+            "parent": {
+                "id": 10
+            },
+            "name": "Macula",
+            "color": "#be3c1b",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 12,
+            "parent": {
+                "id": 10
+            },
+            "name": "Optic nerve",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 13,
+            "parent": {
+                "id": 12
+            },
+            "name": "Disk",
+            "color": "#ddc81c",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 14,
+            "parent": {
+                "id": 12
+            },
+            "name": "Cup",
+            "color": "#dda61c",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 15,
+            "parent": {
+                "id": 10
+            },
+            "name": "Vasculature",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 16,
+            "parent": {
+                "id": 15
+            },
+            "name": "Arteries",
+            "color": "#dd1c1c",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 17,
+            "parent": {
+                "id": 15
+            },
+            "name": "Veins",
+            "color": "#6d13b2",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        }
+    ]
+}

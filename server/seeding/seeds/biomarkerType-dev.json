@@ -1,0 +1,69 @@
+{
+    "entityName": "BiomarkerType",
+    "items": [
+        {
+            "id": 1,
+            "parent": null,
+            "name": "Lesions",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1, 2]
+            }
+        },
+        {
+            "id": 2,
+            "parent": {
+                "id": 1
+            },
+            "name": "Bright",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1, 2]
+            }
+        },
+        {
+            "id": 3,
+            "parent": {
+                "id": 1
+            },
+            "name": "Red",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1, 2]
+            }
+        },
+        {
+            "id": 4,
+            "parent": {
+                "id": 2
+            },
+            "name": "HardExudates",
+            "color": "#6368ff",
+            "manyToMany": {
+                "imageTypes": [1, 2]
+            }
+        },
+        {
+            "id": 5,
+            "parent": {
+                "id": 2
+            },
+            "name": "SoftExudates",
+            "color": "#b9f990",
+            "manyToMany": {
+                "imageTypes": [1, 2]
+            }
+        },
+        {
+            "id": 6,
+            "parent": {
+                "id": 3
+            },
+            "name": "Hemorrhage",
+            "color": "#ff7400",
+            "manyToMany": {
+                "imageTypes": [1, 2]
+            }
+        }
+    ]
+}

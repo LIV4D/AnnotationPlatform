@@ -1,0 +1,10 @@
+<canvas id="zoom-canvas" [ngStyle]="setDimensions()" 
+    (mousedown)="onMouseDown($event)" 
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)" 
+    (mouseleave)="onMouseLeave($event)"
+    (touchstart)="onTouchStart($event)" 
+    (touchmove)="onTouchMove($event)" 
+    (touchend)="onTouchEnd($event)"
+    >
+</canvas>

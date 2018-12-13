@@ -1,0 +1,12 @@
+{
+    "entityName": "Preprocessing",
+    "items": [
+        {
+            "manyToOne": {
+                "preprocessingType": 1,
+                "image": 1
+            },
+            "path": "C:\\image_test_1.png"
+        }
+    ]
+}

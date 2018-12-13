@@ -1,0 +1,45 @@
+{
+    "entityName": "Task",
+    "items": [
+        {
+            "id": 1,
+            "taskType": 1,
+            "manyToOne": {
+                "image": 1
+            },
+            "user": "597c679a-fd6e-4c87-833d-26d1d9232a9a",
+            "active": true,
+            "completed": false
+        }, 
+        {
+            "id": 2,
+            "taskType": 2,
+            "manyToOne": {
+                "image": 1
+            },
+            "user": "597c679a-fd6e-4c87-833d-26d1d9232a9a",
+            "active": true,
+            "completed": true
+        },
+        {
+            "id": 3,
+            "taskType": 1,
+            "manyToOne": {
+                "image": 2
+            },
+            "user": "597c679a-fd6e-4c87-833d-26d1d9232a9a",
+            "active": true,
+            "completed": false
+        }, 
+        {
+            "id": 4,
+            "taskType": 2,
+            "manyToOne": {
+                "image": 2
+            },
+            "user": "597c679a-fd6e-4c87-833d-26d1d9232a9a",
+            "active": true,
+            "completed": false
+        }
+    ]
+}

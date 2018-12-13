@@ -1,0 +1,23 @@
+<div (window:keydown)="onKeyDown($event)">
+    <span>Display</span>
+    <button id="button-flip" matTooltip="Flip (M)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="flipHorizontal()"><mat-icon>flip</mat-icon></button>
+    <!--BRIGHTNESS-->
+    <div id="brightness">
+        <mat-icon matTooltip="Brightness" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetBrightness()" class="slider-icon">brightness_medium</mat-icon>
+        <mat-slider [min]="minBrightness" [max]="maxBrightness" step="1" [(ngModel)]="brightness" (input)="changeBrightness($event)">
+        </mat-slider>
+        <input type="number" [(ngModel)]="brightness" (input)="changeBrightness($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()"/>
+    </div>
+    <!--CONTRAST-->
+    <div id="contrast">
+        <mat-icon matTooltip="Contrast" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetContrast()" class="slider-icon">tonality</mat-icon>
+        <mat-slider [min]="minContrast" [max]="maxContrast" step="1" [(ngModel)]="contrast" (input)="changeContrast($event)"> </mat-slider>
+        <input type="number" [ngModel]="contrast" (input)="changeContrast($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()"/>
+    </div>
+    <!--PREPROCESSING-->
+    <div id="preprocessing" *ngIf="!appService.localEditing">
+        <span>Preprocessing</span>
+        <mat-checkbox [disableRipple]="true" (change)="toggle()" [checked]="checked" matTooltip="Show/Hide Preprocessing (T)" matTooltipShowDelay="1000"
+            matTooltipPosition="right"></mat-checkbox>
+    </div>
+</div>
