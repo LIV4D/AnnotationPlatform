@@ -111,7 +111,7 @@ export class EditorService {
         if (this.imageLocal) {
             this.setImageId('local');
             this.loadAllLocal(this.imageLocal, this.svgLoaded);
-        }else{
+        } else {
             this.loadAll();
         }
         this.resize();
@@ -467,8 +467,8 @@ export class EditorService {
         let zoomFactor = this.zoomFactor * Math.exp(delta * this.zoomMultiplier);
 
         // Cap the values.
-        if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX; }
-        else if (zoomFactor < ZOOM.MIN) { zoomFactor = ZOOM.MIN; }
+        if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX;
+        } else if (zoomFactor < ZOOM.MIN) { zoomFactor = ZOOM.MIN; }
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
@@ -479,7 +479,7 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if(zoomFactor!=ZOOM.MIN && zoomFactor!=ZOOM.MAX){
+        if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
             // Adjust offsets to keep them coherent with the previous zoom.
             const positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
@@ -495,11 +495,11 @@ export class EditorService {
         this.updateCanvasDisplayRatio();
     }
 
-    setZoomFactor(zoomFactor: number): void{
+    setZoomFactor(zoomFactor: number): void {
         // Cap the values.
-        if (zoomFactor > 1) { zoomFactor = 1; }
-        else if (zoomFactor < 0) { zoomFactor = 0; }
-        zoomFactor = ZOOM.MAX*zoomFactor + ZOOM.MIN;
+        if (zoomFactor > 1) { zoomFactor = 1;
+        } else if (zoomFactor < 0) { zoomFactor = 0; }
+        zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
@@ -510,10 +510,10 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if(zoomFactor!=ZOOM.MIN && zoomFactor!=ZOOM.MAX){
+        if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
-            this.offsetX += (oldWidth - newWidth)/2;
-            this.offsetY += (oldHeight - newHeight)/2;
+            this.offsetX += (oldWidth - newWidth) / 2;
+            this.offsetY += (oldHeight - newHeight) / 2;
         }
         this.adjustOffsets();
         this.transform();

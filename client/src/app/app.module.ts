@@ -27,13 +27,16 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { EditLayoutComponent } from './edit-layout/edit-layout.component';
 
 // Services
-import { EditorService } from './edit-layout/editor/editor.service';
-import { BiomarkersService } from './edit-layout/right-menu/biomarkers/biomarkers.service';
-import { LoginService } from './login/login.service';
 import { AppService } from './app.service';
-import { ImageBorderService } from './edit-layout/right-menu/biomarkers/image-border.service';
-import { VisualizationService } from './edit-layout/right-menu/visualization/visualization.service';
+import { LoginService } from './login/login.service';
 import { GalleryService } from './gallery/gallery.service';
+import { LayersService } from './edit-layout/editor/layers/layers.service';
+import { BiomarkersService } from './edit-layout/right-menu/biomarkers/biomarkers.service';
+import { EditorService } from './edit-layout/editor/editor.service';
+import { VisualizationService } from './edit-layout/right-menu/visualization/visualization.service';
+import { ImageBorderService } from './edit-layout/right-menu/biomarkers/image-border.service';
+import {ToolPropertiesService} from './edit-layout/toolbox/tool-properties/tool-properties.service';
+import {ToolboxService} from './edit-layout/toolbox/toolbox.service';
 
 // Directives
 import { MouseWheelDirective } from './mousewheel.directive';
@@ -52,6 +55,7 @@ import { AuthInterceptor } from './authentication/authentication.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TasksComponent } from './tasks/tasks.component';
 import { TaskDialogComponent } from './edit-layout/right-menu/tasks/task-dialog.component';
+import {ApplicationRef} from '@angular/core';
 
 
 @NgModule({
@@ -99,4 +103,6 @@ import { TaskDialogComponent } from './edit-layout/right-menu/tasks/task-dialog.
     bootstrap: [AppComponent]
 })
 export class AppModule {
+    constructor() {
+    }
 }

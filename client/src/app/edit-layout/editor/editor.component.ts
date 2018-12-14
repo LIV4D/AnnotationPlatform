@@ -27,6 +27,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     @ViewChild('editorBox') viewPort: any;
     mouseDown = false;
     middleMouseDown = false;
+    touchFreeze = false;
+    zoomInitPoint = Point;
+    zoomInitFactor = Number;
 
     @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -41,77 +44,94 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.image = null;
         this.mouseDown = false;
         this.middleMouseDown = false;
+        this.zoomInitFactor = null;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = true;
-        if (event.which === 2 && !this.editorService.menuState){
+        if (event.which === 2 && !this.editorService.menuState) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-            panTool.onMouseDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+            panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
             this.middleMouseDown = true;
+        } else if (event.which === 1 && !this.editorService.menuState  && !this.middleMouseDown) {
+            this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         }
-        else if (event.which === 1 && !this.editorService.menuState  && !this.middleMouseDown) {
-            this.toolboxService.onMouseDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-        }
-        this.enableKeyEvents(false);
-    }
-
-    onTouchStart(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        this.mouseDown = true;
-        this.toolboxService.onMouseDown(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
         this.enableKeyEvents(false);
     }
 
     onMouseUp(event: MouseEvent): void {
         this.mouseDown = false;
-        if (event.which === 2 && !this.editorService.menuState){
+        if (event.which === 2 && !this.editorService.menuState) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-            panTool.onMouseUp();
+            panTool.onCursorUp();
             this.middleMouseDown = false;
+        } else if (!this.middleMouseDown) {
+            this.toolboxService.onCursorUp();
         }
-        else if (!this.middleMouseDown){
-            this.toolboxService.onMouseUp();
-        }
-        this.enableKeyEvents(true);
-        
-    }
-
-    onTouchEnd(event: TouchEvent): void{
-        this.mouseDown = false;
-        this.toolboxService.onMouseUp();
         this.enableKeyEvents(true);
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.middleMouseDown){
+        if (this.middleMouseDown) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-            panTool.onMouseMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+            panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+        } else {
+            this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         }
-        else{
-            this.toolboxService.onMouseMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-        }
-    }
-
-    onTouchMove(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        this.toolboxService.onMouseMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
     }
 
     onMouseLeave(event: MouseEvent): void {
         this.mouseDown = false;
-        this.toolboxService.onMouseOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+        this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         this.enableKeyEvents(true);
     }
 
     onMouseWheel(event: WheelEvent): void {
-        if (!this.mouseDown && !this.editorService.layersService.firstPoint && event.ctrlKey==false) {
+        if (!this.mouseDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
             const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
             this.editorService.zoom(-event.deltaY / 300, position);
-        }
-        else if(!this.mouseDown && !this.editorService.layersService.firstPoint){
+        } else if (!this.mouseDown && !this.editorService.layersService.firstPoint) {
             // var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
             this.toolboxService.getToolPropertiesComponent().handleWheelChange(event);
+        }
+    }
+
+    onTouchStart(event: TouchEvent): void {
+        const touch = event.targetTouches[0];
+        console.log('______________________');
+        console.log('     TOUCH START');
+        for (let i = 0; i < event.targetTouches.length; i++) {
+            const t = event.targetTouches[i];
+            console.log('Touch', i, '[', t.identifier, ']', ': ', t.clientX, t.clientY);
+        }
+        this.mouseDown = true;
+        this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+        this.enableKeyEvents(false);
+    }
+
+    onTouchEnd(event: TouchEvent): void {
+        console.log('______________________');
+        console.log('     TOUCH END');
+        for (let i = 0; i < event.targetTouches.length; i++) {
+            const t = event.targetTouches[i];
+            console.log('Touch', i, '[', t.identifier, ']', ': ', t.clientX, t.clientY);
+        }
+        this.mouseDown = false;
+        this.toolboxService.onCursorUp();
+        this.enableKeyEvents(true);
+    }
+
+    onTouchMove(event: TouchEvent): void {
+        const touch = event.targetTouches[0];
+        this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+    }
+
+    onTouchCancel(event: TouchEvent): void {
+        console.log('______________________');
+        console.log('     TOUCH CANCEL');
+        for (let i = 0; i < event.targetTouches.length; i++) {
+            const t = event.targetTouches[i];
+            console.log('Touch', i, '[', t.identifier, ']', ': ', t.clientX, t.clientY);
         }
     }
 

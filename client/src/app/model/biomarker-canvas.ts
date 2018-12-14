@@ -15,9 +15,9 @@ export class BiomarkerCanvas extends Canvas {
         this.borderCanvas.getContext('2d').drawImage(image, 0, 0);
 
         const currentCtx = this.getCurrentContext();
-        currentCtx.imageSmoothingEnabled = false; 
-        currentCtx.mozImageSmoothingEnabled = false; 
-        currentCtx.webkitImageSmoothingEnabled = false;  
+        currentCtx.imageSmoothingEnabled = false;
+        currentCtx.mozImageSmoothingEnabled = false;
+        currentCtx.webkitImageSmoothingEnabled = false;
     }
 
     draw(): void {

@@ -6,12 +6,13 @@ import { Point } from '../../../model/point';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 export const ANNOTATION_PREFIX = 'annotation-';
-const MAX_CAPACITY = 15;
 
 @Injectable({
     providedIn: 'root'
 })
 export class LayersService {
+    MAX_CAPACITY: number;
+
     appLayers: HTMLElement;
     biomarkerOverlayCanvas: HTMLCanvasElement;
     tempMaskCanvas: HTMLCanvasElement;
@@ -41,19 +42,19 @@ export class LayersService {
 
         this.tempMaskCanvas = document.createElement('canvas');
         const maskCtx = this.tempMaskCanvas.getContext('2d');
-        maskCtx.imageSmoothingEnabled = false; 
-        maskCtx.mozImageSmoothingEnabled = false; 
+        maskCtx.imageSmoothingEnabled = false;
+        maskCtx.mozImageSmoothingEnabled = false;
         maskCtx.webkitImageSmoothingEnabled = false;
 
         this.tempDrawCanvas = document.createElement('canvas');
         const drawCtx = this.tempDrawCanvas.getContext('2d');
-        drawCtx.imageSmoothingEnabled = false; 
-        drawCtx.mozImageSmoothingEnabled = false; 
-        drawCtx.webkitImageSmoothingEnabled = false;  
+        drawCtx.imageSmoothingEnabled = false;
+        drawCtx.mozImageSmoothingEnabled = false;
+        drawCtx.webkitImageSmoothingEnabled = false;
 
-        const max_capacity = this.deviceService.isDesktop() ? MAX_CAPACITY : 1;
-        this.redoStack = new Stack<[number[], ImageData[]]>(max_capacity);
-        this.undoStack = new Stack<[number[], ImageData[]]>(max_capacity);
+        this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
+        this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+        this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
         this.biomarkerCanvas = [];
     }
 
@@ -184,13 +185,16 @@ export class LayersService {
         canvas.style.opacity = '1.0'; // important
 
         const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = false; 
-        ctx.mozImageSmoothingEnabled = false; 
+        ctx.imageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
         ctx.webkitImageSmoothingEnabled = false;
     }
 
     public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
         const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
+        if (currentBiomarkerCanvas == null) {
+            console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+        }
         return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
     }
 
@@ -214,18 +218,22 @@ export class LayersService {
         return result;
     }
 
+    get biomarkerOverlayContext(): CanvasRenderingContext2D {
+        return this.biomarkerOverlayCanvas.getContext('2d');
+    }
+
     public resize(width: number, height: number): void {
         this.biomarkerCanvas.forEach(biomarker => {
             biomarker.displayCanvas.width = width;
             biomarker.displayCanvas.height = height;
         });
-        this.biomarkerOverlayCanvas.width=width;
-        this.biomarkerOverlayCanvas.height=height;
+        this.biomarkerOverlayCanvas.width = width;
+        this.biomarkerOverlayCanvas.height = height;
 
-        this.tempMaskCanvas.width=width;
-        this.tempMaskCanvas.height=height;
-        this.tempDrawCanvas.width=width;
-        this.tempDrawCanvas.height=height;
+        this.tempMaskCanvas.width = width;
+        this.tempMaskCanvas.height = height;
+        this.tempDrawCanvas.width = width;
+        this.tempDrawCanvas.height =    height;
     }
 
     // Add a point on the canvas to indicate the first point

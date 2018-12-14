@@ -11,8 +11,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { EditorService } from '../editor/editor.service';
 import { PointByPointBucket } from './../../model/point-by-point-bucket';
-import { LassoEraser }  from '../../model/lasso-eraser';
-import {ToolPropertiesComponent} from './tool-properties/tool-properties.component'
+import { LassoEraser } from '../../model/lasso-eraser';
+import {ToolPropertiesComponent} from './tool-properties/tool-properties.component';
 export const TOOL_NAMES = {
     PAN: 'pan',
     ERASER: 'eraser',
@@ -31,43 +31,37 @@ export class ToolboxService {
 
     selectedTool: BehaviorSubject<Tool>;
     listOfTools: Tool[];
-    totalPropertiesComponent: ToolPropertiesComponent
+    totalPropertiesComponent: ToolPropertiesComponent;
 
 
     constructor(private toolPropertiesService: ToolPropertiesService,
         private layersService: LayersService, private editorService: EditorService, public imageBorderService: ImageBorderService) {
 
         this.listOfTools = [
-            new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)', this.layersService, this.editorService),
-            new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)', this.layersService, this.toolPropertiesService),
-            new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Erase Brush (G)', this.layersService, this.toolPropertiesService),
-            new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)', this.layersService, this.toolPropertiesService),
+            new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)'),
+            new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)'),
+            new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Erase Brush (G)'),
+            new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)'),
             // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
-            new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)', this.layersService, this.toolPropertiesService),
-            new PointByPointBucket(TOOL_NAMES.FILL_VECTOR,
-                '../assets/icons/vector.svg',
-                'Fill Vector (V)',
-                this.layersService,
-                this.editorService),
+            new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)'),
+            new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
             new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
-                navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)',
-                this.layersService),
+                     navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)'),
             new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
-                navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)',
-                this.layersService)
+                     navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)')
         ];
         this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
     }
 
-    getToolPropertiesService(): ToolPropertiesService{
+    getToolPropertiesService(): ToolPropertiesService {
         return this.toolPropertiesService;
     }
 
-    setToolPropertiesComponent(tool: ToolPropertiesComponent): void{
+    setToolPropertiesComponent(tool: ToolPropertiesComponent): void {
         this.totalPropertiesComponent = tool;
     }
 
-    getToolPropertiesComponent(): ToolPropertiesComponent{
+    getToolPropertiesComponent(): ToolPropertiesComponent {
         return this.totalPropertiesComponent;
     }
 
@@ -85,27 +79,32 @@ export class ToolboxService {
         }
     }
 
-    onMouseDown(point: Point): void {
+    onCursorDown(point: Point): void {
         if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
             this.imageBorderService.showBorders = false;
             this.imageBorderService.toggleBorders(false);
         }
-        this.selectedTool.getValue().onMouseDown(point);
+        this.selectedTool.getValue().onCursorDown(point);
         this.setUndoRedoState();
     }
 
-    onMouseUp(): void {
-        this.selectedTool.getValue().onMouseUp();
-        this.setUndoRedoState();
+    onCursorUp(): void {
+        this.selectedTool.getValue().onCursorUp();
+        // this.setUndoRedoState(); // WTF ?????
     }
 
-    onMouseOut(point: Point): void {
-        this.selectedTool.getValue().onMouseOut(point);
-        this.setUndoRedoState();
+    onCursorOut(point: Point): void {
+        this.selectedTool.getValue().onCursorOut(point);
+        // this.setUndoRedoState(); // WTF?????
     }
 
-    onMouseMove(point: Point): void {
-        this.selectedTool.getValue().onMouseMove(point);
+    onCursorMove(point: Point): void {
+        this.selectedTool.getValue().onCursorMove(point);
+        // this.setUndoRedoState(); // WTF?????
+    }
+
+    onCancel(): void {
+        this.selectedTool.getValue().onCancel();
         this.setUndoRedoState();
     }
 

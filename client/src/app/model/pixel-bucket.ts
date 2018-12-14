@@ -7,9 +7,8 @@ import { _MatSelectMixinBase } from '@angular/material';
 
 export class PixelBucket extends Tool {
 
-    constructor(name: string, iconPath: string, tooltip: string, 
-        layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
-        super(name, iconPath, tooltip, layersService);
+    constructor(name: string, iconPath: string, tooltip: string) {
+        super(name, iconPath, tooltip);
     }
 
     isMouseDown = false;
@@ -22,11 +21,11 @@ export class PixelBucket extends Tool {
         ctx.lineCap = 'round';
     }
 
-    onMouseDown( point: Point): void {
+    onCursorDown( point: Point): void {
         const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
         if (currentBiomarker) {
             this.isMouseDown = true;
-            
+
             this.layersService.addFirstPoint();
             const ctx = this.layersService.biomarkerOverlayCanvas.getContext('2d');
             this.setStrokeProperties(ctx);
@@ -37,30 +36,26 @@ export class PixelBucket extends Tool {
         }
     }
 
-    onMouseOut(point: Point): void {
+    onCursorMove( point: Point): void {
         if (this.isMouseDown) {
-            this.layersService.removeFirstPoint();
-            this.isMouseDown = false;
-            this.layersService.popUndoStack();
-            const overlay = this.layersService.biomarkerOverlayCanvas;
-            overlay.getContext('2d').clearRect(0,0,overlay.width, overlay.height);
+            const ctx = this.layersService.biomarkerOverlayCanvas.getContext('2d');
+            ctx.lineTo(point.x, point.y);
+            ctx.stroke();
+            this.layersService.updateDashStroke();
         }
     }
 
-    onMouseUp(): void {
+    onCursorUp(): void {
         if (this.isMouseDown) {
-            this.isMouseDown = false;
-
-            this.layersService.removeFirstPoint();
 
             const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
             const overlay = this.layersService.biomarkerOverlayCanvas;
             const overlayCtx = overlay.getContext('2d');
-            overlayCtx.clearRect(0,0,overlay.width, overlay.height);
+            overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
             overlayCtx.fill();
             overlayCtx.closePath();
-            
-            if(this.toolPropertiesService.smartMask){
+
+            if (this.toolPropertiesService.smartMask) {
                 this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
 
                 const mask = this.layersService.tempMaskCanvas;
@@ -69,21 +64,21 @@ export class PixelBucket extends Tool {
                 // Merge visible biomarkers
                 maskCtx.save();
                 const biomarkerCanvas = this.layersService.getBiomarkerCanvas();
-                biomarkerCanvas.forEach(biomarker => {maskCtx.drawImage(biomarker.displayCanvas,0,0);});
+                biomarkerCanvas.forEach(biomarker => {maskCtx.drawImage(biomarker.displayCanvas, 0, 0); });
                 maskCtx.globalCompositeOperation = 'source-in';
-                maskCtx.drawImage(overlay,0,0);
+                maskCtx.drawImage(overlay, 0, 0);
                 maskCtx.restore();
 
                 // Add the drawn shape to the current biomarker
-                currentBiomarker.getDisplayContext().drawImage(mask,0,0);
+                currentBiomarker.getDisplayContext().drawImage(mask, 0, 0);
                 currentBiomarker.updateCurrentCanvas();
 
                 // Remove the drawn shape from every other visible biomarker
                 this.layersService.getBiomarkerCanvas().forEach(biomarker => {
-                    if(biomarker.index!=currentBiomarker.index){
+                    if (biomarker.index !== currentBiomarker.index) {
                         const bioCtx = biomarker.getDisplayContext();
-                        bioCtx.save()
-                        bioCtx.globalCompositeOperation='destination-out';
+                        bioCtx.save();
+                        bioCtx.globalCompositeOperation = 'destination-out';
                         bioCtx.drawImage(overlay, 0, 0);
                         bioCtx.restore();
                         biomarker.updateCurrentCanvas();
@@ -91,24 +86,30 @@ export class PixelBucket extends Tool {
                 });
 
                 // Clear mask canvas
-                maskCtx.clearRect(0,0,mask.width, mask.height);
-            }else{
+                maskCtx.clearRect(0, 0, mask.width, mask.height);
+            } else {
                 this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
-                currentBiomarker.getDisplayContext().drawImage(overlay,0,0);
+                currentBiomarker.getDisplayContext().drawImage(overlay, 0, 0);
                 currentBiomarker.updateCurrentCanvas();
             }
-            
-            overlayCtx.clearRect(0,0,overlay.width, overlay.height);
+
+            // Clear overlay and tool visual helper
+            this.onCancel();
         }
     }
 
-    onMouseMove( point: Point): void {
+    onCancel(): void {
         if (this.isMouseDown) {
-            const ctx = this.layersService.biomarkerOverlayCanvas.getContext('2d');
-            ctx.lineTo(point.x, point.y);
-            ctx.stroke();
-            this.layersService.updateDashStroke();
+            this.isMouseDown = false;
+
+            this.layersService.removeFirstPoint();
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
         }
+    }
+
+    onCursorOut(point: Point): void {
+        this.onCancel();
     }
 
 }
