@@ -25,11 +25,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     offsetX: number;
     offsetY: number;
     @ViewChild('editorBox') viewPort: any;
-    mouseDown = false;
+    cursorDown = false;
     middleMouseDown = false;
     touchFreeze = false;
-    zoomInitPoint = Point;
-    zoomInitFactor = Number;
+    zoomInitPoint: Point;
+    zoomInitFactor: number;
 
     @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -42,13 +42,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.editorService.imageServer = null;
         this.image = null;
-        this.mouseDown = false;
+        this.cursorDown = false;
         this.middleMouseDown = false;
         this.zoomInitFactor = null;
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = true;
+        this.cursorDown = true;
         if (event.which === 2 && !this.editorService.menuState) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
             panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
@@ -60,7 +60,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.mouseDown = false;
+        this.cursorDown = false;
         if (event.which === 2 && !this.editorService.menuState) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
             panTool.onCursorUp();
@@ -81,49 +81,93 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     onMouseLeave(event: MouseEvent): void {
-        this.mouseDown = false;
+        this.cursorDown = false;
         this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         this.enableKeyEvents(true);
     }
 
     onMouseWheel(event: WheelEvent): void {
-        if (!this.mouseDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
+        if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
             const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-            this.editorService.zoom(-event.deltaY / 300, position);
-        } else if (!this.mouseDown && !this.editorService.layersService.firstPoint) {
+            const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 1) / 300;
+            this.editorService.zoom(delta, position);
+        } else if (!this.cursorDown && !this.editorService.layersService.firstPoint) {
             // var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
             this.toolboxService.getToolPropertiesComponent().handleWheelChange(event);
         }
     }
 
     onTouchStart(event: TouchEvent): void {
-        const touch = event.targetTouches[0];
-        console.log('______________________');
-        console.log('     TOUCH START');
-        for (let i = 0; i < event.targetTouches.length; i++) {
-            const t = event.targetTouches[i];
-            console.log('Touch', i, '[', t.identifier, ']', ': ', t.clientX, t.clientY);
+        if (this.touchFreeze) {
+            return;
         }
-        this.mouseDown = true;
-        this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
-        this.enableKeyEvents(false);
-    }
+        if (event.targetTouches.length === 1) {
+            // cursor down event
+            const touch = event.targetTouches[0];
+            this.cursorDown = true;
+            this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+            this.enableKeyEvents(false);
+        } else if (event.targetTouches.length === 2) {
+            // Cancel tool
+            this.toolboxService.onCancel();
+            this.cursorDown = false;
 
-    onTouchEnd(event: TouchEvent): void {
-        console.log('______________________');
-        console.log('     TOUCH END');
-        for (let i = 0; i < event.targetTouches.length; i++) {
-            const t = event.targetTouches[i];
-            console.log('Touch', i, '[', t.identifier, ']', ': ', t.clientX, t.clientY);
+            // Start zoom & move
+            const touches = event.targetTouches;
+            const x0 = touches[0].clientX;
+            const x1 = touches[1].clientX;
+            const y0 = touches[0].clientY;
+            const y1 = touches[1].clientY;
+            const midPoint = new Point( (x0 + x1) / 2, (y0 + y1) / 2);
+            this.zoomInitPoint = this.getMousePositionInCanvasSpace(midPoint);
+            this.zoomInitFactor = this.zoomFactor / Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+        } else {
+            this.touchFreeze = true;
+            if (this.cursorDown) {
+                this.toolboxService.onCancel();
+                this.cursorDown = false;
+            }
         }
-        this.mouseDown = false;
-        this.toolboxService.onCursorUp();
-        this.enableKeyEvents(true);
     }
 
     onTouchMove(event: TouchEvent): void {
-        const touch = event.targetTouches[0];
-        this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+        if (!this.touchFreeze) {
+            if (event.targetTouches.length === 1) {
+                if ( this.cursorDown) {
+                    // Update tool
+                    const touch = event.targetTouches[0];
+                    this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+                }
+            } else if (event.targetTouches.length === 2) {
+                const touches = event.targetTouches;
+                const x0 = touches[0].clientX;
+                const x1 = touches[1].clientX;
+                const y0 = touches[0].clientY;
+                const y1 = touches[1].clientY;
+                const midPoint = new Point( (x0 + x1) / 2, (y0 + y1) / 2);
+                const zoomFactor = this.zoomInitFactor * Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+
+                // TODO: perform zoom
+            }
+        }
+    }
+
+    onTouchEnd(event: TouchEvent): void {
+        if (this.touchFreeze) {
+            if (event.targetTouches.length === 0) {
+                this.touchFreeze = false;
+            }
+            return;
+        }
+
+        if (event.targetTouches.length === 0) {
+            this.toolboxService.onCursorUp();
+            this.enableKeyEvents(true);
+        } else {
+            this.touchFreeze = true;
+            this.toolboxService.onCancel();
+        }
+        this.cursorDown = false;
     }
 
     onTouchCancel(event: TouchEvent): void {
