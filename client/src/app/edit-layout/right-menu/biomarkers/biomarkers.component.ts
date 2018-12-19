@@ -48,7 +48,7 @@ export class BiomarkersComponent {
     public setFocusBiomarker(elem: HTMLElement): void {
         this.biomarkersService.setFocusBiomarker(elem);
     }
-    
+
     // Transforms from camel case to text case
     public transform(value: string): string {
         return this.camelCaseToTextPipe.transform(value);

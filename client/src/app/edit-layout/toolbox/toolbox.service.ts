@@ -1,5 +1,6 @@
 import { ImageBorderService } from './../right-menu/biomarkers/image-border.service';
 import { LayersService } from './../editor/layers/layers.service';
+import {ToolPropertiesComponent} from './tool-properties/tool-properties.component';
 import { Point } from './../../model/point';
 import { PixelBucket } from './../../model/pixel-bucket';
 import { PixelCrayon } from './../../model/pixel-crayon';
@@ -12,7 +13,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { EditorService } from '../editor/editor.service';
 import { PointByPointBucket } from './../../model/point-by-point-bucket';
 import { LassoEraser } from '../../model/lasso-eraser';
-import {ToolPropertiesComponent} from './tool-properties/tool-properties.component';
+import { BioPicker } from '../../model/biopicker';
 export const TOOL_NAMES = {
     PAN: 'pan',
     ERASER: 'eraser',
@@ -21,7 +22,8 @@ export const TOOL_NAMES = {
     FILL_VECTOR: 'fillVector',
     UNDO: 'undo',
     REDO: 'redo',
-    LASSO_ERASER: 'lassoEraser'
+    LASSO_ERASER: 'lassoEraser',
+    BIO_PICKER: 'bioPicker',
 };
 
 @Injectable({
@@ -45,6 +47,7 @@ export class ToolboxService {
             // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
             new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)'),
             new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
+            new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (L)'),
             new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
                      navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)'),
             new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',

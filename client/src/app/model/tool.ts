@@ -5,6 +5,8 @@ import { timingSafeEqual } from 'crypto';
 import { RootInjector } from '../root-injector';
 import { EditorService } from '../edit-layout/editor/editor.service';
 import { ToolPropertiesService } from '../edit-layout/toolbox/tool-properties/tool-properties.service';
+import { BiomarkersService } from '../edit-layout/right-menu/biomarkers/biomarkers.service';
+import { ThrowStmt } from '@angular/compiler';
 
 export class Tool {
     disabled: boolean;
@@ -12,12 +14,14 @@ export class Tool {
     protected layersService: LayersService;
     protected editorService: EditorService;
     protected toolPropertiesService: ToolPropertiesService;
+    protected biomarkersService: BiomarkersService;
 
     constructor(private _name, private _iconPath: string, private _tooltip: string) {
         this.disabled = false;
         this.layersService = RootInjector.injector.get(LayersService);
         this.editorService = RootInjector.injector.get(EditorService);
         this.toolPropertiesService = RootInjector.injector.get(ToolPropertiesService);
+        this.biomarkersService = RootInjector.injector.get(BiomarkersService);
     }
 
     get iconPath(): string {

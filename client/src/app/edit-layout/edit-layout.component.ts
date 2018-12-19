@@ -1,4 +1,4 @@
-import { ToolboxService } from './toolbox/toolbox.service';
+import { ToolboxService, TOOL_NAMES } from './toolbox/toolbox.service';
 import { ZoomComponent } from './editor/zoom/zoom.component';
 import { environment } from './../../environments/environment.prod';
 import { EditorService } from './editor/editor.service';
@@ -11,6 +11,8 @@ import { RightMenuComponent } from './right-menu/right-menu.component';
 import { MatSidenav } from '@angular/material';
 import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { BioPicker } from '../model/biopicker';
+import { Point } from '../model/point';
 
 @Component({
     selector: 'app-edit-layout',
@@ -56,10 +58,13 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     public openBiomarkers(event: MouseEvent): void {
-        document.getElementById('bodyblack').style.opacity = '0.6';
         event.stopPropagation();
-        this.editorService.menuState = true;
-        this.positionMenu(event);
+        const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
+        if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
+            document.getElementById('bodyblack').style.opacity = '0.6';
+            this.editorService.menuState = true;
+            this.positionMenu(event);
+        }
     }
 
     public getPosition(event: MouseEvent): any {
@@ -77,9 +82,9 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
         return { x: posx, y: posy };
     }
 
-    public positionMenu(event: MouseEvent): void {
+    public positionMenu(clientPos): void {
         const appEditor = document.getElementById('edit-viewport');
-        this.menuPosition = this.getPosition(event);
+        this.menuPosition = clientPos;
         this.menuPositionX = this.menuPosition.x;
         this.menuPositionY = this.menuPosition.y;
 
