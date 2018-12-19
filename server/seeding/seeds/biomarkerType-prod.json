@@ -183,6 +183,90 @@
             "manyToMany": {
                 "imageTypes": [1]
             }
+        },
+        {
+            "id": 18,
+            "parent": null,
+            "name": "Lesions-OCT",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 19,
+            "parent": {
+                "id": 18
+            },
+            "name": "Drusen-OCT",
+            "color": "#7a9d32",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 20,
+            "parent": {
+                "id": 18
+            },
+            "name": "Edema",
+            "color": "#4b18ff",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 21,
+            "parent": null,
+            "name": "Normal-OCT",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 22,
+            "parent": {
+                "id": 21
+            },
+            "name": "Bruchs Membrane",
+            "color": "#dd1c1c",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 23,
+            "parent": {
+                "id": 21
+            },
+            "name": "ChoroidSclera Interface",
+            "color": "#6d13b2",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 24,
+            "parent": {
+                "id": 21
+            },
+            "name": "RPE",
+            "color": "#ddc81c",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
+        },
+        {
+            "id": 25,
+            "parent": {
+                "id": 21
+            },
+            "name": "RetinaVitreaous Interface",
+            "color": "#dda61c",
+            "manyToMany": {
+                "imageTypes": [2]
+            }
         }
     ]
 }
