@@ -38,7 +38,7 @@ export class GalleryComponent implements OnInit {
         public editorService: EditorService) {
         this.showPagination = false;
         this.length = 0;
-        this.pageSize = 25;
+        this.pageSize = 15;
         this.editorService.imageLoaded = false;
     }
 
