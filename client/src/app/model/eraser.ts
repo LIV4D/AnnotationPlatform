@@ -53,10 +53,9 @@ export class Eraser extends Tool {
             this.layersService.addToUndoStack(biomarkers);
 
             biomarkers.forEach((biomarker) => {
-                const ctx = biomarker.getDisplayContext();
+                const ctx = biomarker.getCurrentContext();
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.drawImage(mask, 0, 0);
-                biomarker.updateCurrentCanvas();
+                biomarker.drawToCurrentCanvas(mask);
             });
 
             // Clear mask and overlay

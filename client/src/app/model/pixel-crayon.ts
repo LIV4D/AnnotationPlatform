@@ -33,7 +33,7 @@ export class PixelCrayon extends Tool {
                 // Merge visible biomarkers
                 const biomarkerCanvas = this.layersService.getBiomarkerCanvas();
                 maskCtx.globalCompositeOperation = 'destination-over';
-                biomarkerCanvas.forEach(biomarker => {maskCtx.drawImage(biomarker.displayCanvas, 0, 0); });
+                biomarkerCanvas.forEach(biomarker => {biomarker.drawCurrentTo(this.maskCanvas); });
 
                 // Current draw context set to drawCanvas
                 ctx = drawCtx;
@@ -87,10 +87,9 @@ export class PixelCrayon extends Tool {
             }
 
             // Add the drawn shape to the current biomarker
-            const ctx = currentBiomarker.getDisplayContext();
+            const ctx = currentBiomarker.getCurrentContext();
             ctx.globalCompositeOperation = 'destination-over';
-            ctx.drawImage(overlay, 0, 0);
-            currentBiomarker.updateCurrentCanvas();
+            currentBiomarker.drawToCurrentCanvas(overlay);
 
             if (this.toolPropertiesService.smartMask) {
                 const maskCanvas = this.layersService.tempMaskCanvas;
@@ -101,12 +100,11 @@ export class PixelCrayon extends Tool {
                 // Remove the drawn shape from every other visible biomarker
                 this.layersService.getBiomarkerCanvas().forEach(biomarker => {
                             if (biomarker.index !== currentBiomarker.index) {
-                                const bioCtx = biomarker.getDisplayContext();
+                                const bioCtx = biomarker.getCurrentContext();
                                 bioCtx.save();
                                 bioCtx.globalCompositeOperation = 'destination-out';
-                                bioCtx.drawImage(drawCanvas, 0, 0);
+                                biomarker.drawToCurrentCanvas(drawCanvas);
                                 bioCtx.restore();
-                                biomarker.updateCurrentCanvas();
                             }
                         });
             }

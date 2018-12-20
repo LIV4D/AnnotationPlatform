@@ -99,7 +99,7 @@ export class TaskRepository {
                 // If it doesn't create a new taskGroup and load the image thumbnail
                     let dataUrl = '';
                     try {
-                        const base64Image = fs.readFileSync(path.resolve(task.image.path), 'base64');
+                        const base64Image = fs.readFileSync(path.resolve(task.image.thumbnailPath), 'base64');
                         dataUrl = 'data:image/png;base64, ' + base64Image;
                     } catch {
                         console.log('Image non-trouvée: ', task.image.id);

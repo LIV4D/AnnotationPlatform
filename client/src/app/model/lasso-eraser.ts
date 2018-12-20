@@ -58,12 +58,11 @@ export class LassoEraser extends Tool {
 
             // Remove the drawn shape from every other visible biomarker
             this.getBiomarkerCanvas().forEach(biomarker => {
-                const bioCtx = biomarker.getDisplayContext();
+                const bioCtx = biomarker.getCurrentContext();
                 bioCtx.save();
                 bioCtx.globalCompositeOperation = 'destination-out';
-                bioCtx.drawImage(overlay, 0, 0);
+                biomarker.drawToCurrentCanvas(overlay);
                 bioCtx.restore();
-                biomarker.updateCurrentCanvas();
             });
 
             // Clear overlay

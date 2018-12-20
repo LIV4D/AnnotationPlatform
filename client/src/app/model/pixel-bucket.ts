@@ -64,24 +64,22 @@ export class PixelBucket extends Tool {
                 // Merge visible biomarkers
                 maskCtx.save();
                 const biomarkerCanvas = this.layersService.getBiomarkerCanvas();
-                biomarkerCanvas.forEach(biomarker => {maskCtx.drawImage(biomarker.displayCanvas, 0, 0); });
+                biomarkerCanvas.forEach(biomarker => {biomarker.drawCurrentTo(mask); });
                 maskCtx.globalCompositeOperation = 'source-in';
                 maskCtx.drawImage(overlay, 0, 0);
                 maskCtx.restore();
 
                 // Add the drawn shape to the current biomarker
-                currentBiomarker.getDisplayContext().drawImage(mask, 0, 0);
-                currentBiomarker.updateCurrentCanvas();
+                currentBiomarker.drawToCurrentCanvas(mask);
 
                 // Remove the drawn shape from every other visible biomarker
                 this.layersService.getBiomarkerCanvas().forEach(biomarker => {
                     if (biomarker.index !== currentBiomarker.index) {
-                        const bioCtx = biomarker.getDisplayContext();
+                        const bioCtx = biomarker.getCurrentContext();
                         bioCtx.save();
                         bioCtx.globalCompositeOperation = 'destination-out';
-                        bioCtx.drawImage(overlay, 0, 0);
+                        biomarker.drawToCurrentCanvas(overlay);
                         bioCtx.restore();
-                        biomarker.updateCurrentCanvas();
                     }
                 });
 
@@ -89,8 +87,7 @@ export class PixelBucket extends Tool {
                 maskCtx.clearRect(0, 0, mask.width, mask.height);
             } else {
                 this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
-                currentBiomarker.getDisplayContext().drawImage(overlay, 0, 0);
-                currentBiomarker.updateCurrentCanvas();
+                currentBiomarker.drawToCurrentCanvas(overlay);
             }
 
             // Clear overlay and tool visual helper
