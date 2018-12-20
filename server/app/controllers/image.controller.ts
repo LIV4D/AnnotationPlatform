@@ -100,9 +100,10 @@ export class ImageController implements IRegistrableController {
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {
                 imageViewModel.images.map(image => {
+
                     let dataUrl = '';
                     try {
-                        const base64Image = fs.readFileSync(path.resolve(image.path), 'base64');
+                        const base64Image = fs.readFileSync(path.resolve(image.thumbnailPath), 'base64');
                         dataUrl = 'data:image/png;base64, ' + base64Image;
                         const item = {
                             id: image.id,
@@ -117,7 +118,7 @@ export class ImageController implements IRegistrableController {
                         };
                         arr.push(item);
                     } catch {
-                        console.log('Image non-trouvée: ', image.id);
+                        console.log('Image non-trouvée: ', image.thumbnailPath);
                     }
                 });
                 const gallery: IGallery = {

@@ -51,4 +51,11 @@ export class Image {
     // Extra information may be added later in the form of a JSON string
     @Column({ nullable: true })
     public extra: string;
+
+    get thumbnailPath(): string {
+        const path = this.path;
+        const imgDirname = path.match(/.*\//);
+        const imgBasename = path.replace(/.*\//, '');
+        return imgDirname + '/' + 'thumbnailI' + imgBasename.substr(1);  // HACKISH
+    }
 }
