@@ -4,12 +4,10 @@ import { Injectable } from '@angular/core';
 // Drawbacks: hiding layers will require recombining all layers into one.
 @Injectable()
 export class ImageBorderService {
-    kernel: number[];
     thickness: number;
     showBorders: boolean;
     constructor() {
         this.thickness = 1;
-        this.kernel = this.createKernel(this.thickness);
         this.showBorders = false;
     }
 
@@ -80,29 +78,5 @@ export class ImageBorderService {
             data[idDst + 2] = dataSrc[idSrc + 2];
             data[idDst + 3] = 255;
         }
-    }
-
-    createKernel(thickness: number): number[] {
-        if (thickness % 2 === 0) { thickness++; }
-        const res = [];
-        for (let i = 0; i < thickness + 2; i++) {
-            const row = [];
-            for (let j = 0; j < thickness + 2; j++) {
-                if (j > Math.floor((thickness + 2) / 2) - i || j < Math.floor((thickness + 2) / 2) + i) {
-                    row.push(1);
-                } else {
-                    row.push(0);
-                }
-            }
-            res.push(row);
-        }
-        // return result as 1D array for faster looping later
-        const list = [];
-        for (let i = 0; i < res.length; i++) {
-            for (let j = 0; j < res[i].length; j++) {
-                list.push(res[i][j]);
-            }128128128
-        }
-        return list;
     }
 }
