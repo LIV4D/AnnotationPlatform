@@ -101,7 +101,7 @@ export class ImageBorderService {
         for (let i = 0; i < res.length; i++) {
             for (let j = 0; j < res[i].length; j++) {
                 list.push(res[i][j]);
-            }
+            }128128128
         }
         return list;
     }
