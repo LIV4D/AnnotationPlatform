@@ -32,17 +32,22 @@ export class Eraser extends Tool {
 
             this.applyDrawCanvas(this.layersService.biomarkerOverlayCanvas);
             this.lastPoint = point;
+
+            this.updateChangeBoundedBox(point, this.toolPropertiesService.brushWidth / 2);
         }
     }
 
     onCursorMove( point: Point): void {
         if (this.isMouseDown) {
             const ctx = this.maskContext;
-            // ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
             this.applyDrawCanvas(this.layersService.biomarkerOverlayCanvas);
             this.lastPoint = point;
+
+            this.updateChangeBoundedBox(point, this.toolPropertiesService.brushWidth / 2);
         }
     }
 
@@ -55,7 +60,7 @@ export class Eraser extends Tool {
             biomarkers.forEach((biomarker) => {
                 const ctx = biomarker.getCurrentContext();
                 ctx.globalCompositeOperation = 'destination-out';
-                biomarker.drawToCurrentCanvas(mask);
+                biomarker.drawToCurrentCanvas(mask, this.changeBoundedBox);
             });
 
             // Clear mask and overlay
@@ -74,6 +79,8 @@ export class Eraser extends Tool {
 
             const overlay = this.layersService.biomarkerOverlayCanvas;
             this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
+
+            this.resetChangeBoundedBox();
         }
     }
 

@@ -7,6 +7,7 @@ import { BiomarkersService } from './biomarkers.service';
 import { Component } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material';
+import { LayersService } from '../../editor/layers/layers.service';
 
 export interface DialogData {
     confirmDelete: boolean;
@@ -29,7 +30,8 @@ export class BiomarkersComponent {
     opacity: number;
 
     constructor(public biomarkersService: BiomarkersService, public imageBorderService: ImageBorderService,
-        public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe) {
+        public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
+        private layerService: LayersService) {
         this.imageBorderService.showBorders = false;
         this.opacity = 100;
         this.visibilityAll = 'visible';
@@ -124,7 +126,7 @@ export class BiomarkersComponent {
 
     public toggleBorders(): void {
         this.imageBorderService.showBorders = !this.imageBorderService.showBorders;
-        this.imageBorderService.toggleBorders(this.imageBorderService.showBorders);
+        this.layerService.toggleBorders(this.imageBorderService.showBorders);
     }
 
     public resetOpacity(): void {

@@ -70,12 +70,8 @@ export class ToolboxService {
 
     setSelectedTool(newSelectedTool: Tool): void {
         if (newSelectedTool.name === TOOL_NAMES.UNDO) {
-            this.imageBorderService.showBorders = false;
-            this.imageBorderService.toggleBorders(false);
             this.layersService.undo();
         } else if (newSelectedTool.name === TOOL_NAMES.REDO) {
-            this.imageBorderService.showBorders = false;
-            this.imageBorderService.toggleBorders(false);
             this.layersService.redo();
         } else {
             this.selectedTool.next(newSelectedTool);
@@ -84,8 +80,8 @@ export class ToolboxService {
 
     onCursorDown(point: Point): void {
         if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
-            this.imageBorderService.showBorders = false;
-            this.imageBorderService.toggleBorders(false);
+            // this.imageBorderService.showBorders = false;
+            // this.layersService.toggleBorders(false);
         }
         this.selectedTool.getValue().onCursorDown(point);
         this.setUndoRedoState();

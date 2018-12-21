@@ -15,6 +15,7 @@ export class Tool {
     protected editorService: EditorService;
     protected toolPropertiesService: ToolPropertiesService;
     protected biomarkersService: BiomarkersService;
+    protected changeBoundedBox: DOMRect;
 
     constructor(private _name, private _iconPath: string, private _tooltip: string) {
         this.disabled = false;
@@ -58,6 +59,24 @@ export class Tool {
         return this.layersService.tempMaskCanvas.getContext('2d');
     }
 
+    updateChangeBoundedBox(p: Point, r= 0): void {
+        r += 1;
+        if (this.changeBoundedBox) {
+            const maxX = this.changeBoundedBox.width + this.changeBoundedBox.x;
+            this.changeBoundedBox.x = Math.min(this.changeBoundedBox.x, p.x - r);
+            this.changeBoundedBox.width = Math.max(maxX, p.x + r) - this.changeBoundedBox.x;
+
+            const maxY = this.changeBoundedBox.height + this.changeBoundedBox.y;
+            this.changeBoundedBox.y = Math.min(this.changeBoundedBox.y, p.y - r);
+            this.changeBoundedBox.height = Math.max(maxY, p.y + r) - this.changeBoundedBox.y;
+        } else {
+            this.changeBoundedBox = new DOMRect(p.x - r, p.y - r, 2 * r, 2 * r);
+        }
+    }
+
+    resetChangeBoundedBox(): void {
+        this.changeBoundedBox = null;
+    }
 
     applyDrawCanvas(destCanvas: HTMLCanvasElement): void {
         const ctx = destCanvas.getContext('2d');

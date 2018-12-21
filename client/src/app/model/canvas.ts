@@ -81,23 +81,6 @@ export class Canvas {
         );
     }
 
-    drawToCurrentCanvas(canvas: HTMLCanvasElement, display= true): void {
-        let x = 0, y = 0;
-        if (this.displayCanvas.width > this.currentCanvas.width) {
-            x = (this.displayCanvas.width - this.currentCanvas.width) / 2;
-        }
-        if (this.displayCanvas.height > this.currentCanvas.height) {
-            y = (this.displayCanvas.height - this.currentCanvas.height) / 2;
-        }
-        const w = Math.min(this.displayCanvas.width, this.currentCanvas.width);
-        const h = Math.min(this.displayCanvas.height, this.currentCanvas.height);
-
-        this.currentCanvas.getContext('2d').drawImage(canvas, x, y, w, h, this.offsetX, this.offsetY, w, h);
-        if (display) {
-            this.draw();
-        }
-    }
-
     getDisplayContext(): CanvasRenderingContext2D {
         return this.displayCanvas.getContext('2d');
     }

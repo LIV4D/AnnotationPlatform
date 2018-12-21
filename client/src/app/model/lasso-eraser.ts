@@ -34,6 +34,8 @@ export class LassoEraser extends Tool {
             ctx.beginPath();
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
+
+            this.updateChangeBoundedBox(point);
         }
     }
 
@@ -43,6 +45,8 @@ export class LassoEraser extends Tool {
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
             this.layersService.updateDashStroke();
+
+            this.updateChangeBoundedBox(point);
         }
     }
 
@@ -56,12 +60,12 @@ export class LassoEraser extends Tool {
             overlayCtx.fill();
             overlayCtx.closePath();
 
-            // Remove the drawn shape from every other visible biomarker
+            // Remove the drawn shape from every visible biomarker
             this.getBiomarkerCanvas().forEach(biomarker => {
                 const bioCtx = biomarker.getCurrentContext();
                 bioCtx.save();
                 bioCtx.globalCompositeOperation = 'destination-out';
-                biomarker.drawToCurrentCanvas(overlay);
+                biomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
                 bioCtx.restore();
             });
 
@@ -77,6 +81,7 @@ export class LassoEraser extends Tool {
             this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
 
             this.isMouseDown = false;
+            this.resetChangeBoundedBox();
         }
     }
 

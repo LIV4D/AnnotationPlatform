@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { Stack } from './../../../model/stack';
 import { Point } from '../../../model/point';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { AppService } from '../../../app.service';
+import { ImageBorderService } from '../../right-menu/biomarkers/image-border.service';
 
 export const ANNOTATION_PREFIX = 'annotation-';
 
@@ -30,7 +32,7 @@ export class LayersService {
 
     unsavedChange = false;
 
-    constructor(private deviceService: DeviceDetectorService) { }
+    constructor(private deviceService: DeviceDetectorService, private appService: AppService, private borderService: ImageBorderService) { }
 
     init(): void {
         this.appLayers = document.getElementById('app-layers') as HTMLElement;
@@ -67,7 +69,7 @@ export class LayersService {
             canvas[0].forEach( (canvasIndex, arrayIndex) => {
                 const biomarker = this.biomarkerCanvas[canvasIndex];
                 imageDatas.push(biomarker.getCurrentImageData());
-                biomarker.getCurrentContext().putImageData(canvas[1][arrayIndex], 0, 0);
+                biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
                 biomarker.draw();
             });
 
@@ -85,7 +87,7 @@ export class LayersService {
                 const biomarker = this.biomarkerCanvas[canvasIndex];
                 imageDatas.push(biomarker.getCurrentImageData());
 
-                biomarker.getCurrentContext().putImageData(canvas[1][arrayIndex], 0, 0);
+                biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
                 biomarker.draw();
             });
             this.undoStack.push([canvas[0], imageDatas]);
@@ -220,6 +222,18 @@ export class LayersService {
 
     get biomarkerOverlayContext(): CanvasRenderingContext2D {
         return this.biomarkerOverlayCanvas.getContext('2d');
+    }
+
+    toggleBorders(showBorders: boolean): void {
+        this.appService.loading = true;
+        this.biomarkerCanvas.forEach((b) => {
+            if (showBorders) {
+                this.borderService.erode(b.borderCanvas, b.currentCanvas);
+            }
+            b.drawBorders = showBorders;
+            b.draw();
+        });
+        this.appService.loading = false;
     }
 
     public resize(width: number, height: number): void {

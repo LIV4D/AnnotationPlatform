@@ -25,6 +25,7 @@ export class PixelBucket extends Tool {
         const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
         if (currentBiomarker) {
             this.isMouseDown = true;
+            this.updateChangeBoundedBox(point);
 
             this.layersService.addFirstPoint();
             const ctx = this.layersService.biomarkerOverlayCanvas.getContext('2d');
@@ -42,6 +43,8 @@ export class PixelBucket extends Tool {
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
             this.layersService.updateDashStroke();
+
+            this.updateChangeBoundedBox(point);
         }
     }
 
@@ -70,7 +73,7 @@ export class PixelBucket extends Tool {
                 maskCtx.restore();
 
                 // Add the drawn shape to the current biomarker
-                currentBiomarker.drawToCurrentCanvas(mask);
+                currentBiomarker.drawToCurrentCanvas(mask, this.changeBoundedBox);
 
                 // Remove the drawn shape from every other visible biomarker
                 this.layersService.getBiomarkerCanvas().forEach(biomarker => {
@@ -78,7 +81,7 @@ export class PixelBucket extends Tool {
                         const bioCtx = biomarker.getCurrentContext();
                         bioCtx.save();
                         bioCtx.globalCompositeOperation = 'destination-out';
-                        biomarker.drawToCurrentCanvas(overlay);
+                        biomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
                         bioCtx.restore();
                     }
                 });
@@ -87,7 +90,7 @@ export class PixelBucket extends Tool {
                 maskCtx.clearRect(0, 0, mask.width, mask.height);
             } else {
                 this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
-                currentBiomarker.drawToCurrentCanvas(overlay);
+                currentBiomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
             }
 
             // Clear overlay and tool visual helper
@@ -98,6 +101,7 @@ export class PixelBucket extends Tool {
     onCancel(): void {
         if (this.isMouseDown) {
             this.isMouseDown = false;
+            this.resetChangeBoundedBox();
 
             this.layersService.removeFirstPoint();
             const overlay = this.layersService.biomarkerOverlayCanvas;

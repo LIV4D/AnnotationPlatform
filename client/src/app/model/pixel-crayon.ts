@@ -24,6 +24,7 @@ export class PixelCrayon extends Tool {
         if (currentBiomarker) {
             this.isMouseDown = true;
             this.lastPoint = point;
+            this.updateChangeBoundedBox(point, this.toolPropertiesService.brushWidth / 2);
 
             let ctx = this.layersService.biomarkerOverlayCanvas.getContext('2d');
             if (this.toolPropertiesService.smartMask) {
@@ -60,7 +61,7 @@ export class PixelCrayon extends Tool {
                 ctx = this.layersService.biomarkerOverlayContext;
             }
 
-            // ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
 
@@ -69,6 +70,7 @@ export class PixelCrayon extends Tool {
             }
 
             this.lastPoint = point;
+            this.updateChangeBoundedBox(point, this.toolPropertiesService.brushWidth / 2);
         }
     }
 
@@ -89,7 +91,7 @@ export class PixelCrayon extends Tool {
             // Add the drawn shape to the current biomarker
             const ctx = currentBiomarker.getCurrentContext();
             ctx.globalCompositeOperation = 'destination-over';
-            currentBiomarker.drawToCurrentCanvas(overlay);
+            currentBiomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
 
             if (this.toolPropertiesService.smartMask) {
                 const maskCanvas = this.layersService.tempMaskCanvas;
@@ -103,7 +105,7 @@ export class PixelCrayon extends Tool {
                                 const bioCtx = biomarker.getCurrentContext();
                                 bioCtx.save();
                                 bioCtx.globalCompositeOperation = 'destination-out';
-                                biomarker.drawToCurrentCanvas(drawCanvas);
+                                biomarker.drawToCurrentCanvas(drawCanvas, this.changeBoundedBox);
                                 bioCtx.restore();
                             }
                         });
@@ -117,6 +119,8 @@ export class PixelCrayon extends Tool {
     onCancel(): void {
         if (this.isMouseDown) {
             this.isMouseDown = false;
+            this.resetChangeBoundedBox();
+
             const overlay = this.layersService.biomarkerOverlayCanvas;
             const overlayCtx = overlay.getContext('2d');
             overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
