@@ -27,6 +27,8 @@ export class BiomarkersService {
         this.nestedTreeControl = new NestedTreeControl<SVGGElement>(this._getChildren);
         this.dataSource = this.tree;
         this.flat = this.flatten(this.tree);
+        this.nestedTreeControl.dataNodes = this.dataSource;
+        this.nestedTreeControl.expandAll();
     }
 
     public flatten(tree: SVGGElement[]): HTMLElement[] {
