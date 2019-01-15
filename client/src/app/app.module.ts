@@ -93,7 +93,6 @@ import {ApplicationRef} from '@angular/core';
         ReactiveFormsModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        HttpModule,
         NgxLoadingModule.forRoot({}),
         MaterialModule,
         DeviceDetectorModule.forRoot()
