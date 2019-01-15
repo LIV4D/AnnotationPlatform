@@ -9,7 +9,7 @@
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.getAttribute('color')}" />
                 </svg>
                 <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
-                        matTooltip="Hide Others (K)" matTooltipShowDelay="1000" matTooltipPosition="right" >
+                        matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
                     {{node.getAttribute("id") | camelCaseToText}}</span>
                 <div class="align-right">
                     <mat-icon class="button left" (click)="toggleVisibility(node.getAttribute('id'))"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"

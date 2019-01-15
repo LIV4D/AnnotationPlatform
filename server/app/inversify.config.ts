@@ -5,6 +5,7 @@ import { Container } from 'inversify';
 import { Server } from './server';
 // Controllers
 import { BiomarkerTypeController } from './controllers/biomarkerType.controller';
+import { BugtrackerController} from './controllers/bugtracker.controller';
 import { ImageController } from './controllers/image.controller';
 import { ImageTypeController } from './controllers/imageType.controller';
 import { IRegistrableController } from './controllers/registrable.controller';
@@ -43,6 +44,7 @@ container.bind(TYPES.Application).to(Application);
 
 // Controllers
 container.bind<IRegistrableController>(TYPES.Controller).to(BiomarkerTypeController);
+container.bind<IRegistrableController>(TYPES.Controller).to(BugtrackerController);
 container.bind<IRegistrableController>(TYPES.Controller).to(ImageController);
 container.bind<IRegistrableController>(TYPES.Controller).to(ImageTypeController);
 container.bind<IRegistrableController>(TYPES.Controller).to(PreprocessingController);

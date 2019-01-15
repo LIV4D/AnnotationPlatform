@@ -145,7 +145,7 @@ export class BiomarkersComponent {
     public onKeyDown(event: KeyboardEvent): void {
         if (this.appService.keyEventsEnabled) {
             switch (event.keyCode) {
-                case HOTKEYS.KEY_K_HIDE_OTHERS: {
+                case HOTKEYS.KEY_H_HIDE_OTHERS: {
                     this.hideOtherBiomarkers();
                     break;
                 }

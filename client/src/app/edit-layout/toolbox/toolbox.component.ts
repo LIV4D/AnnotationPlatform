@@ -55,7 +55,7 @@ export class ToolBoxComponent implements OnInit {
                     );
                     break;
                 }
-                case HOTKEYS.KEY_L_PICKKER: {
+                case HOTKEYS.KEY_K_PICKKER: {
                     this.toolboxService.setSelectedTool(
                         this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0]
                     );

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LoginService } from './../login/login.service';
 import { Component } from '@angular/core';
 import * as screenfull from 'screenfull';
+import { BugtrackerService } from '../bugtracker/bugtracker.service';
 
 @Component({
     selector: 'app-header',
@@ -11,7 +12,7 @@ import * as screenfull from 'screenfull';
 })
 export class HeaderComponent {
 
-    constructor(private loginService: LoginService, private router: Router) { }
+    constructor(private loginService: LoginService, private router: Router, private bugtrackerService: BugtrackerService) { }
 
     goToEditor(): void {
         this.router.navigate(['/' + ROUTES.EDITOR]);
@@ -25,11 +26,11 @@ export class HeaderComponent {
         this.router.navigate(['/' + ROUTES.TASKS]);
     }
 
-    toggleFullScreen() {
+    toggleFullScreen(): void {
         const fullscreenIcon = document.getElementById('fullscreenIcon');
         if (screenfull.enabled) {
             fullscreenIcon.innerHTML =  'fullscreen_exit';
-        }else{
+        } else {
             fullscreenIcon.innerHTML =  'fullscreen';
         }
         screenfull.toggle();
@@ -38,5 +39,9 @@ export class HeaderComponent {
     logout(): void {
         this.loginService.logout();
         this.router.navigate(['/' + ROUTES.LOGIN]);
+    }
+
+    toggleBugtracker(): void {
+        this.bugtrackerService.toggleVisible();
     }
 }

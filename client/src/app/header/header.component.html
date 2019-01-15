@@ -3,6 +3,7 @@
     <span style="margin-right: 10px"(click)="goToEditor()">Editor</span>
     <span style="margin-right: 10px" (click)="goToGallery()">Gallery</span>
     <span (click)="goToTasks()">Tasks</span>
-    <span style="right: 40px; position: absolute;" (click)="logout()"> Logout</span>
+    <span style="right: 70px; position: absolute;" (click)="logout()"> Logout</span>
+    <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" (click)="toggleBugtracker()"  src="../../assets/icons/bug.svg"/>
     <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" (click)="toggleFullScreen()" >fullscreen</mat-icon>
 </mat-toolbar>
