@@ -1,21 +1,23 @@
 <div (window:keydown)="onKeyDown($event)">
-    <span>Display</span>
-    <button id="button-flip" matTooltip="Flip (M)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="flipHorizontal()"><mat-icon>flip</mat-icon></button>
+    <div id='visualizationHeader' class='flexRow'>
+        <span>Display</span>
+        <button id="button-flip" matTooltip="Flip (M)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="flipHorizontal()"><mat-icon>flip</mat-icon></button>
+    </div>
     <!--BRIGHTNESS-->
-    <div id="brightness">
+    <div id="brightness" class='flexRow'>
         <mat-icon matTooltip="Brightness" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetBrightness()" class="slider-icon">brightness_medium</mat-icon>
         <mat-slider [min]="minBrightness" [max]="maxBrightness" step="1" [(ngModel)]="brightness" (input)="changeBrightness($event)">
         </mat-slider>
         <input type="number" [(ngModel)]="brightness" (input)="changeBrightness($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()"/>
     </div>
     <!--CONTRAST-->
-    <div id="contrast">
+    <div id="contrast" class='flexRow'>
         <mat-icon matTooltip="Contrast" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetContrast()" class="slider-icon">tonality</mat-icon>
         <mat-slider [min]="minContrast" [max]="maxContrast" step="1" [(ngModel)]="contrast" (input)="changeContrast($event)"> </mat-slider>
         <input type="number" [ngModel]="contrast" (input)="changeContrast($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()"/>
     </div>
     <!--PREPROCESSING-->
-    <div id="preprocessing" *ngIf="!appService.localEditing">
+    <div id="preprocessing" *ngIf="!appService.localEditing" class='flexRow'>
         <span>Preprocessing</span>
         <mat-checkbox [disableRipple]="true" (change)="toggle()" [checked]="checked" matTooltip="Show/Hide Preprocessing (T)" matTooltipShowDelay="1000"
             matTooltipPosition="right"></mat-checkbox>

@@ -1,9 +1,21 @@
 @import '../../../../variables';
 
-mat-slider {
-    width: 72%;
-    left: 35%;
-    transform: translateX(-50%);
+.flexRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#visualizationHeader {
+    height: 30px;
+    margin-bottom: 7px;
+}
+
+.mat-button {
+    height: 24px;
+    width: 24px;
+    margin-right: 3px;
 }
 
 input {
@@ -31,6 +43,10 @@ mat-icon {
     font-size: 20px;
 }
 
+mat-slider {
+    flex-grow: 1;
+}
+
 #brightness {
     height: 30px;
 }
@@ -47,7 +63,7 @@ mat-icon {
 }
 
 #preprocessing{
-    margin-top: 15px;
+    margin-top: 7px;
 }
 
 select {
@@ -65,8 +81,8 @@ select {
     min-width: 0px !important;
     padding: 0px !important;
     box-shadow: 2px 2px 2px $shadow-color !important;
-    position: absolute;
-    right: 3%;
+    // position: absolute;
+    // right: 3%;
 }
 
 .mat-button {

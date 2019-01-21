@@ -26,17 +26,20 @@ import { VisualizationComponent } from './edit-layout/right-menu/visualization/v
 import { GalleryComponent } from './gallery/gallery.component';
 import { EditLayoutComponent } from './edit-layout/edit-layout.component';
 import { BugtrackerComponent } from './bugtracker/bugtracker.component';
+import { TimerComponent } from './edit-layout/right-menu/timer/timer.component';
 
 // Services
 import { AppService } from './app.service';
 import { LoginService } from './login/login.service';
 import { GalleryService } from './gallery/gallery.service';
 import { LayersService } from './edit-layout/editor/layers/layers.service';
+import { CommentsService} from './edit-layout/right-menu/comments/comments.service';
 import { BiomarkersService } from './edit-layout/right-menu/biomarkers/biomarkers.service';
+import { VisualizationService } from './edit-layout/right-menu/visualization/visualization.service';
+import { TimerService } from './edit-layout/right-menu/timer/timer.service';
+import { ImageBorderService } from './edit-layout/right-menu/biomarkers/image-border.service';
 import { BugtrackerService } from './bugtracker/bugtracker.service';
 import { EditorService } from './edit-layout/editor/editor.service';
-import { VisualizationService } from './edit-layout/right-menu/visualization/visualization.service';
-import { ImageBorderService } from './edit-layout/right-menu/biomarkers/image-border.service';
 import {ToolPropertiesService} from './edit-layout/toolbox/tool-properties/tool-properties.service';
 import {ToolboxService} from './edit-layout/toolbox/toolbox.service';
 
@@ -85,6 +88,7 @@ import {ApplicationRef} from '@angular/core';
         TasksComponent,
         TaskDialogComponent,
         BugtrackerComponent,
+        TimerComponent,
     ],
     imports: [
         BrowserModule,
@@ -98,11 +102,12 @@ import {ApplicationRef} from '@angular/core';
         DeviceDetectorModule.forRoot()
     ],
 
-    providers: [AppService, HttpClient, BiomarkersService, EditorService, LoginService, {
+    providers: [AppService, HttpClient,  EditorService, LoginService, {
         provide: HTTP_INTERCEPTORS,
         useValue: new AuthInterceptor(),
         multi: true
-    }, LoginGuard, NoImageGuard, VisualizationService, ImageBorderService, GalleryService, BugtrackerService, CamelCaseToTextPipe],
+    }, LoginGuard, NoImageGuard, VisualizationService,  GalleryService, BugtrackerService, CamelCaseToTextPipe,
+    CommentsService, TimerService, BiomarkersService, ImageBorderService, LayersService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

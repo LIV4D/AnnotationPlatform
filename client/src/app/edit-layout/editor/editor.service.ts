@@ -15,6 +15,7 @@ import { ROUTES } from './../../routes';
 import { Router } from '@angular/router';
 import * as FileSaver from 'file-saver';
 import { Image as ImageServer } from '../../model/common/image.model';
+import { CommentsService } from '../right-menu/comments/comments.service';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -46,7 +47,7 @@ export class EditorService {
     menuState: boolean;
     zoomMultiplier: number;
 
-    constructor(private http: HttpClient, public layersService: LayersService,
+    constructor(private http: HttpClient, public layersService: LayersService, public commentService: CommentsService,
         public galleryService: GalleryService, public biomarkersService: BiomarkersService, public router: Router) {
         this.zoomMultiplier = navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 1;
         this.scaleX = 1;
@@ -205,9 +206,9 @@ export class EditorService {
                         }
                     }
                 });
-                if ((res as any).diagnostic) {
-                    (document.getElementById('commentBox') as HTMLTextAreaElement).value = (res as any).diagnostic;
-                }
+                
+                this.commentService.comment = (res as any).diagnostic;
+
                 if (draw) {
                     this.layersService.biomarkerCanvas = [];
                     arbre.forEach((e: SVGGElement) => {
@@ -234,9 +235,7 @@ export class EditorService {
                                     }
                                 }
                             });
-                            if ((res as any).diagnostic) {
-                                (document.getElementById('commentBox') as HTMLTextAreaElement).value = (res as any).diagnostic;
-                            }
+                            this.commentService.comment = (res as any).diagnostic;
                             if (draw) {
                                 this.layersService.biomarkerCanvas = [];
                                 arbre.forEach((e: SVGGElement) => {
@@ -622,7 +621,7 @@ export class EditorService {
         FileSaver.saveAs(blob, this.localSVGName);
     }
 
-    saveToDB(diagnostic: string): void {
+    saveToDB(): void {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         if (this.layersService.unsavedChange) {
             LocalStorage.save(this, this.layersService);
@@ -636,7 +635,7 @@ export class EditorService {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         const body = {
             svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
-            diagnostic: diagnostic
+            diagnostic: this.commentService.comment
         };
         this.http.put(`/api/revisions/${userId}/${this.imageId}`, body).subscribe();
     }

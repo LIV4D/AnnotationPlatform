@@ -1,10 +1,26 @@
 @import '../../../../variables';
 
+#biomarkersDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+}
+
+#biomarkersHeaderDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
 #biomarkers-container {
     overflow: hidden;
-    width:100%;
-    height: 100%;
+    flex-grow: 1;
+    margin-top: 2px;
     border-radius: 5px;
+    box-shadow: inset 2px 2px 2px $shadow-color;
+    background-color: $gray;
 }
 
 mat-tree {
@@ -134,9 +150,7 @@ ul {
 }
 
 mat-slider {
-    width: 72%;
-    left: 35%;
-    transform: translateX(-50%);
+    flex-grow: 1;
 }
 
 input {
@@ -160,7 +174,12 @@ span {
 }
 
 #opacity {
-    height: 30px;
+    height: 50px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .unit {
@@ -174,11 +193,8 @@ span {
 }
 
 #button-biomarkers{
-    position: absolute;
-    top: 0%;
-    right: 1%;
-    transform: translateY(-125%);
-}
+    margin-left: 10px;
+} 
 
 #button-edges {
     line-height: 0px !important;
