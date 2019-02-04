@@ -21,7 +21,6 @@ export class ToolPropertiesService {
     AddBrushWidth(delta: number): void {
         let tempBrushWidth = Math.ceil(this.brushWidth + delta);
         tempBrushWidth = Math.max(1, Math.min(tempBrushWidth, 100));
-        console.log(tempBrushWidth);
         this.SetBrushWidth(tempBrushWidth);
     }
 

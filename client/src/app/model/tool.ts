@@ -22,6 +22,7 @@ export class Tool {
         this.layersService = RootInjector.injector.get(LayersService);
         this.editorService = RootInjector.injector.get(EditorService);
         this.toolPropertiesService = RootInjector.injector.get(ToolPropertiesService);
+        this.toolPropertiesService.SetBrushWidth(10);
         this.biomarkersService = RootInjector.injector.get(BiomarkersService);
     }
 
