@@ -150,13 +150,25 @@ export class BiomarkersService {
 
     public hideOtherBiomarkers(): void {
         if (this.currentElement !== undefined) {
-            this.tree.forEach((e) => {
-                const elem = document.getElementById(e.id);
-                this.toggleVisibilityRecursive(elem, 'hidden');
-            });
             const elemSelected = document.getElementById(this.currentElement.id);
-            elemSelected.style.visibility = 'visible';
-            this.toggleVisibilityRecursive(elemSelected, 'visible');
+            let visibility = elemSelected.style.visibility
+            this.tree.forEach((e) => {
+                if(e.id !== this.currentElement.id){
+                    const elem = document.getElementById(e.id);
+                    this.toggleVisibilityRecursive(elem, 'hidden');
+                };
+            });
+
+            elemSelected.style.visibility = visibility
+
+            if(elemSelected.style.visibility == 'hidden'){
+                elemSelected.style.visibility = 'visible';
+                this.toggleVisibilityRecursive(elemSelected, 'visible');
+            }
+            else{
+                elemSelected.style.visibility = 'hidden';
+                this.toggleVisibilityRecursive(elemSelected, 'hidden');
+            }
             this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
                 const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
                 b.displayCanvas.style.visibility = svgElem.style.visibility;
