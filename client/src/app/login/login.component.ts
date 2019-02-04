@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
             .subscribe(
             data => {
                 this.appService.loading = false;
-                this.router.navigate(['/' + ROUTES.GALLERY]);
+                this.router.navigate(['/' + ROUTES.TASKS]);
             },
             error => {
                 this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
