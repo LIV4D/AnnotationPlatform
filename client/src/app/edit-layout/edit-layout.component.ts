@@ -106,8 +106,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     selectBiomarker(item: HTMLElement): void {
-        this.layersService.selectedBiomarkerId = item.id;
-        this.biomarkersService.currentElement = item;
+        this.biomarkersService.setFocusBiomarker(item);
     }
 
     closeMenu(): void {

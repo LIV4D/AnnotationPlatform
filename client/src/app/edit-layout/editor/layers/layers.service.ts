@@ -106,7 +106,6 @@ export class LayersService {
             indices,
             imageDatas
         ]);
-        console.log('clear redo stack');
         this.redoStack.clear();
     }
 

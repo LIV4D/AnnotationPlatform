@@ -2,6 +2,9 @@ import { LayersService, ANNOTATION_PREFIX } from './../../editor/layers/layers.s
 import { Injectable } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { BiomarkerCanvas } from './../../../model/biomarker-canvas';
+import { element } from '@angular/core/src/render3/instructions';
+import { Observable } from 'rxjs';
+import { disableDebugTools } from '@angular/platform-browser';
 
 
 const NOT_SELECTED = 'not-selected';
@@ -10,48 +13,123 @@ const NOT_SELECTED = 'not-selected';
 export class BiomarkersService {
     public tree: SVGGElement[];
     public flat: HTMLElement[];
+    public lastBiomarkers: HTMLElement[];
+    public onlyEnabledBiomarkers = new Array<string>();
     public dataSource;
-    public nestedTreeControl: NestedTreeControl<SVGGElement>;
+    public nestedTreeControl: NestedTreeControl<HTMLElement>;
     public allChildrenHidden: boolean;
     public parentToResetVisibility: HTMLElement;
     public currentElement: HTMLElement;
+
     constructor(private layersService: LayersService) {
     }
 
-    private _getChildren = (node: SVGGElement) => Array.from(node.children) as SVGGElement[];
+    private _getChildren = (node: HTMLElement) => Array.from(node.children) as HTMLElement[];
     private hasNestedChild = (_: number, nodeData: SVGGElement) => (nodeData.children.length !== 0);
 
     public init(arbre: SVGGElement[]): void {
         this.tree = arbre;
         this.flat = [];
-        this.nestedTreeControl = new NestedTreeControl<SVGGElement>(this._getChildren);
+        this.nestedTreeControl = new NestedTreeControl<HTMLElement>(this._getChildren);
         this.dataSource = this.tree;
         this.flat = this.flatten(this.tree);
+        this.lastBiomarkers = this.flat.filter(() => true);
         this.nestedTreeControl.dataNodes = this.dataSource;
-        this.nestedTreeControl.expandAll();
+
+        this.tree.forEach((e) => {
+            const elem = document.getElementById(e.id);
+            this.disable_recursive(elem);
+        });
+
+        if (this.onlyEnabledBiomarkers.length > 0) {
+            this.toggleAllBiomarkers('hidden');
+            this.onlyEnabledBiomarkers.forEach( (b) => {
+                this.toggleVisibility(b);
+                this.expandToBiomarker(b);
+            });
+            this.lastBiomarkers = this.flat.filter( (elem) => this.isBiomarkerEnabled(elem.id));
+
+            for (let i = 0 ; i < this.flat.length; i++) {
+                if (this.onlyEnabledBiomarkers.indexOf(this.flat[i].id) !== -1) {
+                    this.setFocusBiomarker(this.flat[i]);
+                    break;
+                }
+            }
+        } else {
+            this.toggleAllBiomarkers('visible');
+            this.nestedTreeControl.expandAll();
+            this.setFocusBiomarker(this.flat[0]);
+        }
     }
 
     public flatten(tree: SVGGElement[]): HTMLElement[] {
+        const flat = new Array<HTMLElement>();
         tree.forEach(t => {
             for (let i = 0; i < t.children.length; i++) {
-                this.flattenRecursive(t.children[i] as HTMLElement, this.flat);
+                this.flattenRecursive(t.children[i] as HTMLElement, flat);
             }
         });
-        this.setFocusBiomarker(this.flat[0]);
-        return this.flat;
+        return flat;
     }
 
     public flattenRecursive(elem: HTMLElement, list: HTMLElement[]): void {
         if (elem.tagName === 'image') {
             list.push(elem);
-        }
-        for (let i = 0; i < elem.children.length; i++) {
-            this.flattenRecursive(elem.children[i] as HTMLElement, list);
+        } else {
+            for (let i = 0; i < elem.children.length; i++) {
+                this.flattenRecursive(elem.children[i] as HTMLElement, list);
+            }
         }
     }
+
+    public isBiomarkerEnabled(bio: string): boolean {
+        return this.onlyEnabledBiomarkers.length === 0 || this.onlyEnabledBiomarkers.indexOf(bio) !== -1;
+    }
+
+    private disable_recursive(elem: HTMLElement): void {
+        if (this.isBiomarkerEnabled(elem.id)) {
+            elem.classList.remove('disabledBiomarker');
+        } else {
+            elem.classList.add('disabledBiomarker');
+            if (this.layersService.selectedBiomarkerId === elem.id) {
+                for (let i = 0 ; i < this.flat.length; i++) {
+                    if (this.onlyEnabledBiomarkers.indexOf(this.flat[i].id) !== -1) {
+                        this.setFocusBiomarker(this.flat[i]);
+                        break;
+                    }
+                }
+            }
+        }
+        if (elem.children.length > 0) {
+            Array.from(elem.children).forEach((child: HTMLElement) => {
+                this.disable_recursive(child);
+            });
+        }
+    }
+
     public setFocusBiomarker(elem: HTMLElement): void {
-        this.currentElement = elem;
-        this.layersService.selectedBiomarkerId = elem.id;
+        if (this.isBiomarkerEnabled(elem.id)) {
+            if (this.currentElement !== null && this.currentElement !== undefined) {
+                this.lastBiomarkers.splice(this.lastBiomarkers.indexOf(this.currentElement), 1);
+                this.lastBiomarkers.splice(0, 0, this.currentElement);
+            }
+            this.currentElement = elem;
+            this.layersService.selectedBiomarkerId = elem.id;
+        }
+    }
+
+    public expandToBiomarker(biomarkerId: string): void {
+        this.nestedTreeControl.dataNodes.forEach( (n)  => {
+            this.nestedTreeControl.getDescendants(n).forEach( (d) => {
+                if (this.isBiomarkerEnabled(d.id)) {
+                    let p = d.parentElement;
+                    while (p !== null && p.tagName === 'g') {
+                        this.nestedTreeControl.expand(p);
+                        p = p.parentElement;
+                    }
+                }
+            });
+        });
     }
 
     public getAllElements(elem: HTMLElement): Array<string> {
@@ -72,9 +150,16 @@ export class BiomarkersService {
     }
 
     public getCssClass(elem: HTMLElement): string {
+        let classes = '';
         if (this.currentElement !== undefined && this.currentElement === elem) {
-            return 'selected';
+            classes += 'selected ';
         }
+
+        if (!this.isBiomarkerEnabled(elem.id)) {
+            classes += 'disabledBiomarker ';
+        }
+
+        return classes;
     }
 
     public toggleVisibility(id: string): void {
@@ -89,7 +174,7 @@ export class BiomarkersService {
         });
     }
 
-    public toggleSoloVisibility(id: string): void{
+    public toggleSoloVisibility(id: string): void {
         this.toggleAllBiomarkers('hidden');
         this.toggleVisibility(id);
     }
@@ -151,21 +236,20 @@ export class BiomarkersService {
     public hideOtherBiomarkers(): void {
         if (this.currentElement !== undefined) {
             const elemSelected = document.getElementById(this.currentElement.id);
-            let visibility = elemSelected.style.visibility
+            const visibility = elemSelected.style.visibility;
             this.tree.forEach((e) => {
-                if(e.id !== this.currentElement.id){
+                if (e.id !== this.currentElement.id) {
                     const elem = document.getElementById(e.id);
                     this.toggleVisibilityRecursive(elem, 'hidden');
-                };
+                }
             });
 
-            elemSelected.style.visibility = visibility
+            elemSelected.style.visibility = visibility;
 
-            if(elemSelected.style.visibility == 'hidden'){
+            if (elemSelected.style.visibility === 'hidden') {
                 elemSelected.style.visibility = 'visible';
                 this.toggleVisibilityRecursive(elemSelected, 'visible');
-            }
-            else{
+            } else {
                 elemSelected.style.visibility = 'hidden';
                 this.toggleVisibilityRecursive(elemSelected, 'hidden');
             }

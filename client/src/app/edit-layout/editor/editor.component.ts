@@ -171,11 +171,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     onTouchCancel(event: TouchEvent): void {
-        console.log('______________________');
-        console.log('     TOUCH CANCEL');
         for (let i = 0; i < event.targetTouches.length; i++) {
             const t = event.targetTouches[i];
-            console.log('Touch', i, '[', t.identifier, ']', ': ', t.clientX, t.clientY);
         }
     }
 
