@@ -322,6 +322,28 @@
             "manyToMany": {
                 "imageTypes": [2]
             }
+        },
+        {
+            "id": 31,
+            "parent": {
+                "id": 1
+            },
+            "name": "Pigmented lesions",
+            "color": "#5bffb7",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 32,
+            "parent": {
+                "id": 20
+            },
+            "name": "Vessels - Uncertain",
+            "color": "#770067",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
         }
     ]
 }
