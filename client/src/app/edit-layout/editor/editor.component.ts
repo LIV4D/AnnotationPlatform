@@ -10,6 +10,7 @@ import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { EditorService } from './editor.service';
 import { ToolPropertiesComponent } from './../toolbox/tool-properties/tool-properties.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
     selector: 'app-editor',
@@ -18,7 +19,10 @@ import { ToolPropertiesComponent } from './../toolbox/tool-properties/tool-prope
 })
 
 export class EditorComponent implements OnInit, OnDestroy {
-    constructor(private toolboxService: ToolboxService, public editorService: EditorService, public appService: AppService) { }
+    constructor(private toolboxService: ToolboxService, public editorService: EditorService, public appService: AppService, 
+        private deviceService: DeviceDetectorService) {
+                this.delayTouchMoveTimer = null;
+         }
 
     image: HTMLImageElement;
     zoomFactor: number;
@@ -30,6 +34,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     touchFreeze = false;
     zoomInitPoint: Point;
     zoomInitFactor: number;
+    delayTouchMoveTimer: any;
 
     @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -135,8 +140,16 @@ export class EditorComponent implements OnInit, OnDestroy {
             if (event.targetTouches.length === 1) {
                 if ( this.cursorDown) {
                     // Update tool
-                    const touch = event.targetTouches[0];
-                    this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+                    if (this.deviceService.isDesktop()) {
+                        this.handleTouchMove(event);
+                    } else {
+                        if (this.delayTouchMoveTimer === null) {
+                            this.delayTouchMoveTimer = setTimeout( () => {
+                                this.delayTouchMoveTimer = null;
+                            }, 50);
+                            this.handleTouchMove(event);
+                        }
+                    }
                 }
             } else if (event.targetTouches.length === 2) {
                 const touches = event.targetTouches;
@@ -150,6 +163,11 @@ export class EditorComponent implements OnInit, OnDestroy {
                 // TODO: perform zoom
             }
         }
+    }
+
+    handleTouchMove(event: TouchEvent): void {
+        const touch = event.targetTouches[0];
+        this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
     }
 
     onTouchEnd(event: TouchEvent): void {
