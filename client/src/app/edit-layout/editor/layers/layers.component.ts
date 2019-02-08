@@ -32,6 +32,7 @@ export class LayersComponent implements OnInit {
             value => {
                 this.updateCursorRadius();
             });
+        this.toolPropertiesService.brushWidthChanged.subscribe(() => { this.updateCursorRadius(); });
         this.toolboxService.selectedTool.subscribe(value => this.updateMouseCursor(value));
     }
 
@@ -110,9 +111,7 @@ export class LayersComponent implements OnInit {
         this.layersService.mousePositionInDisplayCoordinates = null;
     }
 
-    
-
-    cursorMoveEvent(clientPoint: Point){
+    cursorMoveEvent(clientPoint: Point): void {
         const selectedToolName = this.toolboxService.selectedTool.getValue().name;
         const point = this.getPoint(clientPoint);
         if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {

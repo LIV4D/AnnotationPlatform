@@ -3,6 +3,7 @@ import { ToolboxService } from './../toolbox.service';
 import { Component, OnInit } from '@angular/core';
 import { getParentRenderElement } from '@angular/core/src/view/util';
 import { ToolPropertiesService } from './tool-properties.service';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-tool-properties',
@@ -20,6 +21,7 @@ export class ToolPropertiesComponent implements OnInit {
         this.eraseAll = false;
         this.smartMask = false;
         toolboxService.setToolPropertiesComponent(this);
+        this.toolPropertiesService.brushWidthChanged.subscribe( (v) => { this.sliderValue = v; });
      }
 
     ngOnInit(): void {
@@ -31,15 +33,7 @@ export class ToolPropertiesComponent implements OnInit {
     }
 
     handleSliderChange(event: any): void {
-        this.toolPropertiesService.SetBrushWidth(event.value);
-        this.sliderValue = event.value;
-    }
-
-    handleWheelChange(event: WheelEvent): void {
-        let newSize = Math.max(1, Math.min(100, this.sliderValue-event.deltaY));
-       
-        this.toolPropertiesService.SetBrushWidth(newSize);
-        this.sliderValue = newSize;
+        this.toolPropertiesService.setBrushWidth(event.value);
     }
 
     toggleEraseAll(): void {
@@ -47,8 +41,8 @@ export class ToolPropertiesComponent implements OnInit {
         this.toolPropertiesService.SetEraseAll(this.eraseAll);
     }
 
-    toggleSmartMask(): void{
-        this.smartMask =!this.smartMask;
+    toggleSmartMask(): void {
+        this.smartMask = !this.smartMask;
         this.toolPropertiesService.SetSmartMask(this.smartMask);
     }
 }

@@ -11,6 +11,7 @@ import { EventEmitter } from '@angular/core';
 import { EditorService } from './editor.service';
 import { ToolPropertiesComponent } from './../toolbox/tool-properties/tool-properties.component';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { ToolPropertiesService } from '../toolbox/tool-properties/tool-properties.service';
 
 @Component({
     selector: 'app-editor',
@@ -19,8 +20,8 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 })
 
 export class EditorComponent implements OnInit, OnDestroy {
-    constructor(private toolboxService: ToolboxService, public editorService: EditorService, public appService: AppService, 
-        private deviceService: DeviceDetectorService) {
+    constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService,
+        public editorService: EditorService, private deviceService: DeviceDetectorService, public appService: AppService, ) {
                 this.delayTouchMoveTimer = null;
          }
 
@@ -92,13 +93,21 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     onMouseWheel(event: WheelEvent): void {
+        const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
+        const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 1 : 0.25 ) / 300;
+
         if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
-            const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-            const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 1) / 300;
             this.editorService.zoom(delta, position);
         } else if (!this.cursorDown && !this.editorService.layersService.firstPoint) {
-            // var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
-            this.toolboxService.getToolPropertiesComponent().handleWheelChange(event);
+            let brushWidth =  this.toolPropertiesService.brushWidth;
+            const brushInc = delta > 0 ? 1 : -1;
+            if (brushWidth < 20) {
+                brushWidth += brushInc;
+            } else {
+                brushWidth += brushInc * brushWidth / 10;
+            }
+            brushWidth = Math.max(0, Math.round(brushWidth));
+            this.toolPropertiesService.setBrushWidth(brushWidth);
         }
     }
 
