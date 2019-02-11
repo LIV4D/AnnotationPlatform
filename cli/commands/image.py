@@ -4,6 +4,12 @@ import shutil
 from . import utils
 import xml.etree.ElementTree as ET
 
+ET.register_namespace('', 'http://www.w3.org/2000/svg')
+ET.register_namespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+ET.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
+ET.register_namespace('sodipodi', 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd')
+ET.register_namespace('docname', 'fullAnnotations.svg')
+
 @click.group(help='Commands to manage images stored in the database.')
 def image():
     pass
@@ -97,8 +103,11 @@ def revision_file(image_id, path, display=False):
 
 def get_base_revision(image_id):
     response = utils.request_server('GET', '/api/images/{}/baseRevision'.format(image_id))
-    if response.status_code == 200:
-        return response.json()['svg']
+    if response.status_code != 200:
+        raise RuntimeError(response.json()['message'])
+    return response.json()['svg']
+    
+    
 
 @image.command(name='update', help='Updates an image in the database')
 @click.option('--imageId', 'image_id', help='Id of the image to update', required=True)
@@ -149,7 +158,7 @@ def update_base_revision(image_id,
     payload = {'baseRevision': svg}
     response = utils.request_server('PUT', '/api/images/{}/baseRevision'.format(image_id), payload)
     if display and response.status_code == 200:
-        print('The the base revision of image with id {} has been updated successfully.'.format(image_id))
+        print('The base revision of image with id {} has been updated successfully.'.format(image_id))
     return True if response.status_code == 200 else print(response.json()['message'])
 
 
