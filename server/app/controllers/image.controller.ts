@@ -61,6 +61,7 @@ export class ImageController implements IRegistrableController {
         const baseRevision: any = req.body.baseRevision;
         const id = req.params.imageId;
         this.imageService.updateBaseRevision(id, baseRevision)
+                .then(image => res.send(image))
                 .catch(next);
     }
 
