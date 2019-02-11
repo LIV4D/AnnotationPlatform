@@ -1,5 +1,5 @@
 import click
-from commands import biomarker_type, image, image_type, preprocessing, preprocessing_type, revision, task, task_type, user
+from commands import biomarker_type, config, image, image_type, preprocessing, preprocessing_type, revision, task, task_type, user
 
 @click.group()
 def liv4d_cli():
