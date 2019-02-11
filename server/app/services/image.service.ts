@@ -81,6 +81,12 @@ export class ImageService {
         this.imageRepository.update(oldImage);
     }
 
+    public async updateBaseRevision(imageId: string, baseRevision: string) {
+        const oldImage = await this.getImage(imageId);
+        oldImage.baseRevision = baseRevision;
+        this.imageRepository.update(oldImage);
+    }
+
     public async getImage(imageId: string) {
         const image = await this.imageRepository.find(Number(imageId));
         if (image == null) {
