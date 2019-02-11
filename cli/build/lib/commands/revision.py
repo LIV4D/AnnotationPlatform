@@ -65,6 +65,24 @@ def update(svg_string, user_id, image_id, diagnostic, display=False):
         print(response.json()['message'])
     return response.json()
 
+def update_svg(svg_string, user_id, image_id, display=False):
+    payload = { 'svg': svg_string}
+    response = utils.request_server('PUT', '/api/revisions/{}/{}'.format(user_id, image_id), payload)
+    if response.status_code == 200 and display:
+        print('Revision {!s} has been updated in the database.')
+    elif display:
+        print(response.json()['message'])
+    return response.json()
+
+def update_diagnostic(diagnostic, user_id, image_id, display=False):
+    payload = { 'diagnostic': diagnostic}
+    response = utils.request_server('PUT', '/api/revisions/{}/{}'.format(user_id, image_id), payload)
+    if response.status_code == 200 and display:
+        print('Revision {!s} has been updated in the database.')
+    elif display:
+        print(response.json()['message'])
+    return response.json()
+
 @revision.command(name='empty', help='Gets an empty revision of a given imageType')
 @click.option('--imageTypeId', 'image_type_id', help='Id of the image type', required=True)
 def _empty_revision(image_type_id):
