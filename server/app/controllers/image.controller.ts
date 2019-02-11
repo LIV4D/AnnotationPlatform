@@ -58,10 +58,9 @@ export class ImageController implements IRegistrableController {
     }
 
     private updateBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const baseRevision: any = req.body.bqseRevision;
+        const baseRevision: any = req.body.baseRevision;
         const id = req.params.imageId;
         this.imageService.updateBaseRevision(id, baseRevision)
-                .then(image => res.send(image))
                 .catch(next);
     }
 

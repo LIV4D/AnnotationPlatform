@@ -32,8 +32,7 @@ export class BiomarkersComponent {
     constructor(public biomarkersService: BiomarkersService, public imageBorderService: ImageBorderService,
         public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
         private layerService: LayersService) {
-        this.layerService.toggleBorders(true)
-        this.imageBorderService.showBorders = true;
+        this.imageBorderService.showBorders = false;
         this.opacity = 100;
         this.visibilityAll = 'visible';
     }

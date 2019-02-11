@@ -206,7 +206,7 @@ export class EditorService {
                         }
                     }
                 });
-                
+
                 this.commentService.comment = (res as any).diagnostic;
 
                 if (draw) {
@@ -214,6 +214,7 @@ export class EditorService {
                     arbre.forEach((e: SVGGElement) => {
                         this.layersService.createFlatCanvasRecursive(e);
                     });
+                    this.layersService.toggleBorders(true);
                     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
                 }
                 if (svgLoaded) {
