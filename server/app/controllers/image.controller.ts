@@ -20,6 +20,8 @@ export class ImageController implements IRegistrableController {
         app.put('/api/images/:imageId',
             this.imageService.upload.single('image'),
             this.uploadImage);
+        app.put('/api/images/:imageId/baseRevision',
+            this.updateBaseRevision);
         app.get('/api/images/:imageId/', this.getImage);
         app.get('/api/images/:imageId/baseRevision/', this.getImageBaseRevision);
         app.get('/api/images/', this.getImages);
@@ -53,6 +55,14 @@ export class ImageController implements IRegistrableController {
                 .then(image => res.send(image))
                 .catch(next);
         }
+    }
+
+    private updateBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const baseRevision: any = req.body.bqseRevision;
+        const id = req.params.imageId;
+        this.imageService.updateBaseRevision(id, baseRevision)
+                .then(image => res.send(image))
+                .catch(next);
     }
 
     private getImageBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
