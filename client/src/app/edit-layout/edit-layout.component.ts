@@ -13,6 +13,7 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } fro
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { BioPicker } from '../model/biopicker';
 import { Point } from '../model/point';
+import { ToolPropertiesService } from './toolbox/tool-properties/tool-properties.service';
 
 @Component({
     selector: 'app-edit-layout',
@@ -37,7 +38,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     sliderZoom: number;
     constructor(private cdRef: ChangeDetectorRef, public biomarkersService: BiomarkersService,
         public layersService: LayersService, public appService: AppService,
-        public editorService: EditorService, public toolboxService: ToolboxService,
+        public editorService: EditorService, public toolboxService: ToolboxService, public toolPropertiesService: ToolPropertiesService,
         public deviceService: DeviceDetectorService) {
             this.sliderZoom = 0;
     }
@@ -140,6 +141,14 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
                     this.selectBiomarker(this.biomarkersService.flat[index]);
                     break;
                 }
+                case HOTKEYS.KEY_PLUS: {
+                    this.toolPropertiesService.incrementBrushWidth(1);
+                    break;
+                }
+                case HOTKEYS.KEY_MINUS: {
+                    this.toolPropertiesService.incrementBrushWidth(-1);
+                    break;
+                }
             }
         }
     }
@@ -149,11 +158,11 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     zoomSliderChange(event: any): void {
-        const v = Math.pow(event.value/100, 3);
+        const v = Math.pow(event.value / 100, 3);
         this.editorService.setZoomFactor(v);
     }
 
-    updateSlider(zoomFactor: number): void{
-        this.sliderZoom = Math.pow(zoomFactor, 1/3)*100;
+    updateSlider(zoomFactor: number): void {
+        this.sliderZoom = Math.pow(zoomFactor, 1 / 3) * 100;
     }
 }

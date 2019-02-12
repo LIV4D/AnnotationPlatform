@@ -183,7 +183,7 @@ export class LayersService {
         canvas.style.top = '0%';
         canvas.style.left = '0%';
         canvas.style.visibility = 'visible'; // important
-        canvas.style.opacity = '1.0'; // important
+        canvas.style.opacity = '0.5'; // important
 
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;

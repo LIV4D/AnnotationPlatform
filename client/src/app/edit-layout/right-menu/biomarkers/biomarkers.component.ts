@@ -33,13 +33,15 @@ export class BiomarkersComponent {
         public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
         private layerService: LayersService) {
         this.imageBorderService.showBorders = false;
-        this.opacity = 100;
+        this.opacity = 50;
         this.visibilityAll = 'visible';
     }
 
     public init(arbre: SVGGElement[]): void {
+        this.opacity = 50;
         this.arbre = arbre;
         this.biomarkersService.init(arbre);
+        this.biomarkersService.changeOpacity(this.opacity.toString());
     }
 
     public getCssClass(elem: HTMLElement): string {

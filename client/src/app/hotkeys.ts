@@ -15,5 +15,7 @@ export const HOTKEYS = {
     KEY_M_FLIP: 77,
     KEY_O_VIEW_ALL: 79,
     KEY_T_PRETREATMENTS: 84,
-    KEY_CTRL_S_SAVE: 83
+    KEY_CTRL_S_SAVE: 83,
+    KEY_PLUS: 107,
+    KEY_MINUS: 109,
 };
