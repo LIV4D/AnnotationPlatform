@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import * as FileSaver from 'file-saver';
 import { Image as ImageServer } from '../../model/common/image.model';
 import { CommentsService } from '../right-menu/comments/comments.service';
+import { VisualizationService } from '../right-menu/visualization/visualization.service';
 
 // Min and max values for zooming
 const ZOOM = {

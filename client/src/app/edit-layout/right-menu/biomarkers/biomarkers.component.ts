@@ -127,6 +127,11 @@ export class BiomarkersComponent {
     public toggleBorders(): void {
         this.imageBorderService.showBorders = !this.imageBorderService.showBorders;
         this.layerService.toggleBorders(this.imageBorderService.showBorders);
+        if (this.imageBorderService.showBorders) {
+            this.biomarkersService.changeOpacity('100');
+        } else {
+            this.biomarkersService.changeOpacity(this.opacity.toString());
+        }
     }
 
     public resetOpacity(): void {

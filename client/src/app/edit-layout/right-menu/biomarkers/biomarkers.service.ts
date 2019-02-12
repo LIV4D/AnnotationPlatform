@@ -165,110 +165,19 @@ export class BiomarkersService {
 
     public toggleVisibility(id: string, visibility?: string): void {
         const elem: HTMLElement = document.getElementById(id);
-        if (visibility === null) {
+        if (visibility === undefined) {
             visibility = elem.style.visibility === 'hidden' ? 'visible' : 'hidden';
         } else if (visibility === elem.style.visibility) {
             return;
         }
         this.toggleVisibilityRecursive(elem, visibility);
         this.setParentVisibility(elem);
-        this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
-            const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
-            b.displayCanvas.style.visibility = svgElem.style.visibility;
-        });
+        this.applyVisibility();
     }
 
     public toggleSoloVisibility(id: string): void {
         this.toggleAllBiomarkers('hidden');
         this.toggleVisibility(id);
-    }
-
-    public setParentVisibility(elem: HTMLElement): void {
-        if ((elem.parentElement.style.visibility === 'visible' || elem.style.visibility === '') && elem.parentElement.tagName === 'g') {
-            this.allChildrenHidden = true;
-            this.parentToResetVisibility = elem.parentElement;
-            this.checkAllChildrenHidden(elem.parentElement);
-            if (this.allChildrenHidden) {
-                elem.parentElement.style.visibility = 'hidden';
-                this.setParentVisibility(elem.parentElement);
-            }
-        }
-    }
-
-    // We check if any of the child is still visible
-    public checkAllChildrenHidden(elem: HTMLElement): void {
-        if ((elem.style.visibility === 'visible' || elem.style.visibility === '') && !elem.isEqualNode(this.parentToResetVisibility)) {
-            this.allChildrenHidden = false;
-        }
-        if (elem.children.length > 0) {
-            Array.from(elem.children).forEach((child: HTMLElement) => {
-                this.checkAllChildrenHidden(child);
-            });
-        }
-    }
-
-    // We toggle the opacity of all the children. When making setting the opacity to 1,
-    // we must set all the parents opacities to 1.
-    public toggleVisibilityRecursive(elem: HTMLElement, visibility: string): void {
-        elem.style.visibility = visibility;
-        if (elem.children.length > 0) {
-            Array.from(elem.children).forEach((child: HTMLElement) => {
-                this.toggleVisibilityRecursive(child, visibility);
-            });
-        }
-        if (visibility === 'visible') {
-            this.resetParentVisibilityRecursive(elem);
-        }
-
-    }
-
-    // We reset the parent opacity to 1 when a child becomes visible.
-    // If the parent is opacity 0, the child will never be displayed
-    public resetParentVisibilityRecursive(elem: HTMLElement): void {
-        if (elem.parentElement.tagName === 'g') {
-            this.resetParentVisibilityRecursive(elem.parentElement);
-        }
-        elem.parentElement.style.visibility = 'visible';
-    }
-
-    public changeOpacity(opacity: string): void {
-        this.layersService.biomarkerCanvas.forEach(b => {
-            b.displayCanvas.style.opacity = (Number(opacity) / 100).toString();
-        });
-    }
-
-    public hideOtherBiomarkers(): void {
-        if (this.currentElement !== undefined) {
-            const elemSelected = document.getElementById(this.currentElement.id);
-            let visibility = elemSelected.style.visibility;
-            let everything_hidden = true;
-            this.toggleAllBiomarkers('hidden');
-
-            for (let i = 0; i < this.flat.length; i++) {
-                const b = this.flat[i];
-                if (b.id === this.currentElement.id) {
-                    continue;
-                }
-                if (b.style.visibility === 'visible') {
-                    everything_hidden = false;
-                    break;
-                }
-            }
-
-            if (everything_hidden) {
-                visibility = 'hidden';
-            }
-
-            if (visibility === 'hidden') {
-                elemSelected.style.visibility = 'visible';
-                this.toggleVisibilityRecursive(elemSelected, 'visible');
-            }
-
-            this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
-                const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
-                b.displayCanvas.style.visibility = svgElem.style.visibility;
-            });
-        }
     }
 
     public toggleAllBiomarkers(visibility: string): void {
@@ -292,9 +201,96 @@ export class BiomarkersService {
             }
         }
 
-        // this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
-        //     const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
-        //     b.displayCanvas.style.visibility = svgElem.style.visibility;
-        // });
+        this.applyVisibility();
+    }
+
+    public hideOtherBiomarkers(): void {
+        if (this.currentElement !== undefined) {
+            const elemSelected = document.getElementById(this.currentElement.id);
+            const visibility = elemSelected.style.visibility;
+            let everything_hidden = true;
+            for (let i = 0; i < this.flat.length; i++) {
+                const b = this.flat[i];
+                if (b.id === this.currentElement.id) {
+                    continue;
+                }
+                const elem = document.getElementById(b.id);
+                if (elem.style.visibility === 'visible') {
+                    everything_hidden = false;
+                    break;
+                }
+            }
+
+            this.toggleAllBiomarkers('hidden');
+
+            if ( (!everything_hidden) || visibility === 'hidden') {
+                elemSelected.style.visibility = 'visible';
+                this.toggleVisibilityRecursive(elemSelected, 'visible');
+            }
+
+            this.applyVisibility();
+        }
+    }
+
+    private applyVisibility(): void {
+        // HACK...
+        this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
+            const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
+            b.displayCanvas.style.visibility = svgElem.style.visibility;
+        });
+    }
+
+    private setParentVisibility(elem: HTMLElement): void {
+        if ((elem.parentElement.style.visibility === 'visible' || elem.style.visibility === '') && elem.parentElement.tagName === 'g') {
+            this.allChildrenHidden = true;
+            this.parentToResetVisibility = elem.parentElement;
+            this.checkAllChildrenHidden(elem.parentElement);
+            if (this.allChildrenHidden) {
+                elem.parentElement.style.visibility = 'hidden';
+                this.setParentVisibility(elem.parentElement);
+            }
+        }
+    }
+
+    // We check if any of the child is still visible
+    private checkAllChildrenHidden(elem: HTMLElement): void {
+        if ((elem.style.visibility === 'visible' || elem.style.visibility === '') && !elem.isEqualNode(this.parentToResetVisibility)) {
+            this.allChildrenHidden = false;
+        }
+        if (elem.children.length > 0) {
+            Array.from(elem.children).forEach((child: HTMLElement) => {
+                this.checkAllChildrenHidden(child);
+            });
+        }
+    }
+
+    // We toggle the opacity of all the children. When making setting the opacity to 1,
+    // we must set all the parents opacities to 1.
+    private toggleVisibilityRecursive(elem: HTMLElement, visibility: string): void {
+        elem.style.visibility = visibility;
+        if (elem.children.length > 0) {
+            Array.from(elem.children).forEach((child: HTMLElement) => {
+                this.toggleVisibilityRecursive(child, visibility);
+            });
+        }
+        if (visibility === 'visible') {
+            this.resetParentVisibilityRecursive(elem);
+        }
+
+    }
+
+    // We reset the parent opacity to 1 when a child becomes visible.
+    // If the parent is opacity 0, the child will never be displayed
+    private resetParentVisibilityRecursive(elem: HTMLElement): void {
+        if (elem.parentElement.tagName === 'g') {
+            this.resetParentVisibilityRecursive(elem.parentElement);
+        }
+        elem.parentElement.style.visibility = 'visible';
+    }
+
+    public changeOpacity(opacity: string): void {
+        this.layersService.biomarkerCanvas.forEach(b => {
+            b.displayCanvas.style.opacity = (Number(opacity) / 100).toString();
+        });
     }
 }

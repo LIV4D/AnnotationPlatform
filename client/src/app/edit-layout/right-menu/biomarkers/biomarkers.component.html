@@ -62,7 +62,7 @@
     </div>
 
     <!--OPACITY SLIDER-->
-    <div id="opacity">
+    <div id="opacity" *ngIf="!imageBorderService.showBorders">
         <mat-icon matTooltip="Opacity" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetOpacity()" class="slider-icon">opacity</mat-icon>
         <mat-slider min="0" max="100" step="1" [(ngModel)]="opacity" (input)="changeOpacity($event)" id="slider"></mat-slider>
         <input [(ngModel)]="opacity" (input)="changeOpacity($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" maxlength="4"/>
