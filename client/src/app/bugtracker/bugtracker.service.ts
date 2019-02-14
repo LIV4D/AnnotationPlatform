@@ -31,7 +31,7 @@ export class BugtrackerService {
         const body = {
             'description': description,
             'author': this.loginService.name !== null ? this.loginService.name : 'unknown',
-            'date': new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}),
+            'date': new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}).replace(',', ''),
         };
 
         this.http.post(`/api/bugtracker`, body).subscribe();

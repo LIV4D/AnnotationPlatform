@@ -1,6 +1,6 @@
 <div id="bugtrackerDiv" *ngIf="service.isVisible">
     <h2> Report a bug </h2>
-    <textarea #bugDescription id="bugDescriptionBox"  matInput placeholder="Bug Description..." cdkTextareaAutosize></textarea>
+    <textarea #bugDescription id="bugDescriptionBox"  matInput placeholder="Bug Description..." (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" cdkTextareaAutosize></textarea>
     <div>
         <button mat-button class="bugButton" id="bugSend" (click)="send()">Send</button>
         <button mat-button class="bugButton" id="bugCancel" (click)="cancel()">Cancel</button>
