@@ -67,5 +67,11 @@
         <mat-slider min="0" max="100" step="1" [(ngModel)]="opacity" (input)="changeOpacity($event)" id="slider"></mat-slider>
         <input [(ngModel)]="opacity" (input)="changeOpacity($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" maxlength="4"/>
     </div>
+    <!--SHADOWS-->
+    <div id="shadows">
+        <span>Shadows</span>
+        <mat-checkbox [disableRipple]="true" (change)="toggleShadows()" [checked]="shadowsChecked" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
+            matTooltipPosition="right"></mat-checkbox>
+    </div>
 
 </div>

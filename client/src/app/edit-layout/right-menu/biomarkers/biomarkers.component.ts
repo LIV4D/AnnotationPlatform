@@ -28,6 +28,7 @@ export class BiomarkersComponent {
     readonly BORDERS = 'border_outer';
     readonly BORDERS_OFF = 'border_clear';
     opacity: number;
+    shadowsChecked: boolean;
 
     constructor(public biomarkersService: BiomarkersService, public imageBorderService: ImageBorderService,
         public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
@@ -35,6 +36,7 @@ export class BiomarkersComponent {
         this.imageBorderService.showBorders = false;
         this.opacity = 50;
         this.visibilityAll = 'visible';
+        this.shadowsChecked = false;
     }
 
     public init(arbre: SVGGElement[]): void {
@@ -125,7 +127,7 @@ export class BiomarkersComponent {
         this.visibilityAll = this.visibilityAll === 'visible' ? 'hidden' : 'visible';
         this.biomarkersService.toggleAllBiomarkers(this.visibilityAll);
     }
-
+    
     public toggleBorders(): void {
         this.imageBorderService.showBorders = !this.imageBorderService.showBorders;
         this.layerService.toggleBorders(this.imageBorderService.showBorders);
@@ -134,6 +136,11 @@ export class BiomarkersComponent {
         } else {
             this.biomarkersService.changeOpacity(this.opacity.toString());
         }
+    }
+
+    public toggleShadows(): void {
+        this.shadowsChecked = !this.shadowsChecked;
+        this.layerService.toggleShadows(this.shadowsChecked);
     }
 
     public resetOpacity(): void {

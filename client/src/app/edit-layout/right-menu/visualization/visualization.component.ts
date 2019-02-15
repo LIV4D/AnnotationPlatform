@@ -77,6 +77,7 @@ export class VisualizationComponent implements OnInit {
                                                this.autoContrastChecked);
     }
 
+
     public toggleAutoContrast(): void {
         this.autoContrastChecked = !this.autoContrastChecked;
         this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,

@@ -57,6 +57,7 @@ export class Canvas {
         );
     }
 
+
     drawCurrentTo(canvas: HTMLCanvasElement): void {
         const context = canvas.getContext('2d');
         let correctionX = 0, correctionY = 0;
@@ -79,6 +80,7 @@ export class Canvas {
             w, // Destination width
             h // Destination height
         );
+        
     }
 
     getDisplayContext(): CanvasRenderingContext2D {

@@ -235,6 +235,16 @@ export class LayersService {
         this.appService.loading = false;
     }
 
+    toggleShadows(showShadows:boolean): void {
+        this.appService.loading = true;
+        this.biomarkerCanvas.forEach((b) => {
+            b.drawShadows = showShadows;
+            b.draw();
+        });
+        this.appService.loading = false;
+
+    }
+
     public resize(width: number, height: number): void {
         this.biomarkerCanvas.forEach(biomarker => {
             biomarker.displayCanvas.width = width;

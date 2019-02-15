@@ -58,15 +58,15 @@ export class ImageBorderService {
                 }
             }
         }
-
         context.putImageData(imgDst, minX, minY);
+
     }
 
     pixelInsideKernel(x: number, y: number, data: Uint8ClampedArray, dataSrc: Uint8ClampedArray,
         dstStride: number, srcStride: number, srcOffset: number): void {
         const idDst =  y * dstStride + x * 4;
         const idSrc =  y * srcStride + x * 4 + srcOffset;
-
+        
         const aX0 = dataSrc[idSrc - srcStride + 3] > 120;   // (x, y-1)
         const aX1 = dataSrc[idSrc + srcStride + 3] > 120;   // (x, y+1)
         const aY0 = dataSrc[idSrc - 1] > 120;               // (x-1, y)
