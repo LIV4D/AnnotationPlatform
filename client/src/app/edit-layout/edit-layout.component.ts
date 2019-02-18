@@ -59,6 +59,9 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     public openBiomarkers(event: MouseEvent): void {
+        if (! this.deviceService.isDesktop()) {
+            return;
+        }
         event.stopPropagation();
         const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
         if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
@@ -127,7 +130,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
         event.keyCode === HOTKEYS.KEY_CTRL_Y_REDO && this.commandOrCtrlPressed(event)) {
             event.preventDefault();
         }
-        if (this.appService.keyEventsEnabled) {
+        if (this.appService.keyEventsEnabled && this.biomarkersService.flat !== undefined) {
             const current = this.biomarkersService.flat.filter((b) => b.id === this.biomarkersService.currentElement.id)[0];
             let index = this.biomarkersService.flat.indexOf(current);
             switch (event.keyCode) {
