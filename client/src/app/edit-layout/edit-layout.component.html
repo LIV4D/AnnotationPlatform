@@ -3,7 +3,7 @@
         <!--TOOLS-->
         <app-toolbox></app-toolbox>
         <!--EDITION VIEW-->
-        <div id="edit-viewport" class="center" (contextmenu)="openBiomarkers($event); false">
+        <div id="edit-viewport" class="center">
             <div id="overlay">
                 <!--TOOLPROPS-->
                 <app-tool-properties></app-tool-properties>
@@ -41,10 +41,10 @@
                 <app-zoom *ngIf="editorService.imageLoaded">
                 </app-zoom>
             </div>
-            <app-editor id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)"></app-editor>
+            <app-editor id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor>
             <!--SELECT BIOMARKER ON RIGHT CLICK-->
             <div #contextMenu [ngClass]="this.editorService.menuState?'context-active':'context-menu'" [ngStyle]="{'left':this.menuPositionX, 'top':this.menuPositionY}">
-                <div class="biomarkerflat" *ngFor="let item of biomarkersService.flat" (click)="selectBiomarker(item)">
+                <div class="biomarkerflat" *ngFor="let item of biomarkersService.lastBiomarkers" (click)="selectBiomarker(item)">
                     <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : item.getAttribute('color')}" />
                     </svg>

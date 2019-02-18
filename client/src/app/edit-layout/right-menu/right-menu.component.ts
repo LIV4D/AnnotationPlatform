@@ -11,6 +11,7 @@ import { BiomarkersComponent } from './biomarkers/biomarkers.component';
 import { Component, OnInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { LocalStorage } from './../../model/local-storage';
+import { CommentsService } from './comments/comments.service';
 
 @Component({
     selector: 'app-right-menu',
@@ -25,7 +26,8 @@ export class RightMenuComponent implements OnInit {
     @Output() flip: EventEmitter<any> = new EventEmitter();
     @ViewChild('biomarkers') biomarkers: BiomarkersComponent;
     @ViewChild(CommentsComponent) comments: CommentsComponent;
-    constructor(public appService: AppService, public editorService: EditorService, public router: Router, public dialog: MatDialog) {
+    constructor(public appService: AppService, public editorService: EditorService, public commentService: CommentsService,
+        public router: Router, public dialog: MatDialog) {
         this.loaded = false;
         this.saveText = navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';
     }
@@ -76,14 +78,12 @@ export class RightMenuComponent implements OnInit {
     }
 
     public saveRevision(): void {
-        const diagnostic = this.comments.comment.nativeElement.value;
-        this.editorService.saveToDB(diagnostic);
+        this.editorService.saveToDB();
         if (localStorage.getItem('previousPage') === 'tasks') {
             this.router.navigate([`/${ROUTES.TASKS}`]);
         } else {
             this.router.navigate([`/${ROUTES.GALLERY}`]);
         }
-
     }
 
     public saveDB(): void {

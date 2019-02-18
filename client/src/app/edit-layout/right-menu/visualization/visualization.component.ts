@@ -17,7 +17,8 @@ export class VisualizationComponent implements OnInit {
     maxContrast: number;
     brightness: number;
     contrast: number;
-    checked: boolean;
+    preprocessingChecked: boolean;
+    autoContrastChecked: boolean;
     @Input() canvas: BackgroundCanvas;
     @Output() flip: EventEmitter<any> = new EventEmitter();
 
@@ -28,7 +29,8 @@ export class VisualizationComponent implements OnInit {
         this.maxBrightness = 100;
         this.brightness = 0;
         this.contrast = 0;
-        this.checked = false;
+        this.preprocessingChecked = false;
+        this.autoContrastChecked = false;
     }
 
     ngOnInit(): void {
@@ -68,10 +70,30 @@ export class VisualizationComponent implements OnInit {
         this.visualizationService.applyChanges(this.canvas, this.brightness, this.contrast);
     }
 
-    public toggle(): void {
-        this.checked = !this.checked;
-        this.visualizationService.tooglePretreatments(this.checked);
-        this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast);
+    public togglePreprocessing(): void {
+        this.preprocessingChecked = !this.preprocessingChecked;
+        this.visualizationService.tooglePretreatments(this.preprocessingChecked);
+        this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,
+                                               this.autoContrastChecked);
+    }
+
+
+    public toggleAutoContrast(): void {
+        this.autoContrastChecked = !this.autoContrastChecked;
+        this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,
+                                               this.autoContrastChecked);
+    }
+
+    public resetVisualization(): void {
+        this.contrast = 0;
+        this.brightness = 0;
+        this.autoContrastChecked = false;
+        if (this.preprocessingChecked) {
+            this.togglePreprocessing();
+        } else {
+            this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,
+                                                   this.autoContrastChecked);
+        }
     }
 
     enableOnKeyDown(): void {
@@ -90,7 +112,7 @@ export class VisualizationComponent implements OnInit {
                     break;
                 }
                 case HOTKEYS.KEY_T_PRETREATMENTS: {
-                    this.toggle();
+                    this.togglePreprocessing();
                     break;
                 }
             }

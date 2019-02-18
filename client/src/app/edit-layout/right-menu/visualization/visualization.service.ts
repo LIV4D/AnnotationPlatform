@@ -8,11 +8,15 @@ const CONTRAST_FACTOR = 50.0;
 export class VisualizationService {
     constructor(public editorService: EditorService) {}
 
-    applyChanges(canvas: BackgroundCanvas, brightness: number, contrast: number): void {
+    applyChanges(canvas: BackgroundCanvas, brightness: number, contrast: number, autoContrast= false): void {
         const image = canvas.getOriginalImageData();
         const data = image.data;
-        this.applyBrightness(data, Math.pow(brightness / BRIGHTNESS_FACTOR, 3));
-        this.applyContrast(data, Math.pow(contrast / CONTRAST_FACTOR, 3));
+        if (autoContrast) {
+            this.applyAutoContrast(data);
+        } else {
+            this.applyBrightness(data, Math.pow(brightness / BRIGHTNESS_FACTOR, 3));
+            this.applyContrast(data, Math.pow(contrast / CONTRAST_FACTOR, 3));
+        }
         canvas.currentCanvas.getContext('2d').putImageData(image, 0, 0);
         this.editorService.transform();
     }
@@ -31,6 +35,27 @@ export class VisualizationService {
             data[i] = (factor * (data[i] - 128.0) + 128.0);
             data[i + 1] = (factor * (data[i + 1] - 128.0) + 128.0);
             data[i + 2] = (factor * (data[i + 2] - 128.0) + 128.0);
+        }
+    }
+
+    applyAutoContrast(data: Uint8ClampedArray): void {
+        let max_r = 0.0;
+        let max_g = 0.0;
+        let max_b = 0.0;
+
+        for (let i = 0; i < data.length; i += 4) {
+            max_r = Math.max(data[i], max_r);
+            max_g = Math.max(data[i + 1], max_g);
+            max_b = Math.max(data[i + 2], max_b);
+        }
+        const r_factor = 255.0 / max_r;
+        const g_factor = 255.0 / max_g;
+        const b_factor = 255.0 / max_b;
+
+        for (let i = 0; i < data.length; i += 4) {
+            data[i] = data[i] * r_factor;
+            data[i + 1] = data[i + 1] * g_factor;
+            data[i + 2] = data[i + 2] * b_factor;
         }
     }
 

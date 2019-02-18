@@ -4,14 +4,17 @@ import { Injectable } from '@angular/core';
 import { Stack } from './../../../model/stack';
 import { Point } from '../../../model/point';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { AppService } from '../../../app.service';
+import { ImageBorderService } from '../../right-menu/biomarkers/image-border.service';
 
 export const ANNOTATION_PREFIX = 'annotation-';
-const MAX_CAPACITY = 15;
 
 @Injectable({
     providedIn: 'root'
 })
 export class LayersService {
+    MAX_CAPACITY: number;
+
     appLayers: HTMLElement;
     biomarkerOverlayCanvas: HTMLCanvasElement;
     tempMaskCanvas: HTMLCanvasElement;
@@ -29,7 +32,7 @@ export class LayersService {
 
     unsavedChange = false;
 
-    constructor(private deviceService: DeviceDetectorService) { }
+    constructor(private deviceService: DeviceDetectorService, private appService: AppService, private borderService: ImageBorderService) { }
 
     init(): void {
         this.appLayers = document.getElementById('app-layers') as HTMLElement;
@@ -41,19 +44,19 @@ export class LayersService {
 
         this.tempMaskCanvas = document.createElement('canvas');
         const maskCtx = this.tempMaskCanvas.getContext('2d');
-        maskCtx.imageSmoothingEnabled = false; 
-        maskCtx.mozImageSmoothingEnabled = false; 
+        maskCtx.imageSmoothingEnabled = false;
+        maskCtx.mozImageSmoothingEnabled = false;
         maskCtx.webkitImageSmoothingEnabled = false;
 
         this.tempDrawCanvas = document.createElement('canvas');
         const drawCtx = this.tempDrawCanvas.getContext('2d');
-        drawCtx.imageSmoothingEnabled = false; 
-        drawCtx.mozImageSmoothingEnabled = false; 
-        drawCtx.webkitImageSmoothingEnabled = false;  
+        drawCtx.imageSmoothingEnabled = false;
+        drawCtx.mozImageSmoothingEnabled = false;
+        drawCtx.webkitImageSmoothingEnabled = false;
 
-        const max_capacity = this.deviceService.isDesktop() ? MAX_CAPACITY : 1;
-        this.redoStack = new Stack<[number[], ImageData[]]>(max_capacity);
-        this.undoStack = new Stack<[number[], ImageData[]]>(max_capacity);
+        this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
+        this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+        this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
         this.biomarkerCanvas = [];
     }
 
@@ -66,7 +69,7 @@ export class LayersService {
             canvas[0].forEach( (canvasIndex, arrayIndex) => {
                 const biomarker = this.biomarkerCanvas[canvasIndex];
                 imageDatas.push(biomarker.getCurrentImageData());
-                biomarker.getCurrentContext().putImageData(canvas[1][arrayIndex], 0, 0);
+                biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
                 biomarker.draw();
             });
 
@@ -84,7 +87,7 @@ export class LayersService {
                 const biomarker = this.biomarkerCanvas[canvasIndex];
                 imageDatas.push(biomarker.getCurrentImageData());
 
-                biomarker.getCurrentContext().putImageData(canvas[1][arrayIndex], 0, 0);
+                biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
                 biomarker.draw();
             });
             this.undoStack.push([canvas[0], imageDatas]);
@@ -103,7 +106,6 @@ export class LayersService {
             indices,
             imageDatas
         ]);
-        console.log('clear redo stack');
         this.redoStack.clear();
     }
 
@@ -181,16 +183,19 @@ export class LayersService {
         canvas.style.top = '0%';
         canvas.style.left = '0%';
         canvas.style.visibility = 'visible'; // important
-        canvas.style.opacity = '1.0'; // important
+        canvas.style.opacity = '0.5'; // important
 
         const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = false; 
-        ctx.mozImageSmoothingEnabled = false; 
+        ctx.imageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
         ctx.webkitImageSmoothingEnabled = false;
     }
 
     public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
         const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
+        if (currentBiomarkerCanvas == null) {
+            console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+        }
         return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
     }
 
@@ -214,18 +219,44 @@ export class LayersService {
         return result;
     }
 
+    get biomarkerOverlayContext(): CanvasRenderingContext2D {
+        return this.biomarkerOverlayCanvas.getContext('2d');
+    }
+
+    toggleBorders(showBorders: boolean): void {
+        this.appService.loading = true;
+        this.biomarkerCanvas.forEach((b) => {
+            if (showBorders) {
+                this.borderService.erode(b.borderCanvas, b.currentCanvas);
+            }
+            b.drawBorders = showBorders;
+            b.draw();
+        });
+        this.appService.loading = false;
+    }
+
+    toggleShadows(showShadows:boolean): void {
+        this.appService.loading = true;
+        this.biomarkerCanvas.forEach((b) => {
+            b.drawShadows = showShadows;
+            b.draw();
+        });
+        this.appService.loading = false;
+
+    }
+
     public resize(width: number, height: number): void {
         this.biomarkerCanvas.forEach(biomarker => {
             biomarker.displayCanvas.width = width;
             biomarker.displayCanvas.height = height;
         });
-        this.biomarkerOverlayCanvas.width=width;
-        this.biomarkerOverlayCanvas.height=height;
+        this.biomarkerOverlayCanvas.width = width;
+        this.biomarkerOverlayCanvas.height = height;
 
-        this.tempMaskCanvas.width=width;
-        this.tempMaskCanvas.height=height;
-        this.tempDrawCanvas.width=width;
-        this.tempDrawCanvas.height=height;
+        this.tempMaskCanvas.width = width;
+        this.tempMaskCanvas.height = height;
+        this.tempDrawCanvas.width = width;
+        this.tempDrawCanvas.height =    height;
     }
 
     // Add a point on the canvas to indicate the first point

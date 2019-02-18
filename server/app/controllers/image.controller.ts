@@ -20,6 +20,8 @@ export class ImageController implements IRegistrableController {
         app.put('/api/images/:imageId',
             this.imageService.upload.single('image'),
             this.uploadImage);
+        app.put('/api/images/:imageId/baseRevision',
+            this.updateBaseRevision);
         app.get('/api/images/:imageId/', this.getImage);
         app.get('/api/images/:imageId/baseRevision/', this.getImageBaseRevision);
         app.get('/api/images/', this.getImages);
@@ -53,6 +55,14 @@ export class ImageController implements IRegistrableController {
                 .then(image => res.send(image))
                 .catch(next);
         }
+    }
+
+    private updateBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const baseRevision: any = req.body.baseRevision;
+        const id = req.params.imageId;
+        this.imageService.updateBaseRevision(id, baseRevision)
+                .then(image => res.send(image))
+                .catch(next);
     }
 
     private getImageBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -100,9 +110,10 @@ export class ImageController implements IRegistrableController {
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {
                 imageViewModel.images.map(image => {
+
                     let dataUrl = '';
                     try {
-                        const base64Image = fs.readFileSync(path.resolve(image.path), 'base64');
+                        const base64Image = fs.readFileSync(path.resolve(image.thumbnailPath), 'base64');
                         dataUrl = 'data:image/png;base64, ' + base64Image;
                         const item = {
                             id: image.id,
@@ -117,7 +128,7 @@ export class ImageController implements IRegistrableController {
                         };
                         arr.push(item);
                     } catch {
-                        console.log('Image non-trouvée: ', image.id);
+                        console.log('Image non-trouvée: ', image.thumbnailPath);
                     }
                 });
                 const gallery: IGallery = {

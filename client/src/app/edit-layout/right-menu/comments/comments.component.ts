@@ -1,5 +1,5 @@
 import { AppService } from './../../../app.service';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommentsService } from './comments.service';
 
 @Component({
@@ -8,11 +8,12 @@ import { CommentsService } from './comments.service';
     styleUrls: ['./comments.component.scss']
 })
 export class CommentsComponent implements OnInit {
-
-    @ViewChild('comment') comment: ElementRef;
-    constructor(public appService: AppService) { }
+    public commentValue = '';
+    constructor(public appService: AppService, public commentService: CommentsService) {
+     }
 
     ngOnInit(): void {
+        this.commentService.commentChanged.subscribe( (c) => { this.commentValue = c; });
     }
 
     enableOnKeyDown(): void {
@@ -21,5 +22,9 @@ export class CommentsComponent implements OnInit {
 
     disableOnKeyDown(): void {
         this.appService.keyEventsEnabled = false;
+    }
+
+    commentChanged(): void {
+        this.commentService.visibleComment = this.commentValue;
     }
 }

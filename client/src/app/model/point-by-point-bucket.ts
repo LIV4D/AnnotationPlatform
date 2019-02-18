@@ -1,5 +1,3 @@
-import { LayersService } from '../edit-layout/editor/layers/layers.service';
-import { EditorService } from '../edit-layout/editor/editor.service';
 import { Tool } from './tool';
 import { Point } from './point';
 import { BiomarkerCanvas } from './biomarker-canvas';
@@ -9,8 +7,8 @@ export class PointByPointBucket extends Tool {
     public MAX_DISTANCE_X = 5;
     public MAX_DISTANCE_Y = 5;
 
-    constructor(name: string, iconPath: string, tooltip: string, layersService: LayersService, private editorService: EditorService) {
-        super(name, iconPath, tooltip, layersService);
+    constructor(name: string, iconPath: string, tooltip: string) {
+        super(name, iconPath, tooltip);
     }
 
     firstPoint: Point = null;
@@ -25,17 +23,7 @@ export class PointByPointBucket extends Tool {
         displayContext.lineCap = 'round';
     }
 
-    onMouseOut(point: Point): void {
-        if (this.firstPoint) {
-            this.layersService.removeFirstPoint();
-            this.layersService.popUndoStack();
-            const biomarker = this.layersService.getCurrentBiomarkerCanvas();
-            biomarker.draw();
-            this.firstPoint = null;
-        }
-    }
-
-    onMouseDown(point: Point): void {
+    onCursorDown(point: Point): void {
         const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
         if (currentBiomarker) {
             if (this.firstPoint == null) {
@@ -65,7 +53,7 @@ export class PointByPointBucket extends Tool {
         }
     }
 
-    onMouseMove(point: Point): void {
+    onCursorMove(point: Point): void {
         if (this.firstPoint) {
             if (this.isNearFirstPoint(point)) {
                 this.layersService.nearFirstPoint();
@@ -73,6 +61,20 @@ export class PointByPointBucket extends Tool {
                 this.layersService.farFirstPoint();
             }
         }
+    }
+
+    onCancel(): void {
+        if (this.firstPoint) {
+            this.layersService.removeFirstPoint();
+            this.layersService.popUndoStack();
+            const biomarker = this.layersService.getCurrentBiomarkerCanvas();
+            biomarker.draw();
+            this.firstPoint = null;
+        }
+    }
+
+    onCursorOut(point: Point): void {
+        this.onCancel();
     }
 
     isNearFirstPoint(point: Point): boolean {

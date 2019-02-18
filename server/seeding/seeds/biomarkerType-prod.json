@@ -57,6 +57,17 @@
         {
             "id": 6,
             "parent": {
+                "id": 2
+            },
+            "name": "Uncertain - Bright",
+            "color": "#a9ff84",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 7,
+            "parent": {
                 "id": 1
             },
             "name": "Others",
@@ -66,7 +77,7 @@
             }
         },
         {
-            "id": 7,
+            "id": 8,
             "parent": {
                 "id": 1
             },
@@ -77,9 +88,9 @@
             }
         },
         {
-            "id": 8,
+            "id": 9,
             "parent": {
-                "id": 7
+                "id": 8
             },
             "name": "Hemorrhages",
             "color": "#4b18ff",
@@ -88,9 +99,9 @@
             }
         },
         {
-            "id": 9,
+            "id": 10,
             "parent": {
-                "id": 7
+                "id": 8
             },
             "name": "Microaneurysms",
             "color": "#2a63fd",
@@ -99,21 +110,12 @@
             }
         },
         {
-            "id": 10,
-            "parent": null,
-            "name": "Normal",
-            "color": "",
-            "manyToMany": {
-                "imageTypes": [1]
-            }
-        },
-        {
             "id": 11,
             "parent": {
-                "id": 10
+                "id": 8
             },
-            "name": "Macula",
-            "color": "#be3c1b",
+            "name": "Sub-retinal hemorrhage",
+            "color": "#7a2afd",
             "manyToMany": {
                 "imageTypes": [1]
             }
@@ -121,10 +123,10 @@
         {
             "id": 12,
             "parent": {
-                "id": 10
+                "id": 8
             },
-            "name": "Optic nerve",
-            "color": "",
+            "name": "Pre-retinal hemorrhage",
+            "color": "#a12afd",
             "manyToMany": {
                 "imageTypes": [1]
             }
@@ -132,10 +134,10 @@
         {
             "id": 13,
             "parent": {
-                "id": 12
+                "id": 8
             },
-            "name": "Disk",
-            "color": "#ddc81c",
+            "name": "Neovascularization",
+            "color": "#ba2afd",
             "manyToMany": {
                 "imageTypes": [1]
             }
@@ -143,20 +145,18 @@
         {
             "id": 14,
             "parent": {
-                "id": 12
+                "id": 8
             },
-            "name": "Cup",
-            "color": "#dda61c",
+            "name": "Uncertain - Red",
+            "color": "#d62afd",
             "manyToMany": {
                 "imageTypes": [1]
             }
         },
         {
             "id": 15,
-            "parent": {
-                "id": 10
-            },
-            "name": "Vasculature",
+            "parent": null,
+            "name": "Normal",
             "color": "",
             "manyToMany": {
                 "imageTypes": [1]
@@ -167,8 +167,8 @@
             "parent": {
                 "id": 15
             },
-            "name": "Arteries",
-            "color": "#dd1c1c",
+            "name": "Macula",
+            "color": "#be3c1b",
             "manyToMany": {
                 "imageTypes": [1]
             }
@@ -178,6 +178,61 @@
             "parent": {
                 "id": 15
             },
+            "name": "Optic nerve",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 18,
+            "parent": {
+                "id": 17
+            },
+            "name": "Disk",
+            "color": "#ddc81c",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 19,
+            "parent": {
+                "id": 17
+            },
+            "name": "Cup",
+            "color": "#dda61c",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 20,
+            "parent": {
+                "id": 15
+            },
+            "name": "Vasculature",
+            "color": "",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 21,
+            "parent": {
+                "id": 20
+            },
+            "name": "Arteries",
+            "color": "#dd1c1c",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 22,
+            "parent": {
+                "id": 20
+            },
             "name": "Veins",
             "color": "#6d13b2",
             "manyToMany": {
@@ -185,7 +240,7 @@
             }
         },
         {
-            "id": 18,
+            "id": 23,
             "parent": null,
             "name": "Lesions-OCT",
             "color": "",
@@ -194,9 +249,9 @@
             }
         },
         {
-            "id": 19,
+            "id": 24,
             "parent": {
-                "id": 18
+                "id": 23
             },
             "name": "Drusen-OCT",
             "color": "#7a9d32",
@@ -205,9 +260,9 @@
             }
         },
         {
-            "id": 20,
+            "id": 25,
             "parent": {
-                "id": 18
+                "id": 23
             },
             "name": "Edema",
             "color": "#4b18ff",
@@ -216,7 +271,7 @@
             }
         },
         {
-            "id": 21,
+            "id": 26,
             "parent": null,
             "name": "Normal-OCT",
             "color": "",
@@ -225,9 +280,9 @@
             }
         },
         {
-            "id": 22,
+            "id": 27,
             "parent": {
-                "id": 21
+                "id": 26
             },
             "name": "Bruchs Membrane",
             "color": "#dd1c1c",
@@ -236,9 +291,9 @@
             }
         },
         {
-            "id": 23,
+            "id": 28,
             "parent": {
-                "id": 21
+                "id": 26
             },
             "name": "ChoroidSclera Interface",
             "color": "#6d13b2",
@@ -247,9 +302,9 @@
             }
         },
         {
-            "id": 24,
+            "id": 29,
             "parent": {
-                "id": 21
+                "id": 26
             },
             "name": "RPE",
             "color": "#ddc81c",
@@ -258,14 +313,36 @@
             }
         },
         {
-            "id": 25,
+            "id": 30,
             "parent": {
-                "id": 21
+                "id": 26
             },
             "name": "RetinaVitreaous Interface",
             "color": "#dda61c",
             "manyToMany": {
                 "imageTypes": [2]
+            }
+        },
+        {
+            "id": 31,
+            "parent": {
+                "id": 1
+            },
+            "name": "Pigmented lesions",
+            "color": "#5bffb7",
+            "manyToMany": {
+                "imageTypes": [1]
+            }
+        },
+        {
+            "id": 32,
+            "parent": {
+                "id": 20
+            },
+            "name": "Vessels - Uncertain",
+            "color": "#770067",
+            "manyToMany": {
+                "imageTypes": [1]
             }
         }
     ]

@@ -3,6 +3,7 @@ import { ToolboxService } from './../toolbox.service';
 import { Component, OnInit } from '@angular/core';
 import { getParentRenderElement } from '@angular/core/src/view/util';
 import { ToolPropertiesService } from './tool-properties.service';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-tool-properties',
@@ -12,34 +13,44 @@ import { ToolPropertiesService } from './tool-properties.service';
 export class ToolPropertiesComponent implements OnInit {
 
     selectedTool: Tool;
-    sliderValue: number;
+    eraserSize: number;
+    brushSize: number;
     eraseAll: boolean;
     smartMask: boolean;
 
     constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService) {
-        this.eraseAll = false;
+        this.eraseAll = true;
         this.smartMask = false;
-        toolboxService.setToolPropertiesComponent(this);
+        this.eraserSize = 25;
+        this.brushSize = 10;
+        // toolboxService.setToolPropertiesComponent(this);
+        this.toolPropertiesService.brushWidthChanged.subscribe( (v) => { this.sliderValue = v; });
      }
 
     ngOnInit(): void {
         this.toolboxService.selectedTool.subscribe(
         value => {
             this.selectedTool = value;
+            if (this.selectedTool !== undefined && this.selectedTool.name === 'brush' || this.selectedTool.name === 'eraser') {
+                this.toolPropertiesService.setBrushWidth(this.sliderValue);
+            }
         });
-        this.sliderValue = this.toolPropertiesService.brushWidth;
     }
 
     handleSliderChange(event: any): void {
-        this.toolPropertiesService.SetBrushWidth(event.value);
-        this.sliderValue = event.value;
+        this.toolPropertiesService.setBrushWidth(event.value);
     }
 
-    handleWheelChange(event: WheelEvent): void {
-        let newSize = Math.max(1, Math.min(100, this.sliderValue-event.deltaY));
-       
-        this.toolPropertiesService.SetBrushWidth(newSize);
-        this.sliderValue = newSize;
+    get sliderValue(): number {
+        return this.selectedTool !== undefined && this.selectedTool.name === 'eraser' ? this.eraserSize : this.brushSize;
+    }
+
+    set sliderValue(s: number) {
+        if (this.selectedTool !== undefined && this.selectedTool.name === 'eraser') {
+            this.eraserSize = s;
+        } else {
+            this.brushSize = s;
+        }
     }
 
     toggleEraseAll(): void {
@@ -47,8 +58,8 @@ export class ToolPropertiesComponent implements OnInit {
         this.toolPropertiesService.SetEraseAll(this.eraseAll);
     }
 
-    toggleSmartMask(): void{
-        this.smartMask =!this.smartMask;
+    toggleSmartMask(): void {
+        this.smartMask = !this.smartMask;
         this.toolPropertiesService.SetSmartMask(this.smartMask);
     }
 }

@@ -1,5 +1,3 @@
-import { LayersService } from './../edit-layout/editor/layers/layers.service';
-import { ToolPropertiesService } from './../edit-layout/toolbox/tool-properties/tool-properties.service';
 import { Tool } from './tool';
 import { Point } from './point';
 import { BiomarkerCanvas } from './biomarker-canvas';
@@ -7,9 +5,8 @@ import { _MatSelectMixinBase } from '@angular/material';
 
 export class LassoEraser extends Tool {
 
-    constructor(name: string, iconPath: string, tooltip: string, 
-        layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
-        super(name, iconPath, tooltip, layersService);
+    constructor(name: string, iconPath: string, tooltip: string) {
+        super(name, iconPath, tooltip);
     }
 
     isMouseDown = false;
@@ -17,16 +14,16 @@ export class LassoEraser extends Tool {
 
 
 
-    setStrokeProperties(ctx: CanvasRenderingContext2D): void{
+    setStrokeProperties(ctx: CanvasRenderingContext2D): void {
         ctx.globalCompositeOperation = 'source-over';
         ctx.lineWidth = 2;
-        ctx.strokeStyle = "rgb(255,255,255)";
-        ctx.fillStyle = "rgb(255,255,255)";
+        ctx.strokeStyle = 'rgb(255,255,255)';
+        ctx.fillStyle = 'rgb(255,255,255)';
         ctx.setLineDash([2, 7]);
         ctx.lineCap = 'round';
     }
 
-    onMouseDown( point: Point): void {
+    onCursorDown( point: Point): void {
         const biomarkerCanvas = this.getBiomarkerCanvas();
         if (biomarkerCanvas) {
             this.isMouseDown = true;
@@ -37,53 +34,60 @@ export class LassoEraser extends Tool {
             ctx.beginPath();
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
+
+            this.updateChangeBoundedBox(point);
         }
     }
 
-    onMouseOut(point: Point): void {
-        if (this.isMouseDown) {
-            this.layersService.removeFirstPoint();
-            this.isMouseDown = false;
-            this.layersService.popUndoStack();
-            const overlay = this.layersService.biomarkerOverlayCanvas;
-            overlay.getContext('2d').clearRect(0,0,overlay.width, overlay.height);
-        }
-    }
-
-    onMouseUp(): void {
-        if (this.isMouseDown) {
-            this.isMouseDown = false;
-            this.layersService.addToUndoStack(this.getBiomarkerCanvas());
-            this.layersService.removeFirstPoint();
-
-            const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
-            const overlay = this.layersService.biomarkerOverlayCanvas;
-            const overlayCtx = overlay.getContext('2d');
-            overlayCtx.clearRect(0,0,overlay.width, overlay.height);
-            overlayCtx.fill();
-            overlayCtx.closePath();
-            
-            // Remove the drawn shape from every other visible biomarker
-            this.getBiomarkerCanvas().forEach(biomarker => {
-                const bioCtx = biomarker.getDisplayContext();
-                bioCtx.save();
-                bioCtx.globalCompositeOperation = 'destination-out';
-                bioCtx.drawImage(overlay, 0, 0);
-                bioCtx.restore();
-                biomarker.updateCurrentCanvas();
-            });
-
-            overlayCtx.clearRect(0,0,overlay.width, overlay.height);
-        }
-    }
-
-    onMouseMove( point: Point): void {
+    onCursorMove( point: Point): void {
         if (this.isMouseDown) {
             const ctx = this.layersService.biomarkerOverlayCanvas.getContext('2d');
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
             this.layersService.updateDashStroke();
+
+            this.updateChangeBoundedBox(point);
         }
+    }
+
+    onCursorUp(): void {
+        if (this.isMouseDown) {
+            this.layersService.addToUndoStack(this.getBiomarkerCanvas());
+
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            const overlayCtx = overlay.getContext('2d');
+            overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+            overlayCtx.fill();
+            overlayCtx.closePath();
+
+            // Remove the drawn shape from every visible biomarker
+            this.getBiomarkerCanvas().forEach(biomarker => {
+                const bioCtx = biomarker.getCurrentContext();
+                bioCtx.save();
+                bioCtx.globalCompositeOperation = 'destination-out';
+                biomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
+                bioCtx.restore();
+            });
+
+            // Clear overlay
+            this.onCancel();
+        }
+    }
+
+    onCancel(): void {
+        if (this.isMouseDown) {
+            this.layersService.removeFirstPoint();
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
+
+            this.isMouseDown = false;
+            this.resetChangeBoundedBox();
+        }
+    }
+
+
+    onCursorOut(point: Point): void {
+       this.onCancel();
     }
 
     getBiomarkerCanvas(): BiomarkerCanvas[] {

@@ -5,8 +5,22 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class LoginService {
-    constructor(private http: HttpClient) { }
+    private _user: any;
+    private _name: string;
+
+    constructor(private http: HttpClient) {
+    }
+
+    get email(): string {
+        return this._user === null ? null : this._user.user.email;
+    }
+
+    get name(): string {
+        return this._user === null ? null : this._user.user.name;
+    }
+
     login(email: string, password: string): Observable<any> {
+        this._user = null;
         return this.http.post<any>('/auth/login', { username: email, password: password }).
             pipe(
             map((user: any) => {
@@ -14,6 +28,7 @@ export class LoginService {
                 if (user && user.token) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify(user));
+                    this._user = user;
                 }
 
                 return user;
@@ -23,5 +38,6 @@ export class LoginService {
     logout(): void {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+        this._user = null;
     }
 }

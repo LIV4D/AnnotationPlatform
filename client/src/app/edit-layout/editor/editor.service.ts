@@ -15,6 +15,8 @@ import { ROUTES } from './../../routes';
 import { Router } from '@angular/router';
 import * as FileSaver from 'file-saver';
 import { Image as ImageServer } from '../../model/common/image.model';
+import { CommentsService } from '../right-menu/comments/comments.service';
+import { VisualizationService } from '../right-menu/visualization/visualization.service';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -46,7 +48,7 @@ export class EditorService {
     menuState: boolean;
     zoomMultiplier: number;
 
-    constructor(private http: HttpClient, public layersService: LayersService,
+    constructor(private http: HttpClient, public layersService: LayersService, public commentService: CommentsService,
         public galleryService: GalleryService, public biomarkersService: BiomarkersService, public router: Router) {
         this.zoomMultiplier = navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 1;
         this.scaleX = 1;
@@ -111,7 +113,7 @@ export class EditorService {
         if (this.imageLocal) {
             this.setImageId('local');
             this.loadAllLocal(this.imageLocal, this.svgLoaded);
-        }else{
+        } else {
             this.loadAll();
         }
         this.resize();
@@ -205,14 +207,15 @@ export class EditorService {
                         }
                     }
                 });
-                if ((res as any).diagnostic) {
-                    (document.getElementById('commentBox') as HTMLTextAreaElement).value = (res as any).diagnostic;
-                }
+
+                this.commentService.comment = (res as any).diagnostic;
+
                 if (draw) {
                     this.layersService.biomarkerCanvas = [];
                     arbre.forEach((e: SVGGElement) => {
                         this.layersService.createFlatCanvasRecursive(e);
                     });
+                    this.layersService.toggleBorders(true);
                     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
                 }
                 if (svgLoaded) {
@@ -234,9 +237,7 @@ export class EditorService {
                                     }
                                 }
                             });
-                            if ((res as any).diagnostic) {
-                                (document.getElementById('commentBox') as HTMLTextAreaElement).value = (res as any).diagnostic;
-                            }
+                            this.commentService.comment = (res as any).diagnostic;
                             if (draw) {
                                 this.layersService.biomarkerCanvas = [];
                                 arbre.forEach((e: SVGGElement) => {
@@ -467,8 +468,8 @@ export class EditorService {
         let zoomFactor = this.zoomFactor * Math.exp(delta * this.zoomMultiplier);
 
         // Cap the values.
-        if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX; }
-        else if (zoomFactor < ZOOM.MIN) { zoomFactor = ZOOM.MIN; }
+        if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX;
+        } else if (zoomFactor < ZOOM.MIN) { zoomFactor = ZOOM.MIN; }
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
@@ -479,7 +480,7 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if(zoomFactor!=ZOOM.MIN && zoomFactor!=ZOOM.MAX){
+        if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
             // Adjust offsets to keep them coherent with the previous zoom.
             const positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
@@ -495,11 +496,11 @@ export class EditorService {
         this.updateCanvasDisplayRatio();
     }
 
-    setZoomFactor(zoomFactor: number): void{
+    setZoomFactor(zoomFactor: number): void {
         // Cap the values.
-        if (zoomFactor > 1) { zoomFactor = 1; }
-        else if (zoomFactor < 0) { zoomFactor = 0; }
-        zoomFactor = ZOOM.MAX*zoomFactor + ZOOM.MIN;
+        if (zoomFactor > 1) { zoomFactor = 1;
+        } else if (zoomFactor < 0) { zoomFactor = 0; }
+        zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
@@ -510,10 +511,10 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if(zoomFactor!=ZOOM.MIN && zoomFactor!=ZOOM.MAX){
+        if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
-            this.offsetX += (oldWidth - newWidth)/2;
-            this.offsetY += (oldHeight - newHeight)/2;
+            this.offsetX += (oldWidth - newWidth) / 2;
+            this.offsetY += (oldHeight - newHeight) / 2;
         }
         this.adjustOffsets();
         this.transform();
@@ -622,7 +623,7 @@ export class EditorService {
         FileSaver.saveAs(blob, this.localSVGName);
     }
 
-    saveToDB(diagnostic: string): void {
+    saveToDB(): void {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         if (this.layersService.unsavedChange) {
             LocalStorage.save(this, this.layersService);
@@ -636,7 +637,7 @@ export class EditorService {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         const body = {
             svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
-            diagnostic: diagnostic
+            diagnostic: this.commentService.comment
         };
         this.http.put(`/api/revisions/${userId}/${this.imageId}`, body).subscribe();
     }

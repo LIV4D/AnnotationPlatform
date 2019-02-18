@@ -1,70 +1,93 @@
-import { LayersService } from './../edit-layout/editor/layers/layers.service';
-import { ToolPropertiesService } from './../edit-layout/toolbox/tool-properties/tool-properties.service';
 import { Tool } from './tool';
 import { Point } from './point';
 import { BiomarkerCanvas } from './biomarker-canvas';
 
 export class Eraser extends Tool {
 
-    constructor(name: string, iconPath: string, tooltip: string,
-        layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
-        super(name, iconPath, tooltip, layersService);
+    constructor(name: string, iconPath: string, tooltip: string) {
+        super(name, iconPath, tooltip);
     }
 
     isMouseDown = false;
     lastPoint: Point;
 
-    setStrokeProperties(displayContext: CanvasRenderingContext2D): void {
-        displayContext.globalCompositeOperation = 'destination-out';
-
-        displayContext.lineWidth = this.toolPropertiesService.brushWidth;
-        displayContext.lineCap = 'round';
+    setStrokeProperties(ctx: CanvasRenderingContext2D): void {
+        ctx.lineWidth = this.toolPropertiesService.brushWidth;
+        ctx.lineCap = 'round';
     }
 
-    onMouseDown( point: Point): void {
+    onCursorDown( point: Point): void {
         const biomarkerCanvas = this.getBiomarkerCanvas();
         if (biomarkerCanvas) {
             this.isMouseDown = true;
-            this.layersService.addToUndoStack(biomarkerCanvas);
-            biomarkerCanvas.forEach((biomarker) => {
-                const displayContext = biomarker.getDisplayContext();
-                this.setStrokeProperties(displayContext);
-                displayContext.beginPath();
-                displayContext.moveTo(point.x, point.y);
-                displayContext.lineTo(point.x, point.y);
-                displayContext.stroke();
-            });
+
+            this.drawContext.drawImage(this.editorService.backgroundCanvas.displayCanvas, 0, 0);
+
+            const ctx = this.maskContext;
+            this.setStrokeProperties(ctx);
+            ctx.beginPath();
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(point.x, point.y);
+            ctx.stroke();
+
+            this.applyDrawCanvas(this.layersService.biomarkerOverlayCanvas);
             this.lastPoint = point;
+
+            this.updateChangeBoundedBox(point, this.toolPropertiesService.brushWidth / 2);
         }
     }
 
-    onMouseOut(point: Point): void {
-        this.onMouseUp();
+    onCursorMove( point: Point): void {
+        if (this.isMouseDown) {
+            const ctx = this.maskContext;
+
+            ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+            ctx.lineTo(point.x, point.y);
+            ctx.stroke();
+            this.applyDrawCanvas(this.layersService.biomarkerOverlayCanvas);
+            this.lastPoint = point;
+
+            this.updateChangeBoundedBox(point, this.toolPropertiesService.brushWidth / 2);
+        }
     }
 
-    onMouseUp(): void {
+    onCursorUp(): void {
+        if (this.isMouseDown) {
+            const mask = this.maskCanvas;
+            const biomarkers = this.getBiomarkerCanvas();
+            this.layersService.addToUndoStack(biomarkers);
+
+            biomarkers.forEach((biomarker) => {
+                const ctx = biomarker.getCurrentContext();
+                ctx.globalCompositeOperation = 'destination-out';
+                biomarker.drawToCurrentCanvas(mask, this.changeBoundedBox);
+            });
+
+            // Clear mask and overlay
+            this.onCancel();
+        }
+    }
+
+    onCancel(): void {
         if (this.isMouseDown) {
             this.isMouseDown = false;
-            const biomarkerCanvas = this.getBiomarkerCanvas();
-            biomarkerCanvas.forEach((biomarker) => {
-                biomarker.getDisplayContext().globalCompositeOperation = 'source-over';
-                biomarker.updateCurrentCanvas();
-            });
+
+            const mask = this.maskCanvas;
+            this.maskContext.clearRect(0, 0, mask.width, mask.height);
+            const draw = this.drawCanvas;
+            this.drawContext.clearRect(0, 0, draw.width, draw.height);
+
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
+
+            this.resetChangeBoundedBox();
         }
     }
 
-    onMouseMove( point: Point): void {
-        if (this.isMouseDown) {
-            const biomarkerCanvas = this.getBiomarkerCanvas();
-            biomarkerCanvas.forEach((biomarker) => {
-                const displayContext = biomarker.getDisplayContext();
-                displayContext.moveTo(this.lastPoint.x, this.lastPoint.y);
-                displayContext.lineTo(point.x, point.y);
-                displayContext.stroke();
-            });
-            this.lastPoint = point;
-        }
+    onCursorOut(point: Point): void {
+        this.onCursorUp();
     }
+
 
     getBiomarkerCanvas(): BiomarkerCanvas[] {
         return this.toolPropertiesService.eraseAll ? this.layersService.getBiomarkerCanvas()

@@ -1,107 +1,82 @@
-import { AppService } from './../../../app.service';
-import { EditorService } from './../../editor/editor.service';
-import { LayersService } from './../../editor/layers/layers.service';
 import { Injectable } from '@angular/core';
 
 // Possible optimization: Combine all layers into one and only calculate edges once.
 // Drawbacks: hiding layers will require recombining all layers into one.
 @Injectable()
 export class ImageBorderService {
-    kernel: number[];
     thickness: number;
     showBorders: boolean;
-    constructor(private layersService: LayersService, public editorService: EditorService, public appService: AppService) {
+    constructor() {
         this.thickness = 1;
-        this.kernel = this.createKernel(this.thickness);
         this.showBorders = false;
     }
 
-    toggleBorders(showBorders: boolean): void {
-        this.appService.loading = true;
-        this.layersService.biomarkerCanvas.forEach((b) => {
-            b.drawBorders = showBorders;
-            if (showBorders) {
-                const canvas = b.currentCanvas;
-                const context = b.currentCanvas.getContext('2d');
-                const imageData = context.createImageData(canvas.width, canvas.height);
-                const imageDataOrig = context.getImageData(0, 0, canvas.width, canvas.height);
-                this.erode(imageData, imageDataOrig, canvas);
-                b.borderCanvas.getContext('2d').putImageData(imageData, 0, 0);
-            }
-        });
-        this.editorService.transform();
-        this.appService.loading = false;
-    }
 
-    erode(image: ImageData, imageOrig: ImageData, canvas: HTMLCanvasElement): void {
-        const data = image.data;
-        const dataOrig = imageOrig.data;
+    erode(canvasDst: HTMLCanvasElement, canvasSrc: HTMLCanvasElement, minX= 0, minY= 0, maxX?: number, maxY?: number): void {
+        if (!maxX) {
+            maxX = canvasSrc.width;
+        }
+        if (!maxY) {
+            maxY = canvasSrc.height;
+        }
 
-        for (let x = 0; x < (canvas.width << 2); x += 4) {
-            for (let y = 0; y < canvas.height; y++) {
-                const r = x + y * (canvas.width << 2);
-                const g = r + 1;
-                const b = g + 1;
-                const a = b + 1;
+        minX = Math.floor(minX);
+        minY = Math.floor(minY);
+        maxX = Math.ceil(maxX);
+        maxY = Math.ceil(maxY);
+
+        const w = maxX - minX;
+        const h = maxY - minY;
+
+        const imgSrc = canvasSrc.getContext('2d').getImageData(0, 0, canvasSrc.width, canvasSrc.height);
+        const dataSrc = imgSrc.data;
+
+        const context = canvasDst.getContext('2d');
+        const imgDst = context.createImageData(w, h);
+        const dataDst = imgDst.data;
+
+        const dstStride = w * 4;
+        const srcStride = imgSrc.width * 4;
+        const srcOffset = minY * srcStride + minX * 4;
+
+        for (let x = 0; x < w; x++) {
+            for (let y = 0; y < h; y++) {
+                const idDst = y * dstStride + x * 4;
+                const idSrc = y * srcStride + x * 4 + srcOffset;
                 // keep border pixels
-                if (x === 0 || y === 0 || x === ((canvas.width - 1) << 2) || y === canvas.height - 1) {
-                    if (dataOrig[a] > 120) {
-                        data[r] = dataOrig[r];
-                        data[g] = dataOrig[g];
-                        data[b] = dataOrig[b];
-                        data[a] = dataOrig[a];
+                if (x + minX === 0 || y + minY === 0 || x + minX === (imgSrc.width - 1) || y + minY === imgSrc.height - 1) {
+                    if (dataSrc[idSrc + 3] > 120) {
+                        dataDst[idDst    ] = dataSrc[idSrc    ];
+                        dataDst[idDst + 1] = dataSrc[idSrc + 1];
+                        dataDst[idDst + 2] = dataSrc[idSrc + 2];
+                        dataDst[idDst + 3] = dataSrc[idSrc + 3];
                     }
                 } else {
-                    if (dataOrig[a] > 120) {
-                        this.pixelInsideKernel(x, y, data, dataOrig, canvas);
+                    if (dataSrc[idSrc + 3] > 120) {
+                        this.pixelInsideKernel(x, y, dataDst, dataSrc, dstStride, srcStride, srcOffset);
                     }
                 }
             }
         }
+        context.putImageData(imgDst, minX, minY);
+
     }
 
-    pixelInsideKernel(x: number, y: number, data: Uint8ClampedArray, dataOrig: Uint8ClampedArray,
-        canvas: HTMLCanvasElement): void {
-        for (let i = 0; i < this.kernel.length; i++) {
-            if (this.kernel[i] === 1) {
-                const compX = (x + 4 * (Math.floor(i / 3) - Math.floor((this.kernel.length / 3) >> 1)));
-                const compY = (y - Math.floor((this.kernel.length / 3) >> 1) + i % 3) * (canvas.width << 2);
-                const r = x + y * (canvas.width << 2);
-                const g = r + 1;
-                const b = g + 1;
-                const a = b + 1;
-                if (dataOrig[compX + compY + 3] < 120) {
-                    data[r] = dataOrig[r];
-                    data[g] = dataOrig[g];
-                    data[b] = dataOrig[b];
-                    data[a] = dataOrig[a];
-                    break;
-                }
-            }
-        }
-    }
+    pixelInsideKernel(x: number, y: number, data: Uint8ClampedArray, dataSrc: Uint8ClampedArray,
+        dstStride: number, srcStride: number, srcOffset: number): void {
+        const idDst =  y * dstStride + x * 4;
+        const idSrc =  y * srcStride + x * 4 + srcOffset;
+        
+        const aX0 = dataSrc[idSrc - srcStride + 3] > 120;   // (x, y-1)
+        const aX1 = dataSrc[idSrc + srcStride + 3] > 120;   // (x, y+1)
+        const aY0 = dataSrc[idSrc - 1] > 120;               // (x-1, y)
+        const aY1 = dataSrc[idSrc + 7] > 120;               // (x+1, y)
 
-    createKernel(thickness: number): number[] {
-        if (thickness % 2 === 0) { thickness++; }
-        const res = [];
-        for (let i = 0; i < thickness + 2; i++) {
-            const row = [];
-            for (let j = 0; j < thickness + 2; j++) {
-                if (j > Math.floor((thickness + 2) / 2) - i || j < Math.floor((thickness + 2) / 2) + i) {
-                    row.push(1);
-                } else {
-                    row.push(0);
-                }
-            }
-            res.push(row);
+        if (aX0 !== aX1 || aY0 !== aY1) {
+            data[idDst    ] = dataSrc[idSrc    ];
+            data[idDst + 1] = dataSrc[idSrc + 1];
+            data[idDst + 2] = dataSrc[idSrc + 2];
+            data[idDst + 3] = 255;
         }
-        // return result as 1D array for faster looping later
-        const list = [];
-        for (let i = 0; i < res.length; i++) {
-            for (let j = 0; j < res[i].length; j++) {
-                list.push(res[i][j]);
-            }
-        }
-        return list;
     }
 }

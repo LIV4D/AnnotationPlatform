@@ -4,6 +4,12 @@ import shutil
 from . import utils
 import xml.etree.ElementTree as ET
 
+ET.register_namespace('', 'http://www.w3.org/2000/svg')
+ET.register_namespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+ET.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
+ET.register_namespace('sodipodi', 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd')
+ET.register_namespace('docname', 'fullAnnotations.svg')
+
 @click.group(help='Commands to manage images stored in the database.')
 def image():
     pass
@@ -77,11 +83,6 @@ def _image_file(image_id, path):
     image_file(image_id, path, True)
 
 def image_file(image_id, path, display=False):
-    image_list = list_image()
-    image_object = next((x for x in image_list if str(x['id']) == str(image_id)), None)
-    if image_object is None:
-        print('Image with this id does not exist')
-        exit(-1)
     response = utils.request_file('/api/images/{}/getFile'.format(image_id))
     if response.status_code == 200:
         with open(path + ntpath.basename(image_object['path']), 'wb') as file:
@@ -94,11 +95,6 @@ def _revision_file(image_id, path):
     revision_file(image_id, path, True)
 
 def revision_file(image_id, path, display=False):
-    image_list = list_image()
-    image_object = next((x for x in image_list if str(x['id']) == str(image_id)), None)
-    if image_object is None:
-        print('Image with this id does not exist')
-        exit(-1)
     response = utils.request_server('GET', '/api/images/{}/baseRevision'.format(image_id))
     if response.status_code == 200:
         svg_file_name = ''.join(ntpath.basename(image_object['path']).split('.')[:-1]) + '.svg'
@@ -106,13 +102,12 @@ def revision_file(image_id, path, display=False):
             file.write(response.json()['svg'])
 
 def get_base_revision(image_id):
-    image_list = list_image()
-    image_object = next((x for x in image_list if str(x['id']) == str(image_id)), None)
-    if image_object is None:
-        print('Image with this id does not exist')
     response = utils.request_server('GET', '/api/images/{}/baseRevision'.format(image_id))
-    if response.status_code == 200:
-        return response.json()['svg']
+    if response.status_code != 200:
+        raise RuntimeError(response.json()['message'])
+    return response.json()['svg']
+    
+    
 
 @image.command(name='update', help='Updates an image in the database')
 @click.option('--imageId', 'image_id', help='Id of the image to update', required=True)
@@ -161,20 +156,20 @@ def update_base_revision(image_id,
                          update_all_revision=False,
                          display=False):
     payload = {'baseRevision': svg}
-    response = utils.request_server('POST', '/api/images/{}/baseRevision'.format(image_id), payload)
+    response = utils.request_server('PUT', '/api/images/{}/baseRevision'.format(image_id), payload)
     if display and response.status_code == 200:
-        print('The the base revision of image with id {} has been updated successfully.'.format(image_id))
+        print('The base revision of image with id {} has been updated successfully.'.format(image_id))
     return True if response.status_code == 200 else print(response.json()['message'])
 
 
 def update_biomarker(image_id, biomarker, png, update_all_revision=False, display=False):
-    svg_tree = ET.fromstring(self.get_base_revision(image_id))
+    svg_tree = ET.fromstring(get_base_revision(image_id))
     biomarker = [_ for _ in svg_tree.iter() if _.get('id')==biomarker][0]
-    biomarker.set('{http://www.w3.org/1999/xlink}href', png)
+    biomarker.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png.decode('ascii')))
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
-    return update_base_revision(image_id=image_id, svg=svg, update_all_revision=update_all_revision, display=display)
+    return update_base_revision(image_id=image_id, svg=svg.decode('utf-8'), update_all_revision=update_all_revision, display=display)
     
 
 

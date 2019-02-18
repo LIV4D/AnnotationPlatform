@@ -31,7 +31,7 @@ export class ToolBoxComponent implements OnInit {
                     );
                     break;
                 }
-                case HOTKEYS.KEY_G_LASSO_ERASER:{
+                case HOTKEYS.KEY_G_LASSO_ERASER: {
                     this.toolboxService.setSelectedTool(
                         this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.LASSO_ERASER)[0]
                     );
@@ -52,6 +52,12 @@ export class ToolBoxComponent implements OnInit {
                 case HOTKEYS.KEY_V_FILL_VECTOR: {
                     this.toolboxService.setSelectedTool(
                         this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.FILL_VECTOR)[0]
+                    );
+                    break;
+                }
+                case HOTKEYS.KEY_K_PICKKER: {
+                    this.toolboxService.setSelectedTool(
+                        this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0]
                     );
                     break;
                 }

@@ -7,6 +7,7 @@ import { BiomarkersService } from './biomarkers.service';
 import { Component } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material';
+import { LayersService } from '../../editor/layers/layers.service';
 
 export interface DialogData {
     confirmDelete: boolean;
@@ -27,17 +28,22 @@ export class BiomarkersComponent {
     readonly BORDERS = 'border_outer';
     readonly BORDERS_OFF = 'border_clear';
     opacity: number;
+    shadowsChecked: boolean;
 
     constructor(public biomarkersService: BiomarkersService, public imageBorderService: ImageBorderService,
-        public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe) {
+        public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
+        private layerService: LayersService) {
         this.imageBorderService.showBorders = false;
-        this.opacity = 100;
+        this.opacity = 50;
         this.visibilityAll = 'visible';
+        this.shadowsChecked = false;
     }
 
     public init(arbre: SVGGElement[]): void {
+        this.opacity = 50;
         this.arbre = arbre;
         this.biomarkersService.init(arbre);
+        this.biomarkersService.changeOpacity(this.opacity.toString());
     }
 
     public getCssClass(elem: HTMLElement): string {
@@ -48,7 +54,7 @@ export class BiomarkersComponent {
     public setFocusBiomarker(elem: HTMLElement): void {
         this.biomarkersService.setFocusBiomarker(elem);
     }
-    
+
     // Transforms from camel case to text case
     public transform(value: string): string {
         return this.camelCaseToTextPipe.transform(value);
@@ -124,11 +130,23 @@ export class BiomarkersComponent {
 
     public toggleBorders(): void {
         this.imageBorderService.showBorders = !this.imageBorderService.showBorders;
-        this.imageBorderService.toggleBorders(this.imageBorderService.showBorders);
+        this.layerService.toggleBorders(this.imageBorderService.showBorders);
+        if (this.imageBorderService.showBorders) {
+            this.biomarkersService.changeOpacity('100');
+            this.layerService.toggleShadows(this.shadowsChecked);
+        } else {
+            this.biomarkersService.changeOpacity(this.opacity.toString());
+            this.layerService.toggleShadows(false);
+        }
+    }
+
+    public toggleShadows(): void {
+        this.shadowsChecked = !this.shadowsChecked;
+        this.layerService.toggleShadows(this.shadowsChecked);
     }
 
     public resetOpacity(): void {
-        this.opacity = 100;
+        this.opacity = 50;
         this.biomarkersService.changeOpacity(this.opacity.toString());
     }
 
@@ -143,7 +161,7 @@ export class BiomarkersComponent {
     public onKeyDown(event: KeyboardEvent): void {
         if (this.appService.keyEventsEnabled) {
             switch (event.keyCode) {
-                case HOTKEYS.KEY_K_HIDE_OTHERS: {
+                case HOTKEYS.KEY_H_HIDE_OTHERS: {
                     this.hideOtherBiomarkers();
                     break;
                 }

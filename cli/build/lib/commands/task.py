@@ -14,11 +14,16 @@ def task():
 def _create(image_id, task_type_id, user_id, active, completed):
     create(image_id, task_type_id, user_id, utils.to_boolean(active), utils.to_boolean(completed), True)
 
-def create(image_id, task_type_id, user_id, active=True, completed=False, display=False):
+def create(image_id, task_type_id, user_id, limit_biomarkers='', active=True, completed=False, display=False):
     payload = { 'imageId': image_id, 'taskTypeId': task_type_id, 'userId': user_id,
         'active': str(active).lower(), 'completed': str(completed).lower() }
     response = utils.request_server('POST', '/api/tasks', payload)
     if response.status_code == 200 and display:
+        if limit_biomarkers:
+            if isinstance(limit_biomarkers, (list, tuple)):
+                ','.join(limit_biomarkers)
+            from . import revision
+            revision.update_diagnostic('[onlyEnable=%s]' % limit_biomarkers, user_id=user_id, image_id=image_id)
         print('Task {!s} has been created.'.format(response.json()))
     elif display:
         print(response.json()['message'])

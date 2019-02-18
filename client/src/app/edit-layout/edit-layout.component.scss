@@ -3,7 +3,7 @@
 app-right-menu {
     color: $icon-color;
     position: absolute;
-    height: 100%;
+    height: calc(100% - 30px);
     right: 0%;
     width: $right-width;
     top: 0;

@@ -10,6 +10,8 @@ import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { EditorService } from './editor.service';
 import { ToolPropertiesComponent } from './../toolbox/tool-properties/tool-properties.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { ToolPropertiesService } from '../toolbox/tool-properties/tool-properties.service';
 
 @Component({
     selector: 'app-editor',
@@ -18,15 +20,22 @@ import { ToolPropertiesComponent } from './../toolbox/tool-properties/tool-prope
 })
 
 export class EditorComponent implements OnInit, OnDestroy {
-    constructor(private toolboxService: ToolboxService, public editorService: EditorService, public appService: AppService) { }
+    constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService,
+        public editorService: EditorService, private deviceService: DeviceDetectorService, public appService: AppService, ) {
+                this.delayTouchMoveTimer = null;
+         }
 
     image: HTMLImageElement;
     zoomFactor: number;
     offsetX: number;
     offsetY: number;
     @ViewChild('editorBox') viewPort: any;
-    mouseDown = false;
+    cursorDown = false;
     middleMouseDown = false;
+    touchFreeze = false;
+    zoomInitPoint: Point;
+    zoomInitFactor: number;
+    delayTouchMoveTimer: any;
 
     @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -39,79 +48,158 @@ export class EditorComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.editorService.imageServer = null;
         this.image = null;
-        this.mouseDown = false;
+        this.cursorDown = false;
         this.middleMouseDown = false;
+        this.zoomInitFactor = null;
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = true;
-        if (event.which === 2 && !this.editorService.menuState){
+        this.cursorDown = true;
+        if (event.which === 2 && !this.editorService.menuState) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-            panTool.onMouseDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+            panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
             this.middleMouseDown = true;
+        } else if (event.which === 1 && !this.editorService.menuState  && !this.middleMouseDown) {
+            this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         }
-        else if (event.which === 1 && !this.editorService.menuState  && !this.middleMouseDown) {
-            this.toolboxService.onMouseDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-        }
-        this.enableKeyEvents(false);
-    }
-
-    onTouchStart(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        this.mouseDown = true;
-        this.toolboxService.onMouseDown(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
         this.enableKeyEvents(false);
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.mouseDown = false;
-        if (event.which === 2 && !this.editorService.menuState){
+        this.cursorDown = false;
+        if (event.which === 2 && !this.editorService.menuState) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-            panTool.onMouseUp();
+            panTool.onCursorUp();
             this.middleMouseDown = false;
+        } else if (!this.middleMouseDown) {
+            this.toolboxService.onCursorUp();
         }
-        else if (!this.middleMouseDown){
-            this.toolboxService.onMouseUp();
-        }
-        this.enableKeyEvents(true);
-        
-    }
-
-    onTouchEnd(event: TouchEvent): void{
-        this.mouseDown = false;
-        this.toolboxService.onMouseUp();
         this.enableKeyEvents(true);
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.middleMouseDown){
+        if (this.middleMouseDown) {
             const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-            panTool.onMouseMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+            panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+        } else {
+            this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         }
-        else{
-            this.toolboxService.onMouseMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-        }
-    }
-
-    onTouchMove(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        this.toolboxService.onMouseMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
     }
 
     onMouseLeave(event: MouseEvent): void {
-        this.mouseDown = false;
-        this.toolboxService.onMouseOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+        this.cursorDown = false;
+        this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         this.enableKeyEvents(true);
     }
 
     onMouseWheel(event: WheelEvent): void {
-        if (!this.mouseDown && !this.editorService.layersService.firstPoint && event.ctrlKey==false) {
-            const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-            this.editorService.zoom(-event.deltaY / 300, position);
+        const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
+        const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 1 : 0.25 ) / 300;
+
+        if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
+            this.editorService.zoom(delta, position);
+        } else if (!this.cursorDown && !this.editorService.layersService.firstPoint) {
+            let brushWidth =  this.toolPropertiesService.brushWidth;
+            const brushInc = delta > 0 ? 1 : -1;
+            if (brushWidth < 20) {
+                brushWidth += brushInc;
+            } else {
+                brushWidth += brushInc * brushWidth / 10;
+            }
+            brushWidth = Math.round(brushWidth);
+            this.toolPropertiesService.setBrushWidth(brushWidth);
         }
-        else if(!this.mouseDown && !this.editorService.layersService.firstPoint){
-            // var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
-            this.toolboxService.getToolPropertiesComponent().handleWheelChange(event);
+    }
+
+    onTouchStart(event: TouchEvent): void {
+        if (this.touchFreeze) {
+            return;
+        }
+        if (event.targetTouches.length === 1) {
+            // cursor down event
+            const touch = event.targetTouches[0];
+            this.cursorDown = true;
+            this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+            this.enableKeyEvents(false);
+        } else if (event.targetTouches.length === 2) {
+            // Cancel tool
+            this.toolboxService.onCancel();
+            this.cursorDown = false;
+
+            // Start zoom & move
+            const touches = event.targetTouches;
+            const x0 = touches[0].clientX;
+            const x1 = touches[1].clientX;
+            const y0 = touches[0].clientY;
+            const y1 = touches[1].clientY;
+            const midPoint = new Point( (x0 + x1) / 2, (y0 + y1) / 2);
+            this.zoomInitPoint = this.getMousePositionInCanvasSpace(midPoint);
+            this.zoomInitFactor = this.zoomFactor / Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+        } else {
+            this.touchFreeze = true;
+            if (this.cursorDown) {
+                this.toolboxService.onCancel();
+                this.cursorDown = false;
+            }
+        }
+    }
+
+    onTouchMove(event: TouchEvent): void {
+        if (!this.touchFreeze) {
+            if (event.targetTouches.length === 1) {
+                if ( this.cursorDown) {
+                    // Update tool
+                    if (this.deviceService.isDesktop()) {
+                        this.handleTouchMove(event);
+                    } else {
+                        if (this.delayTouchMoveTimer === null) {
+                            this.delayTouchMoveTimer = setTimeout( () => {
+                                this.delayTouchMoveTimer = null;
+                            }, 50);
+                            this.handleTouchMove(event);
+                        }
+                    }
+                }
+            } else if (event.targetTouches.length === 2) {
+                const touches = event.targetTouches;
+                const x0 = touches[0].clientX;
+                const x1 = touches[1].clientX;
+                const y0 = touches[0].clientY;
+                const y1 = touches[1].clientY;
+                const midPoint = new Point( (x0 + x1) / 2, (y0 + y1) / 2);
+                const zoomFactor = this.zoomInitFactor * Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+
+                // TODO: perform zoom
+            }
+        }
+    }
+
+    handleTouchMove(event: TouchEvent): void {
+        const touch = event.targetTouches[0];
+        this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+    }
+
+    onTouchEnd(event: TouchEvent): void {
+        if (this.touchFreeze) {
+            if (event.targetTouches.length === 0) {
+                this.touchFreeze = false;
+            }
+            return;
+        }
+
+        if (event.targetTouches.length === 0) {
+            this.toolboxService.onCursorUp();
+            this.enableKeyEvents(true);
+        } else {
+            this.touchFreeze = true;
+            this.toolboxService.onCancel();
+        }
+        this.cursorDown = false;
+    }
+
+    onTouchCancel(event: TouchEvent): void {
+        for (let i = 0; i < event.targetTouches.length; i++) {
+            const t = event.targetTouches[i];
         }
     }
 

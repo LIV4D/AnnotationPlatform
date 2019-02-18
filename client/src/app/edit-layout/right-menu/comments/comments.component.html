@@ -1,2 +1,4 @@
-<span>Comments</span>
-<textarea id="commentBox" #comment (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" matInput placeholder="Comments..." cdkTextareaAutosize></textarea>
+<div id="commentsDiv">
+    <span>Comments</span>
+    <textarea id="commentBox" #comment [(ngModel)]="commentValue" (ngModelChange)="commentChanged()" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" matInput placeholder="Comments..." cdkTextareaAutosize></textarea>
+</div>

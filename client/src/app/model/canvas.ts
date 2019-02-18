@@ -57,6 +57,32 @@ export class Canvas {
         );
     }
 
+
+    drawCurrentTo(canvas: HTMLCanvasElement): void {
+        const context = canvas.getContext('2d');
+        let correctionX = 0, correctionY = 0;
+        if (canvas.width > this.currentCanvas.width) {
+            correctionX = (canvas.width - this.currentCanvas.width) / 2;
+        }
+        if (canvas.height > this.currentCanvas.height) {
+            correctionY = (canvas.height - this.currentCanvas.height) / 2;
+        }
+        const w = Math.min(this.currentCanvas.width, canvas.width);
+        const h = Math.min(this.currentCanvas.height, canvas.height);
+        context.drawImage(
+            this.currentCanvas,
+            this.offsetX, // Source x
+            this.offsetY, // Source y
+            w, // Source width
+            h, // Source height
+            correctionX, // Destination x
+            correctionY, // Destination y
+            w, // Destination width
+            h // Destination height
+        );
+        
+    }
+
     getDisplayContext(): CanvasRenderingContext2D {
         return this.displayCanvas.getContext('2d');
     }

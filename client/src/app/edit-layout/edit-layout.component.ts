@@ -1,4 +1,4 @@
-import { ToolboxService } from './toolbox/toolbox.service';
+import { ToolboxService, TOOL_NAMES } from './toolbox/toolbox.service';
 import { ZoomComponent } from './editor/zoom/zoom.component';
 import { environment } from './../../environments/environment.prod';
 import { EditorService } from './editor/editor.service';
@@ -11,6 +11,9 @@ import { RightMenuComponent } from './right-menu/right-menu.component';
 import { MatSidenav } from '@angular/material';
 import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { BioPicker } from '../model/biopicker';
+import { Point } from '../model/point';
+import { ToolPropertiesService } from './toolbox/tool-properties/tool-properties.service';
 
 @Component({
     selector: 'app-edit-layout',
@@ -35,7 +38,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     sliderZoom: number;
     constructor(private cdRef: ChangeDetectorRef, public biomarkersService: BiomarkersService,
         public layersService: LayersService, public appService: AppService,
-        public editorService: EditorService, public toolboxService: ToolboxService,
+        public editorService: EditorService, public toolboxService: ToolboxService, public toolPropertiesService: ToolPropertiesService,
         public deviceService: DeviceDetectorService) {
             this.sliderZoom = 0;
     }
@@ -56,10 +59,16 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     public openBiomarkers(event: MouseEvent): void {
-        document.getElementById('bodyblack').style.opacity = '0.6';
+        if (! this.deviceService.isDesktop()) {
+            return;
+        }
         event.stopPropagation();
-        this.editorService.menuState = true;
-        this.positionMenu(event);
+        const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
+        if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
+            document.getElementById('bodyblack').style.opacity = '0.6';
+            this.editorService.menuState = true;
+            this.positionMenu(event);
+        }
     }
 
     public getPosition(event: MouseEvent): any {
@@ -77,9 +86,9 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
         return { x: posx, y: posy };
     }
 
-    public positionMenu(event: MouseEvent): void {
+    public positionMenu(clientPos): void {
         const appEditor = document.getElementById('edit-viewport');
-        this.menuPosition = this.getPosition(event);
+        this.menuPosition = clientPos;
         this.menuPositionX = this.menuPosition.x;
         this.menuPositionY = this.menuPosition.y;
 
@@ -101,8 +110,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     selectBiomarker(item: HTMLElement): void {
-        this.layersService.selectedBiomarkerId = item.id;
-        this.biomarkersService.currentElement = item;
+        this.biomarkersService.setFocusBiomarker(item);
     }
 
     closeMenu(): void {
@@ -122,7 +130,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
         event.keyCode === HOTKEYS.KEY_CTRL_Y_REDO && this.commandOrCtrlPressed(event)) {
             event.preventDefault();
         }
-        if (this.appService.keyEventsEnabled) {
+        if (this.appService.keyEventsEnabled && this.biomarkersService.flat !== undefined) {
             const current = this.biomarkersService.flat.filter((b) => b.id === this.biomarkersService.currentElement.id)[0];
             let index = this.biomarkersService.flat.indexOf(current);
             switch (event.keyCode) {
@@ -136,6 +144,14 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
                     this.selectBiomarker(this.biomarkersService.flat[index]);
                     break;
                 }
+                case HOTKEYS.KEY_PLUS: {
+                    this.toolPropertiesService.incrementBrushWidth(1);
+                    break;
+                }
+                case HOTKEYS.KEY_MINUS: {
+                    this.toolPropertiesService.incrementBrushWidth(-1);
+                    break;
+                }
             }
         }
     }
@@ -145,11 +161,11 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
     }
 
     zoomSliderChange(event: any): void {
-        const v = Math.pow(event.value/100, 3);
+        const v = Math.pow(event.value / 100, 3);
         this.editorService.setZoomFactor(v);
     }
 
-    updateSlider(zoomFactor: number): void{
-        this.sliderZoom = Math.pow(zoomFactor, 1/3)*100;
+    updateSlider(zoomFactor: number): void {
+        this.sliderZoom = Math.pow(zoomFactor, 1 / 3) * 100;
     }
 }
