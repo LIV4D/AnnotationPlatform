@@ -106,7 +106,7 @@ export class EditorComponent implements OnInit, OnDestroy {
             } else {
                 brushWidth += brushInc * brushWidth / 10;
             }
-            brushWidth = Math.max(0, Math.round(brushWidth));
+            brushWidth = Math.round(brushWidth);
             this.toolPropertiesService.setBrushWidth(brushWidth);
         }
     }

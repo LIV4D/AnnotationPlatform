@@ -2,7 +2,7 @@ import { LayersService, ANNOTATION_PREFIX } from './../../editor/layers/layers.s
 import { Injectable } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { BiomarkerCanvas } from './../../../model/biomarker-canvas';
-import { element } from '@angular/core/src/render3/instructions';
+import { element, elementStylingMap } from '@angular/core/src/render3/instructions';
 import { Observable } from 'rxjs';
 import { disableDebugTools } from '@angular/platform-browser';
 
@@ -50,7 +50,7 @@ export class BiomarkersService {
             this.lastBiomarkers = this.flat.filter( (elem) => this.isBiomarkerEnabled(elem.id));
 
             for (let i = 0 ; i < this.flat.length; i++) {
-                if (this.onlyEnabledBiomarkers.indexOf(this.flat[i].id) !== -1) {
+                if (this.flat[i].id === this.onlyEnabledBiomarkers[0]) {
                     this.setFocusBiomarker(this.flat[i]);
                     break;
                 }
@@ -108,10 +108,18 @@ export class BiomarkersService {
     }
 
     public setFocusBiomarker(elem: HTMLElement): void {
+        if (this.currentElement !== null && this.currentElement !== undefined && this.currentElement.id === elem.id) {
+            return;
+        }
         if (this.isBiomarkerEnabled(elem.id)) {
             if (this.currentElement !== null && this.currentElement !== undefined) {
-                this.lastBiomarkers.splice(this.lastBiomarkers.indexOf(this.currentElement), 1);
-                this.lastBiomarkers.splice(0, 0, this.currentElement);
+                for (let i = 0; i < this.lastBiomarkers.length; i++) {
+                    if (this.lastBiomarkers[i].id === this.currentElement.id) {
+                        this.lastBiomarkers.splice(i, 1);
+                        this.lastBiomarkers.splice(0, 0, this.currentElement);
+                        break;
+                    }
+                }
             }
             this.currentElement = elem;
             this.layersService.selectedBiomarkerId = elem.id;

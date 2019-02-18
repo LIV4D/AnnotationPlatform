@@ -13,14 +13,17 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class ToolPropertiesComponent implements OnInit {
 
     selectedTool: Tool;
-    sliderValue: number;
+    eraserSize: number;
+    brushSize: number;
     eraseAll: boolean;
     smartMask: boolean;
 
     constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService) {
-        this.eraseAll = false;
+        this.eraseAll = true;
         this.smartMask = false;
-        toolboxService.setToolPropertiesComponent(this);
+        this.eraserSize = 25;
+        this.brushSize = 10;
+        // toolboxService.setToolPropertiesComponent(this);
         this.toolPropertiesService.brushWidthChanged.subscribe( (v) => { this.sliderValue = v; });
      }
 
@@ -28,12 +31,26 @@ export class ToolPropertiesComponent implements OnInit {
         this.toolboxService.selectedTool.subscribe(
         value => {
             this.selectedTool = value;
+            if (this.selectedTool !== undefined && this.selectedTool.name === 'brush' || this.selectedTool.name === 'eraser') {
+                this.toolPropertiesService.setBrushWidth(this.sliderValue);
+            }
         });
-        this.sliderValue = this.toolPropertiesService.brushWidth;
     }
 
     handleSliderChange(event: any): void {
         this.toolPropertiesService.setBrushWidth(event.value);
+    }
+
+    get sliderValue(): number {
+        return this.selectedTool !== undefined && this.selectedTool.name === 'eraser' ? this.eraserSize : this.brushSize;
+    }
+
+    set sliderValue(s: number) {
+        if (this.selectedTool !== undefined && this.selectedTool.name === 'eraser') {
+            this.eraserSize = s;
+        } else {
+            this.brushSize = s;
+        }
     }
 
     toggleEraseAll(): void {

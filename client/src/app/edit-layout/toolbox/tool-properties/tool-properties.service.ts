@@ -14,9 +14,11 @@ export class ToolPropertiesService {
     constructor() {
         this.brushWidth = 10;
         this.smartMask = false;
+        this.eraseAll = true;
     }
 
     setBrushWidth(width: number): void {
+        width = Math.max(1, width);
         if (width === this.brushWidth) {
             return;
         }
@@ -26,7 +28,7 @@ export class ToolPropertiesService {
 
     incrementBrushWidth(delta: number): void {
         let tempBrushWidth = Math.ceil(this.brushWidth + delta);
-        tempBrushWidth = Math.max(1, Math.min(tempBrushWidth, 100));
+        tempBrushWidth = Math.max(1, tempBrushWidth);
         this.setBrushWidth(tempBrushWidth);
     }
 

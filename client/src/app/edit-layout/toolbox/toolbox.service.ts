@@ -33,7 +33,7 @@ export class ToolboxService {
 
     selectedTool: BehaviorSubject<Tool>;
     listOfTools: Tool[];
-    totalPropertiesComponent: ToolPropertiesComponent;
+    // toolPropertiesComponent: ToolPropertiesComponent;
 
 
     constructor(private toolPropertiesService: ToolPropertiesService,
@@ -41,12 +41,12 @@ export class ToolboxService {
 
         this.listOfTools = [
             new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)'),
-            new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)'),
-            new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Erase Brush (G)'),
             new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)'),
             // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
             new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)'),
             // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
+            new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)'),
+            new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)'),
             new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)'),
             new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
                      navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)'),
@@ -60,13 +60,10 @@ export class ToolboxService {
         return this.toolPropertiesService;
     }
 
-    setToolPropertiesComponent(tool: ToolPropertiesComponent): void {
-        this.totalPropertiesComponent = tool;
+/*    setToolPropertiesComponent(tool: ToolPropertiesComponent): void {
+        this.toolPropertiesComponent = tool;
     }
-
-    getToolPropertiesComponent(): ToolPropertiesComponent {
-        return this.totalPropertiesComponent;
-    }
+*/
 
     setSelectedTool(newSelectedTool: Tool): void {
         if (newSelectedTool.name === TOOL_NAMES.UNDO) {
