@@ -165,7 +165,7 @@ def update_base_revision(image_id,
 def update_biomarker(image_id, biomarker, png, update_all_revision=False, display=False):
     svg_tree = ET.fromstring(get_base_revision(image_id))
     biomarker = [_ for _ in svg_tree.iter() if _.get('id')==biomarker][0]
-    biomarker.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png.decode('ascii')))
+    biomarker.set('xlink:href', 'data:image/png;base64,{!s}'.format(png.decode('ascii')))
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
