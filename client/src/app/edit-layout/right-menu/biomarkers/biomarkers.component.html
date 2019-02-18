@@ -68,7 +68,7 @@
         <input [(ngModel)]="opacity" (input)="changeOpacity($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" maxlength="4"/>
     </div>
     <!--SHADOWS-->
-    <div id="shadows">
+    <div id="shadows" *ngIf="imageBorderService.showBorders">
         <span>Shadows</span>
         <mat-checkbox [disableRipple]="true" (change)="toggleShadows()" [checked]="shadowsChecked" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
             matTooltipPosition="right"></mat-checkbox>

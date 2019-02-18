@@ -20,14 +20,14 @@ export class BiomarkerCanvas extends Canvas {
         this.borderCanvas.width = image.width;
         this.borderCanvas.height = image.height;
         this.borderCanvas.getContext('2d').drawImage(image, 0, 0);
-        this.borderCanvas.getContext('')
-        this.invertedColor = this.invertColor(color);
+        this.color = color;
         const currentCtx = this.getCurrentContext();
         currentCtx.imageSmoothingEnabled = false;
         currentCtx.mozImageSmoothingEnabled = false;
         currentCtx.webkitImageSmoothingEnabled = false;
     }
-    invertColor(hex) {
+
+    lightenColor(hex): string {
         if (hex.indexOf('#') === 0) {
             hex = hex.slice(1);
         }
@@ -39,9 +39,9 @@ export class BiomarkerCanvas extends Canvas {
             throw new Error('Invalid HEX color.');
         }
         // invert color components
-        var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-            g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-            b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+        const r = Math.min(50 + parseInt(hex.slice(0, 2), 16), 255).toString(16);
+        const g = Math.min(50 + parseInt(hex.slice(2, 4), 16), 255).toString(16);
+        const b = Math.min(50 + parseInt(hex.slice(4, 6), 16), 255).toString(16);
         // pad each with zeros and return
         return '#' + r + g + b;
     }
@@ -50,19 +50,17 @@ export class BiomarkerCanvas extends Canvas {
         const context = this.displayCanvas.getContext('2d');
 
         if (this.drawShadows) {
-            context.shadowBlur = 15;
-            context.shadowColor = this.invertedColor;
-        }
-        else{
+            context.shadowBlur = 5;
+            context.shadowColor = this.lightenColor(this.color);
+        } else {
             context.shadowBlur = 0;
         }
-        
+
         if (this.drawBorders) {
             this.drawFrom(this.borderCanvas);
         } else {
             super.draw();
         }
-        
     }
 
     //  Spread the changes from the displayCanvas to the currentCanvas

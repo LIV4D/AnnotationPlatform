@@ -127,14 +127,16 @@ export class BiomarkersComponent {
         this.visibilityAll = this.visibilityAll === 'visible' ? 'hidden' : 'visible';
         this.biomarkersService.toggleAllBiomarkers(this.visibilityAll);
     }
-    
+
     public toggleBorders(): void {
         this.imageBorderService.showBorders = !this.imageBorderService.showBorders;
         this.layerService.toggleBorders(this.imageBorderService.showBorders);
         if (this.imageBorderService.showBorders) {
             this.biomarkersService.changeOpacity('100');
+            this.layerService.toggleShadows(this.shadowsChecked);
         } else {
             this.biomarkersService.changeOpacity(this.opacity.toString());
+            this.layerService.toggleShadows(false);
         }
     }
 
