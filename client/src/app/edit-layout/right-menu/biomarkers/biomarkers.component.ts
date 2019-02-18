@@ -144,7 +144,7 @@ export class BiomarkersComponent {
     }
 
     public resetOpacity(): void {
-        this.opacity = 100;
+        this.opacity = 50;
         this.biomarkersService.changeOpacity(this.opacity.toString());
     }
 
