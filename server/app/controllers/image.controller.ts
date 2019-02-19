@@ -25,6 +25,7 @@ export class ImageController implements IRegistrableController {
         app.get('/api/images/:imageId/', this.getImage);
         app.get('/api/images/:imageId/baseRevision/', this.getImageBaseRevision);
         app.get('/api/images/', this.getImages);
+        app.get('/api/images/list', this.listImages);
         app.delete('/api/images/:imageId', this.deleteImage);
         app.get('/api/gallery/', this.getGallery);
         app.get('/api/images/:imageId/getFile', this.getImageFile);
@@ -93,6 +94,16 @@ export class ImageController implements IRegistrableController {
                     delete image.baseRevision;
                 });
                 res.send(images);
+            })
+            .catch(next);
+    }
+
+    private listImages = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req);
+        this.imageService.getImages()
+            .then(images => {
+                const imagesPrototype = images.map(i => i.prototype());
+                res.send(imagesPrototype);
             })
             .catch(next);
     }

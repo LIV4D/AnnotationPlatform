@@ -19,6 +19,7 @@ export class RevisionController implements IRegistrableController {
     public register(app: express.Application): void {
         // Collection
         app.get('/api/revisions', this.getRevisions);
+        app.get('/api/revisions/list', this.listRevisions);
         // Element
         app.post('/api/revisions', this.createRevision);
         app.get('/api/revisions/emptyRevision/:imageTypeId', this.getEmptyRevision);
@@ -33,6 +34,15 @@ export class RevisionController implements IRegistrableController {
         throwIfNotAdmin(req);
         this.revisionService.getRevisions()
             .then(revisions => res.send(revisions))
+            .catch(next);
+    }
+
+    private listRevisions = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req);
+        this.revisionService.getRevisions()
+            .then(revisions => {
+                const revisionsPrototype = revisions.map(r => r.prototype());
+                res.send(revisionsPrototype); })
             .catch(next);
     }
 

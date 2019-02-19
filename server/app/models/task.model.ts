@@ -3,6 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Image } from './image.model';
 import { TaskType } from './taskType.model';
 import { User } from './user.model';
+import { TaskPrototype } from './taskPrototype.model';
 
 @Entity()
 export class Task {
@@ -23,4 +24,8 @@ export class Task {
 
     @Column()
     public completed: boolean;
+
+    prototype(): TaskPrototype {
+        return new TaskPrototype(this);
+    }
 }

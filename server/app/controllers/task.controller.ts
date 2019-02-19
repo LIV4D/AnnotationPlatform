@@ -14,9 +14,11 @@ export class TaskController implements IRegistrableController {
     public register(app: express.Application): void {
         // Collection
         app.get('/api/tasks', this.getTasks);
+        app.get('/api/tasks/list', this.listTasks);
         app.get('/api/tasklist/:userId', this.getTaskList);
         app.post('/api/tasks', this.createTask);
         app.get('/api/tasks/findByUser/:userId', this.getTasksByUser);
+        app.get('/api/tasks/list/:userId', this.listTasksByUser);
         app.get('/api/tasks/:userId/:imageId/', this.getTasksByUserByImage);
         // Element
         app.get('/api/tasks/:taskId', this.getTask);
@@ -28,6 +30,16 @@ export class TaskController implements IRegistrableController {
         throwIfNotAdmin(req);
         this.taskService.getTasks()
             .then(tasks => res.send(tasks))
+            .catch(next);
+    }
+
+    private listTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req);
+        this.taskService.getTasks()
+            .then(tasks => {
+                const tasksPrototype = tasks.map(t => t.prototype());
+                res.send(tasksPrototype);
+            })
             .catch(next);
     }
 
@@ -65,6 +77,18 @@ export class TaskController implements IRegistrableController {
         }
         this.taskService.getTasksByUser(req.params.userId)
             .then(task => res.send(task))
+            .catch(next);
+    }
+
+    private listTasksByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if (req.user.id !== req.params.userId) {
+            throwIfNotAdmin(req);
+        }
+        this.taskService.getTasksByUser(req.params.userId)
+            .then(task => {
+                const tasksPrototype = task.map(t => t.prototype());
+                res.send(tasksPrototype);
+            })
             .catch(next);
     }
 

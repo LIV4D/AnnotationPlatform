@@ -4,6 +4,7 @@ import { ImageType } from './imageType.model';
 import { Preprocessing } from './preprocessing.model';
 import { Revision } from './revision.model';
 import { Task } from './task.model';
+import { ImagePrototype } from './imagePrototype.model';
 
 @Entity()
 export class Image {
@@ -57,5 +58,9 @@ export class Image {
         const imgDirname = path.match(/.*\//);
         const imgBasename = path.replace(/.*\//, '');
         return imgDirname + '/' + 'thumbnailI' + imgBasename.substr(1);  // HACKISH
+    }
+
+    prototype(): ImagePrototype {
+        return new ImagePrototype(this);
     }
 }
