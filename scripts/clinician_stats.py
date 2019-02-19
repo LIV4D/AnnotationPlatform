@@ -4,7 +4,6 @@ from os.path import basename, join, abspath
 import pandas as pd
 
 path = abspath(join(os.path.dirname(os.path.realpath(__file__)), '../cli/'))
-print(path)
 sys.path.append(path) 
 import liv4dcli as cli
 from junno import log
@@ -20,7 +19,6 @@ clinicians = {
     "Karim Hammamji": "7b1dc155-f885-4ad8-9582-b5db27196c66",
     "Renaud Duval": "02758e79-f1e1-4989-8e57-5658672a2b12"
 }
-clinicians_id = {v: k for k, v in clinicians.items()}
 
 def get_stats(path):
     # Retreive data
@@ -28,52 +26,40 @@ def get_stats(path):
     incomplete_tasks = {_: 0 for _ in clinicians.keys()}
     total_completed_time = {_: 0 for _ in clinicians.keys()}
     total_time = {_: 0 for _ in clinicians.keys()}
-    with log.Process('Retreiving Tasks List'):
-        tasks = None
-        while tasks is None:
-            try:
-                tasks = cli.task.list_task()
-            except Exception:
-                log.warn('Error retreiving task list. Retrying...')
     
-    with log.Process('Getting Tasks Info', total=len(tasks)) as p:
-        for task in tasks:
-            clinician_id = task['user']['id']
-            clinician = clinicians_id[clinician_id]
+    with log.Process('Retreiving Clinicians Stats', total=len(clinicians)) as p:
+        for clinician, clinician_id in clinicians.items():
+            # Get tasks from a clinician
+            tasks = cli.task.list_task(clinician_id)
             
-            if task['completed']:
-                completed_tasks[clinician] += 1
-            else:
-                incomplete_tasks[clinician] += 1
-            
-            img_id = tasks[0]['image']['id']
-            
-            revision = None
-            while revision is None:
-                try:
-                    revision = cli.revision.get_revision(clinician_id, img_id)
-                except Exception:
-                    log.warn('Error retreiving revision (img=%i, clinician=%s). Retrying...' % (img_id, clinician))
-            comment = revision.get('diagnostic', '')
-            
-            for c in comment.split(']'):
-                c = c.strip()
-                if c.startswith('[time='):
-                    t = int(c[6:8])*60 + int(c[9:11])
-                    total_time[clinician] += t
+            with log.Process(clinician, total=len(tasks), verbose=False) as p_task:
+                for task in tasks:
+                    # Check completion
+                    completed = task['completed']
+                    if completed:
+                        completed_tasks[clinician] += 1
+                    else:
+                        incomplete_tasks[clinician] += 1
                     
-                    if task['completed']:
-                        total_completed_time[clinician] += t
+                    # Get revision of this task
+                    img_id = task['image']['id']
+                    revision = cli.revision.get_revision(clinician_id, img_id)
+                        
+                    # Read time
+                    comment = revision.get('diagnostic', '')
+                    for c in comment.split(']'):
+                        c = c.strip()
+                        if c.startswith('[time='):
+                            t = int(c[6:8])*60 + int(c[9:11])
+                            total_time[clinician] += t
+                            
+                            if completed:
+                                total_completed_time[clinician] += t
+                    p_task.update(1)
             p.update(1)
 
     # Format data
-    def time2str(t):
-        if t > 3600:
-            h = t // 3600
-            m = t % 3600
-            return '%i:%i:%i' % (h, m//60, m%60)
-        else:
-            return '%i:%i' % (t//60, t%60)
+    from junno.j_utils.string import time2str
         
     F_total_time = {c: time2str(t) for c, t in total_time.items()}
     F_total_completed_time = {c: time2str(t) for c, t in total_completed_time.items()}
@@ -82,10 +68,10 @@ def get_stats(path):
     c = list(clinicians.keys())
 
     df = pd.DataFrame({'CompletedTasks': pd.Series(completed_tasks, index=c),
-                    'IncompleteTasks': pd.Series(incomplete_tasks, index=c),
-                    'AverageTime': pd.Series(F_average_time, index=c),
-                    'TotalTimeComplete': pd.Series(F_total_completed_time, index=c),
-                    'TotalTime': pd.Series(F_total_time, index=c),})
+                       'IncompleteTasks': pd.Series(incomplete_tasks, index=c),
+                       'AverageTime': pd.Series(F_average_time, index=c),
+                       'TotalTimeComplete': pd.Series(F_total_completed_time, index=c),
+                       'TotalTime': pd.Series(F_total_time, index=c),})
 
     df.to_excel(path)
     

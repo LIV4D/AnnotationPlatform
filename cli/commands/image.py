@@ -63,7 +63,7 @@ def _list_image():
     list_image(True)
 
 def list_image(display=False):
-    response = utils.request_server('GET', '/api/images')
+    response = utils.request_server('GET', '/api/images/list')
     if display:
         print('Image table')
         utils.pretty_print_table(response.json())
