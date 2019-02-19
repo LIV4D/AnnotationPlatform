@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ToolPropertiesService {
 
     brushWidth: number;
-    eraseAll: boolean;
+    eraseAll: boolean;s
     smartMask: boolean;
     brushWidthChanged = new BehaviorSubject<number>(10);
 
@@ -22,8 +22,8 @@ export class ToolPropertiesService {
         if (width === this.brushWidth) {
             return;
         }
-        this.brushWidth = width;
-        this.brushWidthChanged.next(width);
+        this.brushWidth = Math.max(1, width);
+        this.brushWidthChanged.next(Math.max(1, width));
     }
 
     incrementBrushWidth(delta: number): void {
