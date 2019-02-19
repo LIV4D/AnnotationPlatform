@@ -10,7 +10,7 @@ export class RevisionPrototype {
 
     constructor(revision: Revision) {
         this.id = revision.id;
-        this.image = revision.image === undefined ? revision.image.prototype() : undefined;
+        this.image = revision.image === undefined ? undefined : revision.image.prototype();
         this.user = revision.user;
         this.diagnostic = revision.diagnostic;
     }

@@ -13,7 +13,7 @@ export class TaskPrototype {
 
     constructor(task: Task) {
         this.id = task.id;
-        this.image = task.image === undefined ? task.image.prototype() : undefined;
+        this.image = task.image === undefined ? undefined : task.image.prototype();
         this.user = task.user;
         this.active = task.active;
         this.completed = task.completed;
