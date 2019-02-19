@@ -86,7 +86,7 @@ export class TaskController implements IRegistrableController {
         }
         this.taskService.getTasksByUser(req.params.userId)
             .then(task => {
-                const tasksPrototype = task.map(t => t.prototype());
+                const tasksPrototype = task.map(t => t === undefined ? undefined : t.prototype());
                 res.send(tasksPrototype);
             })
             .catch(next);
