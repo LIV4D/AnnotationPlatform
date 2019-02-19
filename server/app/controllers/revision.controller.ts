@@ -26,6 +26,7 @@ export class RevisionController implements IRegistrableController {
         app.get('/api/revisions/:revisionId', this.getRevision);
         app.get('/api/revisions/:userId/:imageId', this.getRevisionForUserForImage);
         app.put('/api/revisions/:userId/:imageId', this.updateRevisionForUserForImage);
+        app.get('/api/revisions/proto/:userId/:imageId', this.getRevisionProtoForUserForImage);
         app.get('/api/revisions/svg/:userId/:imageId', this.getSvgForUserForImage);
         app.delete('/api/revisions/:userId/:imageId', this.deleteRevisionForUserForImage);
     }
@@ -77,6 +78,15 @@ export class RevisionController implements IRegistrableController {
         }
         this.revisionService.getRevisionForUserForImage(req.params.userId, req.params.imageId)
             .then(revision => res.send(revision))
+            .catch(next);
+    }
+
+    private getRevisionProtoForUserForImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if (req.user.id !== req.params.userId) {
+            throwIfNotAdmin(req);
+        }
+        this.revisionService.getRevisionForUserForImage(req.params.userId, req.params.imageId)
+            .then(revision => res.send(revision.prototype()))
             .catch(next);
     }
 
