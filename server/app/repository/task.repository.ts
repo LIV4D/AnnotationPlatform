@@ -43,6 +43,8 @@ export class TaskRepository {
                 .createQueryBuilder('task')
                 .where('task.user.id = :id', { id: userId })
                 .leftJoinAndSelect('task.image', 'image')
+                .leftJoinAndSelect('task.taskType', 'taskType')
+                .leftJoinAndSelect('task.user', 'user')
                 .getMany();
         });
     }
@@ -56,6 +58,7 @@ export class TaskRepository {
                 .andWhere('task.image.id = :imgId', { imgId: imageId })
                 .andWhere('task.active = :active', { active: true })
                 .leftJoinAndSelect('task.taskType', 'taskType')
+                .leftJoinAndSelect('task.user', 'user')
                 .getMany();
         });
     }
