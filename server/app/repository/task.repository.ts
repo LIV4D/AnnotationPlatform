@@ -42,7 +42,7 @@ export class TaskRepository {
                 .getRepository(Task)
                 .createQueryBuilder('task')
                 .where('task.user.id = :id', { id: userId })
-                .leftJoin('image', 'image', 'image.id=task.image.id')
+                .leftJoinAndSelect('image', 'image', 'image.id=task.image.id')
                 .getMany();
         });
     }
