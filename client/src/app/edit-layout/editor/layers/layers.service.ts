@@ -235,7 +235,7 @@ export class LayersService {
         this.appService.loading = false;
     }
 
-    toggleShadows(showShadows:boolean): void {
+    toggleShadows(showShadows: boolean): void {
         this.appService.loading = true;
         this.biomarkerCanvas.forEach((b) => {
             b.drawShadows = showShadows;
