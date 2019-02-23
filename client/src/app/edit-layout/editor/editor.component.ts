@@ -111,6 +111,15 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
     }
 
+    onPointerDown(event: PointerEvent): void {
+        this.onMouseDown(event);
+    }
+
+    onPointerMove(event: PointerEvent): void {
+        console.log(event.pressure);
+        this.onMouseMove(event);
+    }
+
     onTouchStart(event: TouchEvent): void {
         if (this.touchFreeze) {
             return;

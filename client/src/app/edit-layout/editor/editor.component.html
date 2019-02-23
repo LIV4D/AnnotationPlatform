@@ -9,6 +9,11 @@
     (touchmove)="onTouchMove($event)" 
     (touchend)="onTouchEnd($event)"
     (touchcancel)="onTouchCancel($event)"
+    (pointerdown)="onPointerDown($event)"
+    (pointerup)="onMouseUp($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointercancel)="onMouseLeave($event)"
+    (pointerleave)="onMouseLeave($event)"
     
     [ngStyle]="{'transform': 'scaleX(' + editorService.scaleX + ')'}">
     <canvas id="main-canvas"></canvas>
