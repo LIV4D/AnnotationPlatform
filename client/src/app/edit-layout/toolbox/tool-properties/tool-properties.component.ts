@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { getParentRenderElement } from '@angular/core/src/view/util';
 import { ToolPropertiesService } from './tool-properties.service';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { AppService } from 'src/app/app.service';
 
 @Component({
   selector: 'app-tool-properties',
@@ -18,7 +19,8 @@ export class ToolPropertiesComponent implements OnInit {
     eraseAll: boolean;
     smartMask: boolean;
 
-    constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService) {
+    constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService, 
+                public appService: AppService) {
         this.eraseAll = true;
         this.smartMask = false;
         this.eraserSize = 25;
@@ -61,5 +63,9 @@ export class ToolPropertiesComponent implements OnInit {
     toggleSmartMask(): void {
         this.smartMask = !this.smartMask;
         this.toolPropertiesService.SetSmartMask(this.smartMask);
+    }
+
+    togglePressure(): void {
+        this.toolPropertiesService.setEnableBrushMultiplier(!this.toolPropertiesService.enableBrushMultiplier);
     }
 }

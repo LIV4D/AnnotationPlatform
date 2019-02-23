@@ -10,10 +10,10 @@
     (touchend)="onTouchEnd($event)"
     (touchcancel)="onTouchCancel($event)"
     (pointerdown)="onPointerDown($event)"
-    (pointerup)="onMouseUp($event)"
+    (pointerup)="onPointerUp($event)"
     (pointermove)="onPointerMove($event)"
-    (pointercancel)="onMouseLeave($event)"
-    (pointerleave)="onMouseLeave($event)"
+    (pointercancel)="onPointerLeave($event)"
+    (pointerleave)="onPointerLeave($event)"
     
     [ngStyle]="{'transform': 'scaleX(' + editorService.scaleX + ')'}">
     <canvas id="main-canvas"></canvas>

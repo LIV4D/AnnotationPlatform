@@ -12,6 +12,7 @@
             <mat-slider [(value)]="brushSize" (input)="handleSliderChange($event)" min="1" max="100">
             </mat-slider>
             <span class="sliderValue">{{brushSize}} px</span>
+            <button id="button-pressure" matTooltip="Modulate with pointer pressure" matTooltipShowDelay="1000" matTooltipPosition="bottom" mat-button (click)="togglePressure()"><mat-icon>icon-edit</mat-icon></button>
         </div>
         
         <div class="property" *ngIf="selectedTool.name == 'eraser' || selectedTool.name == 'lassoEraser'">
