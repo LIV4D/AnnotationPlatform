@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { getParentRenderElement } from '@angular/core/src/view/util';
 import { ToolPropertiesService } from './tool-properties.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { AppService } from 'src/app/app.service';
+import { AppService } from './../../../app.service';
 
 @Component({
   selector: 'app-tool-properties',
