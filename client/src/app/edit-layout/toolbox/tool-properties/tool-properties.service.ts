@@ -18,7 +18,7 @@ export class ToolPropertiesService {
         this.baseBrushWidth = 10;
         this.smartMask = false;
         this.eraseAll = true;
-        this.enableBrushMultiplier = false;
+        this.enableBrushMultiplier = true;
     }
 
     setBrushWidth(width: number, setBaseBrush= true): void {
