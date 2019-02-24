@@ -62,6 +62,7 @@ export class PixelCrayon extends Tool {
             }
 
             ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+            ctx.lineWidth = this.toolPropertiesService.brushWidth;
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
 
