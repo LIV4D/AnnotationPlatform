@@ -7,6 +7,10 @@ mat-slider {
     padding: 0px !important;
 }
 
+.sliderShorten {
+    min-width: 90px !important;
+}
+
 mat-checkbox {
     margin-left: 10px;
 }
@@ -56,4 +60,7 @@ mat-icon {
     color: $icon-color;
     vertical-align: middle;
     cursor: pointer;
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
 }

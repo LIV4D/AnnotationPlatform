@@ -42,6 +42,10 @@ export class ToolPropertiesService {
         if (!this.enableBrushMultiplier) {
             return;
         }
+        multiplier = (Math.max(multiplier, 0.1) - 0.1) / 0.9;
+        if (multiplier > .7) {
+            multiplier += (multiplier - .7) * 2;
+        }
         const delta = Math.ceil(multiplier * this.baseBrushWidth * 5);
         this.setBrushWidth(this.baseBrushWidth + delta, false);
     }
