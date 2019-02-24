@@ -51,3 +51,9 @@ span {
     color: $gray-dark;
     font-size: 20px;
 }
+
+mat-icon {
+    color: $icon-color;
+    vertical-align: middle;
+    cursor: pointer;
+}

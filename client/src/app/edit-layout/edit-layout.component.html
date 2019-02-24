@@ -36,7 +36,7 @@
                 </button>
                 <!--ZOOM WINDOW-->
                 <div id="zoomSlider">
-                    <mat-slider vertical *ngIf="!deviceService.isDesktop()" [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"></mat-slider>
+                    <mat-slider vertical *ngIf="!deviceService.isDesktop() || appService.pointerDetected" [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"></mat-slider>
                 </div>
                 <app-zoom *ngIf="editorService.imageLoaded">
                 </app-zoom>
