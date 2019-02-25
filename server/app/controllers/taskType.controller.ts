@@ -4,7 +4,6 @@ import { inject, injectable } from 'inversify';
 import { IRegistrableController } from './registrable.controller';
 import { TaskTypeService } from '../services/taskType.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { TaskType } from '../models/taskType.model';
 
 @injectable()
 export class TaskTypeController implements IRegistrableController {

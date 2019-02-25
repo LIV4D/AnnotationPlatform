@@ -21,10 +21,6 @@ export class TaskTypeService {
     }
 
     public async updateTaskType(taskTypeId: number, name= '', description= ''): Promise<TaskType> {
-        if (name === '' && description === '') {
-            return;
-        }
-
         const taskType = await this.taskTypeRepository.find(taskTypeId);
         if (name !== '') {
             taskType.name = name;
