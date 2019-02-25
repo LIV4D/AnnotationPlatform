@@ -8,7 +8,7 @@
                 <td id="taskName">{{task.taskType.name}}</td>
                 <td id="taskdesc">{{task.taskType.description}}</td>
                 <td>
-                    <input [checked]="task.completed" type="checkbox" (change)="checkTask($event.target.checked, task.id)">
+                    <input [checked]="true" type="checkbox" (change)="checkTask($event.target.checked, task.id)">
                 </td>
             </tr>
         </table>

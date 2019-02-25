@@ -20,6 +20,18 @@ export class TaskTypeService {
         return await this.taskTypeRepository.create(taskType);
     }
 
+    public async updateTaskType(taskTypeId: number, name= '', description= ''): Promise<TaskType> {
+        const taskType = await this.taskTypeRepository.find(taskTypeId);
+        if (name !== '') {
+            taskType.name = name;
+        }
+        if (description !== '') {
+            taskType.description = description;
+        }
+
+        return await this.taskTypeRepository.update(taskType);
+    }
+
     public async getTaskType(id: number): Promise<TaskType> {
         const taskType = await this.taskTypeRepository.find(id);
         if (taskType == null) {

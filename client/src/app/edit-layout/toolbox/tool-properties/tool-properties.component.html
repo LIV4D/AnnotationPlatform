@@ -6,12 +6,14 @@
             <mat-slider [(value)]="eraserSize" (input)="handleSliderChange($event)" min="1" max="100">
             </mat-slider>
             <span class="sliderValue">{{eraserSize}} px</span>
+            <mat-icon *ngIf="appService.pointerDetected" id="button-pressure" [style.background-color]="toolPropertiesService.enableBrushMultiplier?'#676767':'transparent'" (click)="togglePressure()">edit</mat-icon>
         </div>
         <div class="property" *ngIf="selectedTool.name == 'brush'">
             <span id="sliderTitle">Size </span>
             <mat-slider [(value)]="brushSize" (input)="handleSliderChange($event)" min="1" max="100">
             </mat-slider>
-            <span class="sliderValue">{{brushSize}} px</span>
+            <span class="sliderValue" >{{brushSize}} px</span>
+            <mat-icon *ngIf="appService.pointerDetected" id="button-pressure" [style.background-color]="toolPropertiesService.enableBrushMultiplier?'#676767':'transparent'" (click)="togglePressure()">edit</mat-icon>
         </div>
         
         <div class="property" *ngIf="selectedTool.name == 'eraser' || selectedTool.name == 'lassoEraser'">

@@ -13,6 +13,7 @@ export class BugtrackerService {
 
     show(): void {
         this.isVisible = true;
+        setTimeout(() => { document.getElementById('bugDescriptionBox').focus(); }, 0);
     }
 
     hide(): void {

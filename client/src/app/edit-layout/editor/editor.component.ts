@@ -111,6 +111,32 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
     }
 
+    onPointerDown(event: PointerEvent): void {
+        if (event.pointerType === 'pen') {
+            this.appService.pointerDetected = true;
+            this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+        }
+        this.onMouseDown(event);
+    }
+
+    onPointerMove(event: PointerEvent): void {
+        if (event.pointerType === 'pen') {
+            this.appService.pointerDetected = true;
+            this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+        }
+        this.onMouseMove(event);
+    }
+
+    onPointerUp(event: PointerEvent): void {
+        this.toolPropertiesService.setBrushWidthMultiplier(0);
+        this.onMouseUp(event);
+    }
+
+    onPointerLeave(event: PointerEvent): void {
+        this.toolPropertiesService.setBrushWidthMultiplier(0);
+        this.onMouseLeave(event);
+    }
+
     onTouchStart(event: TouchEvent): void {
         if (this.touchFreeze) {
             return;

@@ -16,6 +16,7 @@ export class TaskTypeController implements IRegistrableController {
         app.post('/api/taskTypes', this.createTaskType);
         // Element
         app.get('/api/taskTypes/:taskTypeId', this.getTaskType);
+        app.post('/api/taskTypes/:taskTypeId', this.updateTaskType);
     }
 
     private getTaskTypes = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -40,6 +41,13 @@ export class TaskTypeController implements IRegistrableController {
         throwIfNotAdmin(req);
         this.taskTypeService.getTaskType(req.params.taskTypeId)
             .then(taskType => res.send(taskType))
+            .catch(next);
+    }
+
+    private updateTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req);
+        this.taskTypeService.updateTaskType(req.params.taskTypeId, req.body.name, req.body.description)
+            .then(tType => res.send(tType))
             .catch(next);
     }
 }

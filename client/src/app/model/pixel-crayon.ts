@@ -7,7 +7,7 @@ export class PixelCrayon extends Tool {
 
     isMouseDown = false;
     lastPoint: Point;
-
+    
     constructor(name: string, iconPath: string, tooltip: string) {
         super(name, iconPath, tooltip);
     }
@@ -61,6 +61,11 @@ export class PixelCrayon extends Tool {
                 ctx = this.layersService.biomarkerOverlayContext;
             }
 
+            if  (ctx.lineWidth !== this.toolPropertiesService.brushWidth) {
+                ctx.closePath();
+                ctx.lineWidth = this.toolPropertiesService.brushWidth;
+                ctx.beginPath();
+            }
             ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
             ctx.lineTo(point.x, point.y);
             ctx.stroke();

@@ -42,6 +42,7 @@ export class Eraser extends Tool {
             const ctx = this.maskContext;
 
             ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+            ctx.lineWidth = this.toolPropertiesService.brushWidth;
             ctx.lineTo(point.x, point.y);
             ctx.stroke();
             this.applyDrawCanvas(this.layersService.biomarkerOverlayCanvas);
