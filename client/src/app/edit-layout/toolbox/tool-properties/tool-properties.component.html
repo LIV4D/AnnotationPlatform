@@ -6,20 +6,20 @@
             <mat-slider [(value)]="eraserSize" (input)="handleSliderChange($event)" min="1" max="100">
             </mat-slider>
             <span class="sliderValue">{{eraserSize}} px</span>
+            <mat-icon *ngIf="appService.pointerDetected" id="button-pressure" [style.background-color]="toolPropertiesService.enableBrushMultiplier?'#676767':'transparent'" (click)="togglePressure()">edit</mat-icon>
         </div>
         <div class="property" *ngIf="selectedTool.name == 'brush'">
             <span id="sliderTitle">Size </span>
-            <mat-slider [(value)]="brushSize" (input)="handleSliderChange($event)" min="1" max="100" ng-style="{'max-width': appService.pointerDetected?'90px':'128px'}">
+            <mat-slider [(value)]="brushSize" (input)="handleSliderChange($event)" min="1" max="100">
             </mat-slider>
             <span class="sliderValue" >{{brushSize}} px</span>
-            <button *ngIf="appService.pointerDetected" id="button-pressure" ng-style="{'background-color': toolPropertiesService.enableBrushMultiplier?'#444':'transparent'}" matTooltip="Modulate with pointer pressure" matTooltipShowDelay="1000" matTooltipPosition="bottom" mat-button (click)="togglePressure()"><mat-icon>icon-edit</mat-icon></button>
+            <mat-icon *ngIf="appService.pointerDetected" id="button-pressure" [style.background-color]="toolPropertiesService.enableBrushMultiplier?'#676767':'transparent'" (click)="togglePressure()">edit</mat-icon>
         </div>
         
         <div class="property" *ngIf="selectedTool.name == 'eraser' || selectedTool.name == 'lassoEraser'">
             <div id="superEraser">
                 <span>Erase All</span>
                 <mat-checkbox [disableRipple]="true" (change)="toggleEraseAll()" [checked]="eraseAll"></mat-checkbox>
-                <button *ngIf="appService.pointerDetected" id="button-pressure" matTooltip="Modulate with pointer pressure" matTooltipShowDelay="1000" matTooltipPosition="bottom" mat-button (click)="togglePressure()"><mat-icon>icon-edit</mat-icon></button>
             </div>
         </div>
         <div class="property" *ngIf="selectedTool.name == 'brush' || selectedTool.name == 'fillBrush'">
