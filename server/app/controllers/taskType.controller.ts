@@ -4,6 +4,7 @@ import { inject, injectable } from 'inversify';
 import { IRegistrableController } from './registrable.controller';
 import { TaskTypeService } from '../services/taskType.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { TaskType } from '../models/taskType.model';
 
 @injectable()
 export class TaskTypeController implements IRegistrableController {
@@ -16,6 +17,7 @@ export class TaskTypeController implements IRegistrableController {
         app.post('/api/taskTypes', this.createTaskType);
         // Element
         app.get('/api/taskTypes/:taskTypeId', this.getTaskType);
+        app.post('/api/taskTypes/:taskTypeId', this.updateTaskType);
     }
 
     private getTaskTypes = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -40,6 +42,18 @@ export class TaskTypeController implements IRegistrableController {
         throwIfNotAdmin(req);
         this.taskTypeService.getTaskType(req.params.taskTypeId)
             .then(taskType => res.send(taskType))
+            .catch(next);
+    }
+
+    private updateTaskType(req: express.Request, res: express.Response, next: express.NextFunction): void {
+        throwIfNotAdmin(req);
+        
+        const taskType = new TaskType();
+        taskType.name = req.body.name;
+        taskType.description = req.body.description;
+
+        this.taskTypeService.updateTaskType(req.params.taskTypeId, taskType)
+            .then(tType => res.send(tType))
             .catch(next);
     }
 }

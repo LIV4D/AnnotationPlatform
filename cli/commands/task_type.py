@@ -20,6 +20,25 @@ def create(name, description, display=False):
         print(response.json()['message'])
     return response.json()
 
+@task_type.command(name='update', help='Updates a new task type')
+@click.option('--id', help='Id of the task type to update')
+@click.option('--name', help='Name of the task type', required=False)
+@click.option('--description', help='Description of the task type', required=False)
+def _update(id, name, description):
+    update(id, name, description, True)
+
+def update(id, name=None, description=None):
+    payload = {}
+    if name is not None:
+        payload['name'] = name
+    if description is not None:
+        payload['description'] = description
+    if not payload:
+        return
+    
+    response = utils.request_server('POST', '/api/taskTypes/{}'.format(id), payload)
+    return response.json()
+
 @task_type.command(name='list', help='Lists every task types in the database')
 def _list_task_types():
     list_task_types(True)
@@ -30,3 +49,4 @@ def list_task_types(display=False):
         print('Task types table')
         utils.pretty_print_table(response.json())
     return response.json()
+
