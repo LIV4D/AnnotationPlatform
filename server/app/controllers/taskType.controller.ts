@@ -47,12 +47,8 @@ export class TaskTypeController implements IRegistrableController {
 
     private updateTaskType(req: express.Request, res: express.Response, next: express.NextFunction): void {
         throwIfNotAdmin(req);
-        
-        const taskType = new TaskType();
-        taskType.name = req.body.name;
-        taskType.description = req.body.description;
 
-        this.taskTypeService.updateTaskType(req.params.taskTypeId, taskType)
+        this.taskTypeService.updateTaskType(req.params.taskTypeId, req.body.name, req.body.description)
             .then(tType => res.send(tType))
             .catch(next);
     }
