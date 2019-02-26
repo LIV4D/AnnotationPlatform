@@ -36,7 +36,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     zoomInitPoint: Point;
     zoomInitFactor: number;
     delayEventTimer: any;
-    delayedEventHandler: any;
+    delayedEventHandler: Function;
 
 
     @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
@@ -48,7 +48,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.editorService.imageServer = null;
+        this.editorService.clear();
         this.image = null;
         this.cursorDown = false;
         this.middleMouseDown = false;
@@ -213,12 +213,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
     }
 
-    delayEventHandling(eventHandler: any): void {
+    delayEventHandling(eventHandler: Function): void {
         if (this.delayEventTimer === null) {
             eventHandler();
             const timeout = this.deviceService.isDesktop() ? 5 : 50;
             this.delayEventTimer = setTimeout(() => {
-                while (this.delayedEventHandler !== null) {
+                while (this.delayedEventHandler) {
                     this.delayedEventHandler();
                     this.delayedEventHandler = null;
                 }
@@ -233,7 +233,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         if (this.delayEventTimer !== null) {
             clearTimeout(this.delayEventTimer);
             this.delayEventTimer = null;
-            this.delayedEventHandler();
+            if (this.delayedEventHandler) {
+                this.delayedEventHandler();
+            }
         }
     }
 
