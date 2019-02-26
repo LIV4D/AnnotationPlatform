@@ -48,7 +48,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.editorService.clear();
         this.image = null;
         this.cursorDown = false;
         this.middleMouseDown = false;
