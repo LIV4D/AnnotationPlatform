@@ -1,4 +1,4 @@
-import { Tool } from './tool';
+import { Tool, ToolServices } from './tool';
 import { Point } from './point';
 import { BiomarkerCanvas } from './biomarker-canvas';
 
@@ -7,8 +7,8 @@ export class PointByPointBucket extends Tool {
     public MAX_DISTANCE_X = 5;
     public MAX_DISTANCE_Y = 5;
 
-    constructor(name: string, iconPath: string, tooltip: string) {
-        super(name, iconPath, tooltip);
+    constructor(name: string, iconPath: string, tooltip: string, toolServices: ToolServices) {
+        super(name, iconPath, tooltip, toolServices);
     }
 
     firstPoint: Point = null;
