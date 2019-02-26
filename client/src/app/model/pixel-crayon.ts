@@ -1,4 +1,4 @@
-import { Tool } from './tool';
+import { Tool, ToolServices } from './tool';
 import { Point } from './point';
 import { BiomarkerCanvas } from './biomarker-canvas';
 import { CurrencyIndex } from '@angular/common/src/i18n/locale_data';
@@ -8,8 +8,8 @@ export class PixelCrayon extends Tool {
     isMouseDown = false;
     lastPoint: Point;
     
-    constructor(name: string, iconPath: string, tooltip: string) {
-        super(name, iconPath, tooltip);
+    constructor(name: string, iconPath: string, tooltip: string, toolServices: ToolServices) {
+        super(name, iconPath, tooltip, toolServices);
     }
 
     setStrokeProperties(ctx): void {

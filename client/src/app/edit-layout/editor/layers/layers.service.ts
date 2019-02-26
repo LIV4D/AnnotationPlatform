@@ -138,12 +138,7 @@ export class LayersService {
             canvas.id = ANNOTATION_PREFIX + id;
             this.appLayers.appendChild(canvas);
             this.biomarkerCanvas.push(
-                new BiomarkerCanvas(
-                    canvas,
-                    image,
-                    ANNOTATION_PREFIX + id,
-                    color,
-                    this.biomarkerCanvas.length)
+                new BiomarkerCanvas( canvas, image, ANNOTATION_PREFIX + id, color, this.biomarkerCanvas.length, this.borderService)
             );
     }
 
@@ -235,7 +230,7 @@ export class LayersService {
         this.appService.loading = false;
     }
 
-    toggleShadows(showShadows:boolean): void {
+    toggleShadows(showShadows: boolean): void {
         this.appService.loading = true;
         this.biomarkerCanvas.forEach((b) => {
             b.drawShadows = showShadows;

@@ -41,15 +41,15 @@ def _list_task(user_id=None):
 
 def list_task(user_id=None, display=False):
     if user_id is not None:
-        response = utils.request_server('GET', '/api/tasks/findByUser/{}'.format(user_id))
+        response = utils.request_server('GET', '/api/tasks/list/{}'.format(user_id))
     else:
-        response = utils.request_server('GET', '/api/tasks')
+        response = utils.request_server('GET', '/api/tasks/list')
     if display:
         print('Tasks table')
         pretty_data = [OrderedDict([
                             ('id', _['id']), 
-                            ('user', _['user']['name'] if user_id is None else ''), 
-                            ('img', _['image']['id']),
+                            ('user', _['user']['name']), 
+                            ('img', _.get('image', {'id': '?'})['id']),
                             ('active', '  X' if _['active'] else ' '),
                             ('completed', '    X' if _['completed'] else ' ')
                         ]) for _ in response.json()]

@@ -81,8 +81,10 @@ export class RightMenuComponent implements OnInit {
         this.editorService.saveToDB();
         if (localStorage.getItem('previousPage') === 'tasks') {
             this.router.navigate([`/${ROUTES.TASKS}`]);
+            window.location.reload();
         } else {
             this.router.navigate([`/${ROUTES.GALLERY}`]);
+            window.location.reload();
         }
     }
 

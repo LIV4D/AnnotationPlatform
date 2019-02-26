@@ -35,7 +35,7 @@ def _list_revision():
     list_revision(True)
 
 def list_revision(display=False):
-    response = utils.request_server('GET', '/api/revisions/')
+    response = utils.request_server('GET', '/api/revisions/list')
     if display:
         print('Revisions table')
         pretty_data = [OrderedDict([
@@ -51,15 +51,13 @@ def list_revision(display=False):
 @click.option('--userId', 'user_id', help='Id of the user associated to the revision', required=True)
 @click.option('--imageId', 'image_id', help='Id of the image associated to the revision', required=True)
 def _get_revision(user_id, image_id):
-    get_revision(user_id, image_id, True)
+    get_revision(user_id, image_id)
 
-def get_revision(user_id, image_id, display=False):
-    print('/api/revisions/{}/{}'.format(user_id, image_id))
-    response = utils.request_server('GET', '/api/revisions/{}/{}'.format(user_id, image_id))
-    if display:
-        print('Svg of the revision')
-        print(response.json())
-    return response.json()
+def get_revision(user_id, image_id, svg=True):
+    if svg:
+        return utils.request_server('GET', '/api/revisions/{}/{}'.format(user_id, image_id)).json()
+    else:
+        return utils.request_server('GET', '/api/revisions/proto/{}/{}'.format(user_id, image_id)).json()
 
 @revision.command(name='update', help='Creates a new revision')
 @click.option('--file', 'svg_file', help='file containing the svg of the revision', required=True, type=click.Path())

@@ -20,10 +20,12 @@ export class HeaderComponent {
 
     goToGallery(): void {
         this.router.navigate(['/' + ROUTES.GALLERY]);
+        window.location.reload();
     }
 
     goToTasks(): void {
         this.router.navigate(['/' + ROUTES.TASKS]);
+        window.location.reload();
     }
 
     toggleFullScreen(): void {
@@ -39,6 +41,7 @@ export class HeaderComponent {
     logout(): void {
         this.loginService.logout();
         this.router.navigate(['/' + ROUTES.LOGIN]);
+        window.location.reload();
     }
 
     toggleBugtracker(): void {

@@ -1,12 +1,15 @@
 import { LayersService } from './../edit-layout/editor/layers/layers.service';
 import { Point } from './point';
-import { BiomarkerCanvas } from './biomarker-canvas';
-import { timingSafeEqual } from 'crypto';
-import { RootInjector } from '../root-injector';
 import { EditorService } from '../edit-layout/editor/editor.service';
 import { ToolPropertiesService } from '../edit-layout/toolbox/tool-properties/tool-properties.service';
 import { BiomarkersService } from '../edit-layout/right-menu/biomarkers/biomarkers.service';
-import { ThrowStmt } from '@angular/compiler';
+
+export interface ToolServices {
+    layersService: LayersService;
+    editorService: EditorService;
+    toolPropertiesService: ToolPropertiesService;
+    biomarkersService: BiomarkersService;
+}
 
 export class Tool {
     disabled: boolean;
@@ -17,13 +20,12 @@ export class Tool {
     protected biomarkersService: BiomarkersService;
     protected changeBoundedBox: DOMRect;
 
-    constructor(private _name, private _iconPath: string, private _tooltip: string) {
+    constructor(private _name, private _iconPath: string, private _tooltip: string, toolServices: ToolServices) {
         this.disabled = false;
-        this.layersService = RootInjector.injector.get(LayersService);
-        this.editorService = RootInjector.injector.get(EditorService);
-        this.toolPropertiesService = RootInjector.injector.get(ToolPropertiesService);
-        this.toolPropertiesService.setBrushWidth(10);
-        this.biomarkersService = RootInjector.injector.get(BiomarkersService);
+        this.layersService = toolServices.layersService;
+        this.editorService = toolServices.editorService;
+        this.toolPropertiesService = toolServices.toolPropertiesService;
+        this.biomarkersService = toolServices.biomarkersService;
     }
 
     get iconPath(): string {

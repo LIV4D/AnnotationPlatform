@@ -1,10 +1,10 @@
-import { Tool } from './tool';
+import { Tool, ToolServices } from './tool';
 import { Point } from './point';
 
 export class BioPicker extends Tool {
 
-    constructor(name: string, iconPath: string, tooltip: string) {
-        super(name, iconPath, tooltip);
+    constructor(name: string, iconPath: string, tooltip: string, toolServices: ToolServices) {
+        super(name, iconPath, tooltip, toolServices);
     }
 
     onCursorDown(point: Point): void {

@@ -1,14 +1,14 @@
 import { LayersService } from './../edit-layout/editor/layers/layers.service';
 import { ToolPropertiesService } from './../edit-layout/toolbox/tool-properties/tool-properties.service';
-import { Tool } from './tool';
+import { Tool, ToolServices } from './tool';
 import { Point } from './point';
 import { BiomarkerCanvas } from './biomarker-canvas';
 import { _MatSelectMixinBase } from '@angular/material';
 
 export class PixelBucket extends Tool {
 
-    constructor(name: string, iconPath: string, tooltip: string) {
-        super(name, iconPath, tooltip);
+    constructor(name: string, iconPath: string, tooltip: string, toolServices: ToolServices) {
+        super(name, iconPath, tooltip, toolServices);
     }
 
     isMouseDown = false;

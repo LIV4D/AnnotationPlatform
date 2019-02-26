@@ -1,6 +1,5 @@
 import { Canvas } from './canvas';
 import { ImageBorderService } from '../edit-layout/right-menu/biomarkers/image-border.service';
-import { RootInjector } from '../root-injector';
 
 export class BiomarkerCanvas extends Canvas {
 
@@ -8,11 +7,10 @@ export class BiomarkerCanvas extends Canvas {
     borderCanvas: HTMLCanvasElement;
     drawBorders: boolean;
     drawShadows: boolean;
-    private borderService: ImageBorderService;
     private invertedColor: string;
-    constructor(displayCanvas: HTMLCanvasElement, image: HTMLImageElement, public id: string, public color: string, public index: number) {
+    constructor(displayCanvas: HTMLCanvasElement, image: HTMLImageElement, public id: string, public color: string, public index: number, 
+        private borderService: ImageBorderService) {
         super(displayCanvas, image);
-        this.borderService = RootInjector.injector.get(ImageBorderService);
 
         this.drawBorders = false;
         this.drawShadows = false;

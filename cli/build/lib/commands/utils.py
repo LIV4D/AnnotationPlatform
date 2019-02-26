@@ -72,27 +72,13 @@ def to_boolean(string):
     else:
         return string
 
-
-if __name__ == '__main__':
-    pretty_print_table([
-        {
-            'test': 2,
-            'test2': 47546,
-            'test3': 'teadssadsadsadsdsaadsadas'
-        },
-        {
-            'test': 21546,
-            'test2': '1213',
-            'test3': 'teadssadsadsadsadas'
-        },
-        {
-            'test': 24525,
-            'test2': 'leaesaeadsadsadas',
-            'test3': 'teadssadsadsaddsadsa ddsasadsadas'
-        },
-        {
-            'test': 2211,
-            'test2': 'leadsadsaesaea',
-            'test3': 'teadssaadsadsadas'
-        }
-    ])
+def decode_svg(svg_xref):
+    import base64
+    from io import BytesIO
+    from PIL import Image
+    import numpy
+    if svg_xref.startswith('data:image/png;base64,'):
+        svg_xref = svg_xref[len('data:image/png;base64,'):]
+    png_buffer = BytesIO(base64.b64decode(svg_xref.encode('ascii')))
+    png_img = Image.open(png_buffer)
+    return numpy.array(png_img)[...,3] > 127
