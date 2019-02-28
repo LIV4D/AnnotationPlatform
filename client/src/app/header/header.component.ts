@@ -19,13 +19,11 @@ export class HeaderComponent {
     }
 
     goToGallery(): void {
-        this.router.navigate(['/' + ROUTES.GALLERY]);
-        window.location.reload();
+        this.router.navigate(['/' + ROUTES.GALLERY]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
     }
 
     goToTasks(): void {
-        this.router.navigate(['/' + ROUTES.TASKS]);
-        window.location.reload();
+        this.router.navigate(['/' + ROUTES.TASKS]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
     }
 
     toggleFullScreen(): void {
@@ -40,8 +38,7 @@ export class HeaderComponent {
 
     logout(): void {
         this.loginService.logout();
-        this.router.navigate(['/' + ROUTES.LOGIN]);
-        window.location.reload();
+        this.router.navigate(['/' + ROUTES.LOGIN]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
     }
 
     toggleBugtracker(): void {
