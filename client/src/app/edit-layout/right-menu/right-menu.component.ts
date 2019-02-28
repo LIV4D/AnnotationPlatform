@@ -5,13 +5,13 @@ import { Router } from '@angular/router';
 import { EditorService } from './../editor/editor.service';
 import { AppService } from './../../app.service';
 import { BackgroundCanvas } from './../../model/background-canvas';
-import { EditLayoutComponent } from './../edit-layout.component';
 import { TaskDialogComponent } from './tasks/task-dialog.component';
 import { BiomarkersComponent } from './biomarkers/biomarkers.component';
 import { Component, OnInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { LocalStorage } from './../../model/local-storage';
 import { CommentsService } from './comments/comments.service';
+import { Task } from './../../model/common/task.model';
 
 @Component({
     selector: 'app-right-menu',
@@ -21,7 +21,7 @@ import { CommentsService } from './comments/comments.service';
 export class RightMenuComponent implements OnInit {
     loaded: boolean;
     saveText: string;
-    tasks: any[] = [];
+    tasks: Task[] = [];
     @Input() canvas: BackgroundCanvas;
     @Output() flip: EventEmitter<any> = new EventEmitter();
     @ViewChild('biomarkers') biomarkers: BiomarkersComponent;
@@ -62,6 +62,7 @@ export class RightMenuComponent implements OnInit {
 
     public openTaskDialog(): void {
         if (Object.keys(this.tasks).length > 0) {
+            this.tasks.forEach( (t) => { t.completed = true; });
             const dialogRef = this.dialog.open(TaskDialogComponent, {
                 data: { tasks: this.tasks },
                 width: '600px',
