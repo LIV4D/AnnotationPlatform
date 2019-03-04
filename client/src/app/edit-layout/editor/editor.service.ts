@@ -623,7 +623,7 @@ export class EditorService {
         FileSaver.saveAs(blob, this.localSVGName);
     }
 
-    saveToDB(): void {
+    saveToDB(then: Function = null): void {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         if (this.layersService.unsavedChange) {
             LocalStorage.save(this, this.layersService);
@@ -639,7 +639,11 @@ export class EditorService {
             svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
             diagnostic: this.commentService.comment
         };
-        this.http.put(`/api/revisions/${userId}/${this.imageId}`, body).subscribe();
+        this.http.put(`/api/revisions/${userId}/${this.imageId}`, body).subscribe( () => {
+            if (then !== null) {
+                then();
+            }
+        });
     }
 
     setImageId(id: string): void {
