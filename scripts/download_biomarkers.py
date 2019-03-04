@@ -1,14 +1,16 @@
 import os
 import sys
-from os.path import basename, join, abspath, exists
+from os.path import basename, join, abspath, exists, dirname
+from os import makedirs
 import pandas as pd
 from collections import OrderedDict
+import math
 
 path = abspath(join(os.path.dirname(os.path.realpath(__file__)), '../cli/'))
 sys.path.append(path) 
 import liv4dcli as cli
 from junno import log
-from junno.j_utils.string import time2str
+from junno.j_utils.string import time2str, str2time
 
 
 # ===  CLINICIANS ===
@@ -46,22 +48,23 @@ class RevisionEntry:
         self.time = time
         self.comment = comment
         self.revision_path = revision_path
-        self.biomarkers = biomarker
+        self.biomarkers = biomarkers
         self.clinician = clinician
         self.clinician_id = CLINICIANS[clinician]
 
-    def infer_path(self, rev_dict):
-        if self.revision_path is not None:
-            return self.revision_path
-        sibling_rev = rev_dict[self.img_id]
+    def __str__(self):
+        return '%s|%s %s: [%s] %s' % (self.clinician, self.img_id, self.biomarkers, time2str(self.time), self.comment)
 
-    def revision(self, r):
+    def __repr__(self):
+        return 'RevisionEntry(%s)' % str(self)
+
+    def update(self, r):
         self.time = r.time
         self.comment = r.comment
 
     @staticmethod
     def from_df_row(df_row):
-        return RevisionEntry(img_id=df_row['Image'], time=df_row['time'], comment=df_row['comment'],
+        return RevisionEntry(img_id=df_row['Image'], time=str2time(df_row['time']), comment=df_row['comment'],
                              clinician=df_row['Clinician'], revision_path=df_row['path'], name=df_row['name'])
 
     @staticmethod
@@ -72,7 +75,7 @@ class RevisionEntry:
         b, t, c = get_diagnostic_info(revision['diagnostic'])
         if 'Others' in b:
             b.remove('Others')
-        return RevisionEntry(img_id=img_id, name=img_name, time=time, comment=c, clinician=clinician, biomarkers=b)
+        return RevisionEntry(img_id=img_id, name=img_name, time=t, comment=c, clinician=clinician, biomarkers=b)
 
 
 def info_xls2dict(path):
@@ -80,11 +83,14 @@ def info_xls2dict(path):
         df = pd.read_excel(path)
         r = OrderedDict()
         for id, row in df.iterrows():
+            if math.isnan(row['Image']):
+                continue
             entry = RevisionEntry.from_df_row(row)
-            if entry.img in r:
-                r[entry.img].append(entry)
+            if entry.img_id in r:
+                r[entry.img_id].append(entry)
             else:
-                r[entry.img] = [entry]
+                r[entry.img_id] = [entry]
+        return r
     else:
         return {}
 
@@ -104,10 +110,11 @@ def info_dict2xls(path, rev_dict):
             data_dict['Clinician'].append(r.clinician)
             data_dict['name'].append(r.name)
             data_dict['path'].append(r.revision_path)
-            data_dict['time'].append(r.time)
+            data_dict['time'].append(time2str(r.time))
             data_dict['comment'].append(r.comment)
 
     df = pd.DataFrame(data_dict)
+    makedirs(dirname(path), exist_ok=True)
     df.to_excel(path)
 
 
@@ -119,7 +126,7 @@ def get_diagnostic_info(diagnostic):
     for c in diagnostic.split(']'):
         c_stripped = c.strip()
         if c_stripped.startswith('[onlyEnable='):
-            b = c_stripped.split(',')
+            b = c_stripped[12:].split(',')
             biomarkers += [_ for _ in b if _ not in ('Others', )]
         elif c_stripped.startswith('[time='):
             time = int(c_stripped[6:8])*60 + int(c_stripped[9:11])
@@ -157,9 +164,10 @@ def download(root_path, limit="edited"):
             else:
                 tasks_metadata[task] = {}
     
-    with log.Process('Retreiving Clinicians Infos', total=len(clinicians)) as p:
-        all_revisions = [RevisionEntry.from_revision(_) for _ in cli.revision.list_revision()]
-        
+    with log.Process('Retreiving Clinicians Revisions Infos', total=len(CLINICIANS)) as p:
+        all_revisions = [RevisionEntry.from_revision(_)
+                         for _ in cli.revision.list_revision() if _['user']['id'] in CLINICIANS_ID]
+
         for clinician, clinician_id in CLINICIANS.items():
             clinician_revisions = list(filter(lambda r: r.clinician == clinician, all_revisions))
 
@@ -174,40 +182,52 @@ def download(root_path, limit="edited"):
                 def was_edited(revision):
                     if revision.time == 0:
                         return False
-                    r = tasks_metadata.get(revision.img_id, None)
-                    if r is not None:
+                    #log.info(revision)
+                    for b in revision.biomarkers:
+                        b_task = TASK_BY_BIOMARKER[b]
+                        r = tasks_metadata[b_task].get(revision.img_id, None)
+                        if r is None:
+                            return True
                         for _ in r:
-                            if _.clinician == clinician:
-                                return _.time != revision.time
+                            if _.clinician == clinician and _.time != revision.time:
+                                return True
                     return False
                 revisions = list(filter(was_edited, clinician_revisions))
             elif limit == 'new':
                 def is_new(revision):
-                    r = tasks_metadata.get(revision.img_id, None)
-                    if r is not None:
-                        return all(_.clinician != clinician for _ in r)
+                    for b in revision.biomarkers:
+                        b_task = TASK_BY_BIOMARKER[b]
+                        r = tasks_metadata[b_task].get(revision.img_id, None)
+                        if r is None:
+                            return True
+                        if all(_.clinician != clinician for _ in r):
+                            return True
                     return False
                 revisions = list(filter(is_new, clinician_revisions))
             else:
                 raise NotImplementedError
 
             #   --- Download every selected revision ---
-            with log.Process(clinician, total=len(revisions), verbose=False) as p_revision:
+            with log.Process("Downloading revisions", total=len(revisions), verbose=False) as p_revision:
                 for r in revisions:
                     for b in r.biomarkers:
                         b_task = TASK_BY_BIOMARKER[b]
                         b_path = join(root_path, b_task, b)
-                        update_dict(r, tasks_metadata)
-                        cli.revision.get_revision(image_id=r.img_id, user_id=r.clinician_id, biomarker=b,
-                                                  out=join(b_path, r.revision_path+'.png'))
+                        update_dict(r, tasks_metadata[b_task])
+                        cli.revision.get_biomarker(image_id=r.img_id, user_id=r.clinician_id, biomarker=b,
+                                                   out=join(b_path, r.revision_path+'.png'))
                     p_revision.update(1)
             p.update(1)
 
+        for task, rev_dict in tasks_metadata.items():
+            meta_path = join(root_path, task, 'metadata.xls')
+            info_dict2xls(meta_path, rev_dict)
+
 
 if __name__ == '__main__':
-    path = 'clinician_tasks.xls'
+    path = './'
     if len(sys.argv) > 1:
         cli.config.url = sys.argv[1]
     if len(sys.argv) > 2:
         path = sys.argv[2]
-    get_stats(path)
+    download(path)

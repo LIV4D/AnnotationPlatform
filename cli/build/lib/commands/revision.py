@@ -1,4 +1,6 @@
 import click
+from os import makedirs
+from os.path import dirname
 from . import utils
 from collections import OrderedDict
 import xml.etree.ElementTree as ET
@@ -112,6 +114,7 @@ def get_biomarker(user_id, image_id, biomarker, out='array'):
         import numpy as np
         array = utils.decode_svg(b)
         array = (array*255).astype(np.uint8)
+        makedirs(dirname(out), exist_ok=True)
         Image.fromarray(array).save(out)
         return array
 
