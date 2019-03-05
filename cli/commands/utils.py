@@ -82,3 +82,34 @@ def decode_svg(svg_xref):
     png_buffer = BytesIO(base64.b64decode(svg_xref.encode('ascii')))
     png_img = Image.open(png_buffer)
     return numpy.array(png_img)[...,3] > 127
+
+
+def confirm(text, default=None):
+    answer = ""
+    while answer not in ["y", "n"]:
+        answer = input(text+ "[%s/%s]" % ('Y' if default.lower()=='y' else 'y',
+                                              'N' if default.lower()=='n' else 'n')).lower()
+        if answer=='' and default is not None:
+            answer = default
+    return answer == "y"
+
+
+def info_from_diagnostic(diagnostic):
+    biomarkers = []
+    time = 0
+    comment = ""
+    
+    for c in diagnostic.split(']'):
+        c_stripped = c.strip()
+        if c_stripped.startswith('[onlyEnable='):
+            b = c_stripped[12:].split(',')
+            biomarkers += [_ for _ in b if _ not in ('Others', )]
+        elif c_stripped.startswith('[time='):
+            time = int(c_stripped[6:8])*60 + int(c_stripped[9:11])
+        else:
+            comment += c+']'
+
+    if comment:
+        comment = comment[:-1]
+
+    return biomarkers, time, comment

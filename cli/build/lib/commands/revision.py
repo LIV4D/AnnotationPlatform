@@ -27,7 +27,7 @@ def create(svg_string, user_id, image_id, diagnostic, display=False):
     payload = { 'svg': svg_string, 'userId': user_id, 'imageId': image_id, 'diagnostic': diagnostic }
     response = utils.request_server('POST', '/api/revisions/', payload)
     if response.status_code == 200 and display:
-        print('Revision {!s} has been created in the database.')
+        print('Revision (user=%s, img=%i) has been updated in the database.' % (user_id, image_id))
     elif display:
         print(response.json()['message'])
     return response.json()
@@ -82,7 +82,7 @@ def update_svg(svg_string, user_id, image_id, display=False):
     payload = { 'svg': svg_string}
     response = utils.request_server('PUT', '/api/revisions/{}/{}'.format(user_id, image_id), payload)
     if response.status_code == 200 and display:
-        print('Revision {!s} has been updated in the database.')
+        print('Svg (user=%s, img=%i) has been updated in the database.' % (user_id, image_id))
     elif display:
         print(response.json()['message'])
     return response.json()
@@ -91,7 +91,7 @@ def update_diagnostic(diagnostic, user_id, image_id, display=False):
     payload = { 'diagnostic': diagnostic}
     response = utils.request_server('PUT', '/api/revisions/{}/{}'.format(user_id, image_id), payload)
     if response.status_code == 200 and display:
-        print('Revision {!s} has been updated in the database.')
+        print('Diagnostic (user=%s, img=%i) has been updated in the database.' % (user_id, image_id))
     elif display:
         print(response.json()['message'])
     return response.json()
@@ -109,6 +109,10 @@ def get_biomarker(user_id, image_id, biomarker, out='array'):
         return utils.decode_svg(b)
     elif out.lower()=='svg':
         return b
+    elif out.lower()=='png':
+        if b.startswith('data:image/png;base64,'):
+            b = b[len('data:image/png;base64,'):]
+        return b
     else:
         from PIL import Image
         import numpy as np
@@ -119,14 +123,27 @@ def get_biomarker(user_id, image_id, biomarker, out='array'):
         return array
 
 def update_biomarker(user_id, image_id, biomarker, png, display=False):
-    svg_tree = ET.fromstring(get_base_revision(image_id))
+    if isinstance(png, bytes):
+        png = png.decode('ascii')
+    svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
     biomarker = [_ for _ in svg_tree.iter() if _.get('id')==biomarker][0]
-    biomarker.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png.decode('ascii')))
+    biomarker.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
     return update_svg(image_id=image_id, user_id=user_id, svg_string=svg.decode('utf-8'), display=display)
 
+def transfer_biomarker(image_id, from_user_id, to_user_id, biomarker, force=False, display=False):
+    if not force:
+        r = get_revision(to_user_id, image_id, svg=False)
+        biomarkers, time, comment = utils.info_from_diagnostic(r['diagnostic'])
+        if t != 0 and biomarker in biomarkers:
+            if not utils.confirm('%s already annotated %s on image %i. Tranfering will erase his/her work. \n Are you sure you want to proceed?', default='n'):
+                print('Cancelling...')
+                return
+
+    return update_biomarker(to_user_id, image_id, biomarker, display=display,
+                            png=get_biomarker(from_user_id, image_id, biomarker, out='png'))
 
 @revision.command(name='empty', help='Gets an empty revision of a given imageType')
 @click.option('--imageTypeId', 'image_type_id', help='Id of the image type', required=True)
