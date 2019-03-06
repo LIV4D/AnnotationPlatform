@@ -55,11 +55,23 @@ def list_revision(display=False):
 def _get_revision(user_id, image_id):
     get_revision(user_id, image_id)
 
-def get_revision(user_id, image_id, svg=True):
+def get_revision(user_id, image_id, svg=True, display=False):
     if svg:
-        return utils.request_server('GET', '/api/revisions/{}/{}'.format(user_id, image_id)).json()
+        response = utils.request_server('GET', '/api/revisions/{}/{}'.format(user_id, image_id))
     else:
-        return utils.request_server('GET', '/api/revisions/proto/{}/{}'.format(user_id, image_id)).json()
+        response = utils.request_server('GET', '/api/revisions/proto/{}/{}'.format(user_id, image_id))
+    if response.status_code == 200:
+        r = response.json()
+        if display:
+            pretty_data = [OrderedDict([
+                            ('id', r['id']),
+                            ('diagnostic', r['diagnostic'])
+                        ])]
+            utils.pretty_print_table(pretty_data)
+        return r
+    if display:
+        print(response.json()['message'])
+    return None
 
 @revision.command(name='update', help='Creates a new revision')
 @click.option('--file', 'svg_file', help='file containing the svg of the revision', required=True, type=click.Path())

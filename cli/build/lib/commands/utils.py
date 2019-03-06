@@ -113,3 +113,20 @@ def info_from_diagnostic(diagnostic):
         comment = comment[:-1]
 
     return biomarkers, time, comment
+
+
+def info_to_diagnostic(biomakers=None, time=None, comment=None):
+    c = ""
+    if biomakers:
+        if isinstance(biomakers, (list, tuple)):
+            biomakers = ','.join(biomakers)
+        c += '[onlyEnable=%s] ' % biomakers
+    if time:
+        m = str(time//60)
+        m = '0'+m if len(m)==1 else m
+        s = str(time%60)
+        s = '0'+s if len(s)==1 else s
+        c += '[time=%s:%s] '%(m,s)
+    if comment:
+        c += comment
+    return c

@@ -19,25 +19,44 @@ def _create(image_id, task_type_id, user_id, limit_biomarkers, active, completed
 def create(image_id, task_type_id, user_id, limit_biomarkers=None, active=True, completed=False, display=True, comment=""):
     if limit_biomarkers is None:
         limit_biomarkers = ''
+        
+    c = ""
+    if limit_biomarkers or comment:
+        if isinstance(limit_biomarkers, (list, tuple)):
+                limit_biomarkers = ','.join(limit_biomarkers)
+            
+        from . import revision
+        r = revision.get_revision(user_id=user_id, image_id=image_id, svg=False)
+        if r is not None and r['diagnostic']:
+            if not utils.confirm('A revision already existed for image %i and user %s. \t\nAre you sure you want to assign a new task?' % (image_id, user_id), default='n'):
+                print('Cancelling...')
+                return False
+            b, t, c = utils.info_from_diagnostic(r['diagnostic'])
+            biomarkers = set(b)
+            biomarkers.update(set(limit_biomarkers.split(','))
+            limit_biomarkers = ','.join(biomarkers)
+            if c and comment:
+                c += '\n'
+            comment = utils.info_to_diagnostic(time=t, comment=c+comment)
+            
+        if limit_biomarkers:
+            c += '[onlyEnable='+limit_biomarkers+',Others]'
+        if comment:
+            c += comment
+        revision.update_diagnostic(c, user_id=user_id, image_id=image_id)
+        
     payload = { 'imageId': image_id, 'taskTypeId': task_type_id, 'userId': user_id,
         'active': str(active).lower(), 'completed': str(completed).lower() }
     response = utils.request_server('POST', '/api/tasks', payload)
     if response.status_code == 200:
-        c = ""
-        if limit_biomarkers:
-            if isinstance(limit_biomarkers, (list, tuple)):
-                limit_biomarkers = ','.join(limit_biomarkers)
-            c += '[onlyEnable='+limit_biomarkers+']'
-        if comment:
-            c += comment
-        if c:
-            from . import revision
-            revision.update_diagnostic(c, user_id=user_id, image_id=image_id)
+        
         if display:
             print('Task {!s} has been created.'.format(response.json()))
-    elif display:
-        print(response.json()['message'])
-    return response.json()
+    else:
+        if display:
+            print(response.json()['message'])
+        return False
+    return True
 
 @task.command(name='list', help='Lists the existing tasks in the database')
 @click.option('--userId', 'user_id', help='Id to list only the tasks of a user (not required)', required=False)
@@ -74,14 +93,14 @@ def update(task_id, completed, display=False):
         print('The task with id {} has been updated successfully.'.format(task_id))
     return True if response.status_code == 200 else print(response.json()['message'])
 
-def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='auto', delete_initial=True,
+def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='auto', keep_initial_task=False, keep_initial_revision=True,
                 context=None):
     if context is None:
         context = {'tasks':[], 'revisions': []}
     if isinstance(img_id, (list, tuple)):
         for i in img_id:
             update_user(i, old_user_id, new_user_id, force=force, copy_biomarker=copy_biomarker,
-                        delete_initial=delete_initial, context=context)
+                        keep_initial_task=keep_initial_task, keep_initial_revision=keep_initial_revision, context=context)
     
     from . import revision
     tasks = context['tasks']
@@ -118,10 +137,17 @@ def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='a
     if old_revision is None:
         raise ValueError('No revision is associated with the task (img: %i, user: %s).' % (img_id, old_task['user']['name']))
     
-    if not delete_initial and old_task['completed'] and not force:
-        if not utils.confirm('This task is already completed. \t\nAre you sure you want to change the current user?', default='n'):
-            print('Cancelling...')
-            return
+    if not keep_initial_task and old_task['completed'] and not force:
+            if not utils.confirm('This task is already completed. \t\nAre you sure you want to change the current user?', default='n'):
+                print('Cancelling...')
+                return
+    
+    if not keep_initial_revision and not force:
+        biomarkers, time, comment = utils.info_from_diagnostic(old_revision['diagnostic'])                  
+        if time != 0:
+            if not utils.confirm('%s modified the revision of image %i. \t\nAre you sure you want to delete his/her revision?' % (old_task['user']['name'], img_id), default='n'):
+                print('Cancelling...')
+                return
     
     if erased_revision is not None:
         biomarkers, time, comment = utils.info_from_diagnostic(erased_revision['diagnostic'])
@@ -147,10 +173,15 @@ def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='a
             if not revision.transfer_biomarker(img_id, old_user_id, new_user_id, b, force=True, display=True):
                 return False
     
-    if delete_initial:
-        if (not delete(old_task['id'], display=True) or 
-            not revision.delete(old_user_id, img_id, display=True)):
+    if not keep_initial_task and not delete(old_task['id'], display=True):
+        return False
+    if keep_initial_revision:
+        if not keep_initial_task and (time or comment):
+            revision.update_diagnostic(utils.info_to_diagnostic(time=time, comment=comment), user_id=old_user_id, image_id=img_id)
+    else:
+        if not revision.delete(old_user_id, img_id, display=True):
             return False
+    
     return True
 
 
