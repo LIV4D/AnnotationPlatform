@@ -43,7 +43,7 @@ def get_stats(path):
                     
                     # Get revision of this task
                     img_id = task['image']['id']
-                    revision = cli.revision.get_revision(clinician_id, img_id, False)
+                    revision = cli.revision.get_revision(clinician_id, img_id, svg=False)
                         
                     # Read time
                     comment = revision.get('diagnostic', '')

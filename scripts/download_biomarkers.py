@@ -155,7 +155,7 @@ def update_dict(revision: RevisionEntry, rev_dict):
 
 
 def download(root_path, limit="edited"):
-    with log.Process('Reading existing files') as p:
+    with log.Process('Reading existing files', verbose=False) as p:
         tasks_metadata = {}
         for task in TASKS.keys():
             meta_path = join(root_path, task, 'metadata.xls')
@@ -167,7 +167,9 @@ def download(root_path, limit="edited"):
     with log.Process('Retreiving Clinicians Revisions Infos', total=len(CLINICIANS)) as p:
         all_revisions = [RevisionEntry.from_revision(_)
                          for _ in cli.revision.list_revision() if _['user']['id'] in CLINICIANS_ID]
-
+        
+        revision_downloaded = False
+        
         for clinician, clinician_id in CLINICIANS.items():
             clinician_revisions = list(filter(lambda r: r.clinician == clinician, all_revisions))
 
@@ -209,19 +211,26 @@ def download(root_path, limit="edited"):
 
             #   --- Download every selected revision ---
             with log.Process("Downloading revisions", total=len(revisions), verbose=False) as p_revision:
+                if revisions:
+                    log.info('--- %s ---' % clinician)
                 for r in revisions:
+                    log.info(' - %i|%s : %s' % (r.img_id, r.name, r.biomarkers))
                     for b in r.biomarkers:
                         b_task = TASK_BY_BIOMARKER[b]
                         b_path = join(root_path, b_task, b)
                         update_dict(r, tasks_metadata[b_task])
                         cli.revision.get_biomarker(image_id=r.img_id, user_id=r.clinician_id, biomarker=b,
                                                    out=join(b_path, r.revision_path+'.png'))
+                    revision_downloaded = True
                     p_revision.update(1)
             p.update(1)
 
-        for task, rev_dict in tasks_metadata.items():
-            meta_path = join(root_path, task, 'metadata.xls')
-            info_dict2xls(meta_path, rev_dict)
+        if revision_downloaded:
+            for task, rev_dict in tasks_metadata.items():
+                meta_path = join(root_path, task, 'metadata.xls')
+                info_dict2xls(meta_path, rev_dict)
+        else:
+            log.info('Local data already up-to-date.')
 
 
 if __name__ == '__main__':

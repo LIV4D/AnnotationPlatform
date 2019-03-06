@@ -103,7 +103,7 @@ def info_from_diagnostic(diagnostic):
         c_stripped = c.strip()
         if c_stripped.startswith('[onlyEnable='):
             b = c_stripped[12:].split(',')
-            biomarkers += [_ for _ in b if _ not in ('Others', )]
+            biomarkers += [_.strip() for _ in b if _.strip() not in ('Others', )]
         elif c_stripped.startswith('[time='):
             time = int(c_stripped[6:8])*60 + int(c_stripped[9:11])
         else:
@@ -130,3 +130,8 @@ def info_to_diagnostic(biomakers=None, time=None, comment=None):
     if comment:
         c += comment
     return c
+
+def paste_int_list():
+    import clipboard
+    l = clipboard.paste().split('\n')
+    return [int(_) for _ in l]
