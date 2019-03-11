@@ -12,7 +12,7 @@ export class TaskDialogComponent {
 
     // Function called upon clicking confirm in Task dialog
     // Updates all tasks with new completed value
-    closeDialog(): void {
+    closeDialog(loadNext= false): void {
         this.editorService.updateTasks(this.data.tasks);
     }
 

@@ -12,6 +12,8 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { LocalStorage } from './../../model/local-storage';
 import { CommentsService } from './comments/comments.service';
 import { Task } from './../../model/common/task.model';
+import { ITaskList } from '../../model/common/interfaces/taskList.interface';
+import { TasksService } from '../../tasks/tasks.service';
 
 @Component({
     selector: 'app-right-menu',
@@ -27,7 +29,7 @@ export class RightMenuComponent implements OnInit {
     @ViewChild('biomarkers') biomarkers: BiomarkersComponent;
     @ViewChild(CommentsComponent) comments: CommentsComponent;
     constructor(public appService: AppService, public editorService: EditorService, public commentService: CommentsService,
-        public router: Router, public dialog: MatDialog) {
+        public router: Router, public dialog: MatDialog, private taskService: TasksService) {
         this.loaded = false;
         this.saveText = navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';
     }
@@ -70,7 +72,7 @@ export class RightMenuComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
                     LocalStorage.save(this.editorService, this.editorService.layersService);
-                    this.saveRevision();
+                    this.saveRevision(result === 'next');
                 }
             });
         } else {
@@ -78,13 +80,26 @@ export class RightMenuComponent implements OnInit {
         }
     }
 
-    public saveRevision(): void {
+    public saveRevision(loadNext= false): void {
         this.editorService.saveToDB(() => {
-        if (localStorage.getItem('previousPage') === 'tasks') {
-            this.router.navigate([`/${ROUTES.TASKS}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
-        } else {
-            this.router.navigate([`/${ROUTES.GALLERY}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
-        }});
+            if (loadNext) {
+                this.taskService.getTasks(0, 1, false).subscribe((data: ITaskList) => {
+                    if (data.objectCount === 1) {
+                        const imageId = data.objects[0].imageId.toString();
+                        LocalStorage.resetImageId(imageId);
+                        setTimeout(() => { window.location.reload(); }, 10);
+                    } else {
+                        this.router.navigate([`/${ROUTES.TASKS}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+                    }
+                });
+            } else {
+                if (localStorage.getItem('previousPage') === 'tasks') {
+                    this.router.navigate([`/${ROUTES.TASKS}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+                } else {
+                    this.router.navigate([`/${ROUTES.GALLERY}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+                }
+            }
+        });
     }
 
     public saveDB(): void {

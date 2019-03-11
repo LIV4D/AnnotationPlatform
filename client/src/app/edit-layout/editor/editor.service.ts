@@ -191,7 +191,7 @@ export class EditorService {
     }
 
     // Loads a revision from the server. Draws that revision optionnaly.
-    loadRevision(draw: boolean, svgLoaded: EventEmitter<any>): void {
+    loadRevision(draw: boolean): void {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(), responseType: 'json' })
             .subscribe(res => {
@@ -218,9 +218,7 @@ export class EditorService {
                     this.layersService.toggleBorders(true);
                     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
                 }
-                if (svgLoaded) {
-                    svgLoaded.emit(arbre);
-                }
+                this.svgLoaded.emit(arbre);
             }, error => {
                 if (error.status === 404) {
                     this.http.get(`/api/images/${this.imageId}/baseRevision/`, { headers: new HttpHeaders(), responseType: 'json' })
@@ -245,9 +243,7 @@ export class EditorService {
                                 });
                                 setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
                             }
-                            if (svgLoaded) {
-                                svgLoaded.emit(arbre);
-                            }
+                            this.svgLoaded.emit(arbre);
                         });
                 }
             });
@@ -339,7 +335,7 @@ export class EditorService {
             this.imageId = lastImageId;
             this.getMainImage();
             LocalStorage.load(this, this.layersService);
-            this.loadRevision(false, this.svgLoaded);
+            this.loadRevision(false);
             this.loadMetadata(this.imageId);
             return;
         }
@@ -348,7 +344,7 @@ export class EditorService {
             return;
         }
         this.getMainImage();
-        this.loadRevision(true, this.svgLoaded);
+        this.loadRevision(true);
     }
 
     public loadPretreatmentImage(): void {

@@ -21,6 +21,11 @@ export class LocalStorage {
         window.localStorage.removeItem(LocalStorageKeys.ImageId);
     }
 
+    static resetImageId(imageId): void {
+        window.localStorage.removeItem(LocalStorageKeys.AllCanvasInfo);
+        window.localStorage.setItem(LocalStorageKeys.ImageId, imageId);
+    }
+
     static save(editorService: EditorService, layersService: LayersService): void {
         // No save for local files or if nothing is loaded
         if (!editorService.imageId || editorService.imageId === 'local') {
@@ -53,6 +58,10 @@ export class LocalStorage {
         // Read local storage
         const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
         const json = JSON.parse(str);
+        if (!json) {
+            editorService.loadRevision(true);
+            return;
+        }
         if (!json.biomarkers) {
             return;
         }

@@ -6,12 +6,13 @@ div {
 }
 
 #cancelTask {
-    margin-right: 4px;
+    margin-right: 16px;
     margin: 4px;
     background-color: $error-color;
 }
 
 #confirmTask {
+    margin-left: 4px;
     background-color: $register-color;
 }
 

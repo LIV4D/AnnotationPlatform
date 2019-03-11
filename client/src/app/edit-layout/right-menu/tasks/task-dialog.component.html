@@ -17,7 +17,8 @@
     <div>
         <div id="taskbuttons">
             <button id="cancelTask" mat-button mat-dialog-close (click)="cancelDialog()">Cancel</button>
-            <button id="confirmTask" mat-button [mat-dialog-close]="true" (click)="closeDialog()">Confirm</button>
+            <button id="confirmTask" mat-button [mat-dialog-close]="'save'" (click)="closeDialog()">Confirm</button>
+            <button id="confirmTask" mat-button [mat-dialog-close]="'next'" (click)="closeDialog()">Confirm & Load Next</button>
         </div>
     </div>
 </div>
