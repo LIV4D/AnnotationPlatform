@@ -31,5 +31,8 @@
       >
   </mat-row>
   </mat-table>
+
+  <p *ngIf="!showCompleted && length===0" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your time! </p>
+
   <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
 </div>
