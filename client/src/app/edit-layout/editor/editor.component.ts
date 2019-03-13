@@ -22,7 +22,7 @@ import { ToolPropertiesService } from '../toolbox/tool-properties/tool-propertie
 export class EditorComponent implements OnInit, OnDestroy {
     constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService,
         public editorService: EditorService, private deviceService: DeviceDetectorService, public appService: AppService, ) {
-                this.delayTouchMoveTimer = null;
+                this.delayEventTimer = null;
          }
 
     image: HTMLImageElement;
@@ -35,7 +35,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     touchFreeze = false;
     zoomInitPoint: Point;
     zoomInitFactor: number;
-    delayTouchMoveTimer: any;
+    delayEventTimer: any;
+    delayedEventHandler: Function;
+
 
     @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -46,7 +48,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.editorService.imageServer = null;
         this.image = null;
         this.cursorDown = false;
         this.middleMouseDown = false;
@@ -112,29 +113,35 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     onPointerDown(event: PointerEvent): void {
-        if (event.pointerType === 'pen') {
-            this.appService.pointerDetected = true;
-            this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
-        }
-        this.onMouseDown(event);
+        this.delayEventHandling(() => {
+            if (event.pointerType === 'pen') {
+                this.appService.pointerDetected = true;
+                this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+            }
+            this.onMouseMove(event);
+        });
     }
 
     onPointerMove(event: PointerEvent): void {
-        if (event.pointerType === 'pen') {
-            this.appService.pointerDetected = true;
-            this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
-        }
-        this.onMouseMove(event);
+        this.delayEventHandling(() => {
+            if (event.pointerType === 'pen') {
+                this.appService.pointerDetected = true;
+                this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+            }
+            this.onMouseMove(event);
+        });
     }
 
     onPointerUp(event: PointerEvent): void {
-        this.toolPropertiesService.setBrushWidthMultiplier(0);
+        this.clearDelayedEventHandling();
         this.onMouseUp(event);
+        this.toolPropertiesService.setBrushWidthMultiplier(0);
     }
 
     onPointerLeave(event: PointerEvent): void {
-        this.toolPropertiesService.setBrushWidthMultiplier(0);
+        this.clearDelayedEventHandling();
         this.onMouseLeave(event);
+        this.toolPropertiesService.setBrushWidthMultiplier(0);
     }
 
     onTouchStart(event: TouchEvent): void {
@@ -178,9 +185,9 @@ export class EditorComponent implements OnInit, OnDestroy {
                     if (this.deviceService.isDesktop()) {
                         this.handleTouchMove(event);
                     } else {
-                        if (this.delayTouchMoveTimer === null) {
-                            this.delayTouchMoveTimer = setTimeout( () => {
-                                this.delayTouchMoveTimer = null;
+                        if (this.delayEventTimer === null) {
+                            this.delayEventTimer = setTimeout( () => {
+                                this.delayEventTimer = null;
                             }, 50);
                             this.handleTouchMove(event);
                         }
@@ -203,6 +210,32 @@ export class EditorComponent implements OnInit, OnDestroy {
     handleTouchMove(event: TouchEvent): void {
         const touch = event.targetTouches[0];
         this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(touch.clientX, touch.clientY)));
+    }
+
+    delayEventHandling(eventHandler: Function): void {
+        if (this.delayEventTimer === null) {
+            eventHandler();
+            const timeout = this.deviceService.isDesktop() ? 5 : 50;
+            this.delayEventTimer = setTimeout(() => {
+                while (this.delayedEventHandler) {
+                    this.delayedEventHandler();
+                    this.delayedEventHandler = null;
+                }
+                this.delayEventTimer = null;
+            }, timeout);
+        } else {
+            this.delayedEventHandler = eventHandler;
+        }
+    }
+
+    clearDelayedEventHandling(): void {
+        if (this.delayEventTimer !== null) {
+            clearTimeout(this.delayEventTimer);
+            this.delayEventTimer = null;
+            if (this.delayedEventHandler) {
+                this.delayedEventHandler();
+            }
+        }
     }
 
     onTouchEnd(event: TouchEvent): void {
