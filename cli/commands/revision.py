@@ -149,7 +149,7 @@ def transfer_biomarker(image_id, from_user_id, to_user_id, biomarker, force=Fals
     if not force:
         r = get_revision(to_user_id, image_id, svg=False)
         biomarkers, time, comment = utils.info_from_diagnostic(r['diagnostic'])
-        if t != 0 and biomarker in biomarkers:
+        if time != 0 and biomarker in biomarkers:
             if not utils.confirm('%s already annotated %s on image %i. Tranfering will erase his/her work. \n Are you sure you want to proceed?', default='n'):
                 print('Cancelling...')
                 return
