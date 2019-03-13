@@ -24,6 +24,7 @@ export class TasksComponent implements OnInit {
     length: number;
     pageSize: number;
     data: any = [];
+    noData: boolean;
     showCompleted: boolean;
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -33,6 +34,7 @@ export class TasksComponent implements OnInit {
     this.showPagination = false;
     this.length = 0;
     this.pageSize = 25;
+    this.noData = false;
   }
 
     ngOnInit(): void {
@@ -40,6 +42,7 @@ export class TasksComponent implements OnInit {
     }
 
     loadData(): void {
+        this.noData = false;
         this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
         merge(this.sort.sortChange, this.paginator.page)
             .pipe(
@@ -55,6 +58,9 @@ export class TasksComponent implements OnInit {
             ).subscribe((data: ITaskList) => {
                 this.data = data.objects;
                 this.length = data.objectCount;
+                if (this.length === 0) {
+                    this.noData = true;
+                }
                 this.appService.loading = false;
             });
     }

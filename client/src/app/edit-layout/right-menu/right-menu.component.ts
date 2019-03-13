@@ -84,7 +84,7 @@ export class RightMenuComponent implements OnInit {
         this.editorService.saveToDB(() => {
             if (loadNext) {
                 this.taskService.getTasks(0, 1, false).subscribe((data: ITaskList) => {
-                    if (data.objectCount === 1) {
+                    if (data.objectCount >= 1) {
                         const imageId = data.objects[0].imageId.toString();
                         LocalStorage.resetImageId(imageId);
                         setTimeout(() => { window.location.reload(); }, 10);
