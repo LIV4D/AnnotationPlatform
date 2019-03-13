@@ -49,7 +49,8 @@ export class EditorService {
     zoomMultiplier: number;
 
     constructor(private http: HttpClient, public layersService: LayersService, public commentService: CommentsService,
-        public galleryService: GalleryService, public biomarkersService: BiomarkersService, public router: Router) {
+        public galleryService: GalleryService, public biomarkersService: BiomarkersService, public router: Router,
+        private appService: AppService) {
         this.zoomMultiplier = navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 1;
         this.scaleX = 1;
         this.imageLoaded = false;
@@ -621,6 +622,7 @@ export class EditorService {
 
     saveToDB(then: Function = null): void {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
+        this.appService.loading = true;
         if (this.layersService.unsavedChange) {
             LocalStorage.save(this, this.layersService);
             this.layersService.unsavedChange = false;
@@ -636,6 +638,7 @@ export class EditorService {
             diagnostic: this.commentService.comment
         };
         this.http.put(`/api/revisions/${userId}/${this.imageId}`, body).subscribe( () => {
+            this.appService.loading = false;
             if (then !== null) {
                 then();
             }
