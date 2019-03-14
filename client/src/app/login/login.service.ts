@@ -12,11 +12,11 @@ export class LoginService {
     }
 
     get email(): string {
-        return this._user === null ? null : this._user.user.email;
+        return this._user ? this._user.user.email :  null;
     }
 
     get name(): string {
-        return this._user === null ? null : this._user.user.name;
+        return this._user ? this._user.user.name : null;
     }
 
     login(email: string, password: string): Observable<any> {
@@ -28,9 +28,8 @@ export class LoginService {
                 if (user && user.token) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify(user));
-                    this._user = user;
                 }
-
+                this._user = user;
                 return user;
             }));
     }
