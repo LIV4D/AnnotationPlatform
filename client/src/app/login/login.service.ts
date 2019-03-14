@@ -34,6 +34,17 @@ export class LoginService {
             }));
     }
 
+    isLogged(): boolean {
+        const userStr = localStorage.getItem('currentUser')
+        if (!userStr){
+            return false;
+        }
+        if (!this._user){
+            this._user = JSON.parse(localStorage.getItem('currentUser'));
+        }
+        return true;
+    }
+
     logout(): void {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');

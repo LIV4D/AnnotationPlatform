@@ -6,11 +6,10 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class LoginGuard implements CanActivate {
-    constructor(private router: Router) { }
+    constructor(private router: Router, private loginService: LoginService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (localStorage.getItem('currentUser')) {
-            // logged in so return true
+        if (this.loginService.isLogged()) {
             return true;
         }
 
