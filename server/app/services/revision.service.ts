@@ -7,15 +7,12 @@ import { RevisionRepository } from '../repository/revision.repository';
 import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { BiomarkerTypeService } from './biomarkerType.service';
 import { ImageService } from './image.service';
 
 @injectable()
 export class RevisionService {
     @inject(TYPES.RevisionRepository)
     private revisionRepository: RevisionRepository;
-    @inject(TYPES.BiomarkerTypeService)
-    private biomarkerTypeService: BiomarkerTypeService;
     @inject(TYPES.ImageService)
     private imageService: ImageService;
 
