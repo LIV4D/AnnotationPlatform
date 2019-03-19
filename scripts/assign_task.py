@@ -10,10 +10,10 @@ import liv4dcli as cli
 
 
 # ===    TASKS    ===
-bright = "Cotton Wool Spots,Drusen,Exudates,Uncertain - Bright,Others"
-red = "Hemorrhages,Microaneurysms,Sub-retinal hemorrhage,Pre-retinal hemorrhage,Neovascularization,Uncertain - Red,Others"
-disk = "Disk,Cup,Macula,Others"
-vessel = "Vessels - Uncertain,Others"
+bright = "Exudates,Cotton Wool Spots,Drusen,Uncertain - Bright"
+red = "Microaneurysms,Hemorrhages,Sub-retinal hemorrhage,Pre-retinal hemorrhage,Neovascularization,Uncertain - Red"
+disk = "Disk,Cup,Macula"
+vessel = "Vessels - Uncertain"
 
 
 # ===    USERS    ===

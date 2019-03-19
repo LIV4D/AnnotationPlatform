@@ -16,7 +16,14 @@ def task():
 def _create(image_id, task_type_id, user_id, limit_biomarkers, active, completed):
     create(image_id, task_type_id, user_id, limit_biomarkers, utils.to_boolean(active), utils.to_boolean(completed), True)
 
-def create(image_id, task_type_id, user_id, limit_biomarkers=None, active=True, completed=False, display=True, comment="", force=False, merge=True):
+def create(image_id, user_id, limit_biomarkers=None, active=True, completed=False, display=True, comment="", force=False, merge=True, task_type_id=1):
+    if isinstance(image_id, list):
+        for i in image_id:
+            if not create(i, user_id=user_id, limit_biomarkers=limit_biomarkers, active=active, completed=completed, display=display, 
+                          comment=comment, force=force, merge=merge, task_type_id=task_type_id):
+                return False
+        return True
+    
     if limit_biomarkers is None:
         limit_biomarkers = ''
         
@@ -230,3 +237,23 @@ def delete(task_id, display=False):
     if display and response.status_code == 204:
         print('The task with id {} has been deleted successfully.'.format(task_id))
     return True if response.status_code == 204 else print(response.json()['message'])
+
+def delete_all_from_user(user_id, display=True):
+    tasks = list_task(user_id, False)
+    if not tasks:
+        print('No tasks are linked to this user. Nothing to delete')
+        return
+    
+    if not utils.confirm('%i tasks are linked to the user %s. Are you sure you want to delete them? (Revision will not be deleted but comments will...)' % (len(tasks), tasks[0]['user']['name']), default='n'):
+        print('Aborting...')
+        return
+    
+    from .revision import update_diagnostic
+    
+    for task in tasks:
+        img_id = task['image']['id']
+        task_id = task['id']
+        update_diagnostic('', user_id, task_id, display=False)
+        delete(task_id, display=False)
+        if display:
+            print('Task %i Removed!  (image #%i, user: %s)' % (task_id, img_id, task['user']['name']))

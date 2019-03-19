@@ -7,11 +7,17 @@ import { RevisionRepository } from '../repository/revision.repository';
 import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { BiomarkerTypeService } from './biomarkerType.service';
+import { ImageService } from './image.service';
 
 @injectable()
 export class RevisionService {
     @inject(TYPES.RevisionRepository)
     private revisionRepository: RevisionRepository;
+    @inject(TYPES.BiomarkerTypeService)
+    private biomarkerTypeService: BiomarkerTypeService;
+    @inject(TYPES.ImageService)
+    private imageService: ImageService;
 
     public async createRevision(newRevision: any): Promise<Revision> {
         if (await this.revisionRepository.findForUserForImage(newRevision.userId, newRevision.imageId)) {
@@ -58,7 +64,13 @@ export class RevisionService {
         }
         if (oldRevision == null) {
             const newRevision = new Revision();
-            newRevision.svg = updatedRevision.svg;
+            if (updatedRevision.svg == null) {
+                const imageTypeId = (await this.imageService.getImage(updatedRevision.imageId)).imageType.id;
+                const newSvg = await this.biomarkerTypeService.generateSvg(imageTypeId);
+                newRevision.svg = newSvg;
+            } else {
+                newRevision.svg = newRevision.svg;
+            }
             newRevision.diagnostic = updatedRevision.diagnostic;
             newRevision.user = { id: updatedRevision.userId } as any;
             newRevision.image = { id: updatedRevision.imageId } as any;
