@@ -65,9 +65,7 @@ export class RevisionService {
         if (oldRevision == null) {
             const newRevision = new Revision();
             if (updatedRevision.svg == null) {
-                const imageTypeId = (await this.imageService.getImage(updatedRevision.imageId)).imageType.id;
-                const newSvg = await this.biomarkerTypeService.generateSvg(imageTypeId);
-                newRevision.svg = newSvg;
+                newRevision.svg = (await this.imageService.getImage(updatedRevision.imageId)).baseRevision;
             } else {
                 newRevision.svg = newRevision.svg;
             }
