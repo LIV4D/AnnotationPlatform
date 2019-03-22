@@ -18,4 +18,8 @@ export const HOTKEYS = {
     KEY_CTRL_S_SAVE: 83,
     KEY_PLUS: 107,
     KEY_MINUS: 109,
+    KEY_LEFT: 37,
+    KEY_UP: 38,
+    KEY_RIGHT: 39,
+    KEY_DOWN: 40,
 };

@@ -95,7 +95,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     onMouseWheel(event: WheelEvent): void {
         const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-        const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 1 : 0.25 ) / 300;
+        const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25 ) / 300;
 
         if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
             this.editorService.zoom(delta, position);

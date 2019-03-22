@@ -46,12 +46,10 @@ export class EditorService {
     svgLoaded: EventEmitter<any>;
     localSVGName: string;
     menuState: boolean;
-    zoomMultiplier: number;
 
     constructor(private http: HttpClient, public layersService: LayersService, public commentService: CommentsService,
         public galleryService: GalleryService, public biomarkersService: BiomarkersService, public router: Router,
         private appService: AppService) {
-        this.zoomMultiplier = navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 1;
         this.scaleX = 1;
         this.imageLoaded = false;
         this.canvasDisplayRatio = new BehaviorSubject<number>(1);
@@ -460,9 +458,9 @@ export class EditorService {
 
     // Function to zoom on a part of the image.
     // Currently only centered with specific ratios.
-    zoom(delta: number, position: Point): void {
+    zoom(delta: number, position: Point= null): void {
         // Keep zoom in range [100%, 600%]
-        let zoomFactor = this.zoomFactor * Math.exp(delta * this.zoomMultiplier);
+        let zoomFactor = this.zoomFactor * Math.exp(delta);
 
         // Cap the values.
         if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX;
@@ -480,8 +478,12 @@ export class EditorService {
         if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
             // Adjust offsets to keep them coherent with the previous zoom.
-            const positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
-            const positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
+            let positionXPercentage = 0.5;
+            let positionYPercentage = 0.5;
+            if (position !== null) {
+                positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
+                positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
+            }
             const deltaX = (oldWidth - newWidth) * positionXPercentage;
             const deltaY = (oldHeight - newHeight) * positionYPercentage;
             this.offsetX += deltaX;

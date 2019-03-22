@@ -145,11 +145,36 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
                     break;
                 }
                 case HOTKEYS.KEY_PLUS: {
-                    this.toolPropertiesService.incrementBrushWidth(1);
+                    if (event.altKey) {
+                        this.editorService.zoom(+.2);
+                    } else {
+                        this.toolPropertiesService.incrementBrushWidth(1);
+                    }
                     break;
                 }
                 case HOTKEYS.KEY_MINUS: {
-                    this.toolPropertiesService.incrementBrushWidth(-1);
+                    if (event.altKey) {
+                        this.editorService.zoom(-.2);
+                    } else {
+                        this.toolPropertiesService.incrementBrushWidth(-1);
+                    }
+                    break;
+                }
+
+                case HOTKEYS.KEY_LEFT: {
+                    this.editorService.translate(-Math.round(200 / this.editorService.zoomFactor), 0);
+                    break;
+                }
+                case HOTKEYS.KEY_RIGHT: {
+                    this.editorService.translate(+Math.round(200 / this.editorService.zoomFactor), 0);
+                    break;
+                }
+                case HOTKEYS.KEY_UP: {
+                    this.editorService.translate(0, -Math.round(200 / this.editorService.zoomFactor));
+                    break;
+                }
+                case HOTKEYS.KEY_DOWN: {
+                    this.editorService.translate(0, +Math.round(200 / this.editorService.zoomFactor));
                     break;
                 }
             }
