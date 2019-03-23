@@ -5,7 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as fs from 'fs';
-import * as logger from 'morgan';
+import * as morgan from 'morgan';
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as passportJwt from 'passport-jwt';
@@ -37,8 +37,16 @@ export class Application {
     }
 
     private config(): void {
-        // Application Middleware configurations
-        this.app.use(logger('dev'));
+        const skipLog = (req: express.Request): boolean => {
+            return !(req.url.startsWith('/api/') || req.url.startsWith('/login') || req.url.startsWith('/auth'));
+        };
+        morgan.token('user', req => req.user ? req.user.name : '-');
+        morgan.token('customDate',
+                    (req) => { const d = new Date();
+                               return d.getDate().toString() + '/' + d.getMonth().toString() + ' ' + d.toTimeString().slice(0, 8); });
+        morgan.token('ip-addr', req => req.ip.slice(req.ip.lastIndexOf(':') + 1));
+        const f = '[:customDate] :user@:ip-addr | :method :url | :status :response-time[1]ms :res[content-length]';
+        this.app.use(morgan(f, { skip: skipLog }));
         this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
