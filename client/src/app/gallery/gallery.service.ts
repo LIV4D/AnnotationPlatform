@@ -25,6 +25,6 @@ export class GalleryService {
             .set('filters', filters);
 
         const req = this.http.get<IGallery>('/api/gallery/', {params: params, observe: 'events', reportProgress: true});
-        return this.headerService.display_progress(req, 'Gallery');
+        return this.headerService.display_progress(req, 'Downloading: Gallery');
     }
 }

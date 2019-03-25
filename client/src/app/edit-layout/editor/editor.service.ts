@@ -195,7 +195,7 @@ export class EditorService {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
                                                                                    reportProgress: true, observe: 'events' });
-        this.headerService.display_progress(req, 'Biomarkers').subscribe(
+        this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
             res => {
                 this.svgBox.innerHTML = res.svg;
                 const parser = new DOMParser();
@@ -225,7 +225,7 @@ export class EditorService {
                 if (error.status === 404) {
                     const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
                                                   { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
-                    this.headerService.display_progress(reqBase, 'Biomarkers').subscribe(res => {
+                    this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
                             this.svgBox.innerHTML = (res as any).svg;
                             const parser = new DOMParser();
                             const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
@@ -303,7 +303,7 @@ export class EditorService {
     getMainImage(): void {
         const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events',
                                                                            reportProgress: true });
-        this.headerService.display_progress(req, 'Image').subscribe(
+        this.headerService.display_progress(req, 'Downloading: Image').subscribe(
             res => {
                 const reader: FileReader = new FileReader();
                 reader.onload = () => {
@@ -356,7 +356,7 @@ export class EditorService {
         const req = this.http.get(`/api/preprocessings/${this.imageId}/${PREPROCESSING_TYPE}`, { responseType: 'blob',
                                                                                                  reportProgress: true,
                                                                                                  observe: 'events' });
-        this.headerService.display_progress(req, 'Pre-Processing').subscribe(
+        this.headerService.display_progress(req, 'Downloading: Pre-Processing').subscribe(
             res => {
                 const reader: FileReader = new FileReader();
                 reader.onload = () => {
@@ -599,7 +599,7 @@ export class EditorService {
         if (display_progress) {
             const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
             const req = this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`, {observe: 'events', reportProgress: true});
-            return this.headerService.display_progress(req, 'Tasks List');
+            return this.headerService.display_progress(req, 'Downloading: Tasks List');
         } else {
             const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
             return this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`);
@@ -609,7 +609,7 @@ export class EditorService {
     // Function called from gallery/tasks to load a new image and redirect to editor
     loadImageFromServer(imageId: string): void {
         const req = this.http.get<ImageServer>(`/api/images/${imageId}/`, {observe: 'events', reportProgress: true});
-        this.headerService.display_progress(req, 'Image').subscribe(
+        this.headerService.display_progress(req, 'Downloading: Image').subscribe(
             res => {
                 this.imageLocal = null;
                 this.imageServer = res;
@@ -660,7 +660,7 @@ export class EditorService {
             diagnostic: this.commentService.comment
         };
         const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
-        const reqBody = this.headerService.display_progress(req, 'Biomarkers', false);
+        const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
         reqBody.subscribe( () => {this.appService.loading = false; });
         return reqBody;
     }
