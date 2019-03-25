@@ -19,7 +19,9 @@ export class TaskController implements IRegistrableController {
         app.post('/api/tasks', this.createTask);
         app.get('/api/tasks/findByUser/:userId', this.getTasksByUser);
         app.get('/api/tasks/list/:userId', this.listTasksByUser);
+        app.get('/api/tasks/:userId/next/', this.getNextTaskByUser);
         app.get('/api/tasks/:userId/:imageId/', this.getTasksByUserByImage);
+
         // Element
         app.get('/api/tasks/:taskId', this.getTask);
         app.put('/api/tasks/:taskId', this.updateTask);
@@ -88,6 +90,23 @@ export class TaskController implements IRegistrableController {
             .then(task => {
                 const tasksPrototype = task.map(t => t.prototype());
                 res.send(tasksPrototype);
+            })
+            .catch(next);
+    }
+
+    private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if (req.user.id !== req.params.userId) {
+            throwIfNotAdmin(req);
+        }
+        this.taskService.getTasksByUser(req.params.userId)
+            .then(tasks => {
+                for (const task of tasks) {
+                    if (!task.completed) {
+                        res.send(task.prototype());
+                        return;
+                    }
+                }
+                res.send(null);
             })
             .catch(next);
     }

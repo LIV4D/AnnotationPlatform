@@ -41,7 +41,7 @@ export class RightMenuComponent implements OnInit {
     // Retrieves the image types from the server
     getTasks(): void {
         if (!this.editorService.imageLocal) {
-            this.editorService.getTasks(true).subscribe(res => {
+            this.editorService.getTasks().subscribe(res => {
                 this.tasks = res;
             });
         }
@@ -81,16 +81,18 @@ export class RightMenuComponent implements OnInit {
     }
 
     public saveRevision(loadNext= false): void {
-        this.editorService.saveToDB(() => {
+        this.editorService.saveToDB().subscribe(() => {
             if (loadNext) {
-                this.taskService.getTasks(0, 1, false).subscribe((data: ITaskList) => {
-                    if (data.objectCount >= 1) {
-                        const imageId = data.objects[0].imageId.toString();
+                this.taskService.getNextTask().subscribe((data: any) => {
+                    if (data && data.image) {
+                        const imageId = data.image.id.toString();
                         LocalStorage.resetImageId(imageId);
                         setTimeout(() => { window.location.reload(); }, 10);
                     } else {
                         this.router.navigate([`/${ROUTES.TASKS}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
                     }
+                }, () => {
+                    this.router.navigate([`/${ROUTES.TASKS}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
                 });
             } else {
                 if (localStorage.getItem('previousPage') === 'tasks') {

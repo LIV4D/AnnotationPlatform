@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { LayersService, ANNOTATION_PREFIX } from './layers/layers.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { Point } from './../../model/point';
 import { GalleryService } from '../../gallery/gallery.service';
 import { LocalStorage } from './../../model/local-storage';
@@ -223,8 +223,9 @@ export class EditorService {
                 this.svgLoaded.emit(arbre);
             }, error => {
                 if (error.status === 404) {
-                    this.http.get(`/api/images/${this.imageId}/baseRevision/`, { headers: new HttpHeaders(), responseType: 'json' })
-                        .subscribe(res => {
+                    const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
+                                                  { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
+                    this.headerService.display_progress(reqBase, 'Biomarkers').subscribe(res => {
                             this.svgBox.innerHTML = (res as any).svg;
                             const parser = new DOMParser();
                             const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
@@ -638,7 +639,7 @@ export class EditorService {
         FileSaver.saveAs(blob, this.localSVGName);
     }
 
-    saveToDB(then: Function = null): void {
+    saveToDB(): Observable<Object> {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         this.appService.loading = true;
         if (this.layersService.unsavedChange) {
@@ -647,6 +648,9 @@ export class EditorService {
         }
         this.layersService.biomarkerCanvas.forEach(b => {
             const elem = document.getElementById((b.id).replace(ANNOTATION_PREFIX, ''));
+            if (!elem) {
+                return throwError(b.id.replace(ANNOTATION_PREFIX, '') + ' was not found.');
+            }
             const url = b.currentCanvas.toDataURL();
             elem.setAttribute('xlink:href', url);
         });
@@ -656,14 +660,9 @@ export class EditorService {
             diagnostic: this.commentService.comment
         };
         const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
-            this.headerService.display_progress(req, 'Biomarkers', false).subscribe(
-                () => {
-                    this.appService.loading = false;
-                    if (then !== null) {
-                        then();
-                    }
-                }
-            );
+        const reqBody = this.headerService.display_progress(req, 'Biomarkers', false);
+        reqBody.subscribe( () => {this.appService.loading = false; });
+        return reqBody;
     }
 
     setImageId(id: string): void {

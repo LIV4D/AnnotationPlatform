@@ -105,8 +105,9 @@ import { HeaderService } from './header/header.service';
 
     providers: [AppService, HttpClient,  EditorService, LoginService, {
         provide: HTTP_INTERCEPTORS,
-        useValue: new AuthInterceptor(),
-        multi: true
+        useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
+        multi: true,
+        deps: [LoginService]
     }, LoginGuard, NoImageGuard, VisualizationService,  GalleryService, BugtrackerService, CamelCaseToTextPipe,
     CommentsService, TimerService, BiomarkersService, ImageBorderService, LayersService, HeaderService],
     bootstrap: [AppComponent]
