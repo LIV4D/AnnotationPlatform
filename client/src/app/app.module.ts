@@ -61,6 +61,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TasksComponent } from './tasks/tasks.component';
 import { TaskDialogComponent } from './edit-layout/right-menu/tasks/task-dialog.component';
 import {ApplicationRef} from '@angular/core';
+import { HeaderService } from './header/header.service';
 
 
 @NgModule({
@@ -107,7 +108,7 @@ import {ApplicationRef} from '@angular/core';
         useValue: new AuthInterceptor(),
         multi: true
     }, LoginGuard, NoImageGuard, VisualizationService,  GalleryService, BugtrackerService, CamelCaseToTextPipe,
-    CommentsService, TimerService, BiomarkersService, ImageBorderService, LayersService],
+    CommentsService, TimerService, BiomarkersService, ImageBorderService, LayersService, HeaderService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

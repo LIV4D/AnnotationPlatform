@@ -3,6 +3,12 @@
     <span style="margin-right: 10px"(click)="goToEditor()">Editor</span>
     <span style="margin-right: 10px" (click)="goToGallery()">Gallery</span>
     <span (click)="goToTasks()">Tasks</span>
+
+    <div id="loadingDiv" *ngIf='showLoading'>
+        <span id="loadingLabel"> <mat-icon id="loadingIcon">{{loadingDownload?"cloud_download":"cloud_upload"}}</mat-icon> {{loadingLabel}}</span>
+        <div id="loadingBar"> <div id="bar" [ngStyle]="{'width': (loadingProgress*100).toString()+'%'}"></div> </div>
+    </div>
+
     <span style="right: 70px; position: absolute;" (click)="logout()"> Logout</span>
     <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" (click)="toggleBugtracker()"  src="../../assets/icons/bug.svg"/>
     <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" (click)="toggleFullScreen()" >fullscreen</mat-icon>

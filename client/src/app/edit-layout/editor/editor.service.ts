@@ -17,6 +17,7 @@ import * as FileSaver from 'file-saver';
 import { Image as ImageServer } from '../../model/common/image.model';
 import { CommentsService } from '../right-menu/comments/comments.service';
 import { VisualizationService } from '../right-menu/visualization/visualization.service';
+import { HeaderService } from '../../header/header.service';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -49,7 +50,7 @@ export class EditorService {
 
     constructor(private http: HttpClient, public layersService: LayersService, public commentService: CommentsService,
         public galleryService: GalleryService, public biomarkersService: BiomarkersService, public router: Router,
-        private appService: AppService) {
+        private appService: AppService, private headerService: HeaderService) {
         this.scaleX = 1;
         this.imageLoaded = false;
         this.canvasDisplayRatio = new BehaviorSubject<number>(1);
@@ -192,11 +193,13 @@ export class EditorService {
     // Loads a revision from the server. Draws that revision optionnaly.
     loadRevision(draw: boolean): void {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-        this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(), responseType: 'json' })
-            .subscribe(res => {
-                this.svgBox.innerHTML = (res as any).svg;
+        const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
+                                                                                   reportProgress: true, observe: 'events' });
+        this.headerService.display_progress(req, 'Biomarkers').subscribe(
+            res => {
+                this.svgBox.innerHTML = res.svg;
                 const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+                const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
                 const arbre: SVGGElement[] = [];
                 Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
                     const elems = e.getElementsByTagName('g');
@@ -207,7 +210,7 @@ export class EditorService {
                     }
                 });
 
-                this.commentService.comment = (res as any).diagnostic;
+                this.commentService.comment = res.diagnostic;
 
                 if (draw) {
                     this.layersService.biomarkerCanvas = [];
@@ -297,8 +300,10 @@ export class EditorService {
     }
 
     getMainImage(): void {
-        this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob' })
-            .subscribe(res => {
+        const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events',
+                                                                           reportProgress: true });
+        this.headerService.display_progress(req, 'Image').subscribe(
+            res => {
                 const reader: FileReader = new FileReader();
                 reader.onload = () => {
                     const image = new Image();
@@ -347,8 +352,10 @@ export class EditorService {
     }
 
     public loadPretreatmentImage(): void {
-        this.http.get(`/api/preprocessings/${this.imageId}/${PREPROCESSING_TYPE}`, { responseType: 'blob' })
-            .subscribe(
+        const req = this.http.get(`/api/preprocessings/${this.imageId}/${PREPROCESSING_TYPE}`, { responseType: 'blob',
+                                                                                                 reportProgress: true,
+                                                                                                 observe: 'events' });
+        this.headerService.display_progress(req, 'Pre-Processing').subscribe(
             res => {
                 const reader: FileReader = new FileReader();
                 reader.onload = () => {
@@ -363,7 +370,7 @@ export class EditorService {
             err => {
                 // console.log('Error: ' + err);
             }
-            );
+        );
     }
 
     public loadSVGLocal(event: any): void {
@@ -587,19 +594,28 @@ export class EditorService {
         return new Point(x, y);
     }
 
-    getTasks(): Observable<Task[]> {
-        const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-        return this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`);
+    getTasks(display_progress= false): Observable<Task[]> {
+        if (display_progress) {
+            const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+            const req = this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`, {observe: 'events', reportProgress: true});
+            return this.headerService.display_progress(req, 'Tasks List');
+        } else {
+            const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+            return this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`);
+        }
     }
 
     // Function called from gallery/tasks to load a new image and redirect to editor
     loadImageFromServer(imageId: string): void {
-        this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
-            this.imageLocal = null;
-            this.imageServer = res;
-            this.setImageId(imageId);
-            this.router.navigate(['/' + ROUTES.EDITOR]);
-        });
+        const req = this.http.get<ImageServer>(`/api/images/${imageId}/`, {observe: 'events', reportProgress: true});
+        this.headerService.display_progress(req, 'Image').subscribe(
+            res => {
+                this.imageLocal = null;
+                this.imageServer = res;
+                this.setImageId(imageId);
+                this.router.navigate(['/' + ROUTES.EDITOR]);
+            }
+        );
     }
 
     loadMetadata(imageId: string): void {
@@ -639,12 +655,15 @@ export class EditorService {
             svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
             diagnostic: this.commentService.comment
         };
-        this.http.put(`/api/revisions/${userId}/${this.imageId}`, body).subscribe( () => {
-            this.appService.loading = false;
-            if (then !== null) {
-                then();
-            }
-        });
+        const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
+            this.headerService.display_progress(req, 'Biomarkers', false).subscribe(
+                () => {
+                    this.appService.loading = false;
+                    if (then !== null) {
+                        then();
+                    }
+                }
+            );
     }
 
     setImageId(id: string): void {

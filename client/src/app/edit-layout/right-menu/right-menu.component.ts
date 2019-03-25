@@ -41,7 +41,7 @@ export class RightMenuComponent implements OnInit {
     // Retrieves the image types from the server
     getTasks(): void {
         if (!this.editorService.imageLocal) {
-            this.editorService.getTasks().subscribe(res => {
+            this.editorService.getTasks(true).subscribe(res => {
                 this.tasks = res;
             });
         }

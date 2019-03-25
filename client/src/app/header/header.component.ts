@@ -4,6 +4,7 @@ import { LoginService } from './../login/login.service';
 import { Component } from '@angular/core';
 import * as screenfull from 'screenfull';
 import { BugtrackerService } from '../bugtracker/bugtracker.service';
+import { HeaderService } from './header.service';
 
 @Component({
     selector: 'app-header',
@@ -12,7 +13,27 @@ import { BugtrackerService } from '../bugtracker/bugtracker.service';
 })
 export class HeaderComponent {
 
-    constructor(private loginService: LoginService, private router: Router, private bugtrackerService: BugtrackerService) { }
+    showLoading = false;
+    loadingLabel = '';
+    loadingProgress = 0;
+    loadingDownload = true;
+
+    constructor(private loginService: LoginService, private router: Router, private bugtrackerService: BugtrackerService,
+                private headerService: HeaderService) {
+        this.headerService.cbProgress = (progress: number) => { this.loadingProgress = progress; };
+        this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
+            if (show) {
+                this.showLoading = true;
+                this.loadingLabel = name;
+                this.loadingProgress = 0;
+                this.loadingDownload = download;
+            } else {
+                this.showLoading = false;
+                this.loadingLabel = '';
+                this.loadingProgress = 0;
+            }
+        };
+    }
 
     goToEditor(): void {
         this.router.navigate(['/' + ROUTES.EDITOR]);
