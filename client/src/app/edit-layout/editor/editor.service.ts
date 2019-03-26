@@ -18,6 +18,7 @@ import { Image as ImageServer } from '../../model/common/image.model';
 import { CommentsService } from '../right-menu/comments/comments.service';
 import { VisualizationService } from '../right-menu/visualization/visualization.service';
 import { HeaderService } from '../../header/header.service';
+import { tap, catchError } from 'rxjs/operators';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -661,7 +662,7 @@ export class EditorService {
         };
         const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
         const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
-        reqBody.subscribe( () => {this.appService.loading = false; });
+        reqBody.pipe( tap(() => { this.appService.loading = false; }));
         return reqBody;
     }
 

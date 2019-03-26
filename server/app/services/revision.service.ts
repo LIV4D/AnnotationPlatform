@@ -59,12 +59,12 @@ export class RevisionService {
         if (updatedRevision.diagnostic && updatedRevision.diagnostic.length > 1000) {
             throw createError('Diagnostic text is too long (>1000)', 403);
         }
-        if (oldRevision == null) {
+        if (!oldRevision) {
             const newRevision = new Revision();
-            if (updatedRevision.svg == null) {
+            if (!updatedRevision.svg) {
                 newRevision.svg = (await this.imageService.getImage(updatedRevision.imageId)).baseRevision;
             } else {
-                newRevision.svg = newRevision.svg;
+                newRevision.svg = updatedRevision.svg;
             }
             newRevision.diagnostic = updatedRevision.diagnostic;
             newRevision.user = { id: updatedRevision.userId } as any;

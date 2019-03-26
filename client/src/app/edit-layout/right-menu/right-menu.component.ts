@@ -101,6 +101,8 @@ export class RightMenuComponent implements OnInit {
                     this.router.navigate([`/${ROUTES.GALLERY}`]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
                 }
             }
+        }, error => {
+            setTimeout(() => { window.location.reload(); }, 10);
         });
     }
 

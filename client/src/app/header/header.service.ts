@@ -13,7 +13,8 @@ export class HeaderService {
     }
 
     display_progress(request: Observable<any>, name: string, download= true): Observable<any> {
-        request.subscribe(res => {
+        this.cbShowProgress(true, name, download);
+        return request.pipe(filter(res => {
             if (res.type === HttpEventType.DownloadProgress) {
                 if (this.cbProgress) {
                     this.cbProgress(res.loaded / res.total);
@@ -24,11 +25,10 @@ export class HeaderService {
                 }
             } else if (res.type === HttpEventType.Response) {
                 this.cbShowProgress(false);
+                return true;
             }
-        });
-        this.cbShowProgress(true, name, download);
-        return request.pipe(filter(res => res.type === HttpEventType.Response),
-                            map(res => (res as HttpResponse<any>).body));
+            return false;
+        }), map(res => (res as HttpResponse<any>).body));
     }
 
 }
