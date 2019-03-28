@@ -138,6 +138,7 @@ export class TaskController implements IRegistrableController {
         };
         if (req.body.active) { updatedTask.active = (req.body.active === 'true'); }
         if (req.body.completed) { updatedTask.completed = (req.body.completed === 'true'); }
+        console.log(req.body, updatedTask.completed);
         this.taskService.updateTask(updatedTask, req)
             .then(task => res.send(task))
             .catch(next);
