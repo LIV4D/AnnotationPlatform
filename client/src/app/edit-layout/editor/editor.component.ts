@@ -88,6 +88,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     onMouseLeave(event: MouseEvent): void {
+        if (event.which === 2 && !this.editorService.menuState) {
+            const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+            panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+            this.middleMouseDown = false;
+        }
         this.cursorDown = false;
         this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
         this.enableKeyEvents(true);
@@ -116,7 +121,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.delayEventHandling(() => {
             if (event.pointerType === 'pen') {
                 this.appService.pointerDetected = true;
-                this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+                if (this.toolboxService.isBrushMutliplierRelevent) {
+                    this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+                }
             }
             this.onMouseMove(event);
         });
@@ -126,7 +133,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.delayEventHandling(() => {
             if (event.pointerType === 'pen') {
                 this.appService.pointerDetected = true;
-                this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+                if (this.toolboxService.isBrushMutliplierRelevent) {
+                    this.toolPropertiesService.setBrushWidthMultiplier(event.pressure);
+                }
             }
             this.onMouseMove(event);
         });
@@ -135,13 +144,17 @@ export class EditorComponent implements OnInit, OnDestroy {
     onPointerUp(event: PointerEvent): void {
         this.clearDelayedEventHandling();
         this.onMouseUp(event);
-        this.toolPropertiesService.setBrushWidthMultiplier(0);
+        if (this.toolboxService.isBrushMutliplierRelevent) {
+            this.toolPropertiesService.setBrushWidthMultiplier(0);
+        }
     }
 
     onPointerLeave(event: PointerEvent): void {
         this.clearDelayedEventHandling();
         this.onMouseLeave(event);
-        this.toolPropertiesService.setBrushWidthMultiplier(0);
+        if (this.toolboxService.isBrushMutliplierRelevent) {
+            this.toolPropertiesService.setBrushWidthMultiplier(0);
+        }
     }
 
     onTouchStart(event: TouchEvent): void {

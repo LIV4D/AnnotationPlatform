@@ -128,4 +128,9 @@ export class ToolboxService {
             this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = false;
         }
     }
+
+    isBrushMutliplierRelevent(): boolean {
+        const tool_name = this.selectedTool.getValue().name;
+        return (tool_name === TOOL_NAMES.BRUSH || tool_name === TOOL_NAMES.ERASER);
+    }
 }
