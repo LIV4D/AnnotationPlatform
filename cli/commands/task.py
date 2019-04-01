@@ -76,6 +76,9 @@ def list_task(user_id=None, display=False):
         response = utils.request_server('GET', '/api/tasks/list/{}'.format(user_id))
     else:
         response = utils.request_server('GET', '/api/tasks/list')
+    if not response.status_code == 200:
+        print('Error:', response.json()['message'])
+        return []
     if display:
         print('Tasks table')
         pretty_data = [OrderedDict([

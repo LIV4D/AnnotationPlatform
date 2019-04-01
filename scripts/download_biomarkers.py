@@ -207,7 +207,8 @@ def download(root_path, limit="edited"):
                     return False
                 revisions = list(filter(is_new, clinician_revisions))
             else:
-                raise NotImplementedError
+                raise NotImplementedError('Invalid limit parameter: %s.\n'
+                                          'Valid values: completed, submitted, edited, new.' % limit)
 
             #   --- Download every selected revision ---
             with log.Process("Downloading revisions", total=len(revisions), verbose=False) as p_revision:
@@ -215,12 +216,12 @@ def download(root_path, limit="edited"):
                     log.info('--- %s ---' % clinician)
                 for r in revisions:
                     log.info(' - %i|%s : %s' % (r.img_id, r.name, r.biomarkers))
+                    revision_svg = cli.revision.get_revision(image_id=r.img_id, user_id=r.clinician_id, svg=True)['svg']
                     for b in r.biomarkers:
                         b_task = TASK_BY_BIOMARKER[b]
                         b_path = join(root_path, b_task, b)
                         update_dict(r, tasks_metadata[b_task])
-                        cli.revision.get_biomarker(image_id=r.img_id, user_id=r.clinician_id, biomarker=b,
-                                                   out=join(b_path, r.revision_path+'.png'))
+                        cli.revision.export_biomarker(revision_svg, biomarker=b, out=join(b_path, r.revision_path+'.png'))
                     revision_downloaded = True
                     p_revision.update(1)
             p.update(1)
@@ -235,8 +236,11 @@ def download(root_path, limit="edited"):
 
 if __name__ == '__main__':
     path = './'
+    limit = 'edited'
     if len(sys.argv) > 1:
         cli.config.url = sys.argv[1]
     if len(sys.argv) > 2:
-        path = sys.argv[2]
-    download(path)
+        limit = sys.argv[2]
+    if len(sys.argv) > 3:
+        path = sys.argv[3]
+    download(path, limit)

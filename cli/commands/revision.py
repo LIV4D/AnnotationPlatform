@@ -115,7 +115,10 @@ def get_biomarkers(user_id, image_id):
     return biomarkers
 
 def get_biomarker(user_id, image_id, biomarker, out='array'):
-    svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
+    return export_biomarker(get_revision(user_id, image_id, svg=True)['svg'], biomarker, out)
+    
+def export_biomarker(svg, biomarker, out='array'):
+    svg_tree = ET.fromstring(svg)
     b = [_.get('{http://www.w3.org/1999/xlink}href') for _ in svg_tree.iter() if _.get('id') == biomarker][0]
     if out.lower()=='array':
         return utils.decode_svg(b)
