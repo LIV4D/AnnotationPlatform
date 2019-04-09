@@ -50,7 +50,13 @@ def get_stats(path):
                     for c in comment.split(']'):
                         c = c.strip()
                         if c.startswith('[time='):
-                            t = int(c[6:8])*60 + int(c[9:11])
+                            t = c[6:].split(':')
+                            if len(t) == 1:
+                                t = int(t[0])
+                            elif len(t) == 2:
+                                t = int(t[0])*60 + int(t[1])
+                            elif len(t) == 3:
+                                t = int(t[0])*3600 + int(t[1])*60 + int(t[2])
                             total_time[clinician] += t
                             
                             if completed:
