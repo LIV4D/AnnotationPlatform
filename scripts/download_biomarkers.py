@@ -20,7 +20,7 @@ CLINICIANS = {
     "David Wong": "de7b71eb-87b0-4dce-84fe-373e86dc7eb8",
     "Marie-Carole Boucher": "84be2a52-5491-4d67-ad75-1704964eeb51",
     "Ananda Kalevar": "ed2f771f-fd43-4f0f-98f3-c42edfb5f3b4",
-    "Karim Hammamji": "7b1dc155-f885-4adB8-9582-b5db27196c66",
+    "Karim Hammamji": "7b1dc155-f885-4ad8-9582-b5db27196c66",
     "Renaud Duval": "02758e79-f1e1-4989-8e57-5658672a2b12"
 }
 
@@ -129,7 +129,14 @@ def get_diagnostic_info(diagnostic):
             b = c_stripped[12:].split(',')
             biomarkers += [_ for _ in b if _ not in ('Others', )]
         elif c_stripped.startswith('[time='):
-            time = int(c_stripped[6:8])*60 + int(c_stripped[9:11])
+            t = c[6:].split(':')
+            if len(t) == 1:
+                t = int(t[0])
+            elif len(t) == 2:
+                t = int(t[0])*60 + int(t[1])
+            elif len(t) == 3:
+                t = int(t[0])*3600 + int(t[1])*60 + int(t[2])
+            time = t
         else:
             comment += c+']'
 

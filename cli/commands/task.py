@@ -201,7 +201,7 @@ def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='a
     if copy_biomarker == 'auto':
         copy_biomarker = time!=0
     
-    if not create(img_id, 1, new_user_id, limit_biomarkers=biomarkers, comment=comment, display=True, force=True, merge=merge_task):
+    if not create(img_id, new_user_id, limit_biomarkers=biomarkers, comment=comment, display=True, force=True, merge=merge_task):
         log_error("task [img=%i,user=%s] couldn't be created" % (img_id, new_user_id))
         return False
     irreversible_operations.append("Creating Task [img=%i,new_user=%s]" % (img_id, new_user_id))
