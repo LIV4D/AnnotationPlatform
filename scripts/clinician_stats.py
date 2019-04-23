@@ -10,7 +10,7 @@ from junno import log
 
  
 # List Clinicians
-clinicians = {
+CLINICIANS = {
     "Micheal Brent": "4207335d-4aea-4975-8ab0-3d46f8259e6f",
     "Cynthia Quian": "9dbc7fbd-66a9-4990-b53f-291f806f6672",
     "David Wong": "de7b71eb-87b0-4dce-84fe-373e86dc7eb8",
@@ -19,65 +19,88 @@ clinicians = {
     "Karim Hammamji": "7b1dc155-f885-4ad8-9582-b5db27196c66",
     "Renaud Duval": "02758e79-f1e1-4989-8e57-5658672a2b12"
 }
+CLINICIANS_r = {v: k for k,v in CLINICIANS.items()}
+CLINICIANS_ID = list(CLINICIANS.values())
+
+TASKS = {
+    "bright": "Exudates,Cotton Wool Spots,Drusen,Uncertain - Bright",
+    "red": "Microaneurysms,Hemorrhages,Sub-retinal hemorrhage,Pre-retinal hemorrhage,Neovascularization,Uncertain - Red",
+    "disk": "Disk,Cup,Macula",
+    "vessel": "Vessels - Uncertain"
+}
+
+
+TASKS_r = {}
+for t in TASKS.items():
+    for _ in t[1].split(','):
+        TASKS_r[_] = t[0]
+
+def to_task(biomarkers):
+    return {TASKS_r[_] for _ in biomarkers}
 
 def get_stats(path):
     # Retreive data
-    completed_tasks = {_: 0 for _ in clinicians.keys()}
-    incomplete_tasks = {_: 0 for _ in clinicians.keys()}
-    total_completed_time = {_: 0 for _ in clinicians.keys()}
-    total_time = {_: 0 for _ in clinicians.keys()}
+    data = {_: {} for _ in TASKS.keys()}
     
-    with log.Process('Retreiving Clinicians Stats', total=len(clinicians)) as p:
-        for clinician, clinician_id in clinicians.items():
-            # Get tasks from a clinician
-            tasks = cli.task.list_task(clinician_id)
-            
-            with log.Process(clinician, total=len(tasks), verbose=False) as p_task:
-                for task in tasks:
-                    # Check completion
-                    completed = task['completed']
-                    if completed:
-                        completed_tasks[clinician] += 1
-                    else:
-                        incomplete_tasks[clinician] += 1
-                    
-                    # Get revision of this task
-                    img_id = task['image']['id']
-                    revision = cli.revision.get_revision(clinician_id, img_id, svg=False)
-                        
-                    # Read time
-                    comment = revision.get('diagnostic', '')
-                    for c in comment.split(']'):
-                        c = c.strip()
-                        if c.startswith('[time='):
-                            t = c[6:].split(':')
-                            if len(t) == 1:
-                                t = int(t[0])
-                            elif len(t) == 2:
-                                t = int(t[0])*60 + int(t[1])
-                            elif len(t) == 3:
-                                t = int(t[0])*3600 + int(t[1])*60 + int(t[2])
-                            total_time[clinician] += t
-                            
-                            if completed:
-                                total_completed_time[clinician] += t
-                    p_task.update(1)
-            p.update(1)
+    with log.Process('Downloading revision list...', verbose=False):
+        revisions = [{'raw_comment': _['diagnostic'], 'clinician': CLINICIANS_r[_['user']['id']], 'img': _['image']['id']}
+                    for _ in cli.revision.list_revision() if _['user']['id'] in CLINICIANS_ID]
+    def revision_id(img, user):
+        for i, r in enumerate(revisions):
+            if r['img'] == img and r['clinician'] == user:
+                return i
+        return None
+    
+    with log.Process('Downloading task list...', verbose=False):
+        tasks = [{'revision': revision_id(_['image']['id'], CLINICIANS_r[_['user']['id']]), 'img': _['image']['id'], 'clinician':CLINICIANS_r[_['user']['id']], 'completed': _['completed']} 
+                for _ in cli.task.list_task(None) if _['user']['id'] in CLINICIANS_ID]  
+    
+    with log.Process('Parsing tasks', verbose=False):
+        for task in tasks:
+            r = revisions[task['revision']]
+            biomarkers, t, c = cli.utils.info_from_diagnostic(r['raw_comment'])
+            for b in to_task(biomarkers):
+                user = r['clinician']
+                if user not in data[b]:
+                    d = {'completed': 0, 'incompleted': 0, 'total_completed': 0, 'total': 0}
+                    data[b][user] = d
+                else:
+                    d = data[b][user]
+                if task['completed']:
+                    d['completed'] += 1
+                    d['total_completed'] += t
+                else:
+                    d['incompleted'] += 1
+                d['total'] += t
 
     # Format data
     from junno.j_utils.string import time2str
-        
-    F_total_time = {c: time2str(t) for c, t in total_time.items()}
-    F_total_completed_time = {c: time2str(t) for c, t in total_completed_time.items()}
-    F_average_time = {c: time2str(t//completed_tasks[c]) if completed_tasks[c] else '' for c, t in total_completed_time.items()}
+    from collections import OrderedDict
+    
+    F_tasks = []
+    F_clinician = []
+    F_total_time = []
+    F_total_completed_time = []
+    F_completed = []
+    F_incompleted = []
+    
+    for t, t_d in data.items():
+        for c, d in t_d.items():
+            F_tasks.append(t)
+            F_clinician.append(c)
+            F_total_time.append(time2str(d['total']))
+            F_total_completed_time.append(time2str(d['total_completed']))
+            F_completed.append(d['completed'])
+            F_incompleted.append(d['incompleted'])
 
-    c = list(clinicians.keys())
+    c = list(CLINICIANS.keys())
 
-    df = pd.DataFrame({'CompletedTasks': pd.Series(completed_tasks, index=c),
-                       'IncompleteTasks': pd.Series(incomplete_tasks, index=c),
-                       'AverageTime': pd.Series(F_average_time, index=c),
-                       'TotalTimeComplete': pd.Series(F_total_completed_time, index=c),
-                       'TotalTime': pd.Series(F_total_time, index=c),})
+    df = pd.DataFrame({'Task': pd.Series(F_tasks),
+                       'Clinician': pd.Series(F_clinician),
+                       'CompletedTasks': pd.Series(F_completed),
+                       'IncompleteTasks': pd.Series(F_incompleted),
+                       'TotalTimeComplete': pd.Series(F_total_completed_time),
+                       'TotalTime': pd.Series(F_total_time),})
 
     df.to_excel(path)
     

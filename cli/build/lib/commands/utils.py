@@ -105,7 +105,14 @@ def info_from_diagnostic(diagnostic):
             b = c_stripped[12:].split(',')
             biomarkers += [_.strip() for _ in b if _.strip() not in ('Others', )]
         elif c_stripped.startswith('[time='):
-            time = int(c_stripped[6:8])*60 + int(c_stripped[9:11])
+            t = c[6:].split(':')
+            if len(t) == 1:
+                t = int(t[0])
+            elif len(t) == 2:
+                t = int(t[0])*60 + int(t[1])
+            elif len(t) == 3:
+                t = int(t[0])*3600 + int(t[1])*60 + int(t[2])
+            time = t
         else:
             comment += c+']'
 
