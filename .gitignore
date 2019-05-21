@@ -37,6 +37,10 @@ yarn-error.log
 testem.log
 /typings
 storage/
+Preannotations/
+prerevisions/
+preprocessings/
+images/
 token
 *.egg-info
 
