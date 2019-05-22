@@ -1,4 +1,4 @@
-import { TaskType } from './taskType.model';
+import { TaskGroup } from './taskType.model';
 
 export class Task {
     public id: number;

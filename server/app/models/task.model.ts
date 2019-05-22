@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Image } from './image.model';
-import { TaskType } from './taskType.model';
+import { TaskGroup } from './taskGroup.model';
 import { User } from './user.model';
 import { TaskPrototype } from './taskPrototype.model';
 

@@ -1,6 +1,6 @@
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
-import { TaskType } from '../models/taskType.model';
+import { TaskGroup } from '../models/taskGroup.model';
 
 @injectable()
 export class TaskTypeRepository {

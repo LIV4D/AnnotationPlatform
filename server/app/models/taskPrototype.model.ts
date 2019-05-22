@@ -1,4 +1,4 @@
-import { TaskGroup } from './taskType.model';
+import { TaskGroup } from './taskGroup.model';
 import { User } from './user.model';
 import { ImagePrototype } from './imagePrototype.model';
 import { Task } from './task.model';
