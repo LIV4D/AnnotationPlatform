@@ -13,17 +13,20 @@ export class Task {
     @ManyToOne(type => Image, image => image.tasks)
     public image: Image;
 
-    @ManyToOne(type => TaskType, taskType => taskType.tasks)
-    public taskType: TaskType;
+    @ManyToOne(type => TaskGroup, taskGroup => TaskGroup.tasks)
+    public taskGroup: TaskGroup;
 
     @ManyToOne(type => User, user => user.tasks)
     public user: User;
 
-    @Column()
-    public active: boolean;
+    @Column({ default: true })
+    public isVisible: boolean;
+
+    @Column({ default: false })
+    public isComplete: boolean;
 
     @Column()
-    public completed: boolean;
+    public comment: string;
 
     prototype(): TaskPrototype {
         return new TaskPrototype(this);
