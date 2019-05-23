@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Preprocessing } from './preprocessing.model';
-import { Revision } from './revision.model';
+import { Annotation } from './annotation.model';
 import { Task } from './task.model';
 import { ImagePrototype } from './imagePrototype.model';
 
@@ -9,9 +9,9 @@ import { ImagePrototype } from './imagePrototype.model';
 export class Image {
     @PrimaryGeneratedColumn()
     public id: number;
-    //TODO: what should I do with preprocessing images ( i.e include path or create thumbnail?)
-    @OneToMany(type => Annotation, revision => annotation.image)
-    public revisions: Revision[];
+    // TODO: what should I do with preprocessing images ( i.e include path or create thumbnail?)
+    @OneToMany(type => Annotation, annotation => annotation.image)
+    public annotations: Annotation[];
 
     @OneToMany(type => Task, task => task.image)
     public tasks: Task[];

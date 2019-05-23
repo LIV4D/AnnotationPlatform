@@ -17,5 +17,6 @@ export class TaskPrototype {
         this.user = task.user;
         this.isVisible = task.isVisible;
         this.isComplete = task.isComplete;
+        this.taskGroup = task.taskGroup;
     }
 }

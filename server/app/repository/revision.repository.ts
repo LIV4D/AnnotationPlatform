@@ -1,6 +1,6 @@
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
-import { Revision } from '../models/revision.model';
+import { Revision } from '../models/annotation.model';
 import { DeleteResult } from 'typeorm';
 
 @injectable()

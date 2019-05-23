@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import TYPES from '../types';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
-import { Revision } from '../models/revision.model';
+import { Annotation } from '../models/annotation.model';
 import { RevisionRepository } from '../repository/revision.repository';
 import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
@@ -16,14 +16,14 @@ export class RevisionService {
     @inject(TYPES.ImageService)
     private imageService: ImageService;
 
-    public async createRevision(newRevision: any): Promise<Revision> {
+    public async createRevision(newRevision: any): Promise<Annotation> {
         if (await this.revisionRepository.findForUserForImage(newRevision.userId, newRevision.imageId)) {
             throw createError('Revision for this user and this image already exists', 409);
         }
         if (newRevision.diagnostic && newRevision.diagnostic.length > 1000) {
             throw createError('Diagnostic text is too long (>1000)', 403);
         }
-        const revision = new Revision();
+        const revision = new Annotation();
         revision.svg = newRevision.svg;
         revision.diagnostic = newRevision.diagnostic;
         revision.user = { id: newRevision.userId } as any;

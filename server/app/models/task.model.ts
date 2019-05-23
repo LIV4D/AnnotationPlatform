@@ -13,7 +13,7 @@ export class Task {
     @ManyToOne(type => Image, image => image.tasks)
     public image: Image;
 
-    @ManyToOne(type => TaskGroup, taskGroup => TaskGroup.tasks)
+    @ManyToOne(type => TaskGroup, taskGroup => taskGroup.tasks, { nullable: false })
     public taskGroup: TaskGroup;
 
     @ManyToOne(type => User, user => user.tasks)

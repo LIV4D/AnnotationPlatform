@@ -16,9 +16,6 @@ export class User {
     @PrimaryColumn({ length: 16 })
     public id: string;
 
-    // @OneToMany(type => Revision, revision => revision.user)
-    // public revisions: Revision[];
-
     @OneToMany(type => Evenement, evenement => evenement.user)
     public evenements: Evenement[];
 
