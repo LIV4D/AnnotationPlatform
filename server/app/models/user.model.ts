@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { Evenement } from './evenement.model'
+import { Evenement } from './evenement.model';
 import { Task } from './task.model';
 import { isUndefined } from 'util';
 

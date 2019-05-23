@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Preprocessing } from './preprocessing.model';
 import { Annotation } from './annotation.model';
 import { Task } from './task.model';
 import { ImagePrototype } from './imagePrototype.model';

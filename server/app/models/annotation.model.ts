@@ -1,12 +1,10 @@
 import 'reflect-metadata';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, /*Unique,*/ OneToMany, Timestamp } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Image } from './image.model';
-import { User } from './user.model';
 import { AnnotationPrototype } from './annotationPrototype.model';
 import { Evenement } from './evenement.model';
 
 @Entity()
-// @Unique(['image', 'user'])
 export class Annotation {
     @PrimaryGeneratedColumn()
     public id: number;

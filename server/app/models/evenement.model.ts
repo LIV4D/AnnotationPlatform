@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany, Unique, Timestamp, ManyToOne } from 'typeorm';
-import { User } from './user.model'
+import { Column, Entity, PrimaryGeneratedColumn, Unique, Timestamp, ManyToOne } from 'typeorm';
+import { User } from './user.model';
 import { Annotation } from './annotation.model';
 
 @Entity()
