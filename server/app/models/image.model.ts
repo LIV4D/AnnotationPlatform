@@ -20,14 +20,17 @@ export class Image {
 
     @Column({ unique: true, nullable: false })
     public preprocessingPath: string;
+    
+    @Column({ unique: true, nullable: false })
+    public thumbnailPath: string;
 
     // TODO: figure out what to do with this method
-    get thumbnailPath(): string {
-        const path = this.path;
-        const imgDirname = path.match(/.*\//);
-        const imgBasename = path.replace(/.*\//, '');
-        return imgDirname + '/' + 'thumbnailI' + imgBasename.substr(1);  // HACKISH
-    }
+    // get thumbnailPath(): string {
+    //     const path = this.path;
+    //     const imgDirname = path.match(/.*\//);
+    //     const imgBasename = path.replace(/.*\//, '');
+    //     return imgDirname + '/' + 'thumbnailI' + imgBasename.substr(1);  // HACKISH
+    // }
 
     prototype(): ImagePrototype {
         return new ImagePrototype(this);
