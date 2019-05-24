@@ -23,18 +23,17 @@ import { PreprocessingService } from './services/preprocessing.service';
 import { PreprocessingTypeService } from './services/preprocessingType.service';
 import { RevisionService } from './services/revision.service';
 import { TaskService } from './services/task.service';
-import { TaskTypeService } from './services/taskType.service';
+import { TaskTypeService } from './services/taskGroup.service';
 import { UserService } from './services/user.service';
 // Repositories
-import { BiomarkerTypeRepository } from './repository/biomarkerType.repository';
 import { connectionProvider, ConnectionProvider } from './repository/connection.provider';
 import { ImageRepository } from './repository/image.repository';
 import { ImageTypeRepository } from './repository/imageType.repository';
 import { PreprocessingRepository } from './repository/preprocessing.repository';
 import { PreprocessingTypeRepository } from './repository/preprocessingType.repository';
-import { RevisionRepository } from './repository/revision.repository';
+import { RevisionRepository } from './repository/annotation.repository';
 import { TaskRepository } from './repository/task.repository';
-import { TaskTypeRepository } from './repository/taskType.repository';
+import { TaskGroupRepository } from './repository/taskGroup.repository';
 import { UserRepository } from './repository/user.repository';
 
 const container: Container = new Container();
@@ -64,7 +63,6 @@ container.bind<TaskService>(TYPES.TaskService).to(TaskService);
 container.bind<TaskTypeService>(TYPES.TaskTypeService).to(TaskTypeService);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 // Repositories
-container.bind<BiomarkerTypeRepository>(TYPES.BiomarkerTypeRepository).to(BiomarkerTypeRepository);
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
 container.bind<ImageTypeRepository>(TYPES.ImageTypeRepository).to(ImageTypeRepository);
@@ -72,7 +70,7 @@ container.bind<PreprocessingRepository>(TYPES.PreprocessingRepository).to(Prepro
 container.bind<PreprocessingTypeRepository>(TYPES.PreprocessingTypeRepository).to(PreprocessingTypeRepository);
 container.bind<RevisionRepository>(TYPES.RevisionRepository).to(RevisionRepository);
 container.bind<TaskRepository>(TYPES.TaskRepository).to(TaskRepository);
-container.bind<TaskTypeRepository>(TYPES.TaskTypeRepository).to(TaskTypeRepository);
+container.bind<TaskGroupRepository>(TYPES.TaskTypeRepository).to(TaskGroupRepository);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository);
 
 export { container };

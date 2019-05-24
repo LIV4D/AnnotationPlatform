@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { TaskGroup } from '../models/taskGroup.model';
-import { TaskTypeRepository } from '../repository/taskType.repository';
+import { TaskGroupRepository } from '../repository/taskGroup.repository';
 import { createError } from '../utils/error';
 
 @injectable()

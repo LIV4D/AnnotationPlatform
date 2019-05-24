@@ -2,7 +2,7 @@ import * as express from 'express';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { IRegistrableController } from './registrable.controller';
-import { TaskTypeService } from '../services/taskType.service';
+import { TaskTypeService } from '../services/taskGroup.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 
 @injectable()

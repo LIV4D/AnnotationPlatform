@@ -14,32 +14,27 @@ export class UserRepository {
     }
 
     public async findAll(): Promise<User[]> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).find());
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).find();
     }
 
-    public async create(user: User): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).save(user));
-    }
-
-    public async update(user: User): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).save(user));
+    public async updateUser(user: User): Promise<User> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).save(user);
     }
 
     public async find(id: string): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).findOne({ select: [ 'id', 'name', 'email', 'salt', 'hash', 'role' ], where: { id } }));
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).findOne({ where: { id } });
     }
 
     public async findByEmail(email: string): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).findOne({ select: [ 'id', 'name', 'email', 'salt', 'hash', 'role' ], where: { email } }));
+        const connection = await this.connectionProvider();
+        return connection.getRepository(User).findOne({ where: { email } });
     }
 
     public async delete(user: User): Promise<DeleteResult> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).delete(user));
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).delete(user);
     }
 }

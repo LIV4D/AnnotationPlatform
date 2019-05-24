@@ -3,7 +3,7 @@ import TYPES from '../types';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import { Annotation } from '../models/annotation.model';
-import { RevisionRepository } from '../repository/revision.repository';
+import { RevisionRepository } from '../repository/annotation.repository';
 import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
