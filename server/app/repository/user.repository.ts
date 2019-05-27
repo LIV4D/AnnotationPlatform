@@ -18,7 +18,7 @@ export class UserRepository {
         return await connection.getRepository(User).find();
     }
 
-    public async updateUser(user: User): Promise<User> {
+    public async create(user: User): Promise<User> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(User).save(user);
     }

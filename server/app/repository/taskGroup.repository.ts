@@ -17,7 +17,7 @@ export class TaskGroupRepository {
         return await connection.getRepository(TaskGroup).find();
     }
 
-    public async update(taskGroup: TaskGroup): Promise<TaskGroup> {
+    public async create(taskGroup: TaskGroup): Promise<TaskGroup> {
         const connection =  await this.connectionProvider();
         return await connection.getRepository(TaskGroup).save(taskGroup);
     }
