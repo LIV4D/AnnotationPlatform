@@ -18,7 +18,7 @@ export class TaskRepository {
 
     public async findAll(): Promise<Task[]> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).find({ relations : ['user', 'image', 'taskType'] }));
+            connection.getRepository(Task).find({ relations : ['user', 'image', 'taskGroup'] }));
     }
 
     public async create(task: Task): Promise<Task> {
