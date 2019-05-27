@@ -33,7 +33,7 @@ export class TaskRepository {
 
     public async find(id: number): Promise<Task> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).findOne(id, { relations : ['user', 'image', 'taskType'] }));
+            connection.getRepository(Task).findOne(id, { relations : ['user', 'image', 'taskGroup'] }));
     }
 
     public async findTasksByUser(userId: string): Promise<Task[]> {
