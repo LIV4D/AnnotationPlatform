@@ -15,7 +15,7 @@ export class AnnotationRepository {
 
     public async findAll(): Promise<Annotation[]> {
         const connection = await this.connectionProvider();
-        return await connection.getRepository(Annotation).find({ relations: ['image'] });
+        return await connection.getRepository(Annotation).find({ relations: ['image', 'evenement'] });
     }
 
     public async create(annotation: Annotation): Promise<Annotation> {

@@ -52,7 +52,7 @@ export class TaskRepository {
             .where('task.user.id = :usrId', { usrId: userId })
             .andWhere('task.image.id = :imgId', { imgId: imageId })
             .andWhere('task.isVisible = :isVisible', { isVisible: true })
-            .leftJoinAndSelect('task.taskGroup', 'taskType')
+            .leftJoinAndSelect('task.taskGroup', 'taskGroup')
             .leftJoinAndSelect('task.user', 'user')
             .getMany();
     }
