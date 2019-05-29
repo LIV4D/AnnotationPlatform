@@ -12,7 +12,7 @@ export class EvenementRepository {
 
     public async findAll(): Promise<Evenement[]> {
         const connection = await this.connectionProvider();
-        return await connection.getRepository(Evenement).find( {relations: ['image', 'user'] });
+        return await connection.getRepository(Evenement).find( { relations: ['image', 'user'] });
     }
 
     public async findByUser(userId: number): Promise<Evenement[]>  {

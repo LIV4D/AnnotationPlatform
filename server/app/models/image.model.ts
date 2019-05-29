@@ -20,9 +20,9 @@ export class Image {
 
     @Column({ unique: true, nullable: false })
     public preprocessingPath: string;
-    
+
     @Column({ unique: true, nullable: false })
-    public thumbnailPath: string;
+    public thumbnail: string;
 
     // TODO: figure out what to do with this method
     // get thumbnailPath(): string {

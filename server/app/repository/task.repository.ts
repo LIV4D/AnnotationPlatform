@@ -16,7 +16,7 @@ export class TaskRepository {
     ) {
         this.connectionProvider = connectionProvider;
     }
-    
+
     public async findAll(): Promise<Task[]> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(Task).find({ relations : ['user', 'image', 'taskGroup'] });
@@ -58,7 +58,6 @@ export class TaskRepository {
     }
 
     public async findTaskListByUser(userId: string, page: number = 0, pageSize: number = 0, completed?: boolean): Promise<ITaskList> {
-       // TODO: virer attribut objectCount inutile
         const taskList: ITaskList = {
             objects: [],
         };
@@ -83,9 +82,11 @@ export class TaskRepository {
                 }
             } else {
             // If it doesn't create a new taskGroup and load the image thumbnail
+
+            // TODO: change code to load the thumbnail from db instead of using path
                 let dataUrl = '';
                 try {
-                    const base64Image = fs.readFileSync(path.resolve(task.image.thumbnailPath), 'base64');
+                    const base64Image = fs.readFileSync(path.resolve(task.image.thumbnail), 'base64');
                     dataUrl = 'data:image/png;base64, ' + base64Image;
                 } catch {
                     console.log('Image non-trouvée: ', task.image.id);

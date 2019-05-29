@@ -15,7 +15,7 @@ export class Annotation {
     @OneToMany(type => Evenement, evenements => evenements.annotation)
     public evenements: Evenement[];
 
-    @Column()
+    @Column({ nullable: true }) // TODO: do we count the first svg from algo?
     public svg: string;
 
     @Column()
