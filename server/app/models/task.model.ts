@@ -1,20 +1,24 @@
 import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Image } from './image.model';
+// import { Image } from './image.model';
 import { TaskGroup } from './taskGroup.model';
 import { User } from './user.model';
 import { TaskPrototype } from './taskPrototype.model';
+import { Annotation } from './annotation.model';
 
 @Entity()
 export class Task {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => Image, image => image.tasks)
-    public image: Image;
+    // @ManyToOne(type => Image, image => image.tasks)
+    // public image: Image;
 
     @ManyToOne(type => TaskGroup, taskGroup => taskGroup.tasks, { nullable: false })
     public taskGroup: TaskGroup;
+
+    @ManyToOne(type => Annotation, annotation => annotation.tasks)
+    public annotation: Annotation;
 
     @ManyToOne(type => User, user => user.tasks)
     public user: User;

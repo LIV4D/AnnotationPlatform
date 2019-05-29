@@ -3,7 +3,7 @@ import TYPES from '../types';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import { Annotation } from '../models/annotation.model';
-import { RevisionRepository } from '../repository/annotation.repository';
+import { AnnotationRepository } from '../repository/annotation.repository';
 import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
@@ -12,23 +12,23 @@ import { ImageService } from './image.service';
 @injectable()
 export class RevisionService {
     @inject(TYPES.RevisionRepository)
-    private revisionRepository: RevisionRepository;
+    private annotationRepository: AnnotationRepository;
     @inject(TYPES.ImageService)
     private imageService: ImageService;
 
     public async createRevision(newRevision: any): Promise<Annotation> {
-        if (await this.revisionRepository.findForUserForImage(newRevision.userId, newRevision.imageId)) {
+        if (await this.annotationRepository.findForUserForImage(newRevision.userId, newRevision.imageId)) {
             throw createError('Revision for this user and this image already exists', 409);
         }
         if (newRevision.diagnostic && newRevision.diagnostic.length > 1000) {
             throw createError('Diagnostic text is too long (>1000)', 403);
         }
-        const revision = new Annotation();
-        revision.svg = newRevision.svg;
-        revision.diagnostic = newRevision.diagnostic;
-        revision.user = { id: newRevision.userId } as any;
-        revision.image = { id: newRevision.imageId } as any;
-        return await this.revisionRepository.create(revision);
+        const annotation = new Annotation();
+        annotation.svg = newRevision.svg;
+        annotation.diagnostic = newRevision.diagnostic;
+        annotation.user = { id: newRevision.userId } as any;
+        annotation.image = { id: newRevision.imageId } as any;
+        return await this.AnnotationRepository.create(revision);
     }
 
     public async getRevision(id: number, req: express.Request): Promise<Revision> {

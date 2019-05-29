@@ -21,19 +21,19 @@ export class TaskService {
 
     public async createTask(newTask: any): Promise<Task> {
         const task = new Task();
-        if (newTask.active !== undefined) {
-            task.active = newTask.active;
+        if (newTask.isVisible !== undefined) {
+            task.isVisible = newTask.isVisible;
         } else {
-            task.active = true;
+            task.isVisible = true;
         }
-        if (newTask.completed !== undefined) {
-            task.completed = newTask.completed;
+        if (newTask.isComplete !== undefined) {
+            task.isComplete = newTask.isComplete;
         } else {
-            task.completed = false;
+            task.isComplete = false;
         }
         task.user = { id: newTask.userId } as any;
         task.image = { id: newTask.imageId } as any;
-        task.taskType = { id: newTask.taskTypeId } as any;
+        task.taskGroup = { id: newTask.taskGroupId } as any;
 
         // Create revision for user for image when creating task if it does not already exist
         try {

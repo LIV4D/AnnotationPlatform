@@ -3,9 +3,11 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'ty
 import { Image } from './image.model';
 import { AnnotationPrototype } from './annotationPrototype.model';
 import { Evenement } from './evenement.model';
+import { Task } from './task.model';
 
 @Entity()
 export class Annotation {
+
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -15,11 +17,18 @@ export class Annotation {
     @OneToMany(type => Evenement, evenements => evenements.annotation)
     public evenements: Evenement[];
 
+    @OneToMany(type => Task, tasks => tasks.annotation)
+    public tasks: Task[];
+
     @Column({ nullable: true }) // TODO: do we count the first svg from algo?
-    public svg: string;
+
+    // TODO: have svg in JSON if possible
+    public svg: JSON;
 
     @Column()
     public comment: string;
+
+    // rajouter un champ pour lier a l'annotation precedente
 
     prototype(): AnnotationPrototype {
         return new AnnotationPrototype(this);
