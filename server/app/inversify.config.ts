@@ -5,7 +5,7 @@ import { Container } from 'inversify';
 import { Server } from './server';
 // Controllers
 import { BiomarkerTypeController } from './controllers/biomarkerType.controller';
-import { BugtrackerController} from './controllers/bugtracker.controller';
+import { BugtrackerController } from './controllers/bugtracker.controller';
 import { ImageController } from './controllers/image.controller';
 import { ImageTypeController } from './controllers/imageType.controller';
 import { IRegistrableController } from './controllers/registrable.controller';
@@ -28,10 +28,7 @@ import { UserService } from './services/user.service';
 // Repositories
 import { connectionProvider, ConnectionProvider } from './repository/connection.provider';
 import { ImageRepository } from './repository/image.repository';
-import { ImageTypeRepository } from './repository/imageType.repository';
-import { PreprocessingRepository } from './repository/preprocessing.repository';
-import { PreprocessingTypeRepository } from './repository/preprocessingType.repository';
-import { RevisionRepository } from './repository/annotation.repository';
+import { AnnotationRepository } from './repository/annotation.repository';
 import { TaskRepository } from './repository/task.repository';
 import { TaskGroupRepository } from './repository/taskGroup.repository';
 import { UserRepository } from './repository/user.repository';
@@ -65,10 +62,7 @@ container.bind<UserService>(TYPES.UserService).to(UserService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
-container.bind<ImageTypeRepository>(TYPES.ImageTypeRepository).to(ImageTypeRepository);
-container.bind<PreprocessingRepository>(TYPES.PreprocessingRepository).to(PreprocessingRepository);
-container.bind<PreprocessingTypeRepository>(TYPES.PreprocessingTypeRepository).to(PreprocessingTypeRepository);
-container.bind<RevisionRepository>(TYPES.RevisionRepository).to(RevisionRepository);
+container.bind<AnnotationRepository>(TYPES.RevisionRepository).to(AnnotationRepository);
 container.bind<TaskRepository>(TYPES.TaskRepository).to(TaskRepository);
 container.bind<TaskGroupRepository>(TYPES.TaskTypeRepository).to(TaskGroupRepository);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository);
