@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Annotation } from './annotation.model';
-import { Task } from './task.model';
+// import { Task } from './task.model';
 import { ImagePrototype } from './imagePrototype.model';
 
 @Entity()
@@ -12,8 +12,8 @@ export class Image {
     @OneToMany(type => Annotation, annotation => annotation.image)
     public annotations: Annotation[];
 
-    @OneToMany(type => Task, task => task.image)
-    public tasks: Task[];
+    // @OneToMany(type => Task, task => task.image)
+    // public tasks: Task[];
 
     @Column({ unique: true })
     public path: string;

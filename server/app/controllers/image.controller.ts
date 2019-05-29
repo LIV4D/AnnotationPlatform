@@ -34,16 +34,11 @@ export class ImageController implements IRegistrableController {
     private uploadImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in imageService.upload
         const newImage: any = {
-            baseRevision: req.body.baseRevision,
-            finalRevision: req.body.finalRevision,
+            imageId: req.body.imageId,
             filename: req.body.filename,
-            imageTypeId: req.body.imageTypeId,
-            eye: req.body.eye,
-            hospital: req.body.hospital,
-            patient: req.body.patient,
-            visit: req.body.visit,
-            code: req.body.code,
-            extra: req.body.extra,
+            preprocessingFileName: req.body.preprocessingFileName,
+            // TODO: check if we store thumbnail in database or not
+            // thumbnailFileName: req.body.thumbnailFileName,
         };
         if (req.params.imageId != null) {
             newImage.imageId = req.params.imageId;

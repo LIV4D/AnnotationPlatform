@@ -50,19 +50,11 @@ export class ImageService {
 
     public async uploadImage(newImage: any) {
         if (newImage.filename == null) {
-            throw createError('Request misses a image file on image key', 403);
+            throw createError('Request misses an image file on image key', 403);
         }
         const image: Image = new Image();
-        image.baseRevision = newImage.baseRevision;
-        image.eye = newImage.eye;
-        image.hospital = newImage.hospital;
-        image.patient = newImage.patient;
-        image.visit = newImage.visit;
-        image.code = newImage.code;
-        image.extra = newImage.extra;
-        image.finalRevision = newImage.finalRevision;
         image.path = path.join(config.get('fileStorage.path'), newImage.filename);
-        image.imageType = { id: newImage.imageTypeId } as any;
+        image.preprocessingPath = path.join(config.get('fileStorage.path'), newImage.preprocessingFileName);
         return await this.imageRepository.create(image);
     }
 
@@ -71,21 +63,26 @@ export class ImageService {
         // If file changes
         if (updatedImage.filename != null) {
             oldImage.path = path.join(config.get('fileStorage.path'), updatedImage.filename);
-            delete updatedImage.filename;
+            // delete updatedImage.filename;
         }
-        for (const key of Object.keys(updatedImage)) {
-            if (updatedImage[key] != null) {
-                oldImage[key] = updatedImage[key];
-            }
+        if (updatedImage.preprocessingFileName != null) {
+            oldImage.preprocessingPath = path.join(config.get('fileStorage.path'), updatedImage.preprocessingFileName);
+            // delete updatedImage.preprocessingFileName;
         }
+        // for (const key of Object.keys(updatedImage)) {
+        //     if (updatedImage[key] != null) {
+        //         oldImage[key] = updatedImage[key];
+        //     }
+        // }
+        oldImage.thumbnail = updatedImage.thumbnail;
         this.imageRepository.update(oldImage);
     }
 
-    public async updateBaseRevision(imageId: string, baseRevision: string) {
-        const oldImage = await this.getImage(imageId);
-        oldImage.baseRevision = baseRevision;
-        this.imageRepository.update(oldImage);
-    }
+    // public async updateBaseRevision(imageId: string, baseRevision: string) {
+    //     const oldImage = await this.getImage(imageId);
+    //     oldImage.baseRevision = baseRevision;
+    //     this.imageRepository.update(oldImage);
+    // }
 
     public async getImage(imageId: string) {
         const image = await this.imageRepository.find(Number(imageId));
@@ -108,15 +105,16 @@ export class ImageService {
         if (image == null) {
             throw createError('This image does not exist.', 404);
         }
-        if (image.preprocessings.length > 0) {
-            throw createError('This image has preprocessings depending on it', 409);
+        if (fs.existsSync(image.preprocessingPath)) {
+            fs.unlinkSync(image.preprocessingPath);
+            // throw createError('This image has preprocessings depending on it', 409);
         }
-        if (image.revisions.length > 0) {
+        if (image.annotations.length > 0) {
             throw createError('This image has revisions depending on it', 409);
         }
-        if (image.tasks.length > 0) {
-            throw createError('This image has tasks depending on it', 409);
-        }
+        // if (image.tasks.length > 0) {
+        //     throw createError('This image has tasks depending on it', 409);
+        // }
         if (fs.existsSync(image.path)) {
             fs.unlinkSync(image.path);
         }

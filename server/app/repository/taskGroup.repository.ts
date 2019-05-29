@@ -27,7 +27,7 @@ export class TaskGroupRepository {
         return await connection.getRepository(TaskGroup).findOne(id);
     }
 
-    public async findByName(title: string): Promise<TaskGroup> {
+    public async findByTitle(title: string): Promise<TaskGroup> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(TaskGroup).findOne({ title });
     }

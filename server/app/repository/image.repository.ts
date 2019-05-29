@@ -87,7 +87,7 @@ export class ImageRepository {
 
     public async findWithForeignKeys(id: number): Promise<Image> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).findOne({ where: { id }, relations: ['annotations', 'tasks'] }));
+            connection.getRepository(Image).findOne({ where: { id }, relations: ['tasks'] }));
     }
 
     public async delete(image: Image): Promise<DeleteResult> {
