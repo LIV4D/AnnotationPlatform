@@ -7,6 +7,7 @@ import { ImageService } from '../services/image.service';
 import { IGallery } from '../interfaces/gallery.interface';
 import { IGalleryObject } from '../interfaces/galleryObject.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { isNull } from 'util';
 
 @injectable()
 export class ImageController implements IRegistrableController {
@@ -20,6 +21,7 @@ export class ImageController implements IRegistrableController {
         app.put('/api/images/:imageId',
             this.imageService.upload.single('image'),
             this.uploadImage);
+        // TODO: what to do with this endpoint?
         app.put('/api/images/:imageId/baseRevision',
             this.updateBaseRevision);
         app.get('/api/images/:imageId/', this.getImage);
@@ -37,10 +39,11 @@ export class ImageController implements IRegistrableController {
             imageId: req.body.imageId,
             filename: req.body.filename,
             preprocessingFileName: req.body.preprocessingFileName,
+            thumbnail: req.body.thumbnail,
             // TODO: check if we store thumbnail in database or not
             // thumbnailFileName: req.body.thumbnailFileName,
         };
-        if (req.params.imageId != null) {
+        if (!isNull(req.params.imageId)) {
             newImage.imageId = req.params.imageId;
             // Request is an update
             this.imageService.updateImage(newImage)
@@ -51,14 +54,6 @@ export class ImageController implements IRegistrableController {
                 .then(image => res.send(image))
                 .catch(next);
         }
-    }
-
-    private updateBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const baseRevision: any = req.body.baseRevision;
-        const id = req.params.imageId;
-        this.imageService.updateBaseRevision(id, baseRevision)
-                .then(image => res.send(image))
-                .catch(next);
     }
 
     private getImageBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {

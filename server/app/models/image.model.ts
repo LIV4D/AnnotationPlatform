@@ -3,17 +3,19 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Annotation } from './annotation.model';
 // import { Task } from './task.model';
 import { ImagePrototype } from './imagePrototype.model';
+import { Task } from './task.model';
 
 @Entity()
 export class Image {
+
     @PrimaryGeneratedColumn()
     public id: number;
-    // TODO: what should I do with preprocessing images ( i.e include path or create thumbnail?)
+
     @OneToMany(type => Annotation, annotation => annotation.image)
     public annotations: Annotation[];
 
-    // @OneToMany(type => Task, task => task.image)
-    // public tasks: Task[];
+    @OneToMany(type => Task, task => task.image)
+    public tasks: Task[];
 
     @Column({ unique: true })
     public path: string;
