@@ -5,20 +5,21 @@ import { TaskGroup } from './taskGroup.model';
 import { User } from './user.model';
 import { TaskPrototype } from './taskPrototype.model';
 import { Annotation } from './annotation.model';
+import { Image } from './image.model';
 
 @Entity()
 export class Task {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    // @ManyToOne(type => Image, image => image.tasks)
-    // public image: Image;
-
     @ManyToOne(type => TaskGroup, taskGroup => taskGroup.tasks, { nullable: false })
     public taskGroup: TaskGroup;
 
     @ManyToOne(type => Annotation, annotation => annotation.tasks)
     public annotation: Annotation;
+
+    @ManyToOne(type => Image, image => image.tasks)
+    public image: Image;
 
     @ManyToOne(type => User, user => user.tasks)
     public user: User;

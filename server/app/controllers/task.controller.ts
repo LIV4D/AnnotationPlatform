@@ -5,6 +5,7 @@ import { IRegistrableController } from './registrable.controller';
 import { TaskService } from '../services/task.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { createError } from '../utils/error';
+import { isUndefined, isNullOrUndefined } from 'util';
 
 @injectable()
 export class TaskController implements IRegistrableController {
@@ -47,19 +48,20 @@ export class TaskController implements IRegistrableController {
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
-        let taskActive = true;
-        let taskCompleted = false;
-        if (req.body.active !== undefined) {
-            taskActive = (req.body.active === 'true');
+        let isTaskVisible = true;
+        let isTaskCompleted = false;
+        if (!isUndefined(req.body.active)) {
+            isTaskVisible = (req.body.active === 'true');
         }
-        if (req.body.completed !== undefined) {
-            taskCompleted = (req.body.completed === 'true');
+        if (!isUndefined(req.body.completed)) {
+            isTaskCompleted = (req.body.completed === 'true');
         }
         const newTask = {
-            active: taskActive,
-            completed: taskCompleted,
+            isVisible: isTaskVisible,
+            isComplete: isTaskCompleted,
             imageId: req.body.imageId,
-            taskTypeId: req.body.taskTypeId,
+            annotationId: req.body.annotationId,
+            taskGroupId: req.body.taskGroupId,
             userId: req.body.userId,
         };
         this.taskService.createTask(newTask)
@@ -101,7 +103,7 @@ export class TaskController implements IRegistrableController {
         this.taskService.getTasksByUser(req.params.userId)
             .then(tasks => {
                 for (const task of tasks) {
-                    if (!task.completed) {
+                    if (!task.isComplete) {
                         res.send(task.prototype());
                         return;
                     }
@@ -136,11 +138,11 @@ export class TaskController implements IRegistrableController {
         const updatedTask: any = {
             id: req.params.taskId,
         };
-        if (req.body.active !== null && req.body.active !== undefined) {
-            updatedTask.active = (req.body.active === 'true');
+        if (!isNullOrUndefined(req.body.isVisible)) {
+            updatedTask.isVisible = (req.body.isVisible === 'true');
         }
-        if (req.body.completed !== null && req.body.completed !== undefined) {
-            updatedTask.completed = (req.body.completed === 'true');
+        if (!isNullOrUndefined(req.body.isComplete)) {
+            updatedTask.isComplete = (req.body.isComplete === 'true');
         }
         this.taskService.updateTask(updatedTask, req)
             .then(task => res.send(task))

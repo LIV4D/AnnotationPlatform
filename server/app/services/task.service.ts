@@ -9,6 +9,8 @@ import { RevisionService } from './revision.service';
 import { ITaskList } from '../interfaces/taskList.interface';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { isUndefined } from 'util';
+import { userInfo } from 'os';
 
 @injectable()
 export class TaskService {
@@ -17,41 +19,18 @@ export class TaskService {
     @inject(TYPES.ImageService)
     private imageService: ImageService;
     @inject(TYPES.RevisionService)
-    private revisionService: RevisionService;
+    private annotationService: AnnotationService;
 
     public async createTask(newTask: any): Promise<Task> {
         const task = new Task();
-        if (newTask.isVisible !== undefined) {
-            task.isVisible = newTask.isVisible;
-        } else {
-            task.isVisible = true;
-        }
-        if (newTask.isComplete !== undefined) {
-            task.isComplete = newTask.isComplete;
-        } else {
-            task.isComplete = false;
-        }
         task.user = { id: newTask.userId } as any;
         task.image = { id: newTask.imageId } as any;
+        task.annotation = { id: newTask.annotationId } as any;
         task.taskGroup = { id: newTask.taskGroupId } as any;
+        task.isComplete = newTask.isComplete;
+        task.isVisible = newTask.isVisible;
 
-        // Create revision for user for image when creating task if it does not already exist
-        try {
-            await this.revisionService.getRevisionForUserForImage(task.user.id, task.image.id);
-        } catch (error) {
-            if (error.status === 404) {
-                await this.imageService.getImage(newTask.imageId).then(imageResult => {
-                    const newRevision = {
-                        svg: imageResult.baseRevision,
-                        userId: task.user.id,
-                        imageId: imageResult.id,
-                    };
-                    return this.revisionService.createRevision(newRevision);
-                });
-            } else {
-                throw error;
-            }
-        }
+        // TODO: Create revision for user for image when creating task if it does not already exist
         return await this.taskRepository.create(task);
     }
 
@@ -82,9 +61,9 @@ export class TaskService {
         if (oldTask.user.id !== req.user.id) {
             throwIfNotAdmin(req);
         }
-        oldTask.active = updatedTask.active;
-        oldTask.completed = updatedTask.completed;
-        return await this.taskRepository.update(oldTask);
+        oldTask.isVisible = updatedTask.isVisible;
+        oldTask.isComplete = updatedTask.isComplete;
+        return await this.taskRepository.create(oldTask);
     }
 
     public async getTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {
