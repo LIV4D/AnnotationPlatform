@@ -20,7 +20,7 @@ export class Annotation {
     @OneToMany(type => Task, tasks => tasks.annotation)
     public tasks: Task[];
 
-    @Column({ nullable: true }) // TODO: do we count the first svg from algo?
+    @Column({ type: 'varchar', nullable: true }) // TODO: do we count the first svg from algo?
 
     // TODO: have svg in JSON if possible
     public svg: JSON;

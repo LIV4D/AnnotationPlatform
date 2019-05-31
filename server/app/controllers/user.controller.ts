@@ -6,14 +6,14 @@ import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { IRegistrableController } from './registrable.controller';
 import { UserService } from '../services/user.service';
-import { throwIfNotAdmin } from '../utils/userVerification';
+// import { throwIfNotAdmin } from '../utils/userVerification';
 
 @injectable()
 export class UserController implements IRegistrableController {
     @inject(TYPES.UserService)
     private userService: UserService;
 
-    public register(app: express.Application): void {
+    public setRoutes(app: express.Application): void {
         app.get('/api/users', this.getUsers);
         app.post('/api/users', this.createUser);
         app.post('/auth/login', this.loginUser);
@@ -22,14 +22,14 @@ export class UserController implements IRegistrableController {
     }
 
     private getUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        // throwIfNotAdmin(req);
         this.userService.getUsers()
             .then(users => res.send(users))
             .catch(next);
     }
 
     private createUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        // throwIfNotAdmin(req);
         const newUser = {
             name: req.body.name,
             email: req.body.email,
@@ -50,7 +50,8 @@ export class UserController implements IRegistrableController {
             if (err) { return next(err); }
             if (!user) {
                 res.status(401);
-                return res.send(info);
+                console.log('user: ', user);
+                return res.send({ information: info });
             }
             // Do not show the salt in the token
             delete user.salt;
@@ -65,7 +66,7 @@ export class UserController implements IRegistrableController {
     }
 
     private updateUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        // throwIfNotAdmin(req);
         const newUser = {
             id: req.params.userId,
             name: req.body.name,
@@ -82,7 +83,7 @@ export class UserController implements IRegistrableController {
     }
 
     private deleteUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        // throwIfNotAdmin(req);
         this.userService.deleteUser(req.params.userId)
             .then(() => res.sendStatus(204))
             .catch(next);

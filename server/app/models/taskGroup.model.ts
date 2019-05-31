@@ -15,5 +15,5 @@ export class TaskGroup {
 
     // TODO: should description be a JSON to show a task tree (sub categories of tasks)?
     @Column({ nullable: false })
-    public description: JSON;
+    public description: string;
 }

@@ -80,7 +80,7 @@ export class Application {
     private routes(): void {
         this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
         const controllers: IRegistrableController[] = container.getAll<IRegistrableController>(TYPES.Controller);
-        controllers.forEach(controller => controller.register(this.app));
+        controllers.forEach(controller => controller.setRoutes(this.app));
     }
 
     private errorHandeling(): void {

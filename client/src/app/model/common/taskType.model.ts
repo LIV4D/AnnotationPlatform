@@ -1,7 +1,7 @@
 import { Task } from './task.model';
-export class TaskType {
+export class TaskGroup {
     public id: number;
     public tasks: Task[];
-    public name: string;
+    public title: string;
     public description: string;
 }

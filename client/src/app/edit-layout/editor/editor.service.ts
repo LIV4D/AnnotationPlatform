@@ -674,8 +674,8 @@ export class EditorService {
         // server takes 'true' and 'false' instead of booleans
         tasks.forEach(x => {
             const body = {
-                active: x.active ? 'true' : 'false',
-                completed: x.completed ? 'true' : 'false',
+                active: x.isVisible ? 'true' : 'false',
+                completed: x.isComplete ? 'true' : 'false',
             };
             this.http.put(`/api/tasks/${x.id}`, body).subscribe();
         });

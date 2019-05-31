@@ -32,10 +32,10 @@ export class User {
     @IsEmail()
     public email: string;
 
-    @Column({ select: false })
+    @Column({ type: 'bytea', select: false })
     public password: Buffer;
 
-    @Column({ select: false })
+    @Column({ type: 'bytea', select: false })
     public salt: string;
 
     @Column({ default : false })
@@ -43,7 +43,8 @@ export class User {
 
     public static hashPassword(password: string, salt?: string) {
         if (isUndefined(salt)) {
-            salt = crypto.randomBytes(64).toString();
+            const saltSize = 64;
+            salt = crypto.randomBytes(saltSize).toString();
         }
         return {
             hash: crypto.pbkdf2Sync(password, salt, 20000, 64, 'sha512'),
