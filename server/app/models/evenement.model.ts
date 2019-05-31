@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique, Timestamp, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique, ManyToOne } from 'typeorm';
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
 
 @Entity()
-@Unique(['annotation'])
+@Unique(['annotation', 'user'])
 export class Evenement {
     @PrimaryGeneratedColumn()
     public id: number;
@@ -12,10 +12,10 @@ export class Evenement {
     public description: string;
 
     @Column()
-    public date: Date;
+    public date: string;
 
     @Column()
-    public timestamp: Timestamp;
+    public timestamp: string;
 
     @ManyToOne(type => User, user => user.evenements)
     public user: User;

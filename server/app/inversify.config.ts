@@ -11,6 +11,9 @@ import { AnnotationRepository } from './repository/annotation.repository';
 import { TaskRepository } from './repository/task.repository';
 import { TaskGroupRepository } from './repository/taskGroup.repository';
 import { UserRepository } from './repository/user.repository';
+import { UserService } from './services/user.service';
+import { UserController } from './controllers/user.controller';
+import { IRegistrableController } from './controllers/registrable.controller';
 
 const container: Container = new Container();
 
@@ -18,7 +21,9 @@ container.bind(TYPES.Server).to(Server);
 container.bind(TYPES.Application).to(Application);
 
 // Controllers
+container.bind<IRegistrableController>(TYPES.Controller).to(UserController);
 // Services
+container.bind<UserService>(TYPES.UserService).to(UserService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);

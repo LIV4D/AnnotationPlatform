@@ -33,7 +33,7 @@ export class User {
     public email: string;
 
     @Column({ select: false })
-    public hash: string;
+    public password: Buffer;
 
     @Column({ select: false })
     public salt: string;
@@ -53,6 +53,6 @@ export class User {
 
     public hashCompare(passwordProvided: string) {
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
-        return crypto.timingSafeEqual(new Buffer(this.hash), hashProvided);
+        return crypto.timingSafeEqual(this.password, hashProvided);
     }
 }
