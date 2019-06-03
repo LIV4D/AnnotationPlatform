@@ -5,15 +5,12 @@ import { Connection, ConnectionOptions, createConnection } from 'typeorm';
 
 const seedingFiles = {
     development: [
-        'taskType-dev.json',
-        'imageType-dev.json',
-        'biomarkerType-dev.json',
         'user-dev.json',
-        'image-dev.json',
-        'task-dev.json',
-        'revision-dev.json',
-        'preprocessingType-dev.json',
-        'preprocessing-dev.json',
+        // 'image-dev.json',
+        // 'task-dev.json',
+        // 'annotation-dev.json',
+        // 'taskGroup-dev.json',
+        // TODO: add Evenement.json
     ],
     test: [
         'taskType-dev.json',
@@ -52,9 +49,10 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
     let entityName: string;
     try {
         console.log(`Seeding ${fileName}`);
-        const data = JSON.parse(fs.readFileSync(`./seeding/seeds/${fileName}`).toString(), (key, value) => {
+        const seedsDirectory = process.env['NODE_ENV'] === 'development' ? 'dev_entities' : 'seeds';
+        const data = JSON.parse(fs.readFileSync(`./seeding/${seedsDirectory}/${fileName}`).toString(), (key, value) => {
             // Used in order to correctly save buffer array in database.
-            if (key === 'hash' || key === 'salt') {
+            if (key === 'password' || key === 'salt') {
                 return Buffer.from(value);
             } else {
                 return value;

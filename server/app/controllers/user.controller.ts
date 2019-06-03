@@ -50,17 +50,17 @@ export class UserController implements IRegistrableController {
             if (err) { return next(err); }
             if (!user) {
                 res.status(401);
-                console.log('user: ', user);
                 return res.send({ information: info });
             }
             // Do not show the salt in the token
             delete user.salt;
             // Object.assign transform a User object into a plain js object.
             const token = jwt.sign(Object.assign({}, user),
-                config.get('jwtAuthOptions.secretOrKey'),
-                config.get('jwtAuthOptions.jsonWebTokenOptions'));
+            config.get('jwtAuthOptions.secretOrKey'),
+            config.get('jwtAuthOptions.jsonWebTokenOptions'));
             // Hide the hash in the response (it is always possible to see the hash in the token)
             delete user.hash;
+            console.log('UUUUUUUUU: ', user);
             return res.json({ user, token });
         })(req, res, next);
     }

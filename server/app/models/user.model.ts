@@ -1,20 +1,15 @@
 import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail } from 'class-validator';
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Evenement } from './evenement.model';
 import { Task } from './task.model';
 import { isUndefined } from 'util';
 
-export enum UserRole {
-    Clinician = 'clinician',
-    Admin = 'admin',
-}
-
 @Entity()
 export class User {
-    @PrimaryColumn({ length: 16 })
-    public id: string;
+    @PrimaryGeneratedColumn('increment')
+    public id: number;
 
     @OneToMany(type => Evenement, evenement => evenement.user)
     public evenements: Evenement[];

@@ -64,7 +64,7 @@ export class RightMenuComponent implements OnInit {
 
     public openTaskDialog(): void {
         if (Object.keys(this.tasks).length > 0) {
-            this.tasks.forEach( (t) => { t.completed = true; });
+            this.tasks.forEach( (t) => { t.isComplete = true; });
             const dialogRef = this.dialog.open(TaskDialogComponent, {
                 data: { tasks: this.tasks },
                 width: '600px',
