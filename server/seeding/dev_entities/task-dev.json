@@ -1,0 +1,45 @@
+{
+    "entityName": "Task",
+    "items": [
+        {
+            "id": 1,
+            "manyToOne": {
+                "taskGroup": 1,
+                "user": 1
+            },
+            "comment": "",
+            "isVisible": true,
+            "isComplete": false
+        }, 
+        {
+            "id": 2,
+            "manyToOne": {
+                "taskGroup": 2,
+                "user": 1
+            },
+            "comment": "",
+            "isVisible": true,
+            "isComplete": true
+        },
+        {
+            "id": 3,
+            "manyToOne": {
+                "taskGroup": 1,
+                "user": 1
+            },
+            "comment": "",
+            "isVisible": true,
+            "isComplete": false
+        }, 
+        {
+            "id": 4,
+            "manyToOne": {
+                "taskGroup": 2,
+                "user": 1
+            },
+            "comment": "",
+            "isVisible": true,
+            "isComplete": false
+        }
+    ]
+}

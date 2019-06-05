@@ -8,6 +8,7 @@ import { isUndefined } from 'util';
 
 @Entity()
 export class User {
+    // TODO: get rid of this column and put email column as Primary key
     @PrimaryGeneratedColumn('increment')
     public id: number;
 

@@ -1,15 +1,15 @@
 import * as config from 'config';
 import * as readline from 'readline';
 import * as fs from 'fs';
-import { Connection, ConnectionOptions, createConnection } from 'typeorm';
+import { Connection, ConnectionOptions, createConnection, InsertResult } from 'typeorm';
 
 const seedingFiles = {
     development: [
         'user-dev.json',
         // 'image-dev.json',
-        // 'task-dev.json',
+        'taskGroup-dev.json',
         // 'annotation-dev.json',
-        // 'taskGroup-dev.json',
+        'task-dev.json',
         // TODO: add Evenement.json
     ],
     test: [
@@ -69,43 +69,54 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
 }
 
 async function insertItems(connection: Connection, entityName: string, items: any[]) {
-    return connection.createQueryBuilder()
+    const qb = await connection.createQueryBuilder();
+    let insertionResult: InsertResult;
+    try {
+        insertionResult =  await qb
         .insert().into(entityName).values(items).execute();
+    } catch (error) {
+        console.error(`error: ${error}`);
+    }
+    return await insertionResult;
 }
 
 async function insertRelations(connection: Connection, entityName: string, items: any[]) {
-    const relationQueryBuilder = connection.createQueryBuilder();
-    for (const item of items) {
-        if (item.manyToMany != null) {
-            for (const key of Object.keys(item.manyToMany)) {
-                await relationQueryBuilder.relation(entityName, key)
-                    .of(item.id).add(item.manyToMany[key]);
+    try {
+        const relationQueryBuilder = connection.createQueryBuilder();
+        for (const item of items) {
+            if (item.manyToMany != null) {
+                for (const key of Object.keys(item.manyToMany)) {
+                    await relationQueryBuilder.relation(entityName, key)
+                        .of(item.id).add(item.manyToMany[key]);
+                }
+            }
+            if (item.oneToMany != null) {
+                for (const key of Object.keys(item.oneToMany)) {
+                    await relationQueryBuilder.relation(entityName, key)
+                        .of(item.id).add(item.oneToMany[key]);
+                }
+            }
+            if (item.manyToOne != null) {
+                for (const key of Object.keys(item.manyToOne)) {
+                    await relationQueryBuilder.relation(entityName, key)
+                        .of(item.id).set(item.manyToOne[key]);
+                }
             }
         }
-        if (item.oneToMany != null) {
-            for (const key of Object.keys(item.oneToMany)) {
-                await relationQueryBuilder.relation(entityName, key)
-                    .of(item.id).add(item.oneToMany[key]);
-            }
-        }
-        if (item.manyToOne != null) {
-            for (const key of Object.keys(item.manyToOne)) {
-                await relationQueryBuilder.relation(entityName, key)
-                    .of(item.id).set(item.manyToOne[key]);
-            }
-        }
+    } catch (error) {
+        console.error(`error: ${error}\n`);
     }
 }
 
 if (require.main === module) {
     const dbInfo: any = config.get('database');
     console.log(`This will delete all the data stored in the following database: \
-${dbInfo.database}@${dbInfo.host}:${dbInfo.port}`);
-    console.log(`Are you sure you want to proceed ?`);
+            ${ dbInfo.database}@${dbInfo.host}: ${dbInfo.port} `);
+    console.log(`Are you sure you want to proceed ? `);
 
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     rl.question('(Y/N) ? ', answer => {
-        if (answer === 'y' || answer === 'Y') {
+        if (answer.toLowerCase() === 'y') {
             loadSeeds().then(() => process.exit());
         } else {
             process.exit();

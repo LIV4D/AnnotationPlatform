@@ -24,6 +24,8 @@
         }
     },
     "fileStorage": {
-        "path": "storage"
+        "path": "database/images",
+        "preprocessing": "database/preprocessings",
+        "thumbnail": "database/thumbnail"
     }
 }

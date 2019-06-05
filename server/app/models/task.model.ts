@@ -12,7 +12,7 @@ export class Task {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => TaskGroup, taskGroup => taskGroup.tasks, { nullable: false })
+    @ManyToOne(type => TaskGroup, taskGroup => taskGroup.tasks)
     public taskGroup: TaskGroup;
 
     @ManyToOne(type => Annotation, annotation => annotation.tasks)

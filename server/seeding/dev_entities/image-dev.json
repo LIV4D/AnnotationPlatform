@@ -1,0 +1,11 @@
+{
+    "entityName": "Image",
+    "items": [
+        {
+            "id": 1,
+            "path": "server/database/images/20051019_38557_0100_PP.png",
+            "preprocessingPath": "server/database/preprocessing/preprocessing20051019_38557_0100_PP.png",
+            "thumbnail": "server/database/thumbnail/thumbnail20051019_38557_0100_PP.png"
+        }
+    ]
+}
