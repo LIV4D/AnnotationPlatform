@@ -6,11 +6,11 @@ import { Connection, ConnectionOptions, createConnection, InsertResult } from 't
 const seedingFiles = {
     development: [
         'user-dev.json',
-        // 'image-dev.json',
+        'image-dev.json',
         'taskGroup-dev.json',
-        // 'annotation-dev.json',
+        'annotation-dev.json',
         'task-dev.json',
-        // TODO: add Evenement.json
+        'evenement-dev.json',
     ],
     test: [
         'taskType-dev.json',

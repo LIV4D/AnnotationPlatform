@@ -21,9 +21,8 @@ export class Annotation {
     public tasks: Task[];
 
     @Column({ type: 'varchar', nullable: true }) // TODO: do we count the first svg from algo?
-
     // TODO: have svg in JSON if possible
-    public svg: JSON;
+    public svg: string;
 
     @Column()
     public comment: string;
