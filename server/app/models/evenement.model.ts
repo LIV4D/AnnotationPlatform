@@ -12,7 +12,7 @@ export class Evenement {
     public description: string;
 
     @Column({ type: 'date', nullable: true })
-    public date: Date;
+    public date: string;
 
     @Column({ nullable: true })
     public timestamp: string;
