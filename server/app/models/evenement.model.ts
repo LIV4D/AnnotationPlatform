@@ -11,7 +11,7 @@ export class Evenement {
     @Column()
     public description: string;
 
-    @Column({ type: 'date', nullable: true })
+    @Column({ type: 'date' })
     public date: string;
 
     @Column({ nullable: true })
