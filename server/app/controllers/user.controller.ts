@@ -7,6 +7,7 @@ import { inject, injectable } from 'inversify';
 import { IRegistrableController } from './registrable.controller';
 import { UserService } from '../services/user.service';
 // import { throwIfNotAdmin } from '../utils/userVerification';
+import { IUser } from '../../../common_interfaces/interfaces';
 
 @injectable()
 export class UserController implements IRegistrableController {
@@ -30,11 +31,12 @@ export class UserController implements IRegistrableController {
 
     private createUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin(req);
-        const newUser = {
-            name: req.body.name,
+        const newUser: IUser = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             email: req.body.email,
             password: req.body.password,
-            role: req.body.role,
+            isAdmin: req.body.isAdmin,
         };
         this.userService.createUser(newUser)
             .then(user => {
@@ -60,18 +62,18 @@ export class UserController implements IRegistrableController {
             config.get('jwtAuthOptions.jsonWebTokenOptions'));
             // Hide the hash in the response (it is always possible to see the hash in the token)
             delete user.hash;
-            console.log('UUUUUUUUU: ', user);
             return res.json({ user, token });
         })(req, res, next);
     }
 
     private updateUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin(req);
-        const newUser = {
+        const newUser: IUser = {
             id: req.params.userId,
-            name: req.body.name,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             password: req.body.password,
-            role: req.body.role,
+            isAdmin: req.body.isAdmin,
         };
         this.userService.updateUser(newUser)
             .then(user => {

@@ -32,15 +32,15 @@ export class User {
     public password: Buffer;
 
     @Column({ type: 'bytea', select: false })
-    public salt: string;
+    public salt: Buffer;
 
     @Column({ default : false })
     isAdmin: boolean;
 
-    public static hashPassword(password: string, salt?: string) {
+    public static hashPassword(password: string, salt?: Buffer) {
         if (isUndefined(salt)) {
             const saltSize = 64;
-            salt = crypto.randomBytes(saltSize).toString();
+            salt = crypto.randomBytes(saltSize);
         }
         return {
             hash: crypto.pbkdf2Sync(password, salt, 20000, 64, 'sha512'),
@@ -50,6 +50,7 @@ export class User {
 
     public hashCompare(passwordProvided: string) {
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
+        console.log(`hashProvided: ${hashProvided}`);
         return crypto.timingSafeEqual(this.password, hashProvided);
     }
 }
