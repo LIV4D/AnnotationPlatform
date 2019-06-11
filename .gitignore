@@ -38,6 +38,7 @@ testem.log
 /typings
 storage/
 Preannotations/
+database/
 prerevisions/
 preprocessings/
 images/
