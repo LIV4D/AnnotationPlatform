@@ -7,7 +7,7 @@ import { inject, injectable } from 'inversify';
 import { IRegistrableController } from './registrable.controller';
 import { UserService } from '../services/user.service';
 // import { throwIfNotAdmin } from '../utils/userVerification';
-import { IUser } from '../../../common_interfaces/interfaces';
+import { IUser } from '../../../common/common_interfaces/interfaces';
 
 @injectable()
 export class UserController implements IRegistrableController {

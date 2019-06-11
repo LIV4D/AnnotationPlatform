@@ -9,7 +9,7 @@ import { validate } from 'class-validator';
 import { createErrorFromvalidationErrors, createError } from '../utils/error';
 import { DeleteResult } from 'typeorm';
 import { isNull } from 'util';
-import { IUser } from '../../../common_interfaces/interfaces';
+import { IUser } from '../../../common/common_interfaces/interfaces';
 
 @injectable()
 export class UserService {
@@ -33,7 +33,6 @@ export class UserService {
             if (user && user.hashCompare(password)) {
                 return done(null, user);
             } else {
-                console.log('helleoegwekrjgmwerz');
                 return done(null, false, this.loginError);
             }
         }).catch(err => done(err, false));
