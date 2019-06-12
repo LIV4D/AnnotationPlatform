@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as bodyParser from 'body-parser';
-import * as config from 'config';
+// import * as config from 'config';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
@@ -8,17 +8,17 @@ import * as fs from 'fs';
 import * as morgan from 'morgan';
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
-import * as passportJwt from 'passport-jwt';
+// import * as passportJwt from 'passport-jwt';
 import * as path from 'path';
 import TYPES from './types';
-import { ExtractJwt, StrategyOptions } from 'passport-jwt';
+// import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { injectable } from 'inversify';
 import { IController } from './controllers/registrable.controller';
 import { container } from './inversify.config';
 import { UserService } from './services/user.service';
 
 const LocalStrategy = passportLocal.Strategy;
-const JwtStrategy = passportJwt.Strategy;
+// const JwtStrategy = passportJwt.Strategy;
 
 @injectable()
 export class Application {
@@ -66,19 +66,19 @@ export class Application {
     }
 
     private authentication(): void {
-        const options: StrategyOptions = {
-            ...config.get('jwtAuthOptions'),
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        };
+        // const options: StrategyOptions = {
+        //     ...config.get('jwtAuthOptions'),
+        //     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        // };
 
         const userService: UserService = container.get<UserService>(TYPES.UserService);
-        passport.use(new JwtStrategy(options, userService.loginJwt));
+        // passport.use(new JwtStrategy(options, userService.loginJwt));
         passport.use(new LocalStrategy({ session: false }, userService.loginLocal));
         this.app.use(passport.initialize());
     }
 
     private routes(): void {
-        this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
+        // this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
         const controllers: IController[] = container.getAll<IController>(TYPES.Controller);
         controllers.forEach(controller => controller.setRoutes(this.app));
     }
