@@ -1,5 +1,5 @@
 import * as express from 'express';
 
-export interface IRegistrableController {
+export interface IController {
     setRoutes(app: express.Application): void;
 }

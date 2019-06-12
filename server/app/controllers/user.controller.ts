@@ -4,13 +4,13 @@ import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
-import { IRegistrableController } from './registrable.controller';
+import { IController } from './registrable.controller';
 import { UserService } from '../services/user.service';
 // import { throwIfNotAdmin } from '../utils/userVerification';
 import { IUser } from '../../../common/common_interfaces/interfaces';
 
 @injectable()
-export class UserController implements IRegistrableController {
+export class UserController implements IController {
     @inject(TYPES.UserService)
     private userService: UserService;
 

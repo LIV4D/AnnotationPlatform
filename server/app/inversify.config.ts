@@ -13,7 +13,7 @@ import { TaskGroupRepository } from './repository/taskGroup.repository';
 import { UserRepository } from './repository/user.repository';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
-import { IRegistrableController } from './controllers/registrable.controller';
+import { IController } from './controllers/registrable.controller';
 
 const container: Container = new Container();
 
@@ -21,7 +21,7 @@ container.bind(TYPES.Server).to(Server);
 container.bind(TYPES.Application).to(Application);
 
 // Controllers
-container.bind<IRegistrableController>(TYPES.Controller).to(UserController);
+container.bind<IController>(TYPES.Controller).to(UserController);
 // Services
 container.bind<UserService>(TYPES.UserService).to(UserService);
 // Repositories

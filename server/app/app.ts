@@ -13,7 +13,7 @@ import * as path from 'path';
 import TYPES from './types';
 import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { injectable } from 'inversify';
-import { IRegistrableController } from './controllers/registrable.controller';
+import { IController } from './controllers/registrable.controller';
 import { container } from './inversify.config';
 import { UserService } from './services/user.service';
 
@@ -79,7 +79,7 @@ export class Application {
 
     private routes(): void {
         this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
-        const controllers: IRegistrableController[] = container.getAll<IRegistrableController>(TYPES.Controller);
+        const controllers: IController[] = container.getAll<IController>(TYPES.Controller);
         controllers.forEach(controller => controller.setRoutes(this.app));
     }
 
