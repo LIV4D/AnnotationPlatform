@@ -48,7 +48,7 @@ export class UserController implements IRegistrableController {
     }
 
     private loginUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        passport.authenticate('local', { session: false }, (err, user, info) => {
+        passport.authenticate('local', { session: false, failureRedirect: '/auth/login' }, (err, user, info) => {
             if (err) { return next(err); }
             if (!user) {
                 res.status(401);
