@@ -30,6 +30,7 @@ export class UserService {
 
     public loginLocal = (email: string, password: string, done: VerifiedCallback) => {
         this.userRepository.findByEmail(email).then(user => {
+            console.log('user: ' + JSON.stringify(user));
             if (user && user.hashCompare(password)) {
                 return done(null, user);
             } else {
@@ -46,6 +47,8 @@ export class UserService {
         const result = User.hashPassword(newUser.password);
         const user = new User();
         Object.keys(user).forEach((key) => {
+            // TODO: detele console.log when finished
+            console.log(user[key]);
             switch (key) {
                 case 'password':
                     user[key] = result.hash;

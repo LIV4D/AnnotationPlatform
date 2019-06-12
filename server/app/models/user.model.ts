@@ -50,7 +50,6 @@ export class User {
 
     public hashCompare(passwordProvided: string) {
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
-        console.log(`hashProvided: ${hashProvided}`);
         return crypto.timingSafeEqual(this.password, hashProvided);
     }
 }

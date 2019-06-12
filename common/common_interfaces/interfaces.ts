@@ -13,3 +13,14 @@ export interface ITaskGroups {
     title: string;
     description: string;
 }
+
+export interface ITask {
+    id?: number;
+    isVisible: boolean;
+    isComplete: boolean;
+    comment: string;
+    userId: number;
+    imageId: number;
+    taskGroupId: number;
+    annotationId: number;
+}
