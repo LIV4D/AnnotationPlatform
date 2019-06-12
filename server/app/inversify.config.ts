@@ -29,7 +29,7 @@ container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
 container.bind<AnnotationRepository>(TYPES.RevisionRepository).to(AnnotationRepository);
 container.bind<TaskRepository>(TYPES.TaskRepository).to(TaskRepository);
-container.bind<TaskGroupRepository>(TYPES.TaskTypeRepository).to(TaskGroupRepository);
+container.bind<TaskGroupRepository>(TYPES.TaskGroupRepository).to(TaskGroupRepository);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository);
 
 export { container };

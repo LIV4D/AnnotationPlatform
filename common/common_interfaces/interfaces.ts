@@ -8,3 +8,8 @@ export interface IUser {
     salt?: string;
 }
 
+export interface ITaskGroups {
+    id?: number;
+    title: string;
+    description: string;
+}

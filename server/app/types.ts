@@ -13,7 +13,7 @@ const TYPES = {
     PreprocessingTypeRepository: Symbol.for('PreprocessingTypeRepository'),
     RevisionRepository: Symbol.for('RevisionRepository'),
     TaskRepository: Symbol.for('TaskRepository'),
-    TaskTypeRepository: Symbol.for('TaskTypeRepository'),
+    TaskGroupRepository: Symbol.for('TaskGroupRepository'),
     UserRepository: Symbol.for('UserRepository'),
     // Services
     BiomarkerTypeService: Symbol.for('BiomarkerTypeService'),
@@ -23,7 +23,7 @@ const TYPES = {
     PreprocessingTypeService: Symbol.for('PreprocessingTypeService'),
     RevisionService: Symbol.for('RevisionService'),
     TaskService: Symbol.for('TaskService'),
-    TaskTypeService: Symbol.for('TaskTypeService'),
+    TaskGroupService: Symbol.for('TaskGroupService'),
     UserService: Symbol.for('UserService'),
 };
 

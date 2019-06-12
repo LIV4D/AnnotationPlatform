@@ -5,7 +5,7 @@ import { IController } from './registrable.controller';
 @injectable()
 export class BugtrackerController implements IController {
 
-    public register(app: express.Application): void {
+    public setRoutes(app: express.Application): void {
         // Element
         app.post('/api/bugtracker', this.createBugReport);
     }
