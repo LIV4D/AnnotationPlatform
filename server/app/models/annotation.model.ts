@@ -22,12 +22,12 @@ export class Annotation {
 
     @Column({ type: 'varchar', nullable: true }) // TODO: do we count the first svg from algo?
     // TODO: have svg in JSON if possible
-    public svg: string;
+    public data: string;
 
     @Column()
     public comment: string;
 
-    // rajouter un champ pour lier a l'annotation precedente
+    // TODO: rajouter un champ pour lier a l'annotation precedente (recursive link)
 
     prototype(): AnnotationPrototype {
         return new AnnotationPrototype(this);

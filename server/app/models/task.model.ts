@@ -21,7 +21,7 @@ export class Task {
     @ManyToOne(type => Image, image => image.tasks)
     public image: Image;
 
-    @ManyToOne(type => User, user => user.tasks)
+    @ManyToOne(type => User, user => user.tasks, { nullable: true })
     public user: User;
 
     @Column({ default: true })

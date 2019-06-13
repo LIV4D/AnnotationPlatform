@@ -26,6 +26,12 @@ export class Image {
     @Column({ unique: true, nullable: true })
     public thumbnail: string;
 
+    @Column({ nullable: true })
+    public metadata: string; // nom de l'image + info supp
+
+    @Column({ nullable: false })
+    public type: string;
+
     // TODO: figure out what to do with this method
     // get thumbnailPath(): string {
     //     const path = this.path;

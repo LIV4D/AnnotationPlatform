@@ -12,6 +12,10 @@ export class User {
     @PrimaryGeneratedColumn('increment')
     public id: number;
 
+    @Column({ length: 254, unique: true })
+    @IsEmail()
+    public email: string;
+
     @OneToMany(type => Evenement, evenement => evenement.user)
     public evenements: Evenement[];
 
@@ -23,10 +27,6 @@ export class User {
 
     @Column({ length: 32 })
     public lastName: string;
-
-    @Column({ length: 254, unique: true })
-    @IsEmail()
-    public email: string;
 
     @Column({ type: 'bytea', select: false })
     public password: Buffer;
