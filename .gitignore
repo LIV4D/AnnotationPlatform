@@ -37,6 +37,7 @@ yarn-error.log
 testem.log
 /typings
 storage/
+database/
 token
 *.egg-info
 
