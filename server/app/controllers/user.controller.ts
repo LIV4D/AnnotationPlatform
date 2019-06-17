@@ -15,14 +15,16 @@ export class UserController implements IController {
     private userService: UserService;
 
     public setRoutes(app: express.Application): void {
-        app.get('/api/users', this.getUsers);
-        app.post('/api/users', this.createUser);
+        app.get('/api/users/list', this.listUsers);
+        app.post('/api/users/create', this.createUser);
         app.post('/auth/login', this.loginUser);
-        app.put('/api/users/:userId', this.updateUser);
-        app.delete('/api/users/:userId', this.deleteUser);
+        app.put('/api/users/update/:userId', this.updateUser);
+        app.delete('/api/users/delete/:userId', this.deleteUser);
+        app.get('/api/users/events/:userId', this.getEventsbyUser);
+        app.get('/api/users/last-event/:userId', this.getLastEventFromUser);
     }
 
-    private getUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin(req);
         this.userService.getUsers()
             .then(users => res.send(users))
@@ -58,8 +60,8 @@ export class UserController implements IController {
             delete user.salt;
             // Object.assign transform a User object into a plain js object.
             const token = jwt.sign(Object.assign({}, user),
-            config.get('jwtAuthOptions.secretOrKey'),
-            config.get('jwtAuthOptions.jsonWebTokenOptions'));
+                config.get('jwtAuthOptions.secretOrKey'),
+                config.get('jwtAuthOptions.jsonWebTokenOptions'));
             // Hide the hash in the response (it is always possible to see the hash in the token)
             delete user.hash;
             return res.json({ user, token });
@@ -89,5 +91,19 @@ export class UserController implements IController {
         this.userService.deleteUser(req.params.userId)
             .then(() => res.sendStatus(204))
             .catch(next);
+    }
+
+    private getEventsbyUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        // throwIfNotAdmin(req);
+        this.userService.getEventsFromUser(req.params.userId)
+        .then((events) => res.send(events))
+        .catch(next);
+    }
+
+    private getLastEventFromUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        // throwIfNotAdmin(req);
+        this.userService.getLastEventFromUser(req.params.userId).then(event => {
+            res.send(event);
+        }).catch(next);
     }
 }

@@ -10,6 +10,7 @@ import { createErrorFromvalidationErrors, createError } from '../utils/error';
 import { DeleteResult } from 'typeorm';
 import { isNull } from 'util';
 import { IUser } from '../../../common/common_interfaces/interfaces';
+import { Evenement } from '../models/evenement.model';
 
 @injectable()
 export class UserService {
@@ -107,5 +108,15 @@ export class UserService {
     public async deleteUser(id: string): Promise<DeleteResult> {
         const user = await this.getUser(id);
         return await this.userRepository.delete(user);
+    }
+
+    public async getEventsFromUser(id: string): Promise<Evenement[]> {
+
+        return await this.userRepository.getEvents(id);
+    }
+
+    public async getLastEventFromUser(id: string): Promise<Evenement> {
+
+        return await this.userRepository.getLastEvent(id);
     }
 }
