@@ -1,6 +1,7 @@
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { TaskGroup } from '../models/taskGroup.model';
+import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskGroupRepository {
@@ -30,5 +31,10 @@ export class TaskGroupRepository {
     public async findByTitle(title: string): Promise<TaskGroup> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(TaskGroup).findOne({ title });
+    }
+
+    public async delete(taskGroup: TaskGroup): Promise<DeleteResult> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(TaskGroup).delete(taskGroup);
     }
 }

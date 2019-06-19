@@ -4,6 +4,8 @@ import { inject, injectable } from 'inversify';
 import { TaskGroup } from '../models/taskGroup.model';
 import { TaskGroupRepository } from '../repository/taskGroup.repository';
 import { createError } from '../utils/error';
+import { DeleteResult } from 'typeorm';
+import { isNullOrUndefined } from 'util';
 
 @injectable()
 export class TaskGroupService {
@@ -35,7 +37,7 @@ export class TaskGroupService {
     public async getTaskGroup(id: number): Promise<TaskGroup> {
         const taskGroup = await this.taskGroupRepository.find(id);
         if (taskGroup == null) {
-            throw createError('This task type does not exist.', 404);
+            throw createError('This task group does not exist.', 404);
         }
         return taskGroup;
     }
@@ -50,5 +52,13 @@ export class TaskGroupService {
 
     public async getTaskGroups(): Promise<TaskGroup[]> {
         return await this.taskGroupRepository.findAll();
+    }
+
+    public async deletetaskGroup(id: string): Promise<DeleteResult> {
+        const taskGroup = this.getTaskGroup(Number(id));
+        if (isNullOrUndefined(taskGroup)) {
+            throw createError('This task group does not exist.', 404);
+        }
+        return await this.taskGroupRepository.delete(taskGroup);
     }
 }

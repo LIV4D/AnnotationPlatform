@@ -49,7 +49,6 @@ export class UserService {
         const user = new User();
         Object.keys(user).forEach((key) => {
             // TODO: detele console.log when finished
-            console.log(user[key]);
             switch (key) {
                 case 'password':
                     user[key] = result.hash;

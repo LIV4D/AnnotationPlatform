@@ -12,11 +12,12 @@ export class TaskGroupController implements IController {
 
     public setRoutes(app: express.Application): void {
         // Collection
-        app.get('/api/taskGroups', this.getTaskGroups);
-        app.post('/api/taskGroups', this.createTaskGroup);
+        app.get('/api/taskGroups/list', this.getTaskGroups);
+        app.post('/api/taskGroups/create', this.createTaskGroup);
         // Element
         app.get('/api/taskGroups/:taskGroupId', this.getTaskGroup);
-        app.post('/api/taskGroups/:taskGroupId', this.updateTaskGroup);
+        app.post('/api/taskGroups/update/:taskGroupId', this.updateTaskGroup);
+        app.delete('/api/taskGroups/delete/:taskGroupId', this.deleteTaskGroup);
     }
 
     private getTaskGroups = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -49,5 +50,11 @@ export class TaskGroupController implements IController {
         this.taskGroupService.updateTaskGroup(req.params.taskGroupId, req.body.name, req.body.description)
             .then(tType => res.send(tType))
             .catch(next);
+    }
+    private deleteTaskGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req);
+        this.taskGroupService.deletetaskGroup(req.params.taskGroupId).then(() => {
+            res.sendStatus(204);
+        }).catch(next);
     }
 }
