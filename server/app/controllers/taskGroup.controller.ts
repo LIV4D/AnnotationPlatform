@@ -53,7 +53,7 @@ export class TaskGroupController implements IController {
     }
     private deleteTaskGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
-        this.taskGroupService.deletetaskGroup(req.params.taskGroupId).then(() => {
+        this.taskGroupService.deleteTaskGroup(req.params.taskGroupId).then(() => {
             res.sendStatus(204);
         }).catch(next);
     }

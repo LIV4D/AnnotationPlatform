@@ -54,8 +54,8 @@ export class TaskGroupService {
         return await this.taskGroupRepository.findAll();
     }
 
-    public async deletetaskGroup(id: string): Promise<DeleteResult> {
-        const taskGroup = this.getTaskGroup(Number(id));
+    public async deleteTaskGroup(id: string): Promise<DeleteResult> {
+        const taskGroup = await this.getTaskGroup(Number(id));
         if (isNullOrUndefined(taskGroup)) {
             throw createError('This task group does not exist.', 404);
         }
