@@ -19,12 +19,8 @@ export class ImageRepository {
         return await connection.getRepository(Image).find();
     }
 
-    public async findAllWithCount(sort: string = 'image.id',
-                                  order: string = 'ASC',
-                                  page: number = 0,
-                                  pageSize: number = 0,
-                                  filters?: string):
-        Promise<ImageViewModel> {
+// tslint:disable-next-line: max-line-length
+    public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string) {
         const connection = await this.connectionProvider();
 
         const queryBuilder = connection.getRepository(Image)
@@ -77,7 +73,7 @@ export class ImageRepository {
 
     public async find(id: number): Promise<Image> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).findOne({ where: { id }, relations: ['imageType'] }));
+            connection.getRepository(Image).findOne({ where: { id } }));
     }
 
     public async findByPath(path: string): Promise<Image> {

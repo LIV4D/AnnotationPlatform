@@ -7,6 +7,7 @@ import { ImageService } from '../services/image.service';
 import { IGallery } from '../interfaces/gallery.interface';
 import { IGalleryObject } from '../interfaces/galleryObject.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { IImage } from '../../../common/common_interfaces/interfaces';
 
 @injectable()
 export class ImageController implements IController {
@@ -14,39 +15,35 @@ export class ImageController implements IController {
     private imageService: ImageService;
 
     public setRoutes(app: express.Application): void {
-        app.post('/api/images',
-            this.imageService.upload.single('image'),
-            this.uploadImage);
-        app.put('/api/images/:imageId',
-            this.imageService.upload.single('image'),
-            this.uploadImage);
-        app.put('/api/images/:imageId/baseRevision',
-            this.updateBaseRevision);
+    // new endpoints:
+        app.post('/api/images/create',
+        this.imageService.upload.single('image'),
+        this.uploadImage);
+        app.put('/api/images/update/:imageId',
+        this.imageService.upload.single('image'),
+        this.uploadImage);
         app.get('/api/images/:imageId/', this.getImage);
-        app.get('/api/images/:imageId/baseRevision/', this.getImageBaseRevision);
-        app.get('/api/images/', this.getImages);
-        app.get('/api/images/list', this.listImages);
-        app.delete('/api/images/:imageId', this.deleteImage);
+        app.delete('api/images/delete/:imageId', this.deleteImage);
+        app.get('/api/images/list', this.getImages);
+        app.get('/api/images/list/prototype', this.getImagesPrototype);
+        app.get('api/images/getMetadata/:imageId', this.getImageMetadata);
+        // sending image files:
+        app.get('/api/images/getRaw/:imageId', this.getImageFile);
+        app.get('api/images/getPreproc/:imageId', this.getPreprocessingFile);
+        app.get('api/images/getThumbnail/:imageId', this.getThumbnailFile);
         app.get('/api/gallery/', this.getGallery);
-        app.get('/api/images/:imageId/getFile', this.getImageFile);
+
     }
 
     private uploadImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in imageService.upload
-        const newImage: any = {
-            baseRevision: req.body.baseRevision,
-            finalRevision: req.body.finalRevision,
+        const newImage: IImage = {
             filename: req.body.filename,
-            imageTypeId: req.body.imageTypeId,
-            eye: req.body.eye,
-            hospital: req.body.hospital,
-            patient: req.body.patient,
-            visit: req.body.visit,
-            code: req.body.code,
-            extra: req.body.extra,
+            type: req.body.type,
+            metadata: req.body.metadata,
         };
         if (req.params.imageId != null) {
-            newImage.imageId = req.params.imageId;
+            newImage.id = req.params.imageId as number;
             // Request is an update
             this.imageService.updateImage(newImage)
                 .then(image => res.send(image))
@@ -58,20 +55,6 @@ export class ImageController implements IController {
         }
     }
 
-    private updateBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const baseRevision: any = req.body.baseRevision;
-        const id = req.params.imageId;
-        this.imageService.updateBaseRevision(id, baseRevision)
-                .then(image => res.send(image))
-                .catch(next);
-    }
-
-    private getImageBaseRevision = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getImage(req.params.imageId)
-            .then(image => res.send({ svg: image.baseRevision }))
-            .catch(next);
-    }
-
     private getImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.imageService.getImage(req.params.imageId)
             .then(image => res.send(image))
@@ -81,24 +64,35 @@ export class ImageController implements IController {
     private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.imageService.getImage(req.params.imageId)
             .then(image => {
-                    res.sendFile(path.resolve(image.path));
-                })
+                res.sendFile(path.resolve(image.path));
+            })
             .catch(next);
     }
 
+    private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getImage(req.params.imageId)
+        .then(image => {
+            res.sendFile(path.resolve(image.preprocessingPath));
+        })
+        .catch(next);
+}
+    private getThumbnailFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getImage(req.params.imageId)
+        .then(image => {
+            res.sendFile(path.resolve(image.thumbnail));
+        })
+        .catch(next);
+}
     private getImages = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
         this.imageService.getImages()
             .then(images => {
-                images.map(image => {
-                    delete image.baseRevision;
-                });
                 res.send(images);
             })
             .catch(next);
     }
 
-    private listImages = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private getImagesPrototype = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
         this.imageService.getImages()
             .then(images => {
@@ -108,9 +102,19 @@ export class ImageController implements IController {
             .catch(next);
     }
 
+    private getImageMetadata = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req);
+        this.imageService.getImage(req.params.imageId)
+        .then(image => {
+            res.send(image.metadata);
+        })
+        .catch(next);
+    }
+
     private deleteImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
-        this.imageService.deleteImage(req.params.imageId)
+        const imageId =  req.params.imageId as number;
+        this.imageService.deleteImage(imageId)
             .then(() => res.sendStatus(204))
             .catch(next);
     }
@@ -124,22 +128,17 @@ export class ImageController implements IController {
 
                     let dataUrl = '';
                     try {
-                        const base64Image = fs.readFileSync(path.resolve(image.thumbnailPath), 'base64');
+                        const base64Image = fs.readFileSync(path.resolve(image.thumbnail), 'base64');
                         dataUrl = 'data:image/png;base64, ' + base64Image;
                         const item = {
                             id: image.id,
-                            imageType: image.imageType.name,
-                            src: dataUrl,
-                            baseRevision: image.baseRevision,
-                            eye: image.eye,
-                            hospital: image.hospital,
-                            patient: image.patient,
-                            visit: image.visit,
-                            code: image.code,
+                            type: image.type,
+                            thumbnail: dataUrl,
+                            metadata: image.metadata,
                         };
                         arr.push(item);
                     } catch {
-                        console.log('Image non-trouvée: ', image.thumbnailPath);
+                        console.log(`Image non-trouvée: ${image.thumbnail}`);
                     }
                 });
                 const gallery: IGallery = {

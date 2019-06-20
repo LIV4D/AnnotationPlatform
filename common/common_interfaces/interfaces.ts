@@ -24,3 +24,14 @@ export interface ITask {
     taskGroupId: number;
     annotationId: number;
 }
+
+export interface IImage {
+    id?: number;
+    filename: string;
+    type: string;
+    metadata: string;
+    path?: string;
+    preprocessingPath?: string;
+    thumbnail?: string;
+
+}
