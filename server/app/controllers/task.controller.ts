@@ -1,7 +1,7 @@
 import * as express from 'express';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
-import { IController } from './registrable.controller';
+import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { createError } from '../utils/error';

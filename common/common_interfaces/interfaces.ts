@@ -35,3 +35,16 @@ export interface IImage {
     thumbnail?: string;
 
 }
+
+export interface IAnnotation {
+    id?: number;
+    data?: string;
+    comment?: string;
+}
+
+export interface IEvenement {
+    id?: number;
+    date?: string;
+    timestamp?: string;
+    description?: string;
+}

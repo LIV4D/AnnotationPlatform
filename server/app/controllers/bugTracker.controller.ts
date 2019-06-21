@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { injectable } from 'inversify';
-import { IController } from './registrable.controller';
+import { IController } from './abstractController.controller';
 
 @injectable()
 export class BugtrackerController implements IController {

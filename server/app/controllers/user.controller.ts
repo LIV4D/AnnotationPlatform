@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
-import { IController } from './registrable.controller';
+import { IController } from './abstractController.controller';
 import { UserService } from '../services/user.service';
 // import { throwIfNotAdmin } from '../utils/userVerification';
 import { IUser } from '../../../common/common_interfaces/interfaces';

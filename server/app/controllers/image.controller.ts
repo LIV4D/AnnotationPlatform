@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as path from 'path';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
-import { IController } from './registrable.controller';
+import { IController } from './abstractController.controller';
 import { ImageService } from '../services/image.service';
 import { IGallery } from '../interfaces/gallery.interface';
 import { IGalleryObject } from '../interfaces/galleryObject.interface';

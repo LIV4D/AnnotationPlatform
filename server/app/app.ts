@@ -13,7 +13,7 @@ import * as path from 'path';
 import TYPES from './types';
 // import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { injectable } from 'inversify';
-import { IController } from './controllers/registrable.controller';
+import { IController } from './controllers/abstractController.controller';
 import { container } from './inversify.config';
 import { UserService } from './services/user.service';
 

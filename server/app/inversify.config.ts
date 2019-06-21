@@ -13,7 +13,7 @@ import { TaskGroupRepository } from './repository/taskGroup.repository';
 import { UserRepository } from './repository/user.repository';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
-import { IController } from './controllers/registrable.controller';
+import { IController } from './controllers/abstractController.controller';
 
 const container: Container = new Container();
 
