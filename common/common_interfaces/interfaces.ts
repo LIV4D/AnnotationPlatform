@@ -1,35 +1,43 @@
 export interface IUser {
     id?: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     email?: string;
-    isAdmin: boolean;
-    password: string;
+    isAdmin?: boolean;
+    password?: string;
     salt?: string;
 }
 
 export interface ITaskGroups {
     id?: number;
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
 }
 
 export interface ITask {
     id?: number;
-    isVisible: boolean;
-    isComplete: boolean;
-    comment: string;
-    userId: number;
-    imageId: number;
-    taskGroupId: number;
-    annotationId: number;
+    isVisible?: boolean;
+    isComplete?: boolean;
+    comment?: string;
+    userId?: number;
+    imageId?: number;
+    taskGroupId?: number;
+    annotationId?: number;
 }
+
+export interface ITaskGallery {
+    taskId: number;
+    isComplete: boolean;
+    thumbnail: string;
+    taskGroupTitle: string;
+ }
+ 
 
 export interface IImage {
     id?: number;
-    filename: string;
-    type: string;
-    metadata: string;
+    filename?: string;
+    type?: string;
+    metadata?: string;
     path?: string;
     preprocessingPath?: string;
     thumbnail?: string;

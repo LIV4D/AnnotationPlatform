@@ -4,7 +4,7 @@ import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
 import { ITaskGroup } from '../interfaces/taskGroup.interface';
-import { ITaskList } from '../interfaces/taskList.interface';
+import { ITaskGallery } from '../../../common/common_interfaces/interfaces';
 import { DeleteResult } from 'typeorm';
 import { isUndefined } from 'util';
 
@@ -57,62 +57,44 @@ export class TaskRepository {
             .getMany();
     }
 
-    public async findTaskListByUser(userId: string, page: number = 0, pageSize: number = 0, completed?: boolean): Promise<ITaskList> {
-        const taskList: ITaskList = {
-            objects: [],
-        };
+    public async findTaskListByUser(userId: string, page: number = 0, pageSize: number = 0, completed?: boolean): Promise<ITaskGallery[]> {
         const connection = await this.connectionProvider();
         const qb = await connection
         .getRepository(Task)
         .createQueryBuilder('task')
         .where('task.user.id = :id', { id: userId })
-        .andWhere('task.active = :active', { active: true })
-        .leftJoinAndSelect('task.image', 'image');
+        .andWhere('task.isVisible = :visible', { visible: true })
+        .leftJoinAndSelect('task.image', 'image')
+        .leftJoinAndSelect('task.taskGroup', 'taskGroup');
 
         const tasks =  await qb.getMany();
+        let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
         tasks.forEach(task => {
-            // Search for existing taskGroup with task image id
-            const index = task.image.id ? taskList.objects.findIndex(e => e.imageId === task.image.id) : -1;
-            // If it exists add to taskGroup and update count
-            if (index > -1) {
-                taskList.objects[index].tasks.push(task);
-                if (!task.isComplete) {
-                    taskList.objects[index].incompleteCount++;
-                }
-            } else {
-            // If it doesn't create a new taskGroup and load the image thumbnail
-
-            // TODO: change code to load the thumbnail from db instead of using path
-                let dataUrl = '';
-                try {
-                    const base64Image = fs.readFileSync(path.resolve(task.image.thumbnail), 'base64');
-                    dataUrl = 'data:image/png;base64, ' + base64Image;
-                } catch {
-                    console.log('Image non-trouvée: ', task.image.id);
-                }
-                const taskGroup: ITaskGroup = {
-                    tasks: [ task ],
-                    imageId: task.image.id,
-                    imageSrc: dataUrl,
-                    incompleteCount: 0,
-                };
-                if (!task.isComplete) {
-                    taskGroup.incompleteCount++;
-                }
-                taskList.objects.push(taskGroup);
+        // If it doesn't create a new taskGroup and load the image thumbnail
+            let dataUrl = '';
+            try {
+                const base64Image = fs.readFileSync(path.resolve(task.image.thumbnail), 'base64');
+                dataUrl = 'data:image/png;base64, ' + base64Image;
+            } catch (error) {
+                throw(error);
             }
+            const taskGallery: ITaskGallery = {
+                taskId: task.id,
+                isComplete: task.isComplete,
+                thumbnail: dataUrl,
+                taskGroupTitle: task.taskGroup.title,
+            };
+            taskList.push(taskGallery);
         });
-        if (!isUndefined(completed)) {
-            if (completed) {
-                taskList.objects = taskList.objects.filter(o => o.incompleteCount === 0);
-            } else {
-                taskList.objects = taskList.objects.filter(o => o.incompleteCount > 0);
-            }
+        if (completed) {
+            taskList = taskList.filter(taskGallery => taskGallery.isComplete);
+        } else {
+            taskList = taskList.filter(taskGallery => !taskGallery.isComplete);
         }
         // Select a subsection of our taskGroups, according to pageSize and page number
         if (page !== 0 && pageSize !== 0) {
-            taskList.objects = taskList.objects.splice(pageSize * page, pageSize);
+            taskList = taskList.splice(pageSize * page, pageSize);
         }
         return await taskList;
     }

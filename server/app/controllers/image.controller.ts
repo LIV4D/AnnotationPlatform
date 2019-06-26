@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as path from 'path';
+import * as fs from 'fs';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
@@ -120,7 +121,6 @@ export class ImageController implements IController {
     }
 
     private getGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const fs = require('fs');
         const arr: IGalleryObject[] = [];
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {

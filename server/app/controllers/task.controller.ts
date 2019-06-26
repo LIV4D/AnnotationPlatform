@@ -6,6 +6,8 @@ import { TaskService } from '../services/task.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { createError } from '../utils/error';
 import { ITask } from '../../../common/common_interfaces/interfaces';
+import { isNullOrUndefined } from 'util';
+import { Task } from '../models/task.model';
 
 @injectable()
 export class TaskController implements IController {
@@ -14,19 +16,23 @@ export class TaskController implements IController {
 
     public setRoutes(app: express.Application): void {
         // Collection
-        app.get('/api/tasks', this.getTasks);
+        app.post('/api/tasks/create', this.createTask);
+        app.put('/api/tasks/update/:taskId', this.updateTask);
+        app.delete('/api/tasks/delete/:taskId', this.deleteTask);
         app.get('/api/tasks/list', this.listTasks);
-        app.get('/api/tasklist/:userId', this.getTaskList);
-        app.post('/api/tasks', this.createTask);
-        app.get('/api/tasks/findByUser/:userId', this.getTasksByUser);
-        app.get('/api/tasks/list/:userId', this.listTasksByUser);
+        app.get('/api/tasks/list/:userId', this.listTasks);
+        app.get('/api/tasks/gallery/:userId', this.getUserGallery);
+        // app.get('/api/tasks', this.getTasks);
+        // app.get('/api/tasklist/:userId', this.getTaskList);
+        app.post('api/tasks/submit/:taskId', this.submitTask);
+        app.get('/api/tasks/download/:taskId'.this.downloadTask);
+        app.post('api/tasks/assign/:userId', this.assignTask);
+        // app.get('/api/tasks/findByUser/:userId', this.getTasksByUser);
         app.get('/api/tasks/:userId/next/', this.getNextTaskByUser);
-        app.get('/api/tasks/:userId/:imageId/', this.getTasksByUserByImage);
+        // app.get('/api/tasks/:userId/:imageId/', this.getTasksByUserByImage);
 
         // Element
         app.get('/api/tasks/:taskId', this.getTask);
-        app.put('/api/tasks/:taskId', this.updateTask);
-        app.delete('/api/tasks/:taskId', this.deleteTask);
     }
 
     private getTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -36,29 +42,20 @@ export class TaskController implements IController {
             .catch(next);
     }
 
-    private listTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
-        this.taskService.getTasks()
-            .then(tasks => {
-                const tasksPrototype = tasks.map(t => t.prototype());
-                res.send(tasksPrototype);
-            })
-            .catch(next);
-    }
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
-        let taskActive = true;
-        let taskCompleted = false;
-        if (req.body.active !== undefined) {
-            taskActive = (req.body.active === 'true');
+        let isTaskVisible = true;
+        let isTaskCompleted = false;
+        if (!isNullOrUndefined(req.body.visible)) {
+            isTaskVisible = (req.body.visible === 'true');
         }
-        if (req.body.completed !== undefined) {
-            taskCompleted = (req.body.completed === 'true');
+        if (!isNullOrUndefined(req.body.isComplete)) {
+            isTaskCompleted = (req.body.completed === 'true');
         }
         const newTask: ITask = {
-            isVisible: taskActive,
-            isComplete: taskCompleted,
+            isVisible: isTaskVisible,
+            isComplete: isTaskCompleted,
             imageId: req.body.imageId,
             taskGroupId: req.body.taskGroupId,
             userId: req.body.userId,
@@ -85,16 +82,39 @@ export class TaskController implements IController {
             .catch(next);
     }
 
-    private listTasksByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private async listTasks(req: express.Request, res: express.Response, next: express.NextFunction) {
+        // check if it's list by user or not
+        try {
+            let tasks: Task[];
+            const isListByUser = !isNullOrUndefined(req.params.userId);
+            if (isListByUser) {
+                if (req.params.userId !== req.user.id) {
+                    throwIfNotAdmin(req);
+                }
+                // list by user:
+                tasks = await this.taskService.getTasksByUser(req.params.userId);
+            } else {
+                throwIfNotAdmin(req);
+                tasks = await this.taskService.getTasks();
+            }
+            const taskPrototypes = tasks.map(t => t.prototype());
+            taskPrototypes.forEach(prototype => {
+                delete prototype.isVisible;
+                delete prototype.annotationId;
+                delete prototype.userId;
+            });
+            res.send(taskPrototypes);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private async getUserGallery(req: express.Request, res: express.Response, next: express.NextFunction) {
         if (req.user.id !== req.params.userId) {
             throwIfNotAdmin(req);
         }
-        this.taskService.getTasksByUser(req.params.userId)
-            .then(task => {
-                const tasksPrototype = task.map(t => t.prototype());
-                res.send(tasksPrototype);
-            })
-            .catch(next);
+        return await this.taskService.getUserGallery(req.params.userId, req.query.page, req.query.pageSize, req.query.isComplete)
+        .catch(next);
     }
 
     private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -136,14 +156,16 @@ export class TaskController implements IController {
     }
 
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const updatedTask: any = {
+        const updatedTask: ITask = {
             id: req.params.taskId,
+            isVisible: false,
+            isComplete: false,
         };
-        if (req.body.active !== null && req.body.active !== undefined) {
-            updatedTask.active = (req.body.active === 'true');
+        if (!isNullOrUndefined(req.body.isVisible)) {
+            updatedTask.isVisible = (req.body.isVisible === 'true');
         }
-        if (req.body.completed !== null && req.body.completed !== undefined) {
-            updatedTask.completed = (req.body.completed === 'true');
+        if (!isNullOrUndefined(req.body.isComplete)) {
+            updatedTask.isComplete = (req.body.isComplete === 'true');
         }
         this.taskService.updateTask(updatedTask, req)
             .then(task => res.send(task))
