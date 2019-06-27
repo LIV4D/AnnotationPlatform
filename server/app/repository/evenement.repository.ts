@@ -10,6 +10,11 @@ export class EvenementRepository {
         this.connectionProvider = connectionProvider;
     }
 
+    public async create(evenement: Evenement): Promise<Evenement> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(Evenement).save(evenement);
+    }
+
     public async findAll(): Promise<Evenement[]> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(Evenement).find( { relations: ['image', 'user'] });

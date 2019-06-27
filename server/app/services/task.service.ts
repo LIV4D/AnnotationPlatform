@@ -7,18 +7,20 @@ import { TaskRepository } from '../repository/task.repository';
 import { ITaskList } from '../interfaces/taskList.interface';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { ITask, ITaskGallery } from '../../../common/common_interfaces/interfaces';
+import { ITask, ITaskGallery, IEvenement, ISubmission, IAnnotation } from '../../../common/common_interfaces/interfaces';
 import { isUndefined, isNullOrUndefined } from 'util';
+import { EvenementService } from './evenement.service';
+import { Evenement } from '../models/evenement.model';
 
 @injectable()
 export class TaskService {
     @inject(TYPES.TaskRepository)
     private taskRepository: TaskRepository;
     // TODO: cleanup after introducing the other services
-    // @inject(TYPES.ImageService)
-    // private imageService: ImageService;
-    // @inject(TYPES.RevisionService)
-    // private revisionService: RevisionService;
+    @inject(TYPES.EvenementService)
+    private evenementService: EvenementService;
+    @inject(TYPES.AnnotationService)
+    private annotationService: AnnotationService;
 
     public async createTask(newTask: ITask): Promise<Task> {
         const task = new Task();
@@ -62,6 +64,32 @@ export class TaskService {
         oldTask.isVisible = updatedTask.isVisible;
         oldTask.isComplete = updatedTask.isComplete;
         return await this.taskRepository.create(oldTask);
+    }
+
+    public async submitTask(submission: ISubmission) {
+        const task = await this.taskRepository.find(submission.taskId);
+        if (isNullOrUndefined(task)) {
+            throw createError('This task does not exist.', 404);
+        }
+        if (task.user.id !== Number(submission.userSubmitterId)) {
+            createError('user is not admin', 401);
+        }
+        // create evenement for the submission:
+        const evenement: IEvenement = {
+            annotationId: task.annotation.id,
+            description: 'new submission',
+            timestamp: submission.uptime,
+            userId: task.user.id.toString(),
+        };
+        await this.evenementService.createEvenement(evenement);
+        // update data of annotation:
+        const newAnnotation: IAnnotation = {
+            data: submission.data,
+        };
+        if (!isNullOrUndefined(submission.comment)) {
+            newAnnotation.comment = submission.comment;
+        }
+        this.annotationService.update(newAnnotation);
     }
 
     public async getTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {

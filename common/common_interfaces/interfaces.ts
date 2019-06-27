@@ -55,4 +55,17 @@ export interface IEvenement {
     date?: string;
     timestamp?: string;
     description?: string;
+    annotationId?: number;
+    userId?: string;
+}
+
+export interface ISubmission {
+    taskId: number;
+    userSubmitterId?: string; // user who submitted
+    data?: string;
+    uptime?: string;
+    comment?: string;
+    isComplete?: boolean;
+
+
 }

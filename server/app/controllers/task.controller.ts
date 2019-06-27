@@ -4,8 +4,7 @@ import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { createError } from '../utils/error';
-import { ITask } from '../../../common/common_interfaces/interfaces';
+import { ITask, ISubmission } from '../../../common/common_interfaces/interfaces';
 import { isNullOrUndefined } from 'util';
 import { Task } from '../models/task.model';
 
@@ -113,8 +112,33 @@ export class TaskController implements IController {
         if (req.user.id !== req.params.userId) {
             throwIfNotAdmin(req);
         }
-        return await this.taskService.getUserGallery(req.params.userId, req.query.page, req.query.pageSize, req.query.isComplete)
-        .catch(next);
+        try {
+            const taskGallery = await this.taskService
+                            .getUserGallery(req.params.userId, req.query.page, req.query.pageSize, req.query.isComplete);
+            res.send(taskGallery);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private async submitTask(req:express.Request, res: express.Response, next: express.NextFunction) {
+        const submission: ISubmission = {
+            taskId: req.params.taskId as number,
+            userSubmitterId: req.user.id,
+            data: req.body.data,
+            comment: req.body.comment,
+            isComplete: false,
+            uptime: req.body.uptime,
+        };
+        if (!isNullOrUndefined(req.body.isComplete)) {
+            submission.isComplete = req.body.isComplete === 'true';
+        }
+        try {
+            const task = await this.taskService.submitTask(submission);
+            res.send(task);
+        } catch (error) {
+            next(error);
+        }
     }
 
     private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -132,27 +156,6 @@ export class TaskController implements IController {
                 res.send(null);
             })
             .catch(next);
-    }
-
-    private getTaskList = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if (req.query.completed) { req.query.completed = (req.query.completed === 'true'); }
-        if (req.user.id !== req.params.userId) {
-            throwIfNotAdmin(req);
-        }
-        this.taskService.getTaskList(req.params.userId, req.query.page, req.query.pageSize, req.query.completed)
-            .then(taskList => res.send(taskList))
-            .catch(next);
-    }
-
-    private getTasksByUserByImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if (req.user.id !== req.params.userId) {
-            throwIfNotAdmin(req);
-        }
-        if (!Number(req.params.imageId)) {
-            throw createError('Image with this id does not exist', 404);
-        }
-        this.taskService.getTasksByUserByImage(req.params.userId, req.params.imageId)
-            .then(tasks => res.send(tasks));
     }
 
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {

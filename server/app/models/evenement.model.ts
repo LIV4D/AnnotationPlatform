@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique, ManyToOne, BeforeInsert } from 'typeorm';
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
 
 @Entity()
 @Unique(['annotation', 'user'])
 export class Evenement {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     public id: number;
 
     @Column()
     public description: string;
 
-    @Column({ type: 'date', nullable: true })
-    public date: string;
+    @Column({ type: 'datetime', nullable: true })
+    public date: Date;
 
     @Column({ nullable: true })
     public timestamp: string;
@@ -23,5 +23,10 @@ export class Evenement {
 
     @ManyToOne(type => Annotation, annotation => annotation.evenements)
     public annotation: Annotation;
+
+    @BeforeInsert()
+    setDate(): void {
+        this.date =  new Date();
+    }
 
 }
