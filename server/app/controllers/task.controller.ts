@@ -104,7 +104,7 @@ export class TaskController implements IController {
         }
     }
 
-    private async submitTask(req:express.Request, res: express.Response, next: express.NextFunction) {
+    private async submitTask(req: express.Request, res: express.Response, next: express.NextFunction) {
         const submission: ISubmission = {
             taskId: req.params.taskId as number,
             userSubmitterId: req.user.id,
