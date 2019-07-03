@@ -1,16 +1,17 @@
 import 'reflect-metadata';
 import TYPES from '../types';
 import * as express from 'express';
+import * as fs from 'fs';
 import { inject, injectable } from 'inversify';
 import { Task } from '../models/task.model';
 import { TaskRepository } from '../repository/task.repository';
-import { ITaskList } from '../interfaces/taskList.interface';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { ITask, ITaskGallery, IEvenement, ISubmission, IAnnotation } from '../../../common/common_interfaces/interfaces';
-import { isUndefined, isNullOrUndefined } from 'util';
+import { ITask, ITaskGallery, IEvenement, ISubmission, IAnnotation, IDownloadedTask } from '../../../common/common_interfaces/interfaces';
+import { isNullOrUndefined } from 'util';
 import { EvenementService } from './evenement.service';
-import { Evenement } from '../models/evenement.model';
+import { AnnotationService } from './annotation.service';
+import { ImageService } from './image.service';
 
 @injectable()
 export class TaskService {
@@ -21,6 +22,8 @@ export class TaskService {
     private evenementService: EvenementService;
     @inject(TYPES.AnnotationService)
     private annotationService: AnnotationService;
+    @inject(TYPES.ImageService)
+    private imageService: ImageService;
 
     public async createTask(newTask: ITask): Promise<Task> {
         const task = new Task();
@@ -92,11 +95,39 @@ export class TaskService {
         this.annotationService.update(newAnnotation);
     }
 
+    public async downloadTask(taskId: number): Promise<IDownloadedTask> {
+        const task = await this.taskRepository.find(taskId);
+        const image = await this.imageService.getImage(task.image.id);
+        const annotation = await this.annotationService.getAnnotation(task.annotation.id);
+        if (isNullOrUndefined(task)) {
+            throw createError('This task does not exist.', 404);
+        }
+        if (isNullOrUndefined(image)) {
+            throw createError('This image does not exist.', 404);
+        }
+        if (isNullOrUndefined(annotation)) {
+            throw createError('This annotation does not exist.', 404);
+        }
+        let downloadedTask: IDownloadedTask;
+        if (fs.existsSync( image.path)) {
+            downloadedTask.image = 'data:image/png;base64, ' + fs.readFileSync(image.path).toString();
+        }
+        if (fs.existsSync( image.preprocessingPath)) {
+            downloadedTask.image = 'data:image/png;base64, ' + fs.readFileSync(image.preprocessingPath).toString();
+        }
+        downloadedTask.metadata = image.metadata;
+        // TODO: should we check if svg is empty in annotation?
+        downloadedTask.data = annotation.data;
+        downloadedTask.comment = annotation.comment;
+
+        return downloadedTask;
+    }
+
     public async getTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {
         return await this.taskRepository.findTasksByUserByImage(userId, imageId);
     }
 
-    public async getTaskList(userId: string, page?: number, pageSize?: number, completed?: boolean): Promise<ITaskList> {
+    public async getTaskList(userId: string, page?: number, pageSize?: number, completed?: boolean): Promise<ITaskGallery[]> {
         return await this.taskRepository.findTaskListByUser(userId, page, pageSize, completed);
     }
 

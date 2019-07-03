@@ -18,14 +18,14 @@ export class AnnotationService {
     @inject(TYPES.ImageService)
     private imageService: ImageService;
 
-    public async createAnnotation(newAnnotation: any): Promise<Annotation> {
+    public async create(newAnnotation: IAnnotation): Promise<Annotation> {
         const annotation = new Annotation();
         annotation.data = newAnnotation.data;
         annotation.image = { id: newAnnotation.imageId } as any;
         return await this.annotationRepository.create(annotation);
     }
 
-    public async updateAnnotation(newAnnotation: IAnnotation): Promise<Annotation> {
+    public async update(newAnnotation: IAnnotation): Promise<Annotation> {
         const annotation = new Annotation();
         for (const key of Object.keys(newAnnotation)) {
             annotation[key] = newAnnotation[key];
@@ -33,7 +33,7 @@ export class AnnotationService {
         return await this.annotationRepository.create(annotation);
     }
 
-    public async getAnnotation(id: number, req: express.Request): Promise<Annotation> {
+    public async getAnnotation(id: number): Promise<Annotation> {
         const annotation = await this.annotationRepository.find(id);
         if (isNullOrUndefined(annotation)) {
             throw createError('This annotation does not exist.', 404);

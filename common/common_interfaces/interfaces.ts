@@ -46,6 +46,7 @@ export interface IImage {
 
 export interface IAnnotation {
     id?: number;
+    imageId?: number;
     data?: string;
     comment?: string;
 }
@@ -66,6 +67,12 @@ export interface ISubmission {
     uptime?: string;
     comment?: string;
     isComplete?: boolean;
+}
 
-
+export interface IDownloadedTask {
+    image: string;
+    preprocessing: string;
+    data: string;
+    metadata: string;
+    comment: string;
 }

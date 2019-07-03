@@ -24,7 +24,7 @@ export class TaskController implements IController {
         // app.get('/api/tasks', this.getTasks);
         // app.get('/api/tasklist/:userId', this.getTaskList);
         app.post('api/tasks/submit/:taskId', this.submitTask);
-        app.get('/api/tasks/download/:taskId'.this.downloadTask);
+        app.get('/api/tasks/download/:taskId', this.downloadTask);
         app.post('api/tasks/assign/:userId', this.assignTask);
         // app.get('/api/tasks/findByUser/:userId', this.getTasksByUser);
         app.get('/api/tasks/:userId/next/', this.getNextTaskByUser);
@@ -33,14 +33,6 @@ export class TaskController implements IController {
         // Element
         app.get('/api/tasks/:taskId', this.getTask);
     }
-
-    private getTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
-        this.taskService.getTasks()
-            .then(tasks => res.send(tasks))
-            .catch(next);
-    }
-
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
@@ -68,15 +60,6 @@ export class TaskController implements IController {
 
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.taskService.getTask(req.params.taskId, req)
-            .then(task => res.send(task))
-            .catch(next);
-    }
-
-    private getTasksByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if (req.user.id !== req.params.userId) {
-            throwIfNotAdmin(req);
-        }
-        this.taskService.getTasksByUser(req.params.userId)
             .then(task => res.send(task))
             .catch(next);
     }
@@ -134,8 +117,17 @@ export class TaskController implements IController {
             submission.isComplete = req.body.isComplete === 'true';
         }
         try {
-            const task = await this.taskService.submitTask(submission);
-            res.send(task);
+            await this.taskService.submitTask(submission);
+            res.sendStatus(204);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private async downloadTask(req: express.Request, res: express.Response, next: express.NextFunction) {
+        try {
+            const downloadedTask = await this.taskService.downloadTask(req.params.taskId);
+            res.send(downloadedTask);
         } catch (error) {
             next(error);
         }

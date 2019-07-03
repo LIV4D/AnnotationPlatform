@@ -3,10 +3,8 @@ import * as fs from 'fs';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
-import { ITaskGroup } from '../interfaces/taskGroup.interface';
 import { ITaskGallery } from '../../../common/common_interfaces/interfaces';
 import { DeleteResult } from 'typeorm';
-import { isUndefined } from 'util';
 
 @injectable()
 export class TaskRepository {
