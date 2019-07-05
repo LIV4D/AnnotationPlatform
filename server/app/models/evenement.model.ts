@@ -26,7 +26,7 @@ export class Evenement {
 
     @BeforeInsert()
     setDate(): void {
-        this.date =  new Date();
+        this.date =  new Date(Date.now());
     }
 
 }

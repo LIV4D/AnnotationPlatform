@@ -87,6 +87,7 @@ export class TaskService {
         await this.evenementService.createEvenement(evenement);
         // update data of annotation:
         const newAnnotation: IAnnotation = {
+            id: task.annotation.id,
             data: submission.data,
         };
         if (!isNullOrUndefined(submission.comment)) {
@@ -108,6 +109,7 @@ export class TaskService {
         if (isNullOrUndefined(annotation)) {
             throw createError('This annotation does not exist.', 404);
         }
+// tslint:disable-next-line: prefer-const
         let downloadedTask: IDownloadedTask;
         if (fs.existsSync( image.path)) {
             downloadedTask.image = 'data:image/png;base64, ' + fs.readFileSync(image.path).toString();
