@@ -28,29 +28,27 @@ export class User {
     @Column({ length: 32, default: '' })
     public lastName: string;
 
-    @Column({ type: 'bytea', select: false })
+    @Column({ type: 'bytea', select: true })
     public password: Buffer;
 
-    @Column({ type: 'bytea', select: false })
+    @Column({ type: 'bytea', select: true })
     public salt: Buffer;
 
     @Column({ default : false })
     isAdmin: boolean;
 
     public static hashPassword(password: string, salt?: Buffer) {
+        const size = 64;
         if (isUndefined(salt)) {
-            const saltSize = 64;
-            salt = crypto.randomBytes(saltSize);
+            salt = crypto.randomBytes(size);
         }
         return {
-            hash: crypto.pbkdf2Sync(password, salt, 20000, 64, 'sha512'),
+            hash: crypto.pbkdf2Sync(password, salt, 20000, size, 'sha512'),
             salt,
         };
     }
 
     public hashCompare(passwordProvided: string) {
-        console.log(this.password);
-        console.log(this.email);
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
         return crypto.timingSafeEqual(this.password, hashProvided);
     }

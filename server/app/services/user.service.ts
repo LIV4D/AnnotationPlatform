@@ -31,7 +31,6 @@ export class UserService {
 
     public loginLocal = (email: string, password: string, done: VerifiedCallback) => {
         this.userRepository.findByEmail(email).then(user => {
-            console.log('user: ' + JSON.stringify(user));
             if (user && user.hashCompare(password)) {
                 return done(null, user);
             } else {
