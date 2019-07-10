@@ -22,10 +22,10 @@ export class User {
     @OneToMany(type => Task, task => task.user)
     public tasks: Task[];
 
-    @Column({ length: 32 })
+    @Column({ length: 32, default: '' })
     public firstName: string;
 
-    @Column({ length: 32 })
+    @Column({ length: 32, default: '' })
     public lastName: string;
 
     @Column({ type: 'bytea', select: false })
@@ -49,6 +49,8 @@ export class User {
     }
 
     public hashCompare(passwordProvided: string) {
+        console.log(this.password);
+        console.log(this.email);
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
         return crypto.timingSafeEqual(this.password, hashProvided);
     }

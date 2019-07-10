@@ -27,7 +27,7 @@ container.bind<UserService>(TYPES.UserService).to(UserService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
-container.bind<AnnotationRepository>(TYPES.RevisionRepository).to(AnnotationRepository);
+container.bind<AnnotationRepository>(TYPES.AnnotationRepository).to(AnnotationRepository);
 container.bind<TaskRepository>(TYPES.TaskRepository).to(TaskRepository);
 container.bind<TaskGroupRepository>(TYPES.TaskGroupRepository).to(TaskGroupRepository);
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository);

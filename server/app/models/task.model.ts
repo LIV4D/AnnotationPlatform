@@ -30,7 +30,7 @@ export class Task {
     @Column({ default: false })
     public isComplete: boolean;
 
-    @Column()
+    @Column({ nullable: true })
     public comment: string;
 
     prototype(): TaskPrototype {

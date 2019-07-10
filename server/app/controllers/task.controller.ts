@@ -21,14 +21,10 @@ export class TaskController implements IController {
         app.get('/api/tasks/list', this.listTasks);
         app.get('/api/tasks/list/:userId', this.listTasks);
         app.get('/api/tasks/gallery/:userId', this.getUserGallery);
-        // app.get('/api/tasks', this.getTasks);
-        // app.get('/api/tasklist/:userId', this.getTaskList);
         app.post('api/tasks/submit/:taskId', this.submitTask);
         app.get('/api/tasks/download/:taskId', this.downloadTask);
-        app.post('api/tasks/assign/:userId', this.assignTask);
-        // app.get('/api/tasks/findByUser/:userId', this.getTasksByUser);
+        // app.post('api/tasks/assign/:userId', this.assignTask);
         app.get('/api/tasks/:userId/next/', this.getNextTaskByUser);
-        // app.get('/api/tasks/:userId/:imageId/', this.getTasksByUserByImage);
 
         // Element
         app.get('/api/tasks/:taskId', this.getTask);

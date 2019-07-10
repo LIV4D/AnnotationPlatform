@@ -24,7 +24,7 @@ export class Annotation {
     // TODO: have svg in JSON if possible
     public data: string;
 
-    @Column()
+    @Column({ nullable: true })
     public comment: string;
 
     // TODO: rajouter un champ pour lier a l'annotation precedente (recursive link)

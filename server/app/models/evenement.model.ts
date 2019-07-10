@@ -8,10 +8,10 @@ export class Evenement {
     @PrimaryGeneratedColumn('increment')
     public id: number;
 
-    @Column()
+    @Column({ nullable: true })
     public description: string;
 
-    @Column({ type: 'datetime', nullable: true })
+    @Column({ nullable: true })
     public date: Date;
 
     @Column({ nullable: true })

@@ -11,7 +11,7 @@
         "database": "liv4d_test",
         "synchronize": true,
         "logging": false,
-        "entities": ["./out/**/*.model.js"]
+        "entities": ["./out/server/**/*.model.js"]
     },
     "logging": {
         "level": "debug"
