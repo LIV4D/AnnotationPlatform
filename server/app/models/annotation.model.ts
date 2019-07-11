@@ -8,7 +8,7 @@ import { Task } from './task.model';
 @Entity()
 export class Annotation {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     public id: number;
 
     @ManyToOne(type => Image, image => image.annotations)
