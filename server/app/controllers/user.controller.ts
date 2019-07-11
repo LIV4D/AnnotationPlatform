@@ -81,7 +81,7 @@ export class UserController implements IController {
             .then(user => {
                 delete user.password;
                 delete user.salt;
-                return res.send(user);
+                return res.json(user);
             })
             .catch(next);
     }

@@ -8,7 +8,7 @@ import { VerifiedCallback } from 'passport-jwt';
 import { validate } from 'class-validator';
 import { createErrorFromvalidationErrors, createError } from '../utils/error';
 import { DeleteResult } from 'typeorm';
-import { isNull } from 'util';
+import { isNull, isNullOrUndefined } from 'util';
 import { IUser } from '../../../common/common_interfaces/interfaces';
 import { Evenement } from '../models/evenement.model';
 
@@ -41,23 +41,17 @@ export class UserService {
 
     public async createUser(newUser: IUser): Promise<User> {
         const email = await this.userRepository.findByEmail(newUser.email);
-        if (email !== undefined) {
+        if (!isNullOrUndefined(email)) {
             throw createError('This email is already in use.', 409);
         }
         const result = User.hashPassword(newUser.password);
         const user = new User();
-        Object.keys(user).forEach((key) => {
-            switch (key) {
-                case 'password':
-                    user[key] = result.hash;
-                    break;
-                case 'salt':
-                    user[key] = result.salt;
-                    break;
-                default:
-                    user[key] = newUser[key];
-            }
-        });
+        user.email = newUser.email;
+        user.firstName = newUser.firstName;
+        user.lastName = newUser.lastName;
+        user.isAdmin = newUser.isAdmin;
+        user.password = result.hash;
+        user.salt = result.salt;
         await validate(user).then(errors => {
             if (errors.length > 0) {
                 throw createErrorFromvalidationErrors(errors);
