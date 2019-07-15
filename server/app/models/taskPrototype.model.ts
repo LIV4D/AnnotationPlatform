@@ -1,5 +1,6 @@
 // import { ImagePrototype } from './imagePrototype.model';
 import { Task } from './task.model';
+import { isNullOrUndefined } from 'util';
 
 export class TaskPrototype {
     public id: number;
@@ -12,10 +13,10 @@ export class TaskPrototype {
     public comment: string;
     constructor(task: Task) {
         this.id = task.id;
-        this.userId = task.user.id;
-        this.taskGroupId = task.taskGroup.id;
-        this.annotationId = task.annotation.id;
-        this.imageId = task.image.id;
+        this.userId = !isNullOrUndefined(task.user) ? task.user.id : null;
+        this.taskGroupId = !isNullOrUndefined(task.taskGroup) ? task.taskGroup.id : null;
+        this.annotationId = !isNullOrUndefined(task.annotation) ? task.annotation.id : null;
+        this.imageId = !isNullOrUndefined(task.image) ? task.image.id : null;
         this.isComplete = task.isComplete;
         this.isVisible = task.isVisible;
         this.comment = task.comment;

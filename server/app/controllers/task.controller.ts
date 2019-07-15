@@ -6,7 +6,6 @@ import { TaskService } from '../services/task.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ITask, ISubmission } from '../../../common/common_interfaces/interfaces';
 import { isNullOrUndefined } from 'util';
-import { Task } from '../models/task.model';
 
 @injectable()
 export class TaskController implements IController {
@@ -60,32 +59,47 @@ export class TaskController implements IController {
             .catch(next);
     }
 
-    private async listTasks(req: express.Request, res: express.Response, next: express.NextFunction) {
+    private listTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // check if it's list by user or not
 
         // TODO: uncomment all throwIfnotAdmin later
-        try {
-            let tasks: Task[];
-            const isListByUser = !isNullOrUndefined(req.params.userId);
-            if (isListByUser) {
-                if (req.params.userId !== req.user.id) {
-                    // throwIfNotAdmin(req);
-                }
-                // list by user:
-                tasks = await this.taskService.getTasksByUser(req.params.userId);
-            } else {
-                // throwIfNotAdmin(req);
-                tasks = await this.taskService.getTasks();
-            }
-            const taskPrototypes = tasks.map(t => t.prototype());
-            taskPrototypes.forEach(prototype => {
-                delete prototype.isVisible;
-                delete prototype.annotationId;
-                delete prototype.userId;
-            });
-            res.send(taskPrototypes);
-        } catch (error) {
-            next(error);
+        const isListByUser = !isNullOrUndefined(req.params.userId);
+        if (isListByUser) {
+            // if (req.params.userId !== req.user.id) {
+            //     throwIfNotAdmin(req);
+            // }
+
+            // list by user:
+            this.taskService.getTasksByUser(req.params.userId)
+            .then(tasks => {
+                const taskProtoTypes = tasks.map(task => {
+                const t = task.prototype();
+                delete t.isVisible;
+                delete t.userId;
+                delete t.taskGroupId;
+                delete t.annotationId;
+                delete t.imageId;
+                return t;
+                });
+                res.send(taskProtoTypes);
+            })
+            .catch(next);
+        } else {
+            // throwIfNotAdmin(req);
+            this.taskService.getTasks()
+            .then(tasks => {
+                const taskProtoTypes = tasks.map(task => {
+                const t = task.prototype();
+                delete t.isVisible;
+                delete t.userId;
+                delete t.taskGroupId;
+                delete t.annotationId;
+                delete t.imageId;
+                return t;
+                });
+                res.send(taskProtoTypes);
+            })
+            .catch(next);
         }
     }
 
