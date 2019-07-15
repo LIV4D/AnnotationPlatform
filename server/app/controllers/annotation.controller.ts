@@ -1,11 +1,12 @@
 import * as express from 'express';
 import { IController } from './abstractController.controller';
 import { IAnnotation } from '../../../common/common_interfaces/interfaces';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import TYPES from '../types';
 import { AnnotationService } from '../services/annotation.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 
+@injectable()
 export class AnnotationController implements IController {
     @inject(TYPES.AnnotationService)
     private annotationService: AnnotationService;

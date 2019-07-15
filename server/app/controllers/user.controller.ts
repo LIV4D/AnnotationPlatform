@@ -27,7 +27,14 @@ export class UserController implements IController {
     private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin(req);
         this.userService.getUsers()
-            .then(users => res.send(users))
+            .then(users => {
+                users.forEach(user => {
+                    delete user.password;
+                    delete user.salt;
+                    return user;
+                });
+                res.send(users);
+            })
             .catch(next);
     }
 
@@ -63,7 +70,8 @@ export class UserController implements IController {
                 config.get('jwtAuthOptions.secretOrKey'),
                 config.get('jwtAuthOptions.jsonWebTokenOptions'));
             // Hide the hash in the response (it is always possible to see the hash in the token)
-            delete user.hash;
+            delete user.password;
+            delete user.salt;
             return res.json({ user, token });
         })(req, res, next);
     }

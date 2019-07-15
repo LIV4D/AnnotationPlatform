@@ -62,17 +62,19 @@ export class TaskController implements IController {
 
     private async listTasks(req: express.Request, res: express.Response, next: express.NextFunction) {
         // check if it's list by user or not
+
+        // TODO: uncomment all throwIfnotAdmin later
         try {
             let tasks: Task[];
             const isListByUser = !isNullOrUndefined(req.params.userId);
             if (isListByUser) {
                 if (req.params.userId !== req.user.id) {
-                    throwIfNotAdmin(req);
+                    // throwIfNotAdmin(req);
                 }
                 // list by user:
                 tasks = await this.taskService.getTasksByUser(req.params.userId);
             } else {
-                throwIfNotAdmin(req);
+                // throwIfNotAdmin(req);
                 tasks = await this.taskService.getTasks();
             }
             const taskPrototypes = tasks.map(t => t.prototype());

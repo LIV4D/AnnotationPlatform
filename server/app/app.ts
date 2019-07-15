@@ -8,17 +8,17 @@ import * as fs from 'fs';
 import * as morgan from 'morgan';
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
-// import * as passportJwt from 'passport-jwt';
+import * as passportJwt from 'passport-jwt';
 import * as path from 'path';
 import TYPES from './types';
-// import { ExtractJwt, StrategyOptions } from 'passport-jwt';
+import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { injectable } from 'inversify';
 import { IController } from './controllers/abstractController.controller';
 import { container } from './inversify.config';
 import { UserService } from './services/user.service';
-
+import * as config from 'config';
 const LocalStrategy = passportLocal.Strategy;
-// const JwtStrategy = passportJwt.Strategy;
+const JwtStrategy = passportJwt.Strategy;
 
 @injectable()
 export class Application {
@@ -66,13 +66,13 @@ export class Application {
     }
 
     private authentication(): void {
-        // const options: StrategyOptions = {
-        //     ...config.get('jwtAuthOptions'),
-        //     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        // };
+        const options: StrategyOptions = {
+            ...config.get('jwtAuthOptions'),
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        };
 
         const userService: UserService = container.get<UserService>(TYPES.UserService);
-        // passport.use(new JwtStrategy(options, userService.loginJwt));
+        passport.use(new JwtStrategy(options, userService.loginJwt));
         passport.use(new LocalStrategy({ session: false }, userService.loginLocal));
         this.app.use(passport.initialize());
     }
