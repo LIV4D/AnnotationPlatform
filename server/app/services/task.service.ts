@@ -129,10 +129,6 @@ export class TaskService {
         return await this.taskRepository.findTasksByUserByImage(userId, imageId);
     }
 
-    public async getTaskList(userId: string, page?: number, pageSize?: number, completed?: boolean): Promise<ITaskGallery[]> {
-        return await this.taskRepository.findTaskListByUser(userId, page, pageSize, completed);
-    }
-
     public async getUserGallery(userId: string, page?: number, pageSize?: number, isComplete?: boolean): Promise<ITaskGallery[]> {
         return await this.taskRepository.findTaskListByUser(userId, page, pageSize, isComplete);
     }
