@@ -3,9 +3,9 @@
     "items": [
         {
             "id": 1,
-            "path": "server/database/images/20051019_38557_0100_PP.png",
-            "preprocessingPath": "server/database/preprocessing/preprocessing20051019_38557_0100_PP.png",
-            "thumbnail": "server/database/thumbnail/thumbnail20051019_38557_0100_PP.png",
+            "path": "database/images/20051019_38557_0100_PP.png",
+            "preprocessingPath": "database/preprocessing/preprocessing20051019_38557_0100_PP.png",
+            "thumbnail": "database/thumbnail/thumbnailI0051019_38557_0100_PP.png",
             "type": "Fendus"
         }
     ]

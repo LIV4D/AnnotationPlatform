@@ -73,13 +73,12 @@ export class TaskController implements IController {
             this.taskService.getTasksByUser(req.params.userId)
             .then(tasks => {
                 const taskProtoTypes = tasks.map(task => {
-                const t = task.prototype();
-                delete t.isVisible;
-                delete t.userId;
-                delete t.taskGroupId;
-                delete t.annotationId;
-                delete t.imageId;
-                return t;
+                    const iTask: ITask = {
+                        id: task.id,
+                        comment: task.comment,
+                        isComplete: task.isComplete,
+                    };
+                    return iTask;
                 });
                 res.send(taskProtoTypes);
             })
@@ -89,13 +88,12 @@ export class TaskController implements IController {
             this.taskService.getTasks()
             .then(tasks => {
                 const taskProtoTypes = tasks.map(task => {
-                const t = task.prototype();
-                delete t.isVisible;
-                delete t.userId;
-                delete t.taskGroupId;
-                delete t.annotationId;
-                delete t.imageId;
-                return t;
+                    const iTask: ITask = {
+                        id: task.id,
+                        comment: task.comment,
+                        isComplete: task.isComplete,
+                    };
+                    return iTask;
                 });
                 res.send(taskProtoTypes);
             })
@@ -103,17 +101,14 @@ export class TaskController implements IController {
         }
     }
 
-    private async getUserGallery(req: express.Request, res: express.Response, next: express.NextFunction) {
-        if (req.user.id !== req.params.userId) {
-            throwIfNotAdmin(req);
-        }
-        try {
-            const taskGallery = await this.taskService
-                            .getUserGallery(req.params.userId, req.query.page, req.query.pageSize, req.query.isComplete);
-            res.send(taskGallery);
-        } catch (error) {
-            next(error);
-        }
+    private getUserGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        // if (req.user.id !== req.params.userId) {
+        //     throwIfNotAdmin(req);
+        // }
+        this.taskService
+            .getUserGallery(req.params.userId, req.query.page, req.query.pageSize, req.query.isComplete)
+            .then(taskGallery => res.send(taskGallery))
+            .catch(next);
     }
 
     private async submitTask(req: express.Request, res: express.Response, next: express.NextFunction) {

@@ -68,7 +68,7 @@ export class TaskRepository {
         const tasks =  await qb.getMany();
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
-        tasks.forEach(task => {
+        taskList = tasks.map(task => {
         // If it doesn't create a new taskGroup and load the image thumbnail
             let dataUrl = '';
             try {
@@ -83,7 +83,7 @@ export class TaskRepository {
                 thumbnail: dataUrl,
                 taskGroupTitle: task.taskGroup.title,
             };
-            taskList.push(taskGallery);
+            return taskGallery;
         });
         if (completed) {
             taskList = taskList.filter(taskGallery => taskGallery.isComplete);
