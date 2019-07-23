@@ -55,7 +55,8 @@ export class TaskRepository {
             .getMany();
     }
 
-    public async findTaskListByUser(userId: string, page: number = 0, pageSize: number = 0, completed?: boolean): Promise<ITaskGallery[]> {
+    public async findTaskListByUser(userId: string, page: number = 0,
+                                    pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
         const connection = await this.connectionProvider();
         const qb = await connection
         .getRepository(Task)
@@ -69,7 +70,6 @@ export class TaskRepository {
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
         taskList = tasks.map(task => {
-        // If it doesn't create a new taskGroup and load the image thumbnail
             let dataUrl = '';
             try {
                 const base64Image = fs.readFileSync(path.resolve(task.image.thumbnail), 'base64');
@@ -82,6 +82,7 @@ export class TaskRepository {
                 isComplete: task.isComplete,
                 thumbnail: dataUrl,
                 taskGroupTitle: task.taskGroup.title,
+                imageId: task.image.id,
             };
             return taskGallery;
         });

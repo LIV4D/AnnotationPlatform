@@ -9,8 +9,8 @@ import { EditorService } from '../edit-layout/editor/editor.service';
 import { TasksService } from './tasks.service';
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { ITaskList } from '../model/common/interfaces/taskList.interface';
 import { $ } from 'protractor';
+import { ITaskGallery } from '../../../../common/common_interfaces/interfaces';
 
 @Component({
   selector: 'app-tasks',
@@ -18,7 +18,7 @@ import { $ } from 'protractor';
   styleUrls: ['./tasks.component.scss']
 })
 export class TasksComponent implements OnInit {
-    displayedColumns = ['imageSrc', 'image', 'complete', 'incomplete'];
+    displayedColumns = ['thumbnail', 'taskId', 'taskGroupTitle', 'imageId'];
     dataSource = new MatTableDataSource();
     showPagination: boolean;
     length: number;
@@ -55,12 +55,10 @@ export class TasksComponent implements OnInit {
                 this.appService.loading = false;
                 return observableOf([]);
             })
-            ).subscribe((data: ITaskList) => {
-                this.data = data.objects;
-                this.length = data.objectCount;
-                if (this.length === 0) {
-                    this.noData = true;
-                }
+            ).subscribe((data: ITaskGallery[]) => {
+                this.data = data;
+                this.length = data.length;
+                this.noData = (this.length === 0);
                 this.appService.loading = false;
             });
     }

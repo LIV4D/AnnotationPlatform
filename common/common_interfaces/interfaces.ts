@@ -30,6 +30,7 @@ export interface ITaskGallery {
     isComplete: boolean;
     thumbnail: string;
     taskGroupTitle: string;
+    imageId: number;
  }
  
 

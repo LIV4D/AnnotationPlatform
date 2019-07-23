@@ -8,26 +8,25 @@
 </div>
 <div class="example-container">
   <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
-      <ng-container matColumnDef="imageSrc">
+      <ng-container matColumnDef="thumbnail">
           <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
-          <mat-cell *matCellDef="let task"> <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
+          <mat-cell *matCellDef="let task"> <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
       </ng-container>
-      <ng-container matColumnDef="image">
-          <mat-header-cell *matHeaderCellDef disableClear>Image</mat-header-cell>
-          <mat-cell *matCellDef="let task"> {{task.imageId}} </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="complete">
-          <mat-header-cell *matHeaderCellDef disableClear>Complete Tasks</mat-header-cell>
-          <mat-cell *matCellDef="let task"> {{task.completeCount}} </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="incomplete">
-        <mat-header-cell *matHeaderCellDef disableClear>Incomplete Tasks</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task.incompleteCount}} </mat-cell>
-    </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"
-      (mouseup)="loadImage(row.imageId.toString())"
-      ng-hide="row.incompleteCount > 0"
+      <ng-container matColumnDef="taskId">
+          <mat-header-cell *matHeaderCellDef disableClear>Task</mat-header-cell>
+          <mat-cell *matCellDef="let task"> {{task.taskId}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="taskGroupTitle">
+            <mat-header-cell *matHeaderCellDef disableClear>Group Title</mat-header-cell>
+            <mat-cell *matCellDef="let task"> {{task.taskGroupTitle}} </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <ng-container matColumnDef="imageId">
+            <mat-header-cell *matHeaderCellDef disableClear>ImageId</mat-header-cell>
+            <mat-cell *matCellDef="let task"> {{task.imageId}}</mat-cell>
+        </ng-container>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"
+        (mouseup)="loadImage(row.imageId.toString())"
       >
   </mat-row>
   </mat-table>

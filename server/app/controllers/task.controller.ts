@@ -105,8 +105,13 @@ export class TaskController implements IController {
         // if (req.user.id !== req.params.userId) {
         //     throwIfNotAdmin(req);
         // }
+        const userId = req.params.userId as string;
+        const page = req.query.page as number;
+        const pageSize = req.query.pageSize as number;
+        const isComplete = (req.query.isComplete === 'true');
+
         this.taskService
-            .getUserGallery(req.params.userId, req.query.page, req.query.pageSize, req.query.isComplete)
+            .getUserGallery(userId, page, pageSize, isComplete)
             .then(taskGallery => res.send(taskGallery))
             .catch(next);
     }
