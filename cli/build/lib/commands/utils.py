@@ -141,4 +141,4 @@ def info_to_diagnostic(biomakers=None, time=None, comment=None):
 def paste_int_list():
     import clipboard
     l = clipboard.paste().split('\n')
-    return [int(_) for _ in l]
+    return [int(_) for _ in l if _]
