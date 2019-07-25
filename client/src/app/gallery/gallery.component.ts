@@ -19,7 +19,7 @@ import { IGallery } from '../model/common/interfaces/gallery.interface';
 })
 
 export class GalleryComponent implements OnInit {
-    displayedColumns = ['src', 'id', 'imageType', 'eye', 'hospital', 'patient', 'visit', 'code'];
+    displayedColumns = ['thumbnail', 'id', 'imageType', 'eye', 'hospital', 'patient', 'visit', 'code'];
     showPagination: boolean;
     length: number;
     pageSize: number;

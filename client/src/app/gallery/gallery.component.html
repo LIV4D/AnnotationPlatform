@@ -55,9 +55,9 @@
 <!--Table-->
 <div class="example-container">
     <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
-        <ng-container matColumnDef="src">
+        <ng-container matColumnDef="thumbnail">
             <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
-            <mat-cell *matCellDef="let image"><img [src]="image.src | safeImage" height="64px" /></mat-cell>
+            <mat-cell *matCellDef="let image"><img [src]="image.thumbnail | safeImage" height="64px" /></mat-cell>
         </ng-container>
         <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Id</mat-header-cell>
