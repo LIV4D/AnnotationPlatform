@@ -65,27 +65,27 @@
         </ng-container>
         <ng-container matColumnDef="imageType">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>ImageType</mat-header-cell>
-            <mat-cell *matCellDef="let image"> {{image.imageType || 'N\\A'}} </mat-cell>
+            <mat-cell *matCellDef="let image"> {{image.type || 'N\\A'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="eye">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Eye Side</mat-header-cell>
-            <mat-cell *matCellDef="let image"> {{image.eye || 'N\\A'}} </mat-cell>
+            <mat-cell *matCellDef="let image"> {{image.metadata.eye || 'N\\A'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="hospital">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Hospital</mat-header-cell>
-            <mat-cell *matCellDef="let image"> {{image.hospital || 'N\\A'}} </mat-cell>
+            <mat-cell *matCellDef="let image"> {{image.metadata.hospital || 'N\\A'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="patient">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Patient</mat-header-cell>
-            <mat-cell *matCellDef="let image"> {{image.patient || 'N\\A'}} </mat-cell>
+            <mat-cell *matCellDef="let image"> {{image.metadata.patient || 'N\\A'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="visit">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Visit</mat-header-cell>
-            <mat-cell *matCellDef="let image"> {{image.visit || 'N\\A'}} </mat-cell>
+            <mat-cell *matCellDef="let image"> {{image.metadata.visit || 'N\\A'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="code">
             <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Code</mat-header-cell>
-            <mat-cell *matCellDef="let image"> {{image.code || 'N\\A'}} </mat-cell>
+            <mat-cell *matCellDef="let image"> {{image.metadata.code || 'N\\A'}} </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" (mouseup)="loadImage(row.id.toString())">

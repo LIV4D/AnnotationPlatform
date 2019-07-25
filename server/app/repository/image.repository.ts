@@ -43,7 +43,8 @@ export class ImageRepository {
             let count = 0;
             for (const key of Object.keys(filterJson)) {
                 // imageColumns are hard coded to avoid SQL injection
-                const imageColumns = ['type', 'metadata.eye', 'metadata.hospital', 'metadata.patient', 'metadata.visit', 'metadata.code'];
+                const imageColumns = ['type', 'metadata'];
+                // TODO: add filtering of metada JSON
                 const imageColumnKey = imageColumns.indexOf(key) > -1 ? key : '';
 
                 if (imageColumnKey !== '' && filterJson[key] && count === 0) {

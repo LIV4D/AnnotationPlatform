@@ -1,7 +1,7 @@
 import { LocalStorage } from './../model/local-storage';
 import { GalleryService } from './gallery.service';
 import { EditorService } from '../edit-layout/editor/editor.service';
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, ChangeDetectorRef, AfterViewChecked, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AppService } from '../app.service';
@@ -45,7 +45,6 @@ export class GalleryComponent implements OnInit {
     ngOnInit(): void {
         this.editorService.imageServer = null;
         this.editorService.imageLocal = null;
-        this.getImageTypes();
         this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
         this.getImages();
     }
@@ -96,14 +95,6 @@ export class GalleryComponent implements OnInit {
         };
 
         reader.readAsDataURL(event.target.files[0]);
-    }
-
-    // Retrieves the image types from the server
-    getImageTypes(): void {
-        this.galleryService.getImageTypes().subscribe(res => {
-            this.galleryService.selected = res[0];
-            this.imageTypes = res;
-        });
     }
 
     loadImage(imageId: string): void {

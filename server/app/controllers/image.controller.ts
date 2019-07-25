@@ -134,7 +134,7 @@ export class ImageController implements IController {
                             id: image.id,
                             type: image.type,
                             thumbnail: dataUrl,
-                            metadata: image.metadata,
+                            metadata: JSON.parse(image.metadata),
                         };
                         arr.push(item);
                     } catch {

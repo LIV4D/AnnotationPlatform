@@ -12,10 +12,6 @@ export class GalleryService {
 
     constructor(public http: HttpClient, private headerService: HeaderService) {}
 
-    getImageTypes(): Observable<any> {
-        return this.http.get('/api/imageTypes');
-    }
-
     getImages(sort: string, order: string, page: number, pageSize: number, filters?: string): Observable<IGallery> {
         const params = new HttpParams()
             .set('sort', sort ? 'image.' + sort : 'image.id')

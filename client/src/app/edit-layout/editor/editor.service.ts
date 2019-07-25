@@ -302,7 +302,7 @@ export class EditorService {
     }
 
     getMainImage(): void {
-        const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events',
+        const req = this.http.get(`/api/images/getRaw/${this.imageId}`, { responseType: 'blob', observe: 'events',
                                                                            reportProgress: true });
         this.headerService.display_progress(req, 'Downloading: Image').subscribe(
             res => {
