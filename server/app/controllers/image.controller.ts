@@ -16,24 +16,23 @@ export class ImageController implements IController {
     private imageService: ImageService;
 
     public setRoutes(app: express.Application): void {
-    // new endpoints:
+        // new endpoints:
         app.post('/api/images/create',
-        this.imageService.upload.single('image'),
-        this.uploadImage);
+            this.imageService.upload.single('image'),
+            this.uploadImage);
         app.put('/api/images/update/:imageId',
-        this.imageService.upload.single('image'),
-        this.uploadImage);
+            this.imageService.upload.single('image'),
+            this.uploadImage);
         app.get('/api/images/:imageId/', this.getImage);
         app.delete('api/images/delete/:imageId', this.deleteImage);
         app.get('/api/images/list', this.getImages);
         app.get('/api/images/list/prototype', this.getImagesPrototype);
-        app.get('api/images/getMetadata/:imageId', this.getImageMetadata);
+        app.get('/api/images/metadata/:imageId', this.getImageMetadata);
         // sending image files:
-        app.get('/api/images/getRaw/:imageId', this.getImageFile);
-        app.get('api/images/getPreproc/:imageId', this.getPreprocessingFile);
-        app.get('api/images/getThumbnail/:imageId', this.getThumbnailFile);
+        app.get('/api/images/raw/:imageId', this.getImageFile);
+        app.get('/api/images/preproc/:imageId', this.getPreprocessingFile);
+        app.get('/api/images/thumbnail/:imageId', this.getThumbnailFile);
         app.get('/api/gallery/', this.getGallery);
-
     }
 
     private uploadImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -71,19 +70,20 @@ export class ImageController implements IController {
     }
 
     private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        console.log('getPreproc!\n');
         this.imageService.getImage(req.params.imageId)
-        .then(image => {
-            res.sendFile(path.resolve(image.preprocessingPath));
-        })
-        .catch(next);
-}
+            .then(image => {
+                res.sendFile(path.resolve(image.preprocessingPath));
+            })
+            .catch(next);
+    }
     private getThumbnailFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.imageService.getImage(req.params.imageId)
-        .then(image => {
-            res.sendFile(path.resolve(image.thumbnail));
-        })
-        .catch(next);
-}
+            .then(image => {
+                res.sendFile(path.resolve(image.thumbnail));
+            })
+            .catch(next);
+    }
     private getImages = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
         this.imageService.getImages()
@@ -104,17 +104,17 @@ export class ImageController implements IController {
     }
 
     private getImageMetadata = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        // throwIfNotAdmin(req);
         this.imageService.getImage(req.params.imageId)
-        .then(image => {
-            res.send(image.metadata);
-        })
-        .catch(next);
+            .then(image => {
+                res.send(image.metadata);
+            })
+            .catch(next);
     }
 
     private deleteImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req);
-        const imageId =  req.params.imageId as number;
+        const imageId = req.params.imageId as number;
         this.imageService.deleteImage(imageId)
             .then(() => res.sendStatus(204))
             .catch(next);
