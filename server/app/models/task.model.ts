@@ -16,7 +16,7 @@ export class Task {
     public taskGroup: TaskGroup;
 
     @ManyToOne(type => Annotation, annotation => annotation.tasks, { nullable: true })
-    public annotation: Annotation;
+    public annotation!: Annotation;
 
     @ManyToOne(type => Image, image => image.tasks)
     public image: Image;
