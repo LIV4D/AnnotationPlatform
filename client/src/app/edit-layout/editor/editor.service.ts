@@ -302,7 +302,7 @@ export class EditorService {
     }
 
     getMainImage(): void {
-        const req = this.http.get(`/api/images/getRaw/${this.imageId}`, { responseType: 'blob', observe: 'events',
+        const req = this.http.get(`/api/images/raw/${this.imageId}`, { responseType: 'blob', observe: 'events',
                                                                            reportProgress: true });
         this.headerService.display_progress(req, 'Downloading: Image').subscribe(
             res => {
@@ -354,7 +354,7 @@ export class EditorService {
     }
 
     public loadPretreatmentImage(): void {
-        const req = this.http.get(`/api/preprocessings/${this.imageId}/${PREPROCESSING_TYPE}`, { responseType: 'blob',
+        const req = this.http.get(`api/images/preproc/${this.imageId}`, { responseType: 'blob',
                                                                                                  reportProgress: true,
                                                                                                  observe: 'events' });
         this.headerService.display_progress(req, 'Downloading: Pre-Processing').subscribe(
