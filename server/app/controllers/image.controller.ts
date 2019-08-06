@@ -70,7 +70,6 @@ export class ImageController implements IController {
     }
 
     private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log('getPreproc!\n');
         this.imageService.getImage(req.params.imageId)
             .then(image => {
                 res.sendFile(path.resolve(image.preprocessingPath));
