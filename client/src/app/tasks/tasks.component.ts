@@ -69,6 +69,11 @@ export class TasksComponent implements OnInit {
         this.editorService.loadImageFromServer(imageId);
     }
 
+    loadTask(taskId: string): void {
+        this.editorService.loadTaskFromServer(taskId);
+        this.router.navigate(['/' + ROUTES.EDITOR]);
+    }
+
     showComplete(): void {
         this.showCompleted = true;
         this.loadData();

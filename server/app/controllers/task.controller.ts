@@ -55,7 +55,12 @@ export class TaskController implements IController {
 
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.taskService.getTask(req.params.taskId, req)
-            .then(task => res.send(task))
+            .then(task => {
+                delete task.user.password;
+                delete task.user.salt;
+                delete task.user.isAdmin;
+                res.send(task);
+            })
             .catch(next);
     }
 

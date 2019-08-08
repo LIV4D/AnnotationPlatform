@@ -67,6 +67,7 @@ export class LocalStorage {
         }
 
         // Recreate biomarkers
+        // reconstruct biomarkers from JSON
         layersService.biomarkerCanvas.forEach(canvas => {
             canvas.clear();
         });

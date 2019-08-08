@@ -9,7 +9,6 @@ import { BehaviorSubject, throwError } from 'rxjs';
 import { Point } from './../../model/point';
 import { GalleryService } from '../../gallery/gallery.service';
 import { LocalStorage } from './../../model/local-storage';
-import { Task } from './../../model/common/task.model';
 import { Observable } from 'rxjs';
 import { ROUTES } from './../../routes';
 import { Router } from '@angular/router';
@@ -19,6 +18,7 @@ import { CommentsService } from '../right-menu/comments/comments.service';
 import { VisualizationService } from '../right-menu/visualization/visualization.service';
 import { HeaderService } from '../../header/header.service';
 import { tap, catchError } from 'rxjs/operators';
+import { Task } from 'src/app/model/common/interfaces/task.interface';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -32,6 +32,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 export class EditorService {
     imageLocal: HTMLImageElement;
     imageServer: ImageServer;
+    task: Task;
     zoomFactor: number;
     offsetX: number;
     offsetY: number;
@@ -111,6 +112,9 @@ export class EditorService {
         this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
         this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
         this.svgLoaded = svgLoaded;
+        if (this.task ===  null || this.task === undefined) {
+            this.loadTaskFromServer(localStorage.getItem('loadedTaskId'));
+        }
         if (this.imageLocal) {
             this.setImageId('local');
             this.loadAllLocal(this.imageLocal, this.svgLoaded);
@@ -214,6 +218,7 @@ export class EditorService {
                 this.commentService.comment = res.diagnostic;
 
                 if (draw) {
+                    // from SVG :
                     this.layersService.biomarkerCanvas = [];
                     arbre.forEach((e: SVGGElement) => {
                         this.layersService.createFlatCanvasRecursive(e);
@@ -300,7 +305,7 @@ export class EditorService {
         }, 0);
         this.updateCanvasDisplayRatio();
     }
-
+    // TODO: move all of this in loadAll()
     getMainImage(): void {
         const req = this.http.get(`/api/images/raw/${this.imageId}`, { responseType: 'blob', observe: 'events',
                                                                            reportProgress: true });
@@ -335,22 +340,19 @@ export class EditorService {
 
     // Load everything in the editor.
     public loadAll(): void {
-        // Check if a an image is saved in localStorage
-        const lastImageId = LocalStorage.lastSavedImageId();
-        if (this.shouldLoadLocalStorage(lastImageId)) {
-            this.imageId = lastImageId;
+        if (this.imageId) {
+            const lastImageId = LocalStorage.lastSavedImageId();
+            // Check if a an image is saved in localStorage
+            if (this.shouldLoadLocalStorage(lastImageId)) {
+                this.imageId = lastImageId;
+                LocalStorage.load(this, this.layersService);
+                this.loadRevision(false);
+                this.loadMetadata(this.imageId);
+                return;
+            }
             this.getMainImage();
-            LocalStorage.load(this, this.layersService);
-            this.loadRevision(false);
-            this.loadMetadata(this.imageId);
-            return;
+            this.loadRevision(true);
         }
-        // Check if imageId is set
-        if (!this.imageId) {
-            return;
-        }
-        this.getMainImage();
-        this.loadRevision(true);
     }
 
     public loadPretreatmentImage(): void {
@@ -615,9 +617,19 @@ export class EditorService {
                 this.imageLocal = null;
                 this.imageServer = res;
                 this.setImageId(imageId);
-                this.router.navigate(['/' + ROUTES.EDITOR]);
             }
         );
+    }
+
+    loadTaskFromServer(taskId: string): void {
+       this.http.get(`/api/tasks/${taskId}`, { headers: new HttpHeaders(), responseType: 'json' })
+            .subscribe(res => {
+                for (const key of Object.keys(this.task)) {
+                    this.task[key] = res[key];
+                }
+            });
+        localStorage.setItem('loadedTaskId', taskId);
+
     }
 
     loadMetadata(imageId: string): void {
