@@ -38,7 +38,6 @@ export class ImageController implements IController {
     private uploadImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in imageService.upload
         const newImage: IImage = {
-            filename: req.body.filename,
             type: req.body.type,
             metadata: req.body.metadata,
         };

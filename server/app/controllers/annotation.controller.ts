@@ -12,119 +12,100 @@ export class AnnotationController implements IController {
     private annotationService: AnnotationService;
 
     public setRoutes(app: express.Application) {
-        app.post('api/annotation/create', this.createAnnotation);
-        app.put('api/annotation/update/:annotationId', this.updateAnnotation);
-        app.delete('api/annotation/delete/:annotationId', this.deleteAnnotation);
-        app.post('api/annotation/clone/:annotationId', this.cloneAnnotation);
-        app.get('api/annotation/getComment/:annotationId', this.getAnnotationComment);
-        app.get('api/annotation/get/:annotationid', this.getAnnotation);
-        app.get('api/annotation/events/:annotationId', this.getAnnotationEvents);
-        app.get('api/annotation/lastEvent/:annotationId', this.getLastEventFromAnnotation);
+        app.post('/api/annotation/create', this.createAnnotation);
+        app.put('/api/annotation/update/:annotationId', this.updateAnnotation);
+        app.delete('/api/annotation/delete/:annotationId', this.deleteAnnotation);
+        app.post('/api/annotation/clone/:annotationId', this.cloneAnnotation);
+        app.get('/api/annotation/getComment/:annotationId', this.getAnnotationComment);
+        app.get('/api/annotation/get/:annotationId', this.getAnnotation);
+        app.get('/api/annotation/events/:annotationId', this.getAnnotationEvents);
+        app.get('/api/annotation/lastEvent/:annotationId', this.getLastEventFromAnnotation);
     }
 
-    private async createAnnotation(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
-            const newAnnotation: IAnnotation = {
-                data: req.body.data,
-                imageId: req.body.imageId,
-                comment: req.body.comment,
-            };
-            const annotation = await this.annotationService.create(newAnnotation);
-            res.send(annotation);
-        } catch (error) {
-            next(error);
-        }
+    private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+        const newAnnotation: IAnnotation = {
+            data: req.body.data,
+            imageId: req.body.imageId,
+            comment: req.body.comment,
+        };
+        this.annotationService.create(newAnnotation)
+            .then(annotation => res.send(annotation))
+            .catch(next);
     }
 
-    private async updateAnnotation(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
-            const newAnnotation: IAnnotation = {
-                id: req.params.annotationId as number,
-                data: req.body.data,
-                imageId: req.body.imageId,
-                comment: req.body.comment,
-            };
-            const updatedAnnotation = await this.annotationService.update(newAnnotation);
-            res.send(updatedAnnotation);
-        } catch (error) {
-            next(error);
-        }
+    private updateAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+        const newAnnotation: IAnnotation = {
+            id: req.params.annotationId as number,
+            data: req.body.data,
+            imageId: req.body.imageId,
+            comment: req.body.comment,
+        };
+        this.annotationService.update(newAnnotation)
+        .then(updatedAnnotation => res.send(updatedAnnotation))
+        .catch (next);
     }
 
-    private async deleteAnnotation(req: express.Request, res: express.Response, next: express.NextFunction) {
+    private deleteAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user.id);
-        try {
-            const oldAnnotation: IAnnotation = {
-                id: req.params.annotationId as number,
-            };
-            await this.annotationService.delete(oldAnnotation);
-            res.sendStatus(204);
-        } catch (error) {
-            next(error);
-        }
+        const oldAnnotation: IAnnotation = {
+            id: req.params.annotationId as number,
+        };
+        this.annotationService.delete(oldAnnotation)
+        .then(() => res.sendStatus(204))
+        .catch(next);
     }
 
-    private async cloneAnnotation(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
-            const annotationInfo: IAnnotation = {
-                id: req.params.annotationId as number,
-            };
-            const originalAnnotation = await this.annotationService.getAnnotation(annotationInfo.id);
+    private cloneAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const annotationInfo: IAnnotation = {
+            id: req.params.annotationId as number,
+        };
+        this.annotationService.getAnnotation(annotationInfo.id)
+        .then(originalAnnotation => {
             const newAnnotation: IAnnotation = {
                 data: originalAnnotation.data,
                 imageId: originalAnnotation.image.id,
                 comment: originalAnnotation.comment,
             };
             res.send(this.annotationService.create(newAnnotation));
-        } catch (error) {
-            next(error);
-        }
+        })
+        .catch(next);
     }
 
-    private async getAnnotationComment(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
-                const annotationRequest: IAnnotation = {
-                    id: req.params.annotationId as number,
-                };
-                const annotation = await this.annotationService.getAnnotation(annotationRequest.id);
-                res.send(annotation.comment);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    private async getAnnotation(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
+    private getAnnotationComment = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const annotationRequest: IAnnotation = {
                 id: req.params.annotationId as number,
             };
-            res.send(await this.annotationService.getAnnotation(annotationRequest.id));
-        } catch (error) {
-            next(error);
-        }
+            this.annotationService.getAnnotation(annotationRequest.id)
+            .then(annotation => res.send({ comment: annotation.comment }))
+            .catch(next);
     }
 
-    private async getAnnotationEvents(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
+    private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const annotationRequest: IAnnotation = {
                 id: req.params.annotationId as number,
             };
-            const events = await this.annotationService.getAnnotationEvents(annotationRequest.id);
-            res.send(events);
-        } catch (error) {
-            next(error);
-        }
+            this.annotationService.getAnnotation(annotationRequest.id)
+            .then(annotation => res.send(annotation))
+            .catch(next);
     }
 
-    private async getLastEventFromAnnotation(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
+    private getAnnotationEvents = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const annotationRequest: IAnnotation = {
                 id: req.params.annotationId as number,
             };
-            const event = await this.annotationService.getLastEvent(annotationRequest.id);
-            res.send(event);
-        } catch (error) {
-            next(error);
-        }
+            this.annotationService.getAnnotationEvents(annotationRequest.id)
+            .then(events => res.send(events))
+            .catch(next);
+    }
+
+    private getLastEventFromAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const annotationRequest: IAnnotation = {
+                id: req.params.annotationId as number,
+            };
+            this.annotationService.getLastEvent(annotationRequest.id)
+            .then(event => res.send(event))
+            .catch(next);
     }
 }
