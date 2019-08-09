@@ -13,12 +13,12 @@ import { Observable } from 'rxjs';
 import { ROUTES } from './../../routes';
 import { Router } from '@angular/router';
 import * as FileSaver from 'file-saver';
-import { Image as ImageServer } from '../../model/common/image.model';
 import { CommentsService } from '../right-menu/comments/comments.service';
 import { VisualizationService } from '../right-menu/visualization/visualization.service';
 import { HeaderService } from '../../header/header.service';
 import { tap, catchError } from 'rxjs/operators';
 import { Task } from 'src/app/model/common/interfaces/task.interface';
+import { IImage } from '../../../../../common/common_interfaces/interfaces';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -31,7 +31,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 @Injectable()
 export class EditorService {
     imageLocal: HTMLImageElement;
-    imageServer: ImageServer;
+    imageServer: IImage;
     task: Task;
     zoomFactor: number;
     offsetX: number;
@@ -305,24 +305,6 @@ export class EditorService {
         }, 0);
         this.updateCanvasDisplayRatio();
     }
-    // TODO: move all of this in loadAll()
-    getMainImage(): void {
-        const req = this.http.get(`/api/images/raw/${this.imageId}`, { responseType: 'blob', observe: 'events',
-                                                                           reportProgress: true });
-        this.headerService.display_progress(req, 'Downloading: Image').subscribe(
-            res => {
-                const reader: FileReader = new FileReader();
-                reader.onload = () => {
-                    const image = new Image();
-                    image.onload = () => {
-                        this.loadMainImage(image);
-                        this.loadPretreatmentImage();
-                    };
-                    image.src = reader.result as string;
-                };
-                reader.readAsDataURL(res);
-            });
-    }
 
     // Check if the browser's local storage contains a usable revision
     // that should be loaded.
@@ -350,31 +332,38 @@ export class EditorService {
                 this.loadMetadata(this.imageId);
                 return;
             }
-            this.getMainImage();
+            // getMainImage deplace ici
+            const imageReq = this.http.get(`/api/images/raw/${this.task.image.id}`, { responseType: 'blob', observe: 'events',
+                                                                           reportProgress: true });
+            const preprocReq = this.http.get(`api/images/preproc/${this.task.image.id}`, { responseType: 'blob', observe: 'events',
+                                                                                        reportProgress: true });
+            this.headerService.display_progress(imageReq, 'Downloading: Image').subscribe(
+                res => {
+                    this.setImage(res, false);
+            });
+            this.headerService.display_progress(preprocReq, 'Downloading: Pre-Processing').subscribe(
+                res => {
+                    this.setImage(res, true);
+            });
+
             this.loadRevision(true);
         }
     }
 
-    public loadPretreatmentImage(): void {
-        const req = this.http.get(`api/images/preproc/${this.imageId}`, { responseType: 'blob',
-                                                                                                 reportProgress: true,
-                                                                                                 observe: 'events' });
-        this.headerService.display_progress(req, 'Downloading: Pre-Processing').subscribe(
-            res => {
-                const reader: FileReader = new FileReader();
-                reader.onload = () => {
-                    const image = new Image();
-                    image.onload = () => {
-                        this.backgroundCanvas.setPretreatmentImage(image);
-                    };
-                    image.src = reader.result as string;
-                };
-                reader.readAsDataURL(res);
-            },
-            err => {
-                // console.log('Error: ' + err);
-            }
-        );
+    private setImage(response: any, isPreproc: boolean = false): void {
+        const reader: FileReader = new FileReader();
+        reader.onload = () => {
+            const image = new Image();
+            image.onload = () => {
+                if (isPreproc) {
+                    this.backgroundCanvas.setPretreatmentImage(image);
+                } else {
+                    this.loadMainImage(image);
+                }
+            };
+            image.src = reader.result as string;
+        };
+        reader.readAsDataURL(response);
     }
 
     public loadSVGLocal(event: any): void {
@@ -611,7 +600,7 @@ export class EditorService {
 
     // Function called from gallery/tasks to load a new image and redirect to editor
     loadImageFromServer(imageId: string): void {
-        const req = this.http.get<ImageServer>(`/api/images/${imageId}/`, {observe: 'events', reportProgress: true});
+        const req = this.http.get<IImage>(`/api/images/${imageId}/`, {observe: 'events', reportProgress: true});
         this.headerService.display_progress(req, 'Downloading: Image').subscribe(
             res => {
                 this.imageLocal = null;
@@ -633,7 +622,7 @@ export class EditorService {
     }
 
     loadMetadata(imageId: string): void {
-        this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+        this.http.get<IImage>(`/api/images/${imageId}/`).subscribe(res => {
             this.imageServer = res;
         });
     }

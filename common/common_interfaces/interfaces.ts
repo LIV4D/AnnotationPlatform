@@ -36,7 +36,6 @@ export interface ITaskGallery {
 
 export interface IImage {
     id?: number;
-    filename?: string;
     type?: string;
     metadata?: string;
     path?: string;
