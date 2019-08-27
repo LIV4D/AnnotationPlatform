@@ -35,14 +35,14 @@ export class BiomarkersComponent {
         public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
         private layerService: LayersService) {
         this.imageBorderService.showBorders = false;
-        this.opacity = 50;
+        this.opacity = 65;
         this.visibilityAll = 'visible';
         this.shadowsChecked = false;
         this.simplifiedView = true;
     }
 
     public init(arbre: SVGGElement[]): void {
-        this.opacity = 50;
+        this.opacity = 65;
         this.arbre = arbre;
         this.biomarkersService.init(arbre);
         this.biomarkersService.changeOpacity(this.opacity.toString());
@@ -158,6 +158,10 @@ export class BiomarkersComponent {
 
     disableOnKeyDown(): void {
         this.appService.keyEventsEnabled = false;
+    }
+
+    public toggleSimplifiedView(): void {
+        this.simplifiedView = ! this.simplifiedView;
     }
 
     public onKeyDown(event: KeyboardEvent): void {
