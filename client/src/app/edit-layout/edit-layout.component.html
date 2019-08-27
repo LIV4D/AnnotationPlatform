@@ -40,6 +40,7 @@
                 </div>
                 <app-zoom *ngIf="editorService.imageLoaded">
                 </app-zoom>
+                <span id="zoomFactorDisplay"> x {{editorService.zoomFactor.toFixed(1)}} </span>
             </div>
             <app-editor id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor>
             <!--SELECT BIOMARKER ON RIGHT CLICK-->
