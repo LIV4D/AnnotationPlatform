@@ -20,6 +20,7 @@ export interface DialogData {
 })
 export class BiomarkersComponent {
     confirmDelete: boolean;
+    simplifiedView: boolean;
     arbre: SVGGElement[];
     visibilityAll: string;
 
@@ -37,6 +38,7 @@ export class BiomarkersComponent {
         this.opacity = 50;
         this.visibilityAll = 'visible';
         this.shadowsChecked = false;
+        this.simplifiedView = true;
     }
 
     public init(arbre: SVGGElement[]): void {

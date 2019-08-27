@@ -13,6 +13,7 @@ const NOT_SELECTED = 'not-selected';
 export class BiomarkersService {
     public tree: SVGGElement[];
     public flat: HTMLElement[];
+    public flatEnabledBiomarkers: HTMLElement[];
     public lastBiomarkers: HTMLElement[];
     public onlyEnabledBiomarkers = new Array<string>();
     public dataSource;
@@ -33,7 +34,8 @@ export class BiomarkersService {
         this.nestedTreeControl = new NestedTreeControl<HTMLElement>(this._getChildren);
         this.dataSource = this.tree;
         this.flat = this.flatten(this.tree);
-        this.lastBiomarkers = this.flat.filter(() => true);
+        this.flatEnabledBiomarkers = this.flat.slice();
+        this.lastBiomarkers = this.flat.slice();
         this.nestedTreeControl.dataNodes = this.dataSource;
 
         this.tree.forEach((e) => {
@@ -47,7 +49,8 @@ export class BiomarkersService {
                 this.toggleVisibility(b);
                 this.expandToBiomarker(b);
             });
-            this.lastBiomarkers = this.flat.filter( (elem) => this.isBiomarkerEnabled(elem.id));
+            this.flatEnabledBiomarkers = this.onlyEnabledBiomarkers.map((elem) => this.flat.find(x => x.id===elem));
+            this.lastBiomarkers = this.flatEnabledBiomarkers.slice();
 
             for (let i = 0 ; i < this.flat.length; i++) {
                 if (this.flat[i].id === this.onlyEnabledBiomarkers[0]) {
@@ -299,6 +302,7 @@ export class BiomarkersService {
     public changeOpacity(opacity: string): void {
         this.layersService.biomarkerCanvas.forEach(b => {
             b.displayCanvas.style.opacity = (Number(opacity) / 100).toString();
+            b.displayCanvas.style['mix-blend-mode'] = Number(opacity)<=75 ? 'color' : 'normal';
         });
     }
 }

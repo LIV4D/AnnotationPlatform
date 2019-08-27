@@ -52,6 +52,7 @@ import { SafeImagePipe } from './pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
+import { MatIconModule } from "@angular/material/icon";
 
 // Others
 import { LoginGuard } from './login/login.guard';
@@ -100,6 +101,7 @@ import { HeaderService } from './header/header.service';
         HttpClientModule,
         NgxLoadingModule.forRoot({}),
         MaterialModule,
+        MatIconModule,
         DeviceDetectorModule.forRoot()
     ],
 
