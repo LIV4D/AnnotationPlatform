@@ -14,9 +14,9 @@ export class RevisionRepository {
         this.connectionProvider = connectionProvider;
     }
 
-    public async findAll(): Promise<RevisionPrototype[]> {
+    public async findAll(): Promise<Revision[]> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Revision).find({ select : ['id', 'diagnostic', 'image'], relations:['user'] }));
+            connection.getRepository(Revision).find({ relations:['user', 'image'] }));
     }
 
     public async create(revision: Revision): Promise<Revision> {
@@ -34,9 +34,9 @@ export class RevisionRepository {
             connection.getRepository(Revision).findOne({ where: { id }, relations : ['user', 'image'] }));
     }
 
-    public async findByUser(userId: string): Promise<RevisionPrototype[]> {
+    public async findByUser(userId: string): Promise<Revision[]> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Revision).find({ select : ['id', 'diagnostic', 'image'], relations:['user'], where: {user: {id: userId}} }));
+            connection.getRepository(Revision).find({ relations:['user', 'image'], where: {user: {id: userId}} }));
     }
 
     public async findForUserForImage(userId: string, imageId: number): Promise<Revision> {

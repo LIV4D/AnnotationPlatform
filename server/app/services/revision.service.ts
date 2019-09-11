@@ -43,11 +43,11 @@ export class RevisionService {
         return revision;
     }
 
-    public async getRevisions(): Promise<RevisionPrototype[]> {
+    public async getRevisions(): Promise<Revision[]> {
         return await this.revisionRepository.findAll();
     }
 
-    public async getRevisionsByUser(userId: string): Promise<RevisionPrototype[]> {
+    public async getRevisionsByUser(userId: string): Promise<Revision[]> {
         return await this.revisionRepository.findByUser(userId);
     }
 
