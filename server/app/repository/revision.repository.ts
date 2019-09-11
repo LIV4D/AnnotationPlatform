@@ -33,6 +33,11 @@ export class RevisionRepository {
             connection.getRepository(Revision).findOne({ where: { id }, relations : ['user', 'image'] }));
     }
 
+    public async findByUser(userId: string): Promise<Revision[]> {
+        return await this.connectionProvider().then(connection =>
+            connection.getRepository(Revision).find({ user: { id: userId }}));
+    }
+
     public async findForUserForImage(userId: string, imageId: number): Promise<Revision> {
         return await this.connectionProvider().then(connection =>
             connection.getRepository(Revision).findOne({ user: { id: userId }, image: { id: imageId } }));

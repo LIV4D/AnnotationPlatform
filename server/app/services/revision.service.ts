@@ -46,6 +46,10 @@ export class RevisionService {
         return await this.revisionRepository.findAll();
     }
 
+    public async getRevisionsByUser(userId: string): Promise<Revision[]> {
+        return await this.revisionRepository.findByUser(userId);
+    }
+
     public async getRevisionForUserForImage(userId: string, imageId: number): Promise<Revision> {
         const revision = await this.revisionRepository.findForUserForImage(userId, imageId);
         if (revision == null) {

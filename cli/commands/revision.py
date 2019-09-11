@@ -36,8 +36,11 @@ def create(svg_string, user_id, image_id, diagnostic, display=False):
 def _list_revision():
     list_revision(True)
 
-def list_revision(display=False):
-    response = utils.request_server('GET', '/api/revisions/list')
+def list_revision(user=None, display=False):
+    if user is None:
+        response = utils.request_server('GET', '/api/revisions/list')
+    else:
+        response = utils.request_server('GET', '/api/revisions/listByUser/{}'.format(user))
     if display:
         print('Revisions table')
         pretty_data = [OrderedDict([
