@@ -43,8 +43,7 @@ export class RevisionController implements IRegistrableController {
         throwIfNotAdmin(req);
         this.revisionService.getRevisions()
             .then(revisions => {
-                const revisionsPrototype = revisions.map(r => r.prototype());
-                res.send(revisionsPrototype); })
+                res.send(revisions); })
             .catch(next);
     }
 
@@ -52,8 +51,7 @@ export class RevisionController implements IRegistrableController {
         throwIfNotAdmin(req);
         this.revisionService.getRevisionsByUser(req.params.userId)
             .then(revisions => {
-                const revisionsPrototype = revisions.map(r => r.prototype());
-                res.send(revisionsPrototype); })
+                res.send(revisions); })
             .catch(next);
     }
 

@@ -8,6 +8,7 @@ import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ImageService } from './image.service';
+import { RevisionPrototype } from '../models/revisionPrototype.model';
 
 @injectable()
 export class RevisionService {
@@ -42,11 +43,11 @@ export class RevisionService {
         return revision;
     }
 
-    public async getRevisions(): Promise<Revision[]> {
+    public async getRevisions(): Promise<RevisionPrototype[]> {
         return await this.revisionRepository.findAll();
     }
 
-    public async getRevisionsByUser(userId: string): Promise<Revision[]> {
+    public async getRevisionsByUser(userId: string): Promise<RevisionPrototype[]> {
         return await this.revisionRepository.findByUser(userId);
     }
 

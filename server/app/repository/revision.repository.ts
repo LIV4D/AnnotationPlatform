@@ -2,6 +2,7 @@ import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Revision } from '../models/revision.model';
 import { DeleteResult } from 'typeorm';
+import { RevisionPrototype } from '../models/revisionPrototype.model';
 
 @injectable()
 export class RevisionRepository {
@@ -13,9 +14,9 @@ export class RevisionRepository {
         this.connectionProvider = connectionProvider;
     }
 
-    public async findAll(): Promise<Revision[]> {
+    public async findAll(): Promise<RevisionPrototype[]> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Revision).find({ relations : ['user', 'image'] }));
+            connection.getRepository(Revision).find({ select : ['id', 'diagnostic', 'image'], relations:['user'] }));
     }
 
     public async create(revision: Revision): Promise<Revision> {
@@ -33,9 +34,9 @@ export class RevisionRepository {
             connection.getRepository(Revision).findOne({ where: { id }, relations : ['user', 'image'] }));
     }
 
-    public async findByUser(userId: string): Promise<Revision[]> {
+    public async findByUser(userId: string): Promise<RevisionPrototype[]> {
         return await this.connectionProvider().then(connection =>
-            connection.getRepository(Revision).find({ user: { id: userId }}));
+            connection.getRepository(Revision).find({ select : ['id', 'diagnostic', 'image'], relations:['user'], where: {user: {id: userId}} }));
     }
 
     public async findForUserForImage(userId: string, imageId: number): Promise<Revision> {
