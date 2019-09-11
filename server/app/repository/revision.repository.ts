@@ -2,7 +2,6 @@ import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Revision } from '../models/revision.model';
 import { DeleteResult } from 'typeorm';
-import { RevisionPrototype } from '../models/revisionPrototype.model';
 
 @injectable()
 export class RevisionRepository {

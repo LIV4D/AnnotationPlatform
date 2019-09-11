@@ -8,7 +8,6 @@ import { DeleteResult } from 'typeorm';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ImageService } from './image.service';
-import { RevisionPrototype } from '../models/revisionPrototype.model';
 
 @injectable()
 export class RevisionService {
