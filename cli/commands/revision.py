@@ -189,3 +189,47 @@ def delete(user_id, image_id, display=False):
     elif display:
         print(response.json()['message'])
     return response.status_code == 204
+
+def clean_unused(user, force=False, only_empty=False):
+    from .task import list_task
+    user_revisions = list_revision(user)
+    
+    if not user_revisions:
+        print('No revisions where found for this user.')
+        return 0
+    
+    user_task = list_task(user)
+    user_task_img = {t['image']['id'] for t in user_task}
+    
+    unused_revisions = []
+    
+    for r in user_revisions:
+        img = r['image']['id']
+        if img not in user_task_img:
+            if not force:
+                biomarkers, time, comment = utils.info_from_diagnostic(r['diagnostic'])
+                if time != 0:
+                    if only_empty:
+                        continue
+                    if not utils.confirm('%s made some annotation on image %i. Deleting this revision will erase his/her work. \n Are you sure you want to proceed?'
+                                    % (r['user']['name'], img), default='n'):
+                        print('Ignoring image %i'%img)
+                        continue
+            unused_revisions.append(r)
+    
+    if not unused_revisions:
+        print('No unused revisions where found for user %s.' % user_revisions[0]['user']['name'])
+        return 0
+    
+    if not force and not utils.confirm('%i unused revisions where found for user %s. Do yo want to delete them?' % (len(unused_revisions), unused_revisions[0]['user']['name']), default='y'):
+        print('Aborting...')
+        return -1
+    
+    deleted_revisions = []
+    for r in unused_revisions:
+        if not delete(r['user']['id'], r['image']['id']):
+            print('Error when deleting the revision of image %i.\n The revisions of the following images have been correctly deleted: %s.'
+                  % (r['image']['id'], [_['image']['id'] for _ in deleted_revisions]) )
+            return len(deleted_revisions)
+        deleted_revisions.append(r)
+    return len(deleted_revisions)
