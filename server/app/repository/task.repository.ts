@@ -82,6 +82,7 @@ export class TaskRepository {
                 .createQueryBuilder('task')
                 .where('task.user.id = :id', { id: userId })
                 .andWhere('task.active = :active', { active: true })
+                .addOrderBy('task.image.id', completed?'DESC':'ASC')
                 .leftJoinAndSelect('task.image', 'image');
             return qb.getMany();
         })
