@@ -3,6 +3,7 @@
         <span>Biomarkers</span>
         <!--HIDE/BORDERS-->
         <span id="button-biomarkers">
+            <button id="button-simplifyList" matTooltip="Enable/Disable Simplified Biomarkers List" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleSimplifiedView()"><mat-icon svgIcon="tree"></mat-icon></button>
             <button id="button-showAll" matTooltip="Show/Hide All Biomarkers (O)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleAllBiomarkers()"><mat-icon>{{getVisibilityAll()}}</mat-icon></button>
             <button id="button-edges" matTooltip="Show/Hide Borders (L)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleBorders()"><mat-icon>{{getBorders()}}</mat-icon></button>
         </span>
@@ -10,7 +11,7 @@
 
     <div id="biomarkers-container" (window:keydown)="onKeyDown($event)">
 
-        <mat-tree *ngIf="biomarkersService.dataSource" [dataSource]="biomarkersService.dataSource" [treeControl]="biomarkersService.nestedTreeControl"
+        <mat-tree *ngIf="!simplifiedView" [dataSource]="biomarkersService.dataSource" [treeControl]="biomarkersService.nestedTreeControl"
             class="example-tree">
             <!--LEAF-->
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
@@ -59,6 +60,27 @@
                 </li>
             </mat-nested-tree-node>
         </mat-tree>
+
+        <!-- SIMPLIFIED BIOMARKERS VIEW-->
+        <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
+            <mat-list-item *ngFor="let node of biomarkersService.flatEnabledBiomarkers" [ngClass]="getCssClass(node)">
+                <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.getAttribute('color')}" />
+                </svg>
+                <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
+                        matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
+                    {{node.getAttribute("id") | camelCaseToText}}</span>
+                <div class="align-right">
+                    <mat-icon class="button left" (click)="toggleVisibility(node.getAttribute('id'))"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
+                        [matTooltip]="'Show/Hide ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right">
+                        {{getVisibility(node)}}
+                    </mat-icon>
+                    <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
+                        delete
+                    </mat-icon>
+                </div>
+            </mat-list-item>
+        </mat-list>
     </div>
 
     <!--OPACITY SLIDER-->

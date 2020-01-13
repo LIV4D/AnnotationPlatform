@@ -421,7 +421,7 @@ export class EditorService {
             const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
             const y = (this.offsetY / this.backgroundCanvas.displayCanvas.height) * h;
 
-            zoomContext.strokeStyle = 'red';
+            zoomContext.strokeStyle = 'white';
             zoomContext.lineWidth = 20;
             zoomContext.strokeRect(x, y, w, h);
         }

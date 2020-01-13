@@ -116,6 +116,14 @@ mat-sidenav {
     right: 3px;
 }
 
+#zoomFactorDisplay{
+    position: absolute;
+    right: 7px;
+    top: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 app-zoom {
     position: absolute;
     top: 3px;

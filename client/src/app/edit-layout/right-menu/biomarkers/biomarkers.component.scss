@@ -143,12 +143,35 @@ ul {
 .selected {
     background-color: $gray-light;
     border-radius: 3px;
+}
+
+mat-tree .selected{
     margin-right: 3px;
 }
 
 .cursorPointer {
     cursor: pointer;
 }
+
+// List
+#simpleBiomarkerView .mat-list-item{
+    padding: 0 0 0 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    height: 23px;
+}
+
+:host /deep/ .mat-list-item-content {
+    padding: 0!important;
+}
+
+#simpleBiomarkerView span{
+    max-width: 137px;
+    font-size: 14px;
+    color: $font-color-gray;
+}
+
+// Others
 
 .align-right {
     //position: absolute;
@@ -213,7 +236,7 @@ span {
     margin-left: 10px;
 } 
 
-#button-edges {
+#button-biomarkers button{
     line-height: 0px !important;
     min-width: 0px !important;
     padding: 0px !important;
@@ -222,8 +245,5 @@ span {
 }
 
 #button-showAll {
-line-height: 0px !important;
-    min-width: 0px !important;
-    padding: 0px !important;
-    box-shadow: 2px 2px 2px $shadow-color !important;
+    margin-left: 0px;
 }

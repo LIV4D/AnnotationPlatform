@@ -17,7 +17,7 @@ def _create(image_id, task_type_id, user_id, limit_biomarkers, active, completed
     create(image_id, task_type_id, user_id, limit_biomarkers, utils.to_boolean(active), utils.to_boolean(completed), True)
 
 def create(image_id, user_id, limit_biomarkers=None, active=True, completed=False, display=True, comment="", force=False, merge=True, task_type_id=1):
-    if isinstance(image_id, list):
+    if isinstance(image_id, (list,tuple,set)):
         for i in image_id:
             if not create(i, user_id=user_id, limit_biomarkers=limit_biomarkers, active=active, completed=completed, display=display, 
                           comment=comment, force=force, merge=merge, task_type_id=task_type_id):
@@ -98,17 +98,62 @@ def _update(task_id, completed):
     update(task_id, completed, True)
 
 def update(task_id, completed, display=False):
+    if isinstance(task_id, (set, list, tuple)):
+        success = True
+        for task in task_id:
+            success = update(task, completed=completed, display=display)
+            if not success:
+                break
+        return success
+    
     payload = { 'completed': completed }
     response = utils.request_server('PUT', '/api/tasks/{}'.format(task_id), payload)
     if display and response.status_code == 200:
         print('The task with id {} has been updated successfully.'.format(task_id))
     return True if response.status_code == 200 else print(response.json()['message'])
 
+def update_visibility(task_id, visible):
+    if isinstance(task_id, (set, list, tuple)):
+        success = True
+        for task in task_id:
+            success = update_visibility(task, visible=visible)
+            if not success:
+                break
+        return success
+    
+    payload = { 'active': visible }
+    response = utils.request_server('PUT', '/api/tasks/{}'.format(task_id), payload)
+    return True if response.status_code == 200 else print(response.json()['message'])
+
+def completion_check(user, tasks_id=False):
+    from . import revision
+    tasks = list_task(user_id=user)
+    if tasks_id:
+        tasks_id = {t['image']['id']:t['id'] for t in tasks if t['completed']}
+    tasks = {t['image']['id'] for t in tasks if t['completed']}
+    if not tasks:
+        return False
+    
+    revisions = revision.list_revision(user=user)
+    revisions = {r['image']['id'] for r in revisions if utils.info_from_diagnostic(r['diagnostic'])[1] == 0}
+    
+    inter = revisions.intersection(tasks)
+    if inter:
+        return inter if not tasks_id else {tasks_id[t] for t in inter}
+    else:
+        return False
+    
+def hide_completed(user):
+    tasks = list_task(user)
+    disable_tasks = [t['id'] for t in tasks if t['completed']]
+    if update_visibility(disable_tasks, False):
+        print('%s tasks were disabled.' % len(disable_tasks))
+
 def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='auto', keep_initial_task=False, keep_initial_revision=True,
-                merge_task=False, context=None):
+                merge_task=False, context=None, verbose=False):
     if context is None:
         context = {'tasks':[], 'revisions': []}
-    if isinstance(img_id, (list, tuple)):
+    if isinstance(img_id, (list, tuple, set)):
         success = True
         for i in img_id:
             print("\n--- IMAGE: %i ---" % i)
@@ -123,7 +168,8 @@ def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='a
         tasks += list_task(user_id=old_user_id)
         tasks += list_task(user_id=new_user_id)
     if not revisions:
-        revisions += revision.list_revision()
+        revisions += revision.list_revision(user=old_user_id)
+        revisions += revision.list_revision(user=new_user_id)
     
     old_task = None
     erased_task = None
@@ -172,7 +218,6 @@ def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='a
     
     if erased_revision is not None:
         biomarkers, time, comment = utils.info_from_diagnostic(erased_revision['diagnostic'])
-        print(biomarkers, time, comment)
         
         b_intersect = set(biomarkers).intersection(updated_biomarkers)
         if b_intersect and not force:
@@ -192,40 +237,56 @@ def update_user(img_id, old_user_id, new_user_id, force=False, copy_biomarker='a
             print("Aborting (img_id=%i)..." % img_id)
 
     if erased_task is not None:
+        operation_description = "Deleting Task #%i [img=%i,user=%s]" % (erased_task['id'], img_id, erased_task['user']['name'])
+        if verbose:
+            print("\t"+operation_description)
         if not delete(erased_task['id'], display=True):
             log_error("task %i [img=%i,user=%s] couldn't be deleted." % (erased_task['id'], img_id, erased_task['user']['name']))
             return False
-        irreversible_operations.append("Deleting Task #%i [img=%i,user=%s]" % (erased_task['id'], img_id, erased_task['user']['name']))
+        irreversible_operations.append(operation_description)
     
     biomarkers, time, comment = utils.info_from_diagnostic(old_revision['diagnostic'])
     if copy_biomarker == 'auto':
         copy_biomarker = time!=0
     
+    operation_description = "Creating Task [img=%i,new_user=%s]" % (img_id, new_user_id)
+    if verbose:
+        print("\t"+operation_description)
     if not create(img_id, new_user_id, limit_biomarkers=biomarkers, comment=comment, display=True, force=True, merge=merge_task):
         log_error("task [img=%i,user=%s] couldn't be created" % (img_id, new_user_id))
         return False
-    irreversible_operations.append("Creating Task [img=%i,new_user=%s]" % (img_id, new_user_id))
+    irreversible_operations.append(operation_description)
     
     if copy_biomarker:
         for b in biomarkers:
+            operation_description = "Transfering/Erasing biomarker [%s]" % b
+            if verbose:
+                print("\t"+operation_description)
             if not revision.transfer_biomarker(img_id, old_user_id, new_user_id, b, force=True, display=True):
                 log_error("Transferring biomarker [%s] failed." % b)
                 return False
-            irreversible_operations.append("Transfering/Erasing biomarker [%s]" % b)
+            irreversible_operations.append(operation_description)
     
     if not keep_initial_task:
+        operation_description = "Deleting Task #%i [img=%i,user=%s]" % (old_task['id'], img_id, old_task['user']['name'])
+        if verbose:
+            print("\t"+operation_description)
         if not delete(old_task['id'], display=True):
             log_error("task %i [img=%i,user=%s] couldn't be deleted." % (old_task['id'], img_id, old_task['user']['name']))
             return False
-        irreversible_operations.append("Deleting Task #%i [img=%i,user=%s]" % (old_task['id'], img_id, old_task['user']['name']))
+        irreversible_operations.append(operation_description)
         
     if keep_initial_revision:
         if not keep_initial_task and (time or comment):
             revision.update_diagnostic(utils.info_to_diagnostic(time=time, comment=comment), user_id=old_user_id, image_id=img_id)
     elif old_revision:
+        operation_description = "Deleting revision %i [img=%i,user=%s]" % (old_revision['id'], img_id, old_revision['user']['name'])
+        if verbose:
+            print("\t"+operation_description)
         if not revision.delete(old_user_id, img_id, display=True):
             log_error("revision %i [img=%i,user=%s] couldn't be deleted." % (old_revision['id'], img_id, old_revision['user']['name']))
             return False
+        irreversible_operations.append(operation_description)
     
     return True
 
