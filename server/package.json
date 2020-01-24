@@ -12,8 +12,8 @@
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
     "postinstall": "rimraf false",
-    "seeding-dev": "NODE_ENV=development ts-node -T seeding/loadSeeds.ts",
-    "seeding-prod": "NODE_ENV=production ts-node -T seeding/loadSeeds.ts"
+    "seeding-standardd": "NODE_ENV=standard ts-node -T seeding/loadSeeds.ts",
+    "seeding-test": "NODE_ENV=test ts-node -T seeding/loadSeeds.ts"
   },
   "dependencies": {
     "body-parser": "1.18.3",
@@ -39,9 +39,11 @@
     "request": "2.88.0",
     "request-promise-native": "1.0.5",
     "serve-favicon": "2.5.0",
+    "sharp": "0.24.0",
     "ts-node": "^7.0.1",
     "ts-node-dev": "^1.0.0-pre.39",
     "typeorm": "^0.2.7",
+    "unique-filename": "1.1.1",
     "xml2js": "0.4.19"
   },
   "devDependencies": {
@@ -63,6 +65,7 @@
     "@types/passport-jwt": "3.0.1",
     "@types/passport-local": "1.0.33",
     "@types/request-promise-native": "1.0.15",
+    "@types/sharp": "0.24.0",
     "@types/xml2js": "0.4.3",
     "chai": "4.2.0",
     "chai-http": "4.2.0",

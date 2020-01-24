@@ -3,34 +3,14 @@ import * as readline from 'readline';
 import * as fs from 'fs';
 import { Connection, ConnectionOptions, createConnection, InsertResult } from 'typeorm';
 
-const seedingFiles = {
-    development: [
-        'user-dev.json',
-        'image-dev.json',
-        'taskGroup-dev.json',
-        'annotation-dev.json',
-        'task-dev.json',
-        'evenement-dev.json',
-    ],
-    test: [
-        'taskType-dev.json',
-        'imageType-dev.json',
-        'biomarkerType-dev.json',
-        'user-dev.json',
-        'image-dev.json',
-        'task-dev.json',
-        'revision-dev.json',
-        'preprocessingType-dev.json',
-        'preprocessing-dev.json',
-    ],
-    production: [
-        'imageType-prod.json',
-        'biomarkerType-prod.json',
-        'preprocessingType-prod.json',
-        'taskType-prod.json',
-        'user-prod.json',
-    ],
-};
+const seedingFiles = [
+        'user.json',
+        'image.json',
+        'submissionEvent.json',
+        'annotation.json',
+        'taskType.json',
+        'task.json',
+    ];
 
 export async function loadSeeds(): Promise<any> {
     const databaseConfig: ConnectionOptions = {
@@ -39,7 +19,7 @@ export async function loadSeeds(): Promise<any> {
         dropSchema: true,
     };
     const connection = await createConnection(databaseConfig);
-    for (const file of seedingFiles[process.env['NODE_ENV']]) {
+    for (const file of seedingFiles) {
         await loadSeed(file, connection);
     }
 }
@@ -49,7 +29,7 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
     let entityName: string;
     try {
         console.log(`Seeding ${fileName}`);
-        const seedsDirectory = process.env['NODE_ENV'] === 'development' ? 'dev_entities' : 'seeds';
+        const seedsDirectory = process.env['NODE_ENV'] === 'test' ? 'test_seeds' : 'std_seeds';
         const data = JSON.parse(fs.readFileSync(`./seeding/${seedsDirectory}/${fileName}`).toString(), (key, value) => {
             // Used in order to correctly save buffer array in database.
             if (key === 'password' || key === 'salt') {

@@ -23,9 +23,10 @@
             "expiresIn": "30d"
         }
     },
-    "fileStorage": {
-        "path": "database/images",
+    "storageFolders": {
+        "tmp": "database/uploadTmp",
+        "image": "database/images",
         "preprocessing": "database/preprocessings",
-        "thumbnail": "database/thumbnail"
+        "thumbnail": "database/thumbnails"
     }
 }
