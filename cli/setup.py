@@ -5,11 +5,15 @@ setup(
     version='0.9',
     packages=find_packages(),
     install_requires=[
-        'click',
-        'requests'
+        #'click',
+        'requests',
+        'IPython',
+        'inspect',
+        'pandas'
+
     ],
-    entry_points='''
-        [console_scripts]
-        liv4dcli=liv4dcli:liv4d_cli
-    ''',
+    #entry_points='''
+    #    [console_scripts]
+    #    liv4dcli=liv4dcli:liv4d_cli
+    #''',
 )
