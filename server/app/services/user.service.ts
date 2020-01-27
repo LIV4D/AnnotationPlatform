@@ -8,7 +8,7 @@ import { VerifiedCallback } from 'passport-jwt';
 import { validate } from 'class-validator';
 import { createErrorFromvalidationErrors, createError } from '../utils/error';
 import { DeleteResult } from 'typeorm';
-import { isNull, isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'util';
 import { IUser } from '../../../common/interfaces';
 import { SubmissionEvent } from '../models/submissionEvent.model';
 
@@ -19,9 +19,9 @@ export class UserService {
     private loginError = { message: 'Incorrect email or password' };
     private jwtLoginError = { message: 'The auth token provided is not valid' };
 
-    public loginJwt = (payload: any, done: VerifiedCallback) => {
+    public loginJwt = (payload: any, done: VerifiedCallback) => {        
         this.userRepository.find(payload.id).then(user => {
-            if (user && crypto.timingSafeEqual(user.password, Buffer.from(payload.hash))) {
+            if (user && crypto.timingSafeEqual(user.password, Buffer.from(payload.password))) {
                 return done(null, user);
             } else {
                 return done(null, false, this.jwtLoginError);
@@ -74,16 +74,16 @@ export class UserService {
 
     public async updateUser(newUser: IUser): Promise<User> {
         const oldUser = await this.getUser(newUser.id);
-        if (!isNull(newUser.firstName)) {
+        if (!isNullOrUndefined(newUser.firstName)) {
             oldUser.firstName = newUser.firstName;
         }
-        if (!isNull(newUser.lastName)) {
+        if (!isNullOrUndefined(newUser.lastName)) {
             oldUser.lastName = newUser.lastName;
         }
-        if (!isNull(newUser.isAdmin)) {
+        if (!isNullOrUndefined(newUser.isAdmin)) {
             oldUser.isAdmin = newUser.isAdmin;
         }
-        if (!isNull(newUser.password)) {
+        if (!isNullOrUndefined(newUser.password)) {
             const result = User.hashPassword(newUser.password);
             oldUser.password = result.hash;
             oldUser.salt = result.salt;

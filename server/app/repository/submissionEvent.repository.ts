@@ -34,7 +34,7 @@ export class SubmissionEventRepository {
         return await connection
                     .getRepository(SubmissionEvent)
                     .createQueryBuilder('evenement')
-                    .where('evenement.annotation.id = annotID', { annotID: annotationId })
+                    .where('evenement.annotation.id = :annotID', { annotID: annotationId })
                     .getMany();
     }
 
@@ -43,8 +43,30 @@ export class SubmissionEventRepository {
         return await connection
                     .getRepository(SubmissionEvent)
                     .createQueryBuilder('evenement')
-                    .where('evenement.user.id = usrId', { usrId: userId })
-                    .andWhere('evenement.annotation.id = annotId', { annotId: annotationId })
+                    .where('evenement.user.id = :usrId', { usrId: userId })
+                    .andWhere('evenement.annotation.id = :annotId', { annotId: annotationId })
                     .getMany();
+    }
+
+    public async findByFilter(filter: {userId?:number, imageId?:number}): Promise<SubmissionEvent[]>{
+        let whereConditions = [];
+        if(filter.imageId!==undefined) 
+            whereConditions.push('evenement.annotation.image.id = '+filter.imageId.toString());
+        if(filter.userId!==undefined) 
+            whereConditions.push('evenement.user.id = '+filter.userId.toString());
+
+        const connection = await this.connectionProvider();
+        return await connection
+                     .getRepository(SubmissionEvent)
+                     .createQueryBuilder('evenement')
+                     .where(whereConditions.join(" AND "))
+                     .getMany()
+    }
+
+    public async find(submitId: number): Promise<SubmissionEvent> {
+        const connection = await this.connectionProvider();
+        return await connection
+                    .getRepository(SubmissionEvent)
+                    .findOne(submitId);
     }
 }

@@ -21,12 +21,11 @@ export class TaskController implements IController {
         app.get('/api/tasks/list/:userId', this.listTasks);
         app.get('/api/tasks/gallery/:userId', this.getUserGallery);
         app.post('api/tasks/submit/:taskId', this.submitTask);
-        //app.get('/api/tasks/download/:taskId', this.downloadTask);
-        // app.post('api/tasks/assign/:userId', this.assignTask);
         app.get('/api/tasks/:userId/next/', this.getNextTaskByUser);
 
         // Element
-        app.get('/api/tasks/:taskId', this.getTask);
+        app.get('/api/tasks/get/:taskId', this.getTask);
+        app.get('/api/tasks/get/:taskId/:field', this.getTaskField);
     }
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -60,6 +59,16 @@ export class TaskController implements IController {
                 delete task.user.salt;
                 delete task.user.isAdmin;
                 res.send(task);
+            })
+            .catch(next);
+    }
+
+    private getTaskField = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.taskService.getTask(req.params.taskId, req)
+            .then(task => {
+                switch(req.params.field){
+                    case "proto": res.send(task.prototype()); break
+                }
             })
             .catch(next);
     }
@@ -134,7 +143,7 @@ export class TaskController implements IController {
             submission.isComplete = req.body.isComplete === 'true';
         }
         try {
-            await this.taskService.submitTask(submission);
+            await this.taskService.submitTask(submission, req);
             res.sendStatus(204);
         } catch (error) {
             next(error);

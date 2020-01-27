@@ -13,7 +13,7 @@ export class Image {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({ unique: true, nullable: true })
+    @Column({ nullable: true })
     public preprocessing: boolean;
 
     @Column('jsonb')
@@ -40,15 +40,11 @@ export class ImagePrototype {
     public id: number;
     public type: string;
     public metadata: Metadata;
-    public annotationsId: number[];
-    public tasksId: number[];
 
     constructor(image: Image) {
         this.id = image.id;
         this.type = image.type;
         this.metadata = image.metadata;
-        this.annotationsId = image.annotations.map(a => a.id);
-        this.tasksId = image.tasks.map(t => t.id);
     }
 }
 

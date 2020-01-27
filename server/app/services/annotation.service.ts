@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import * as express from 'express';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { Annotation } from '../models/annotation.model';
@@ -8,21 +9,27 @@ import { isNullOrUndefined } from 'util';
 import { IAnnotation } from '../../../common/interfaces';
 import { DeleteResult } from 'typeorm';
 import { SubmissionEvent } from '../models/submissionEvent.model';
+import { SubmissionEventService } from './submissionEvent.service';
 
 @injectable()
 export class AnnotationService {
     @inject(TYPES.AnnotationRepository)
     private annotationRepository: AnnotationRepository;
+    @inject(TYPES.EvenementService)
+    private evenementService: SubmissionEventService;
 
-    public async create(newAnnotation: IAnnotation): Promise<Annotation> {
+    public async create(newAnnotation: IAnnotation, req: express.Request): Promise<Annotation> {
         const annotation = new Annotation();
         annotation.data = newAnnotation.data;
         annotation.image = { id: newAnnotation.imageId } as any;
         annotation.comment = newAnnotation.comment;
-        return await this.annotationRepository.create(annotation);
+        const r =  await this.annotationRepository.create(annotation);
+        this.evenementService.createSubmissionEvent({annotationId:r.id, userId:req.user.id,
+                                                     description: "Initial Submit", timestamp: 0});
+        return r;
     }
 
-    public async update(newAnnotation: IAnnotation): Promise<Annotation> {
+    public async update(newAnnotation: IAnnotation, req: express.Request): Promise<Annotation> {
         const annotation = await this.annotationRepository.find(newAnnotation.id);
         if (isNullOrUndefined(annotation)) {
             createError('this annotation does not exist', 404);
@@ -30,7 +37,10 @@ export class AnnotationService {
         for (const key of Object.keys(newAnnotation)) {
                 annotation[key] = newAnnotation[key];
         }
-        return await this.annotationRepository.create(annotation);
+        const r = await this.annotationRepository.create(annotation);
+        this.evenementService.createSubmissionEvent({annotationId:r.id, userId:req.user.id,
+            description: "CLI Update", timestamp: 0});
+        return r;
     }
 
     public async delete(oldAnnotation: IAnnotation): Promise<DeleteResult> {

@@ -16,9 +16,9 @@ export class AnnotationController implements IController {
         app.put('/api/annotation/update/:annotationId', this.updateAnnotation);
         app.delete('/api/annotation/delete/:annotationId', this.deleteAnnotation);
         app.post('/api/annotation/clone/:annotationId', this.cloneAnnotation);
-        app.get('/api/annotation/getComment/:annotationId', this.getAnnotationComment);
         app.get('/api/annotation/get/:annotationId', this.getAnnotation);
-        app.get('/api/annotation/lastEvent/:annotationId', this.getLastEventFromAnnotation);
+        app.get('/api/annotation/get/:annotationId/lastEvent', this.getLastEventFromAnnotation);
+        app.get('/api/annotation/get/:annotationId/:field', this.getAnnotationField);
     }
 
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -28,7 +28,7 @@ export class AnnotationController implements IController {
             imageId: req.body.imageId,
             comment: req.body.comment,
         };
-        this.annotationService.create(newAnnotation)
+        this.annotationService.create(newAnnotation, req)
             .then(annotation => res.send(annotation))
             .catch(next);
     }
@@ -38,12 +38,11 @@ export class AnnotationController implements IController {
         const newAnnotation: IAnnotation = {
             id: req.params.annotationId as number,
             data: req.body.data,
-            imageId: req.body.imageId,
             comment: req.body.comment,
         };
-        this.annotationService.update(newAnnotation)
-        .then(updatedAnnotation => res.send(updatedAnnotation))
-        .catch (next);
+        this.annotationService.update(newAnnotation, req)
+                            .then(updatedAnnotation => res.send(updatedAnnotation))
+                            .catch (next);
     }
 
     private deleteAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -67,28 +66,27 @@ export class AnnotationController implements IController {
                 imageId: originalAnnotation.image.id,
                 comment: originalAnnotation.comment,
             };
-            res.send(this.annotationService.create(newAnnotation));
+            res.send(this.annotationService.create(newAnnotation, req));
         })
         .catch(next);
     }
 
-    private getAnnotationComment = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const annotationRequest: IAnnotation = {
-                id: req.params.annotationId as number,
-            };
-            this.annotationService.getAnnotation(annotationRequest.id)
-            .then(annotation => res.send({ comment: annotation.comment }))
-            .catch(next);
-    }
-
     private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const annotationRequest: IAnnotation = {
-                id: req.params.annotationId as number,
-            };
-            this.annotationService.getAnnotation(annotationRequest.id)
+            this.annotationService.getAnnotation(parseInt(req.params.annotationId))
             .then(annotation => res.send(annotation))
             .catch(next);
     }
+
+    private getAnnotationField = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.annotationService.getAnnotation(parseInt(req.params.annotationId))
+        .then(annotation => {
+            switch(req.params.field){
+                case "comment": res.send({ comment: annotation.comment }); break
+                case "proto": res.send(annotation.prototype); break
+                case "data": res.send(annotation.data); break
+            }
+        }).catch(next);
+}
 
     private getLastEventFromAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const annotationRequest: IAnnotation = {

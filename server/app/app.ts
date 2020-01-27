@@ -78,7 +78,7 @@ export class Application {
     }
 
     private routes(): void {
-        // this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
+        this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
         const controllers: IController[] = container.getAll<IController>(TYPES.Controller);
         controllers.forEach(controller => controller.setRoutes(this.app));
     }

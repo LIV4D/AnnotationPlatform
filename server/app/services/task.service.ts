@@ -65,7 +65,7 @@ export class TaskService {
         return await this.taskRepository.create(oldTask);
     }
 
-    public async submitTask(submission: ISubmission) {
+    public async submitTask(submission: ISubmission, req: express.Request) {
         const task = await this.taskRepository.find(submission.taskId);
         if (isNullOrUndefined(task)) {
             throw createError('This task does not exist.', 404);
@@ -89,37 +89,8 @@ export class TaskService {
         if (!isNullOrUndefined(submission.comment)) {
             newAnnotation.comment = submission.comment;
         }
-        this.annotationService.update(newAnnotation);
+        this.annotationService.update(newAnnotation, req);
     }
-
-    /* public async downloadTask(taskId: number): Promise<IDownloadedTask> {
-        const task = await this.taskRepository.find(taskId);
-        const image = await this.imageService.getImage(task.image.id);
-        const annotation = await this.annotationService.getAnnotation(task.annotation.id);
-        if (isNullOrUndefined(task)) {
-            throw createError('This task does not exist.', 404);
-        }
-        if (isNullOrUndefined(image)) {
-            throw createError('This image does not exist.', 404);
-        }
-        if (isNullOrUndefined(annotation)) {
-            throw createError('This annotation does not exist.', 404);
-        }
-// tslint:disable-next-line: prefer-const
-        let downloadedTask: IDownloadedTask;
-        if (fs.existsSync( image.path)) {
-            downloadedTask.image = 'data:image/jpg;base64, ' + fs.readFileSync(image.path).toString();
-        }
-        if (fs.existsSync( image.preprocessingPath)) {
-            downloadedTask.image = 'data:image/jpg;base64, ' + fs.readFileSync(image.preprocessingPath).toString();
-        }
-        downloadedTask.metadata = image.metadata;
-        // TODO: should we check if svg is empty in annotation?
-        downloadedTask.data = annotation.data;
-        downloadedTask.comment = annotation.comment;
-
-        return downloadedTask;
-    } */
 
     public async getTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {
         return await this.taskRepository.findTasksByUserByImage(userId, imageId);

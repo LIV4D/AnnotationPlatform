@@ -17,6 +17,6 @@
         "removeComments": true
     },
     "include": [
-        "api/**/*.ts"
+        "app/**/*.ts"
     ]
 }

@@ -24,9 +24,9 @@
         }
     },
     "storageFolders": {
-        "tmp": "database/uploadTmp",
-        "image": "database/images",
-        "preprocessing": "database/preprocessings",
-        "thumbnail": "database/thumbnails"
+        "tmp": "storage/tmp",
+        "image": "storage/images",
+        "preprocessing": "storage/preprocessings",
+        "thumbnail": "storage/thumbnails"
     }
 }

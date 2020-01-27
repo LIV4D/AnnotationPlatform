@@ -41,8 +41,8 @@ export class Task {
 
 export class TaskPrototype {
     public id: number;
-    public type: string;
-    public user: string;
+    public type: TaskType;
+    public user: User;
     public annotationId: number;
     public imageId: number;
     public isComplete: boolean;
@@ -51,8 +51,8 @@ export class TaskPrototype {
     
     constructor(task: Task) {
         this.id = task.id;
-        this.type = task.type.title;
-        this.user = !isNullOrUndefined(task.user) ? task.user.title() : null;
+        this.type = task.type;
+        this.user = task.user;
         this.annotationId = !isNullOrUndefined(task.annotation) ? task.annotation.id : null;
         this.imageId = !isNullOrUndefined(task.image) ? task.image.id : null;
         this.isComplete = task.isComplete;

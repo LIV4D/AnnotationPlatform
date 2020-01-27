@@ -3,16 +3,20 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as multer from 'multer';
 import * as path from 'path';
+import * as uniqueFilename from 'unique-filename';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { ImageService } from '../services/image.service';
+import { Metadata } from '../models/image.model'
 import { IGallery } from '../interfaces/gallery.interface';
 import { IGalleryObject } from '../interfaces/galleryObject.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { IImage } from '../../../common/interfaces';
 import { isAdmin } from '../utils/userVerification';
 import { createError } from '../utils/error';
+import { isNullOrUndefined } from 'util';
+
 
 @injectable()
 export class ImageController implements IController {
@@ -20,15 +24,14 @@ export class ImageController implements IController {
     private imageService: ImageService;
 
     private storage = multer.diskStorage({
-        destination: (req:express.Request, file, callback) => {
-            // Check user permission before upload
+        destination: config.get('storageFolders.tmp'),
+        filename: (req:express.Request, file, callback) => {
             if (isAdmin(req) === false) {
                 callback(createError('User is not admin.', 401), null);
             }
-
-            // Uploaded images are temporary stored in folder config.fileStorage.tmp
-            callback(null, config.get('fileStorage.tmp'));
-        },
+            const unique_filename = path.parse(config.get('storageFolders.tmp')).name;
+            callback(null, unique_filename+path.parse(file.originalname).ext);
+        }
     });
     public upload = multer({ storage: this.storage });
 
@@ -45,7 +48,7 @@ export class ImageController implements IController {
                     this.uploadPreprocessing);
         app.put('/api/images/update/:imageId', this.updateImage);
         app.get('/api/images/:imageId/', this.getImage);
-        app.delete('api/images/delete/:imageId', this.deleteImage);
+        app.delete('/api/images/delete/:imageId', this.deleteImage);
         app.get('/api/images/list', this.getImages);
         app.get('/api/images/list/prototype', this.getImagesPrototype);
         app.get('/api/images/metadata/:imageId', this.getImageMetadata);
@@ -60,19 +63,20 @@ export class ImageController implements IController {
         // throwIfNotAdmin executes in this.upload
         const newImage: IImage = {
             type: req.body.type,
-            metadata: req.body.metadata,
+            metadata: isNullOrUndefined(req.body.metadata)?new Metadata():req.body.metadata,
         };
 
-        const imageFile = req.files['image'];
+        const imageFile = req.files['image'][0];
         newImage.metadata['filename'] = imageFile.originalname;
 
-        const preprocessingFile = req.files['preprocessing'];
+        const preprocessingFile = isNullOrUndefined(req.files['preprocessing']) ? undefined : req.files['preprocessing'][0];
         let preprocessingPath = null;
         if(preprocessingFile !== undefined){
             newImage.metadata['preprocessingFilename'] = preprocessingFile.originalname;
             preprocessingPath = preprocessingFile.path;
         }
 
+        console.log('controller', newImage);
         this.imageService.createImage(newImage, imageFile.path, preprocessingPath)
             .then(image => res.send(image))
             .catch(next);

@@ -4,6 +4,14 @@ import { Image, ImagePrototype } from './image.model';
 import { SubmissionEvent, SubmissionEventPrototype } from './submissionEvent.model';
 import { Task } from './task.model';
 
+export class StringHierarchy { [key:string]: StringHierarchy | string}
+
+export class AnnotationData {
+    biomarker: {[key: string]: Buffer};
+    hierarchy: StringHierarchy;
+    nongraphic: {[key: string]: string | Boolean | Buffer | number}
+}
+
 @Entity()
 export class Annotation {
 
@@ -32,23 +40,18 @@ export class Annotation {
 }
 
 
-export class AnnotationData {
-    [key: string]: string | number | boolean | Buffer;
-}
-
-
 export class AnnotationPrototype {
     public id: number;
     public image: ImagePrototype;
     public comment: string;
     public lastSubmissionEvent: SubmissionEventPrototype;
-    public tasksId: number[];
+    public tasks: number[];
 
     constructor(annotation: Annotation) {
         this.id = annotation.id;
         this.image = annotation.image.prototype();
         this.comment = annotation.comment;
         this.lastSubmissionEvent = annotation.lastSubmissionEvent.prototype();
-        this.tasksId = annotation.tasks.map(t=>t.id);
+        this.tasks = annotation.tasks.map(t=>t.id);
     }
 }

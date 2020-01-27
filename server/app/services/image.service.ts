@@ -23,12 +23,16 @@ export class ImageService {
         image.metadata = newImage.metadata;
         image.type = newImage.type;
         
+        console.log(newImage);
+
         // Add entity to image repository. After this line image has an id.
         image = await this.imageRepository.create(image);
 
-        this.updateImageFile(image.id, imageLocalPath, false);
+        await this.updateImageFile(image.id, imageLocalPath, false);
         if(image.preprocessing)
-            this.updatePreprocessingFile(image.id, preprocessingPath, false);
+            await this.updatePreprocessingFile(image.id, preprocessingPath, false);
+        
+        return image;
     }
 
     public async uploadImage(newImage: IImage) {
@@ -57,8 +61,8 @@ export class ImageService {
 
         try{
             const sourcePath = path.parse(imageLocalPath);
-            const destPath = path.join(config.get('storageFolders.image'), imageId.toString()+'.'+sourcePath.ext);
-            const thumbnailPath = path.join(config.get('storageFolders.thumbnail'), imageId.toString()+'.jpg');
+            const destPath = path.join(config.get('storageFolders.image'), imageId.toString()+sourcePath.ext);
+            const thumbnailPath = path.join(config.get('storageFolders.thumbnail'), imageId.toString()+'.jpg'););
 
             // Remove previous image and thumbnail if they exist
             if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
@@ -68,12 +72,13 @@ export class ImageService {
             fs.renameSync(imageLocalPath, destPath);
 
             // Create and write thumbnail
-            const thumbnail = await sharp(imageLocalPath).resize(127)
+            const thumbnail = await sharp(destPath).resize(127)
                                                          .jpeg()
                                                          .toBuffer();
+            
             fs.writeFileSync(thumbnailPath, thumbnail);
         }catch(err){
-            throw createError('Error while creating Image.', 409);
+            throw createError('Error while uploading Image.\n'+err, 409);
         }
     }
 
@@ -97,7 +102,7 @@ export class ImageService {
             // Move preprocessing to permanent folder
             fs.renameSync(preprocessingLocalPath, destPath);
         }catch(err){
-            throw createError('Error while creating Image.', 409);
+            throw createError('Error while uploading Preprocessing.\n'+err, 409);
         }
     }
 
@@ -189,9 +194,8 @@ export class ImageService {
     }
 
     public getThumbnailPathSync(imageId: number){
-        const prePath = config.get('storageFolders.thumbnails') as string;
-        const filename = searchFileByName(imageId.toString(), prePath);
-        return filename!==null ? path.join(prePath, filename) : null;
+        const prePath = config.get('storageFolders.thumbnail') as string;
+        return path.join(prePath, imageId.toString()+".jpg");
     }
 
     public async getImages() {
@@ -213,7 +217,9 @@ export class ImageService {
 
         // Delete image file
         const imgFile = this.getImagePathSync(image.id);
-        if (fs.existsSync(imgFile)) fs.unlinkSync(imgFile);
+        if (fs.existsSync(imgFile)){
+            fs.unlinkSync(imgFile);
+        } 
 
         // Delete thumbnail file
         const thumbFile = this.getThumbnailPathSync(image.id);

@@ -6,7 +6,7 @@ import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { UserService } from '../services/user.service';
-// import { throwIfNotAdmin } from '../utils/userVerification';
+import { throwIfNotAdmin } from '../utils/userVerification';
 import { IUser } from '../../../common/interfaces';
 
 @injectable()
@@ -20,12 +20,13 @@ export class UserController implements IController {
         app.post('/auth/login', this.loginUser);
         app.put('/api/users/update/:userId', this.updateUser);
         app.delete('/api/users/delete/:userId', this.deleteUser);
+        app.get('/api/users/:userId', this.getUser);
         app.get('/api/users/events/:userId', this.getEventsbyUser);
         app.get('/api/users/last-event/:userId', this.getLastEventFromUser);
     }
 
     private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // throwIfNotAdmin(req);
+        throwIfNotAdmin(req);
         this.userService.getUsers()
             .then(users => {
                 users.forEach(user => {
@@ -39,7 +40,7 @@ export class UserController implements IController {
     }
 
     private createUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // throwIfNotAdmin(req);
+        throwIfNotAdmin(req);
         const newUser: IUser = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -77,7 +78,7 @@ export class UserController implements IController {
     }
 
     private updateUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // throwIfNotAdmin(req);
+        throwIfNotAdmin(req);
         const newUser: IUser = {
             id: req.params.userId,
             firstName: req.body.firstName,
@@ -95,7 +96,7 @@ export class UserController implements IController {
     }
 
     private deleteUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // throwIfNotAdmin(req);
+        throwIfNotAdmin(req);
         this.userService.deleteUser(req.params.userId)
             .then(() => res.sendStatus(204))
             .catch(next);
@@ -109,9 +110,17 @@ export class UserController implements IController {
     }
 
     private getLastEventFromUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // throwIfNotAdmin(req);
+        throwIfNotAdmin(req);
         this.userService.getLastEventFromUser(req.params.userId).then(event => {
             res.send(event);
+        }).catch(next);
+    }
+
+    private getUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.userService.getUser(req.params.userId).then(user => {
+            delete user.password;
+            delete user.salt;
+            res.send(user);
         }).catch(next);
     }
 }

@@ -1,5 +1,5 @@
-import {AnnotationData} from '../server/api/models/annotation.model';
-import {Metadata} from '../server/api/models/image.model';
+import {AnnotationData} from '../server/app/models/annotation.model';
+import {Metadata} from '../server/app/models/image.model';
 
 export interface IUser {
     id?: string;
@@ -53,7 +53,7 @@ export interface IAnnotation {
 export interface IEvenement {
     id?: number;
     date?: string;
-    timestamp?: string;
+    timestamp?: number;
     description?: string;
     annotationId?: number;
     userId?: string;
@@ -63,7 +63,7 @@ export interface ISubmission {
     taskId: number;
     userId?: string; // user who submitted
     data?: AnnotationData;
-    uptime?: string;
+    uptime?: number;
     comment?: string;
     isComplete?: boolean;
 }
