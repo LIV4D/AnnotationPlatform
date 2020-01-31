@@ -13,6 +13,7 @@ def cast_to_list(l):
 def is_dict(d):
     return isinstance(d, (dict, OrderedDict))
 
+
 def is_collection_of(o, t, c=None, recursive=False):
     if c is None or isinstance(o, c):
         try:
@@ -121,41 +122,7 @@ def if_not(v, default=None):
     return default if not v else v
 
 
-########################################################################################################################
-class PropertyAccessor:
-    def __init__(self, list):
-        self._list = list
-
-    def __getattr__(self, item):
-        c = None
-        for node in self._list:
-            if hasattr(node, item):
-                p = getattr(node, item, [])
-
-                if c is None:
-                    if isinstance(p, DictList) or isinstance(p, list):
-                        c = p.copy()
-                        continue
-                    elif hasattr(type(p), 'List'):
-                        c = type(p).List(p)
-                    else:
-                        c = []
-
-                if isinstance(p, list) or isinstance(p, DictList):
-                    c += p
-                else:
-                    c.append(p)
-        return c
-
-    def __setattr__(self, key, value):
-        if key == '_list':
-            super(PropertyAccessor, self).__setattr__('_list', value)
-        for node in self._list:
-            if hasattr(node, key):
-                setattr(node, key, value)
-
-
-########################################################################################################################
+###############################################################################
 class AttributeDict(OrderedDict):
 
     @staticmethod

@@ -10,25 +10,7 @@ class SubmissionEvent(Entity):
     date = JSONAttr.String(read_only=True)
     timestamp = JSONAttr.Float()
     user = JSONAttr(User, read_only=True)
-    annotation = JSONAttr.Int(read_only=True)
-    parentSubmission = JSONAttr.Int(read_only=True)
-    childSubmission = JSONAttr.Int(list=True, read_only=True)
-
-    def get_tasks(self):
-        from .task import tasks
-        return tasks.getById(self.tasks)
-
-    def get_annotation(self):
-        from .annotation import annotations
-        return annotations.getById(self.annotation)
-
-    def get_parent(self):
-        if self.parentSubmission is None:
-            return None
-        return submissionEvents.getById(self.parentSubmission)
-
-    def get_child(self):
-        return submissionEvents.getById(self.childSubmission)
+    parentEvent = JSONAttr.SameClass(read_only=True)
 
     @classmethod
     def table(cls):
@@ -39,13 +21,13 @@ class SubmissionEventTable(EntityTable):
     __entity__ = SubmissionEvent
 
     @cli_method
-    @format_entity(SubmissionEvent)
+    @format_entity()
     def list(self, user=None, image=None):
         payload = dict(user=user, image=image)
-        return server.get("/api/submissionEvents/list", payload)
+        return server.get("/api/submissionEvents/list/proto", payload)
 
     def _getById(self, indexes):
-        return [server.get("/api/submissionEvent/get/:id/proto" % i) for i in indexes]
+        return server.get("/api/submissionEvents/get/proto", payload={'ids': indexes})
 
 
 submissionEvents = SubmissionEvent()

@@ -27,15 +27,15 @@ class TaskTypeTable(EntityTable):
         return server.post('/api/taskTypes/create', payload=payload)
 
     @cli_method
-    @format_entity(TaskType)
+    @format_entity()
     def list(self):
-        return server.get('/api/taskTypes/list')
+        return server.get('/api/taskTypes/list/proto')
 
     def _update(self, entity):
-        server.post('/api/taskTypes/update/%i' % entity.id, payload=entity.to_json(to_str=False))
+        return server.post('/api/taskTypes/update/%i' % entity.id, payload=entity.to_json(to_str=False))
 
     def _getById(self, indexes):
-        return [server.get('/api/taskTypes/%i' % i) for i in indexes]
+        return server.get("/api/taskTypes/get/proto", payload={'ids': indexes})
 
 
 taskTypes = TaskTypeTable()

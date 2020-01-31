@@ -14,13 +14,20 @@ export class AnnotationController implements IController {
     private annotationService: AnnotationService;
 
     public setRoutes(app: express.Application) {
-        app.post('/api/annotation/create', this.createAnnotation);
-        app.put('/api/annotation/update/:annotationId', this.updateAnnotation);
-        app.delete('/api/annotation/delete/:annotationId', this.deleteAnnotation);
-        app.post('/api/annotation/clone/:annotationId', this.cloneAnnotation);
-        app.get('/api/annotation/get/:annotationId', this.getAnnotation);
-        app.get('/api/annotation/get/:annotationId/lastEvent', this.getLastEventFromAnnotation);
-        app.get('/api/annotation/get/:annotationId/:field', this.getAnnotationField);
+        app.post('/api/annotations/create', this.createAnnotation);
+        app.post('/api/annotations/clone/:annotationId', this.cloneAnnotation);
+        app.put('/api/annotations/update/:annotationId', this.updateAnnotation);
+        app.delete('/api/annotations/delete/:annotationId', this.deleteAnnotation);
+
+        // List
+        app.get('/api/annotations/list', this.list);
+        app.get('/api/annotations/list/:attr', this.list);
+
+        // Get
+        app.get('/api/annotations/get/:annotationId', this.getAnnotation);
+        app.get('/api/annotations/get/:annotationId/:attr', this.getAnnotation);
+        app.get('/api/annotations/get', this.getMultipleAnnotations);
+        app.get('/api/annotations/get/:attr', this.getMultipleAnnotations);
     }
 
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -63,29 +70,49 @@ export class AnnotationController implements IController {
         .catch(next);
     }
 
-    private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            this.annotationService.getAnnotation(parseInt(req.params.annotationId))
-            .then(annotation => res.send(annotation))
-            .catch(next);
+    private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.annotationService.getAllAnnotations()
+            .then(annotations => {
+                res.send(annotations.map(annotation => {
+                    switch(req.params.field){
+                        case undefined: return annotation;
+                        case "comment": return annotation.comment;
+                        case "proto": return annotation.proto;
+                        case "data": return annotation.data;
+                        case "submitEvent": return annotation.submitEvent; 
+                    }
+                    return null;
+                }));
+            }).catch(next);
     }
 
-    private getAnnotationField = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.annotationService.getAnnotation(parseInt(req.params.annotationId))
         .then(annotation => {
             switch(req.params.field){
-                case "comment": res.send({ comment: annotation.comment }); break
-                case "proto": res.send(annotation.proto); break
-                case "data": res.send(annotation.data); break
+                case undefined: res.send(annotation); break;
+                case "comment": res.send({ comment: annotation.comment }); break;
+                case "proto": res.send(annotation.proto); break;
+                case "data": res.send(annotation.data); break;
+                case "submitEvent": res.send(annotation.submitEvent); break; 
             }
         }).catch(next);
-}
-
-    private getLastEventFromAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const annotationRequest: IAnnotation = {
-                id: req.params.annotationId as number,
-            };
-            this.annotationService.getLastSubmissionEvent(annotationRequest.id)
-            .then(events => res.send(events))
-            .catch(next);
     }
+
+    private getMultipleAnnotations = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.annotationService.getAnnotations(req.body.ids)
+        .then(annotations => {
+            res.send(annotations.map(annotation => {
+                switch(req.params.field){
+                    case undefined: return annotation;
+                    case "comment": return annotation.comment;
+                    case "proto": return annotation.proto;
+                    case "data": return annotation.data;
+                    case "submitEvent": return annotation.submitEvent; 
+                }
+                return null;
+            }));
+        }).catch(next);
+    }
+
 }

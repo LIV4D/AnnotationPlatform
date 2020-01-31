@@ -120,6 +120,14 @@ export class ImageService {
         return image;
     }
 
+    public async getImages(ids: number[]): Promise<Image[]> {
+        const image = await this.imageRepository.findByIds(ids);
+        if (!image) {
+            throw createError('These images do not exist.', 404);
+        }
+        return image;
+    }
+
     public async getImagePath(imageId: number, checkDatabase=true){
         if(checkDatabase){
             const image = await this.imageRepository.find(imageId);
@@ -190,7 +198,7 @@ export class ImageService {
         return path.join(prePath, imageId.toString()+".jpg");
     }
 
-    public async getImages() {
+    public async getAllImages() {
         return await this.imageRepository.findAll();
     }
 

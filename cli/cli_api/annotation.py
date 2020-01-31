@@ -39,13 +39,8 @@ class AnnotationData(JSONClass):
 class Annotation(Entity):
     id = PRIMARY(JSONAttr.Int())
     comment = JSONAttr.String()
-    tasks = JSONAttr.Int(list=True, read_only=True)
     image = JSONAttr(Image, read_only=True)
-    lastSubmissionEvent = JSONAttr(SubmissionEvent, read_only=True)
-
-    def get_tasks(self):
-        from .task import tasks
-        return tasks.getById(self.tasks)
+    submitEvent = JSONAttr(SubmissionEvent, read_only=True)
 
     def get_data(self):
         data = server.get('/api/annotations/%i/data' % self.id)
@@ -69,14 +64,15 @@ class AnnotationTable(EntityTable):
         return server.post("/api/annotation/create", payload)
 
     @cli_method
-    @format_entity(Annotation)
+    @format_entity()
     def list(self):
-        return server.get('/api/annotations/list')
-
-    def _update(self, entity):
-        server.put('/api/annotations/update/%i'%entity.id, payload=entity.to_json(to_str=False))
+        return server.get('/api/annotations/list/proto')
 
     def _getById(self, indexes):
-        return [server.get('/api/annotation/get/%i/proto'%i) for i in indexes]
+        return server.get('/api/annotation/get/proto', payload={'ids': indexes})
+
+    def _update(self, entity):
+        return server.put('/api/annotations/update/%i' % entity.id, payload=entity.to_json(to_str=False))
+
 
 annotations = AnnotationTable()

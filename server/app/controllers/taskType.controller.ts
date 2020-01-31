@@ -5,7 +5,6 @@ import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskTypeService } from '../services/taskType.service';
 import { ITaskType} from '../models/taskType.model'
-import { throwIfNotAdmin } from '../utils/userVerification';
 
 @injectable()
 export class TaskTypeController implements IController {
@@ -13,24 +12,20 @@ export class TaskTypeController implements IController {
     private taskTypeService: TaskTypeService;
 
     public setRoutes(app: express.Application): void {
-        // Collection
-        app.get('/api/taskTypes/list', this.getTaskTypes);
         app.post('/api/taskTypes/create', this.createTaskType);
-        // Element
-        app.get('/api/taskTypes/:taskTypeId', this.getTaskType);
-        app.post('/api/taskTypes/update/:taskTypeId', this.updateTaskType);
+        app.put('/api/taskTypes/update/:taskTypeId', this.updateTaskType);
         app.delete('/api/taskTypes/delete/:taskTypeId', this.deleteTaskType);
-    }
-
-    private getTaskTypes = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
-        this.taskTypeService.getTaskTypes()
-            .then(taskTypes => res.send(taskTypes))
-            .catch(next);
+        // Get
+        app.get('/api/taskTypes/get/:taskTypeId', this.getTaskType);
+        app.get('/api/taskTypes/get/:taskTypeId/:attr', this.getTaskType);
+        app.get('/api/taskTypes/get', this.getMultipleTaskTypes);
+        app.get('/api/taskTypes/get/:attr', this.getMultipleTaskTypes);
+        // List
+        app.get('/api/taskTypes/list', this.list);
+        app.get('/api/taskTypes/list/:attr', this.list);
     }
 
     private createTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
         const newTaskType: ITaskType = {
             title: req.body.title,
             description: req.body.description,
@@ -40,15 +35,7 @@ export class TaskTypeController implements IController {
             .catch(next);
     }
 
-    private getTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
-        this.taskTypeService.getTaskType(req.params.taskTypeId)
-            .then(taskType => res.send(taskType))
-            .catch(next);
-    }
-
     private updateTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
         const updatedTaskType: ITaskType = {
             id: req.params.taskTypeId, 
             title: req.body.title, 
@@ -60,9 +47,45 @@ export class TaskTypeController implements IController {
             .catch(next);
     }
     private deleteTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
         this.taskTypeService.deleteTaskType(req.params.taskTypeId).then(() => {
             res.sendStatus(204);
         }).catch(next);
+    }
+
+    private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.taskTypeService.getAllTaskTypes()
+            .then(taskTypes => {
+                res.send(taskTypes.map(taskType => {
+                    switch(req.params.attr){
+                        case undefined: return taskType;
+                        case 'proto': return taskType.proto();
+                    }
+                    return null;
+                }));
+            }).catch(next);
+    }
+
+    private getTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.taskTypeService.getTaskType(req.params.taskTypeId)
+            .then(taskType => {
+                switch(req.params.attr){
+                    case undefined: res.send(taskType); break;
+                    case 'proto': res.send(taskType); break;
+                }
+                
+            }).catch(next);
+    }
+
+    private getMultipleTaskTypes = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.taskTypeService.getTaskTypes(req.body.ids)
+            .then(taskTypes => {
+                res.send(taskTypes.map(taskType => {
+                    switch(req.params.attr){
+                        case undefined: return taskType;
+                        case 'proto': return taskType.proto();
+                    }
+                    return null;
+                }));
+            }).catch(next);
     }
 }

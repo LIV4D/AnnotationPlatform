@@ -1,5 +1,4 @@
 from .utilities.json_template import JSONClass, JSONAttr, JSONClassList, JSONAttribute, is_dict
-from collections import OrderedDict
 import functools
 import requests
 from .server import Server
@@ -16,10 +15,39 @@ def cli_method(f):
     @functools.wraps(f)
     def cli_command_wrapper(*args, **kwargs):
         try:
-            return f(*args, **kwargs)
+            return f(*args, *kwargs)
         except Server.BackendError as e:
             raise Server.BackendError(e.msg, e.server) from None
     return cli_command_wrapper
+
+
+def _format_entity(entity, data):
+    data_type = type(data)
+    if isinstance(data, requests.Response):
+        data = data.json()
+    elif isinstance(data, str):
+        from json import loads
+        data = loads(data)
+    if is_dict(data):
+        return entity.from_json(data)
+    elif isinstance(data, (list, tuple)):
+        return EntityList.from_json(entity, data)
+    raise ValueError("Type %s is not parsable as %s." % (data_type.__name__, entity.__name__))
+
+
+def format_entity(entity=None):
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            r = f(*args, **kwargs)
+            e = entity
+            if e is None:
+                if not args or not hasattr(type(args[0]), '__entity__'):
+                    raise NotImplementedError('You should provide the entity type for ' + f.__name__)
+                e = type(args[0]).__entity__
+            return _format_entity(e, r)
+        return wrapper
+    return decorator
 
 
 class Entity(JSONClass):
@@ -43,7 +71,7 @@ class Entity(JSONClass):
         classname = self.__class__.__name__
         attributes = [name+": "+repr(value).replace("\n", "\n  |   |"+" "*len(name)) for name, value in self.attributes(JSONAttribute).items() if name != pk_name]
         return "\n  |  ".join([classname + ("" if pk is None else "[%s=%s]" % (pk_name, str(pk)))]
-                            + attributes)
+                              + attributes)
 
     def attr_changed(self, attr):
         pass
@@ -77,10 +105,7 @@ class EntityTable:
         raise NotImplementedError('Update operations are not defined for %s table.' % self.__entity__.__name__)
 
     def _update_multiples(self, entities):
-        for e in entities:
-            err = self._update(e)
-            if err:
-                return err
+        return [self._update(e) for e in entities]
 
     def _delete(self, id):
         raise NotImplementedError('Delete operations are not defined for %s table.' % self.__entity__.__name__)
@@ -93,7 +118,7 @@ class EntityTable:
     def getById(self, id):
         single = False
         if not isinstance(id, (list, tuple)):
-            single=True
+            single = True
             id = [id]
         r = self._getById(id)
         if single:
@@ -105,10 +130,12 @@ class EntityTable:
 
     # Modifiers
     @cli_method
+    @format_entity()
     def update(self, entity):
-        self._update(entity)
+        return self._update(entity)
 
     @cli_method
+    @format_entity()
     def update_multiples(self, entities):
         self._update_multiples(entities)
 
@@ -166,7 +193,7 @@ class EntityList:
             self._primary_keys[pk] = len(self._list)
             if id is not None:
                 del self._list[id]
-                self._primary_keys = {k: v-1 if v>id else v for k, v in self._primary_key}
+                self._primary_keys = {k: v-1 if v > id else v for k, v in self._primary_key}
                 self._list.append(entity)
                 return
 
@@ -191,7 +218,7 @@ class EntityList:
     def items(self):
         if not self._primary_keys:
             raise NotImplementedError()
-        return ((e.primary_key_value(),e ) for e in self._list)
+        return ((e.primary_key_value(), e) for e in self._list)
 
     def values(self):
         return (e for e in self._list)
@@ -232,25 +259,11 @@ def format_entity(entity):
     return decorator
 
 
-def _format_entity(entity, data):
-    data_type = type(data)
-    if isinstance(data, requests.Response):
-        data = data.json()
-    elif isinstance(data, str):
-        from json import loads
-        data = loads(data)
-    if is_dict(data):
-        return entity.from_json(data)
-    elif isinstance(data, (list, tuple)):
-        return EntityList.from_json(entity, data)
-    raise ValueError("Type %s is not parsable as %s." % (data_type.__name__, entity.__name__))
-
-
 def cli_method(f):
     @functools.wraps(f)
     def cli_command_wrapper(*args, **kwargs):
         try:
-            return f(*args, **kwargs)
+            return f(*args, *kwargs)
         except Server.BackendError as e:
             raise Server.BackendError(e.msg, e.server) from None
     return cli_command_wrapper

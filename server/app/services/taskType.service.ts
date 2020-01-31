@@ -19,7 +19,19 @@ export class TaskTypeService {
         const taskType = TaskType.fromInterface(newTaskType);
         return await this.taskTypeRepository.create(taskType);
     }
-    
+
+    public async updateTaskType(updatedTaskType: ITaskType): Promise<TaskType> {
+        const oldTaskType = await this.getTaskType(updatedTaskType.id);
+        oldTaskType.update(updatedTaskType);
+        return await this.taskTypeRepository.create(oldTaskType);
+    }
+
+    public async deleteTaskType(id: number): Promise<DeleteResult> {
+        const taskType = await this.getTaskType(id);        
+        return await this.taskTypeRepository.delete(taskType);
+    }
+
+
     public async getTaskType(id: number): Promise<TaskType> {
         const taskType = await this.taskTypeRepository.find(id);
         if (taskType == null) {
@@ -28,10 +40,16 @@ export class TaskTypeService {
         return taskType;
     }
 
-    public async updateTaskType(updatedTaskType: ITaskType): Promise<TaskType> {
-        const oldTaskType = await this.getTaskType(updatedTaskType.id);
-        oldTaskType.update(updatedTaskType);
-        return await this.taskTypeRepository.create(oldTaskType);
+    public async getTaskTypes(ids: number[]): Promise<TaskType[]> {
+        const taskType = await this.taskTypeRepository.findByIds(ids);
+        if (taskType == null) {
+            throw createError('This task type does not exist.', 404);
+        }
+        return taskType;
+    }
+
+    public async getAllTaskTypes(): Promise<TaskType[]> {
+        return await this.taskTypeRepository.findAll();
     }
 
     public async getTasTypeByName(title: string): Promise<TaskType> {
@@ -40,14 +58,5 @@ export class TaskTypeService {
             throw createError('This task type does not exist.', 404);
         }
         return taskType;
-    }
-
-    public async getTaskTypes(): Promise<TaskType[]> {
-        return await this.taskTypeRepository.findAll();
-    }
-
-    public async deleteTaskType(id: number): Promise<DeleteResult> {
-        const taskType = await this.getTaskType(id);        
-        return await this.taskTypeRepository.delete(taskType);
     }
 }

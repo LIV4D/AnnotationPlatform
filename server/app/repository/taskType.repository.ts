@@ -28,6 +28,11 @@ export class TaskTypeRepository {
         return await connection.getRepository(TaskType).findOne(id);
     }
 
+    public async findByIds(ids: number[]): Promise<TaskType[]> {
+        const connection  = await this.connectionProvider();
+        return await connection.getRepository(TaskType).findByIds(ids);
+    }
+
     public async findByTitle(title: string): Promise<TaskType> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(TaskType).findOne({ title });

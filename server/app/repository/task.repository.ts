@@ -21,7 +21,7 @@ export class TaskRepository {
 
     public async findAll(): Promise<Task[]> {
         const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).find({ relations : ['user', 'image', 'taskGroup'] });
+        return await connection.getRepository(Task).find();
     }
 
     public async create(task: Task): Promise<Task> {
@@ -31,7 +31,12 @@ export class TaskRepository {
 
     public async find(id: number): Promise<Task> {
         const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).findOne(id, { relations : ['user', 'image', 'taskGroup', 'annotation'] });
+        return await connection.getRepository(Task).findOne(id);
+    }
+
+    public async findByIds(ids: number[]): Promise<Task[]> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(Task).findByIds(ids);
     }
 
     public async findTasksByUser(userId: string): Promise<Task[]> {

@@ -35,27 +35,33 @@ export class ImageController implements IController {
     public upload = multer({ storage: this.storage });
 
     public setRoutes(app: express.Application): void {
-        // new endpoints:
         app.post('/api/images/create',
                     this.upload.fields([{name: 'image', maxCount: 1}, {name: 'preprocessing', maxCount: 1}]),
                     this.createImage);
+        app.put('/api/images/update/:imageId', this.updateImage);
         app.put('/api/images/updateFile/:imageId',
                     this.upload.single('image'),
                     this.uploadImage);
         app.put('/api/images/updatePreprocessing/:imageId',
                     this.upload.single('preprocessing'),
                     this.uploadPreprocessing);
-        app.put('/api/images/update/:imageId', this.updateImage);
-        app.get('/api/images/:imageId/', this.getImage);
         app.delete('/api/images/delete/:imageId', this.deleteImage);
-        app.get('/api/images/list', this.getImages);
-        app.get('/api/images/list/prototype', this.getImagesPrototype);
-        app.get('/api/images/metadata/:imageId', this.getImageMetadata);
-        // sending image files:
-        app.get('/api/images/raw/:imageId', this.getImageFile);
-        app.get('/api/images/preproc/:imageId', this.getPreprocessingFile);
-        app.get('/api/images/thumbnail/:imageId', this.getThumbnailFile);
+
+        // List
+        app.get('/api/images/list', this.list);
+        app.get('/api/images/list/:attr', this.list);
         app.get('/api/images/gallery', this.getGallery);
+        
+        // Get
+        app.get('/api/images/get/:imageId', this.getTask);
+        app.get('/api/images/get/:imageId/:attr', this.getTask);
+        app.get('/api/images/get', this.getMultipleTasks);
+        app.get('/api/images/get/:attr', this.getMultipleTasks);
+
+        // Download image files
+        app.get('/api/images/download/:imageId/raw', this.getImageFile);
+        app.get('/api/images/download/:imageId/preproc', this.getPreprocessingFile);
+        app.get('/api/images/download/:imageId/thumbnail', this.getThumbnailFile);
     }
 
     private createImage =  (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -115,61 +121,6 @@ export class ImageController implements IController {
             .catch(next);
     }
 
-    private getImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getImage(req.params.imageId)
-            .then(image => res.send(image))
-            .catch(next);
-    }
-
-    private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getImagePath(req.params.imageId)
-            .then(imgPath => {
-                res.sendFile(path.resolve(imgPath));
-            })
-            .catch(next);
-    }
-
-    private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getPrepocessingPath(req.params.imageId)
-            .then(prePath => {
-                res.sendFile(path.resolve(prePath));
-            })
-            .catch(next);
-    }
-    private getThumbnailFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getThumbnailPath(req.params.imageId)
-            .then(thumbPath => {
-                res.sendFile(path.resolve(thumbPath));
-            })
-            .catch(next);
-    }
-    private getImages = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
-        this.imageService.getImages()
-            .then(images => {
-                res.send(images);
-            })
-            .catch(next);
-    }
-
-    private getImagesPrototype = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
-        this.imageService.getImages()
-            .then(images => {
-                const imagesPrototype = images.map(i => i.proto());
-                res.send(imagesPrototype);
-            })
-            .catch(next);
-    }
-
-    private getImageMetadata = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getImage(req.params.imageId)
-            .then(image => {
-                res.send(image.metadata);
-            })
-            .catch(next);
-    }
-
     private deleteImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const imageId = req.params.imageId as number;
@@ -206,4 +157,68 @@ export class ImageController implements IController {
             })
             .catch(next);
     }
+
+    private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getAllImages()
+            .then(images => {
+                res.send(images.map(image => {
+                    switch(req.params.attr){
+                        case undefined: return image;
+                        case 'proto': return image.proto();
+                        case 'metata': return image.metadata;
+                    }
+                    return null;
+                }));
+            }).catch(next);
+    }
+
+    private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getImage(req.params.imageId)
+            .then(image => {
+                switch(req.params.attr){
+                    case undefined: res.send(image); break;
+                    case 'proto': res.send(image.proto()); break;
+                    case 'metata': res.send(image.metadata); break;
+                }
+                
+            }).catch(next);
+    }
+
+    private getMultipleTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getImages(req.body.ids)
+            .then(images => {
+                res.send(images.map(image => {
+                    switch(req.params.attr){
+                        case undefined: return image;
+                        case 'proto': return image.proto();
+                        case 'metata': return image.metadata;
+                    }
+                    return null;
+                }));
+            }).catch(next);
+    }
+
+    private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getImagePath(req.params.imageId)
+            .then(imgPath => {
+                res.sendFile(path.resolve(imgPath));
+            })
+            .catch(next);
+    }
+
+    private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getPrepocessingPath(req.params.imageId)
+            .then(prePath => {
+                res.sendFile(path.resolve(prePath));
+            })
+            .catch(next);
+    }
+    private getThumbnailFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.imageService.getThumbnailPath(req.params.imageId)
+            .then(thumbPath => {
+                res.sendFile(path.resolve(thumbPath));
+            })
+            .catch(next);
+    }
+
 }

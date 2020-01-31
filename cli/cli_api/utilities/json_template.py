@@ -1,10 +1,9 @@
 from .class_attribute import ClassAttrHandler, ClsAttribute
-from collections import OrderedDict
-from .collections import is_dict, if_none, OrderedDict, dict_walk, dict_walk_zip, dict_deep_copy
+from .collections import is_dict, if_none, dict_walk, dict_walk_zip, dict_deep_copy
 
 
 def check_json_type(t):
-    return issubclass(t, (dict, list, tuple, str, int, float, bool, JSONClass))
+    return t == 'same_class' or issubclass(t, (dict, list, tuple, str, int, float, bool, JSONClass))
 
 
 class JSONAttribute(ClsAttribute):
@@ -18,6 +17,10 @@ class JSONAttribute(ClsAttribute):
             if not check_json_type(t):
                 raise JSONClass.InvalidTemplateException('Invalid JSON type: %s.' % t)
         self.types = types
+
+    def __set_name__(self, owner, name):
+        self.types = tuple(t if t != 'same_class' else owner for t in self.types)
+        return super(JSONAttribute, self).__set_name__(owner, name)
 
     def new_attr(self, handler):
         if self.islist:
@@ -95,6 +98,12 @@ class JSONAttr(JSONAttribute):
             if default is None:
                 default = {}
             super(JSONAttr.Dict, self).__init__(types=(dict,), default=default, islist=False, read_only=read_only)
+
+    class SameClass(JSONAttribute):
+        def __init__(self, default=None, list=False, read_only=False):
+            if default is None:
+                default = 0 if not list else []
+            super(JSONAttr.SameClass, self).__init__(types=('same_class',), default=default, islist=list, read_only=read_only)
 
 
 def _parse_type(data, types):
@@ -291,7 +300,7 @@ class JSONClass(ClassAttrHandler):
                     d[k] = attr
             if len(used_attributes) != len(attributes):
                 diff = set(attributes.keys()).difference(used_attributes)
-                raise JSONClass.InvalidTemplateException(cls, "Those attributes were not find in the template: %s."%diff)
+                raise JSONClass.InvalidTemplateException(cls, "Those attributes were not find in the template: %s." % diff)
             cls.__dict_template__ = json
 
         return cls.__dict_template__
@@ -363,7 +372,7 @@ class JSONClass(ClassAttrHandler):
         unused = keys.difference(attrs)
         if unused:
             print('Warning when initializing %s from dict:\n'
-                     '%s keys will be ignored.' % (cls.__name__, unused))
+                  '%s keys will be ignored.' % (cls.__name__, unused))
 
         return cls.__new__(**{k: d[k] for k in keys.intersection(attrs)})
 

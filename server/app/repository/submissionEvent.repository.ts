@@ -69,4 +69,8 @@ export class SubmissionEventRepository {
                     .getRepository(SubmissionEvent)
                     .findOne(submitId);
     }
+    public async findByIds(ids: number[]): Promise<SubmissionEvent[]> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(SubmissionEvent).findByIds(ids);
+    }
 }

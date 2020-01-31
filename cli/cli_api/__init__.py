@@ -16,3 +16,4 @@ class cli:
     tasks = tasks
     users = users
     server = server
+    config = config

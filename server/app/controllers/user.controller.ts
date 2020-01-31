@@ -15,14 +15,16 @@ export class UserController implements IController {
     private userService: UserService;
 
     public setRoutes(app: express.Application): void {
-        app.get('/api/users/list', this.listUsers);
         app.post('/api/users/create', this.createUser);
         app.post('/auth/login', this.loginUser);
         app.put('/api/users/update/:userId', this.updateUser);
         app.delete('/api/users/delete/:userId', this.deleteUser);
-        app.get('/api/users/:userId', this.getUser);
-        app.get('/api/users/events/:userId', this.getEventsbyUser);
-        app.get('/api/users/last-event/:userId', this.getLastEventFromUser);
+        // Get
+        app.get('/api/users/get/:userId', this.getUser);
+        app.get('/api/users/get/:userId/events', this.getEventsbyUser);
+        app.get('/api/users/:userId/last-event', this.getLastEventFromUser);
+        // List
+        app.get('/api/users/list', this.listUsers);
     }
 
     private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {

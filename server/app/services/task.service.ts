@@ -34,14 +34,18 @@ export class TaskService {
         return task;
     }
 
+    public async getTasks(ids?: number[]): Promise<Task[]> {
+        const tasks = ids===undefined ? await this.taskRepository.findAll() : await this.taskRepository.findByIds(ids);
+        if (tasks.length===0) {
+            throw createError('Those tasks do not exist.', 404);
+        }
+        return tasks;
+    }
+
     public async updateTask(updatedTask: ITask, user: User) {
         const oldTask = await this.getTask(updatedTask.id, user);
         oldTask.update(updatedTask);
         return await this.taskRepository.create(oldTask);
-    }
-
-    public async getTasks(): Promise<Task[]> {
-        return await this.taskRepository.findAll();
     }
 
     public async getTasksByUser(userId: string): Promise<Task[]> {

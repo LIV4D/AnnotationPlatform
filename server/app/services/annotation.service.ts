@@ -79,7 +79,15 @@ export class AnnotationService {
         return annotation;
     }
 
-    public async getAnnotations(): Promise<Annotation[]> {
+    public async getAnnotations(ids: number[]): Promise<Annotation[]> {
+        const annotations = await this.annotationRepository.findByIds(ids);
+        if (annotations.length==0) {
+            throw createError('These annotations do not exist.', 404);
+        }
+        return annotations;
+    }
+
+    public async getAllAnnotations(): Promise<Annotation[]> {
         return await this.annotationRepository.findAll();
     }
 

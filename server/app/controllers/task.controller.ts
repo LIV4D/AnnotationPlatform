@@ -16,36 +16,32 @@ export class TaskController implements IController {
     private taskService: TaskService;
 
     public setRoutes(app: express.Application): void {
-        // Collection
         app.post('/api/tasks/create', this.createTask);
         app.put('/api/tasks/update/:taskId', this.updateTask);
         app.delete('/api/tasks/delete/:taskId', this.deleteTask);
-        app.get('/api/tasks/list', this.list);
-        app.get('/api/tasks/list/:userId', this.list);
-        app.get('/api/tasks/gallery/:userId', this.getUserGallery);
         app.post('api/tasks/submit/:taskId', this.submitTask);
-        app.get('/api/tasks/:userId/next/', this.getNextTaskByUser);
 
-        // Element
+        // Get
         app.get('/api/tasks/get/:taskId', this.getTask);
-        app.get('/api/tasks/get/:taskId/:field', this.getTaskField);
+        app.get('/api/tasks/get', this.getMultipleTasks);
+        app.get('/api/tasks/get/:taskId/:attr', this.getTask);
+        app.get('/api/tasks/get/:attr', this.getMultipleTasks)
+        app.get('/api/tasks/get/next/:userId', this.getNextTaskByUser);
+
+        // List
+        app.get('/api/tasks/list', this.list);
+        app.get('/api/tasks/gallery/:userId', this.getUserGallery);
+
     }
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        let isTaskVisible = true;
-        let isTaskCompleted = false;
-        if (!isNullOrUndefined(req.body.visible)) {
-            isTaskVisible = (req.body.visible === 'true');
-        }
-        if (!isNullOrUndefined(req.body.isComplete)) {
-            isTaskCompleted = (req.body.completed === 'true');
-        }
+        
         const newTask: ITask = {
             typeId: req.body.typeId,
             annotationId: req.body.annotationId,
-            isComplete: isTaskCompleted,
-            isVisible: isTaskVisible,
+            isComplete: req.body.isComplete === 'true',
+            isVisible: req.body.isVisible === 'true',
             comment: req.body.comment,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id
@@ -62,17 +58,31 @@ export class TaskController implements IController {
                 delete task.assignedUser.salt;
                 delete task.creator.password;
                 delete task.creator.salt;
-                res.send(task);
+
+                switch(req.params.attr){
+                    case undefined: res.send(task); break;
+                    case "proto": res.send(task.proto()); break
+                }
             })
             .catch(next);
     }
 
-    private getTaskField = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.taskService.getTask(req.params.taskId, req.user)
-            .then(task => {
-                switch(req.params.field){
-                    case "proto": res.send(task.proto()); break
-                }
+    private getMultipleTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const ids = req.body.ids;
+        this.taskService.getTasks(ids)
+            .then(tasks => {
+                res.send(tasks.map( task => {
+                    delete task.assignedUser.password;
+                    delete task.assignedUser.salt;
+                    delete task.creator.password;
+                    delete task.creator.salt;
+
+                    switch(req.params.attr){
+                        case undefined:  return task;
+                        case "proto": return task.proto();
+                    }
+                    return null;
+                }));                
             })
             .catch(next);
     }

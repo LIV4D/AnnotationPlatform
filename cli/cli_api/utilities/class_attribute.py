@@ -214,7 +214,7 @@ class ClassAttrHandler(metaclass=MetaClassAttrHandler):
             for k in key:
                 self.on_changed(k, cb)
         else:
-            if not key in self.cls_attributes():
+            if key not in self.cls_attributes():
                 raise AttributeError('No attributes is named %s.' % key)
 
             listeners = self._change_listeners.get(key, None)

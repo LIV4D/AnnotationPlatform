@@ -30,7 +30,12 @@ export class AnnotationRepository {
 
     public async find(id: number): Promise<Annotation> {
         const connection =  await this.connectionProvider();
-        return await connection.getRepository(Annotation).findOne({ where: { id }, relations : ['tasks', 'evenements', 'image'] });
+        return await connection.getRepository(Annotation).findOne(id);
+    }
+
+    public async findByIds(ids: number[]): Promise<Annotation[]> {
+        const connection =  await this.connectionProvider();
+        return await connection.getRepository(Annotation).findByIds(ids);
     }
 
     public async findForImage(imageId: number): Promise<Annotation> {

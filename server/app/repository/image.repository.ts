@@ -75,6 +75,11 @@ export class ImageRepository {
             connection.getRepository(Image).findOne(id));
     }
 
+    public async findByIds(ids: number[]): Promise<Image[]> {
+        return await this.connectionProvider().then(connection =>
+            connection.getRepository(Image).findByIds(ids));
+    }
+
     public async findByPath(path: string): Promise<Image> {
         return await this.connectionProvider().then(connection =>
             connection.getRepository(Image).findOne({ where: { path } }));

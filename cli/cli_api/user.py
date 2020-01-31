@@ -18,7 +18,7 @@ class UserTable(EntityTable):
     __entity__ = User
 
     @cli_method
-    @format_entity(User)
+    @format_entity()
     def create(self, firstname, lastname, email, password, is_admin=False):
         payload = dict(firstName=firstname, lastName=lastname, email=email,
                        password=password, isAdmin=is_admin)
@@ -31,12 +31,12 @@ class UserTable(EntityTable):
         return server.delete('/api/users/delete/%i' % user)
 
     @cli_method
-    @format_entity(User)
+    @format_entity()
     def list(self):
         return server.get('/api/users/list')
 
     def _update(self, entity):
-        server.put('/api/users/update/%i'%entity.id, payload=entity.to_json(to_str=False))
+        return server.put('/api/users/update/%i' % entity.id, payload=entity.to_json(to_str=False))
 
     def _getById(self, indexes):
         return [server.get('/api/users/%i' % i) for i in indexes]
