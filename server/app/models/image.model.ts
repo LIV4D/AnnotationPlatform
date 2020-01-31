@@ -1,7 +1,7 @@
-import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { isNullOrUndefined } from 'util';
+
 import { Annotation } from './annotation.model';
-import { Task } from './task.model';
 
 export class Metadata {
     [key: string]: string | number | boolean;
@@ -26,29 +26,50 @@ export class Image {
     @OneToMany(type => Annotation, annotation => annotation.image)
     public annotations: Annotation[];
 
-    @OneToMany(type => Task, task => task.image)
-    public tasks: Task[];
+    public interface(): IImage {
+        return {
+            id: this.id,
+            type: this.type,
+            metadata: this.metadata,
+            preprocessing: this.preprocessing,
+        };
+    }
 
+    public update(iimage: IImage): void {
+        if(!isNullOrUndefined(iimage.type))          this.type = iimage.type; 
+        if(!isNullOrUndefined(iimage.metadata))      this.metadata = iimage.metadata;
+        if(!isNullOrUndefined(iimage.preprocessing)) this.preprocessing = iimage.preprocessing;
+    }
 
-    prototype(): ImagePrototype {
-        return new ImagePrototype(this);
+    public static fromInterface(iimage: IImage): Image {
+        const image = new Image();
+        image.update(iimage);
+        if(!isNullOrUndefined(iimage.id))   image.id = iimage.id;
+        return image;
+    }
+
+    public proto(): ProtoImage {
+        return {
+            id: this.id,
+            type: this.type,
+            metadata: this.metadata,
+            preprocessing: this.preprocessing,
+        };
     }
 }
 
 
-export class ImagePrototype {
-    public id: number;
-    public type: string;
-    public metadata: Metadata;
-
-    constructor(image: Image) {
-        this.id = image.id;
-        this.type = image.type;
-        this.metadata = image.metadata;
-    }
+export interface IImage {
+    id?: number;
+    type?: string;
+    metadata?: Metadata;
+    preprocessing?: boolean;
 }
 
-export class ImageViewModel {
-    public images: Image[];
-    public count: number;
+
+export interface ProtoImage {
+    id: number;
+    type: string;
+    metadata: Metadata;
+    preprocessing: boolean
 }

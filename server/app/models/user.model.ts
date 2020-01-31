@@ -1,10 +1,12 @@
 import 'reflect-metadata';
 import * as crypto from 'crypto';
-import { IsEmail } from 'class-validator';
+import { IsEmail, validateSync } from 'class-validator';
+import { isNullOrUndefined } from 'util';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
-import { isUndefined } from 'util';
 
 @Entity()
 export class User {
@@ -31,8 +33,11 @@ export class User {
     @Column({ default : false })
     isAdmin: boolean;
 
-    @OneToMany(type => Task, task => task.user)
-    public tasks: Task[];
+    @OneToMany(type => Task, task => task.assignedUser)
+    public assignedTasks: Task[];
+
+    @OneToMany(type => Task, task => task.assignedUser)
+    public createdTasks: Task[];
 
     @OneToMany(type => SubmissionEvent, evenement => evenement.user)
     public submissions: SubmissionEvent[];
@@ -57,4 +62,64 @@ export class User {
         return this.firstName.split(' ').map(n=>n.length?n.substr(0,1):"").reduce((s, n) => n.length?s+n+". ":s, "") 
                 + this.lastName;
     }
+
+    public interface(): IUser{
+        return {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            isAdmin: this.isAdmin
+        }
+    }
+
+    public update(iuser: IUser){
+        if(!isNullOrUndefined(iuser.id))        this.id = iuser.id;
+        if(!isNullOrUndefined(iuser.firstName)) this.firstName = iuser.firstName;
+        if(!isNullOrUndefined(iuser.lastName))  this.lastName = iuser.lastName;
+        if(!isNullOrUndefined(iuser.email))     this.email = iuser.email;
+        if(!isNullOrUndefined(iuser.isAdmin))   this.isAdmin = iuser.isAdmin;
+        if(!isNullOrUndefined(iuser.password)) {
+            const hash = User.hashPassword(iuser.password);
+            this.password = hash.hash;
+            this.salt = hash.salt;
+        }
+        
+        // Validate
+        validateSync(this);
+    }
+
+    public static fromInterface(iuser: IUser): User {
+        const u = new User();
+        u.update(iuser);
+        return u;
+    }
+
+    public proto(): ProtoUser{
+        return {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            isAdmin: this.isAdmin
+        };
+    }
+}
+
+
+export interface IUser {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    isAdmin?: boolean;
+    password?: string;
+}
+
+export interface ProtoUser{
+    id: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    isAdmin: boolean
 }

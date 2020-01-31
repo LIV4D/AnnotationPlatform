@@ -4,18 +4,17 @@ import * as fs from 'fs';
 import * as multer from 'multer';
 import * as path from 'path';
 import TYPES from '../types';
-import * as tmp from 'tmp'
+import * as tmp from 'tmp';
+import { isNullOrUndefined } from 'util';
+
 import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { ImageService } from '../services/image.service';
-import { Metadata } from '../models/image.model'
-import { IGallery } from '../interfaces/gallery.interface';
-import { IGalleryObject } from '../interfaces/galleryObject.interface';
+import { Metadata, IImage } from '../models/image.model'
+import { IGallery, IGalleryObject } from '../interfaces/gallery.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { IImage } from '../../../common/interfaces';
 import { isAdmin } from '../utils/userVerification';
 import { createError } from '../utils/error';
-import { isNullOrUndefined } from 'util';
 
 
 @injectable()
@@ -66,9 +65,12 @@ export class ImageController implements IController {
             metadata: isNullOrUndefined(req.body.metadata)?new Metadata():req.body.metadata,
         };
 
+        console.log('payload', req.body);
+        console.log('files', req.files);
+        
         const imageFile = req.files['image'][0];
         newImage.metadata['filename'] = imageFile.originalname;
-
+        
         const preprocessingFile = isNullOrUndefined(req.files['preprocessing']) ? undefined : req.files['preprocessing'][0];
         let preprocessingPath = null;
         if(preprocessingFile !== undefined){
@@ -76,7 +78,6 @@ export class ImageController implements IController {
             preprocessingPath = preprocessingFile.path;
         }
 
-        console.log('controller', newImage);
         this.imageService.createImage(newImage, imageFile.path, preprocessingPath)
             .then(image => res.send(image))
             .catch(next);
@@ -103,7 +104,7 @@ export class ImageController implements IController {
     }
 
     private updateImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         const newImage: IImage = {
             type: req.body.type,
             metadata: req.body.metadata,
@@ -143,7 +144,7 @@ export class ImageController implements IController {
             .catch(next);
     }
     private getImages = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         this.imageService.getImages()
             .then(images => {
                 res.send(images);
@@ -152,17 +153,16 @@ export class ImageController implements IController {
     }
 
     private getImagesPrototype = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         this.imageService.getImages()
             .then(images => {
-                const imagesPrototype = images.map(i => i.prototype());
+                const imagesPrototype = images.map(i => i.proto());
                 res.send(imagesPrototype);
             })
             .catch(next);
     }
 
     private getImageMetadata = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // throwIfNotAdmin(req);
         this.imageService.getImage(req.params.imageId)
             .then(image => {
                 res.send(image.metadata);
@@ -171,7 +171,7 @@ export class ImageController implements IController {
     }
 
     private deleteImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         const imageId = req.params.imageId as number;
         this.imageService.deleteImage(imageId)
             .then(() => res.sendStatus(204))
@@ -182,7 +182,7 @@ export class ImageController implements IController {
         const arr: IGalleryObject[] = [];
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {
-                imageViewModel.images.map(image => {
+                imageViewModel.map(image => {
                     const  item = {
                         id: image.id,
                         type: image.type,
@@ -200,7 +200,7 @@ export class ImageController implements IController {
                 });
                 const gallery: IGallery = {
                     objects: arr,
-                    objectCount: imageViewModel.count,
+                    objectCount: imageViewModel.length,
                 };
                 res.send(gallery);
             })

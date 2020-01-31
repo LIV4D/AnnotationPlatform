@@ -1,5 +1,6 @@
-import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { isNullOrUndefined } from 'util';
+
 import { Task } from './task.model';
 
 @Entity()
@@ -7,31 +8,54 @@ export class TaskType {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @OneToMany(type => Task, task => task.type)
-    public tasks: Task[];
-
     @Column({ length : 32, unique : true })
     public title: string;
 
     @Column({ nullable: false })
     public description: string;
 
-    public prototype(): TaskTypePrototype {
-        return new TaskTypePrototype(this);
+    @OneToMany(type => Task, task => task.type)
+    public tasks: Task[];
+
+    public interface(): ITaskType {
+        return {
+            id: this.id,
+            title: this.title,
+            description: this.description
+        };
+    }
+
+    public update(itype: ITaskType): void {
+        if(isNullOrUndefined(itype.title))       this.title = itype.title;
+        if(isNullOrUndefined(itype.description)) this.description = itype.description;
+    }
+
+    public static fromInterface(itype: ITaskType): TaskType {
+        const type = new TaskType();
+        if(isNullOrUndefined(itype.id)) type.id = itype.id;
+        type.update(itype);
+        return type;
+    }
+
+    public proto(): ProtoTaskType {
+        return {
+            id: this.id,
+            title: this.title,
+            description: this.description
+        };
     }
 }
 
 
-export class TaskTypePrototype {
-    public id: number;
-    public tasks: number[];
-    public title: string;
-    public description: string;
+export interface ProtoTaskType {
+    id: number;
+    title: string;
+    description: string;
+}
 
-    constructor(taskType: TaskType){
-        this.id = taskType.id;
-        this.tasks = taskType.tasks.map(t=>t.id);
-        this.title = taskType.title;
-        this.description = taskType.description;
-    }
+
+export interface ITaskType {
+    id?: number;
+    title?: string;
+    description?: string;
 }

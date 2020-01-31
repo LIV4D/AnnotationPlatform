@@ -4,8 +4,8 @@ import { createError } from './error';
 
 // TODO: test if these functions still work
 
-export function throwIfNotAdmin(req: express.Request) {
-    if (!req.user.isAdmin) {
+export function throwIfNotAdmin(user: any) {
+    if (!user.isAdmin) {
         throw createError('User is not admin.', 401);
     }
 }

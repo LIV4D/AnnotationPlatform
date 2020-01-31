@@ -1,7 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, BeforeInsert, OneToMany } from 'typeorm';
+import { isNullOrUndefined } from 'util';
+
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
-import { isNullOrUndefined } from 'util';
 
 @Entity()
 export class SubmissionEvent {
@@ -17,46 +18,83 @@ export class SubmissionEvent {
     @Column({ nullable: true })
     public timestamp: number;
 
-    @ManyToOne(type => User, user => user.submissions)
+    @ManyToOne(type => User, user => user.submissions, {eager: true})
     public user: User;
 
-    @OneToOne(type => Annotation, annotation => annotation.lastSubmissionEvent, {nullable: true})
+    @Column({ nullable: true })
+    public userId: number;
+
+    @OneToOne(type => Annotation, annotation => annotation.submitEvent, {nullable: true})
     public annotation: Annotation;
 
-    @ManyToOne(type => SubmissionEvent, parentEvent => parentEvent.childSubmission, {nullable: true})
-    public parentSubmission: SubmissionEvent;
+    @ManyToOne(type => SubmissionEvent, parentEvent => parentEvent.childEvents, {nullable: true, eager: true})
+    public parentEvent: SubmissionEvent;
 
-    @OneToMany(type => SubmissionEvent, child => child.parentSubmission)
-    public childSubmission: SubmissionEvent[];
+    @Column({ nullable: true })
+    public parentEventId: number;
+
+    @OneToMany(type => SubmissionEvent, child => child.parentEvent)
+    public childEvents: SubmissionEvent[];
 
     @BeforeInsert()
     setDate(): void {
         this.date =  new Date(Date.now());
     }
 
-    public prototype(): SubmissionEventPrototype {
-        return new SubmissionEventPrototype(this);
+    public interface(): ISubmissionEvent {
+        return {
+            id: this.id,
+            date: this.date,
+            timestamp: this.timestamp,
+            description: this.description,
+            userId: this.userId,
+            parentEventId: this.parentEventId,
+        };
+    }
+
+    public update(ievent: ISubmissionEvent): void {
+        if(!isNullOrUndefined(ievent.date))          this.date = ievent.date;
+        if(!isNullOrUndefined(ievent.timestamp))     this.timestamp = ievent.timestamp;
+        if(!isNullOrUndefined(ievent.description))   this.description = ievent.description;
+        if(!isNullOrUndefined(ievent.userId))        this.userId = ievent.userId;
+        if(!isNullOrUndefined(ievent.parentEventId)) this.parentEventId = ievent.parentEventId;
+    }
+
+    public static fromInterface(ievent: ISubmissionEvent): SubmissionEvent {
+        const event = new SubmissionEvent();
+        event.update(ievent);
+        if(!isNullOrUndefined(ievent.id)) event.id = ievent.id;
+        return event;
+    }
+
+    public proto(): ProtoSubmissionEvent {
+        return {
+            id: this.id,
+            description: this.description,
+            date: this.date,
+            timestamp: this.timestamp,
+            user: this.user,
+            parentEvent: !isNullOrUndefined(this.parentEvent)?this.parentEvent.id:null,
+        };
     }
 }
 
-export class SubmissionEventPrototype {
-    public id: number;
-    public description: string;
-    public date: Date;
-    public timestamp: number;
-    public user: User;
-    public annotation: number;
-    public parentSubmission: number;
-    public childSubmission: number[]
 
-    constructor(submit: SubmissionEvent){
-        this.id = submit.id;
-        this.description = submit.description;
-        this.date = submit.date;
-        this.timestamp = submit.timestamp;
-        this.user = submit.user;
-        this.annotation = !isNullOrUndefined(submit.annotation)?submit.annotation.id:null;
-        this.parentSubmission = !isNullOrUndefined(submit.parentSubmission)?submit.parentSubmission.id:null;
-        this.childSubmission = submit.childSubmission.map(s=>s.id);
-    }
+export interface ISubmissionEvent {
+    id?: number;
+    date?: Date;
+    timestamp?: number;
+    description?: string;
+    userId?: number;
+    parentEventId?: number;
+}
+
+
+export interface ProtoSubmissionEvent {
+    id: number;
+    description: string;
+    date: Date;
+    timestamp: number;
+    user: User;
+    parentEvent: number;
 }

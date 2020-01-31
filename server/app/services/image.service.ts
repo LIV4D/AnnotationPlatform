@@ -5,11 +5,12 @@ import * as path from 'path';
 import * as sharp from 'sharp';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
-import { Image, Metadata } from '../models/image.model';
+
+import { Image, IImage, Metadata } from '../models/image.model';
 import { ImageRepository } from '../repository/image.repository';
 import { createError } from '../utils/error';
 import { searchFileByName } from '../utils/filesystem'
-import { IImage } from '../../../common/interfaces';
+
 
 @injectable()
 export class ImageService {
@@ -18,12 +19,7 @@ export class ImageService {
 
     public async createImage(newImage: IImage, imageLocalPath: string, preprocessingPath:string=null) {
         // Setup new image entity
-        let image = new Image();
-        image.preprocessing = preprocessingPath!==null;
-        image.metadata = newImage.metadata;
-        image.type = newImage.type;
-        
-        console.log(newImage);
+        let image = Image.fromInterface(newImage);
 
         // Add entity to image repository. After this line image has an id.
         image = await this.imageRepository.create(image);
@@ -34,22 +30,18 @@ export class ImageService {
         
         return image;
     }
-
+/* 
     public async uploadImage(newImage: IImage) {
         const image = new Image();
         image.type = newImage.type;
         image.metadata = newImage.metadata;
         return await this.imageRepository.create(image);
-    }
+    } */
 
     public async updateImage(updatedImage: IImage) {
-        const oldImage = await this.getImage(updatedImage.id);
-        for (const key of Object.keys(updatedImage)) {
-            if (updatedImage[key] != null) {
-                oldImage[key] = updatedImage[key];
-            }
-        }
-        return await this.imageRepository.update(oldImage);
+        const image = await this.getImage(updatedImage.id);
+        image.update(updatedImage);
+        return await this.imageRepository.update(image);
     }
 
     public async updateImageFile(imageId: number, imageLocalPath: string, checkDatabase=true){
@@ -60,16 +52,16 @@ export class ImageService {
         }
 
         try{
-            const sourcePath = path.parse(imageLocalPath);
-            const destPath = path.join(config.get('storageFolders.image'), imageId.toString()+sourcePath.ext);
+            const destPath = path.join(config.get('storageFolders.image'), imageId.toString()+'.jpg');
             const thumbnailPath = path.join(config.get('storageFolders.thumbnail'), imageId.toString()+'.jpg');
 
             // Remove previous image and thumbnail if they exist
             if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
             if(fs.existsSync(thumbnailPath)) fs.unlinkSync(thumbnailPath);
 
-            // Move image to permanent folder
-            fs.renameSync(imageLocalPath, destPath);
+            // Convert image and save it to permanent folder
+            await sharp(imageLocalPath).jpeg()
+                                       .toFile(destPath);
 
             // Create and write thumbnail
             const thumbnail = await sharp(destPath).resize(127)
@@ -93,14 +85,14 @@ export class ImageService {
             }
         }
         try{
-            const sourcePath = path.parse(preprocessingLocalPath);
-            const destPath = path.join(config.get('storageFolders.preprocessing'), imageId.toString()+'.'+sourcePath.ext);
+            const destPath = path.join(config.get('storageFolders.preprocessing'), imageId.toString()+'.jpg');
             
              // Remove previous image and thumbnail if they exist
              if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
 
-            // Move preprocessing to permanent folder
-            fs.renameSync(preprocessingLocalPath, destPath);
+            // Convert image and save it to permanent folder
+            await sharp(preprocessingLocalPath).jpeg()
+                                               .toFile(destPath);
         }catch(err){
             throw createError('Error while uploading Preprocessing.\n'+err, 409);
         }
@@ -202,7 +194,7 @@ export class ImageService {
         return await this.imageRepository.findAll();
     }
 
-    public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string) {
+    public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string): Promise<Image[]> {
         return await this.imageRepository.findAllWithCount(sort, order, page, pageSize, filters);
     }
 
@@ -212,9 +204,7 @@ export class ImageService {
             throw createError('This image does not exist.', 404);
         if (image.annotations.length > 0)
             throw createError('This image has revisions depending on it', 409);
-        if (image.tasks.length > 0)
-            throw createError('This image has tasks depending on it', 409);
-
+        
         // Delete image file
         const imgFile = this.getImagePathSync(image.id);
         if (fs.existsSync(imgFile)){

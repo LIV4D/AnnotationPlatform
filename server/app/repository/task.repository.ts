@@ -4,7 +4,7 @@ import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
-import { ITaskGallery } from '../../../common/interfaces';
+import { ITaskGallery } from '../interfaces/gallery.interface';
 import { ImageService } from '../services/image.service';
 import { DeleteResult } from 'typeorm';
 
@@ -67,7 +67,7 @@ export class TaskRepository {
         .createQueryBuilder('task')
         .where('task.user.id = :id', { id: userId })
         .andWhere('task.isVisible = :visible', { visible: true })
-        .leftJoinAndSelect('task.image', 'image')
+        .leftJoinAndSelect('task.image.annotation', 'annotation')
         .leftJoinAndSelect('task.taskGroup', 'taskGroup');
 
         const tasks =  await qb.getMany();
@@ -76,7 +76,7 @@ export class TaskRepository {
         taskList = tasks.map(task => {
             let dataUrl = '';
             try {
-                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(task.image.id)), 'base64');
+                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(task.annotation.image.id)), 'base64');
                 dataUrl = 'data:image/png;base64, ' + base64Image;
             } catch (error) {
                 throw(error);
@@ -86,7 +86,7 @@ export class TaskRepository {
                 isComplete: task.isComplete,
                 thumbnail: dataUrl,
                 taskGroupTitle: task.type.title,
-                imageId: task.image.id,
+                imageId: task.annotation.image.id,
             };
             return taskGallery;
         });

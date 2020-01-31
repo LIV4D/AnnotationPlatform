@@ -1,6 +1,6 @@
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
-import { Image, ImageViewModel } from '../models/image.model';
+import { Image } from '../models/image.model';
 import { DeleteResult, SelectQueryBuilder } from 'typeorm';
 
 @injectable()
@@ -19,7 +19,7 @@ export class ImageRepository {
     }
 
     // tslint:disable-next-line: max-line-length
-    public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string) {
+    public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<Image[]> {
         const connection = await this.connectionProvider();
 
         const queryBuilder = connection.getRepository(Image)
@@ -32,8 +32,7 @@ export class ImageRepository {
             queryBuilder.orderBy(sort, 'DESC');
         }
         const queryResult = await this.filterImages(queryBuilder, filters);
-        const imageViewModel: ImageViewModel = { images: queryResult[0], count: queryResult[1] };
-        return imageViewModel;
+        return queryResult[0];
     }
 
     private async filterImages(queryBuilder: SelectQueryBuilder<Image>, filters?: string): Promise<[Image[], number]> {

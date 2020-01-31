@@ -1,7 +1,8 @@
-import 'reflect-metadata';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, OneToOne } from 'typeorm';
-import { Image, ImagePrototype } from './image.model';
-import { SubmissionEvent, SubmissionEventPrototype } from './submissionEvent.model';
+import { isNullOrUndefined } from 'util';
+
+import { Image, ProtoImage } from './image.model';
+import { SubmissionEvent, ProtoSubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
 
 export class StringHierarchy { [key:string]: StringHierarchy | string}
@@ -18,15 +19,11 @@ export class Annotation {
     @PrimaryGeneratedColumn('increment')
     public id: number;
 
-    @ManyToOne(type => Image, image => image.annotations)
+    @ManyToOne(type => Image, image => image.annotations, {eager: true})
     public image: Image;
 
-    @OneToOne(type => SubmissionEvent, evenements => evenements.annotation)
-    @JoinColumn()
-    public lastSubmissionEvent: SubmissionEvent;
-
-    @OneToMany(type => Task, tasks => tasks.annotation)
-    public tasks: Task[];
+    @Column({ nullable: true })
+    public imageId: number;
 
     @Column('jsonb', {nullable: true })
     public data: AnnotationData;
@@ -34,24 +31,60 @@ export class Annotation {
     @Column({ nullable: true })
     public comment: string;
 
-    prototype(): AnnotationPrototype {
-        return new AnnotationPrototype(this);
+    @OneToOne(type => SubmissionEvent, evenements => evenements.annotation, {eager: true})
+    @JoinColumn()
+    public submitEvent: SubmissionEvent;
+
+    @Column({ nullable: true })
+    public submitEventId: number;
+
+    @OneToMany(type => Task, tasks => tasks.annotation)
+    public tasks: Task[];
+
+    public interface(): IAnnotation {
+        return {id: this.id,
+                imageId: this.imageId,
+                submitEventId: this.submitEventId,
+                data: this.data,
+                comment: this.comment};
+    }
+
+    public update(iannotation: IAnnotation): void {
+        if(!isNullOrUndefined(iannotation.data))            this.data = iannotation.data;
+        if(!isNullOrUndefined(iannotation.comment))         this.comment = iannotation.comment;
+        if(!isNullOrUndefined(iannotation.submitEventId))  this.submitEventId = iannotation.submitEventId;
+    } 
+
+    public static fromInterface(iannotation: IAnnotation): Annotation {
+        const a = new Annotation();
+        if(!isNullOrUndefined(iannotation.id))             a.id = iannotation.id;
+        if(!isNullOrUndefined(iannotation.imageId))        a.imageId = iannotation.imageId;
+        a.update(iannotation);
+        return a;
+    }
+
+    public proto(): ProtoAnnotation {
+        return {id: this.id,
+                image: this.image.proto(),
+                comment: this.comment,
+                submitEvent: this.submitEvent.proto(),
+            };
     }
 }
 
 
-export class AnnotationPrototype {
-    public id: number;
-    public image: ImagePrototype;
-    public comment: string;
-    public lastSubmissionEvent: SubmissionEventPrototype;
-    public tasks: number[];
+export interface IAnnotation {
+    id?: number;
+    imageId?: number;
+    data?: AnnotationData;
+    comment?: string;
+    submitEventId?: number;
+}
 
-    constructor(annotation: Annotation) {
-        this.id = annotation.id;
-        this.image = annotation.image.prototype();
-        this.comment = annotation.comment;
-        this.lastSubmissionEvent = annotation.lastSubmissionEvent.prototype();
-        this.tasks = annotation.tasks.map(t=>t.id);
-    }
+
+export interface ProtoAnnotation {
+    id: number;
+    image: ProtoImage;
+    comment: string;
+    submitEvent: ProtoSubmissionEvent;
 }

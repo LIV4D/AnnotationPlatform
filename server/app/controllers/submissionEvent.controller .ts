@@ -19,7 +19,7 @@ export class SubmissionEventController implements IController {
     }
 
     private get = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.submissionService.get(req.params.id, req)
+        this.submissionService.get(req.params.id)
             .then(event => {
                 res.send(event);
             })
@@ -27,10 +27,10 @@ export class SubmissionEventController implements IController {
     }
 
     private getField = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.submissionService.get(req.params.id, req)
+        this.submissionService.get(req.params.id)
             .then(event => {
                 switch(req.params.field){
-                    case "proto": res.send(event.prototype()); break
+                    case "proto": res.send(event.proto()); break
                 }
             })
             .catch(next);

@@ -24,9 +24,9 @@ export class UserRepository {
         return await connection.getRepository(User).save(user);
     }
     // TODO: delete this method
-    public async find(id: string): Promise<User> {
+    public async find(id: number): Promise<User> {
         const connection = await this.connectionProvider();
-        return await connection.getRepository(User).findOne({ where: { id } });
+        return await connection.getRepository(User).findOne(id);
     }
 
     public async findByEmail(email: string): Promise<User> {

@@ -7,7 +7,7 @@ import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { UserService } from '../services/user.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { IUser } from '../../../common/interfaces';
+import { IUser } from '../models/user.model';
 
 @injectable()
 export class UserController implements IController {
@@ -26,7 +26,7 @@ export class UserController implements IController {
     }
 
     private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         this.userService.getUsers()
             .then(users => {
                 users.forEach(user => {
@@ -40,7 +40,7 @@ export class UserController implements IController {
     }
 
     private createUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         const newUser: IUser = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -78,7 +78,7 @@ export class UserController implements IController {
     }
 
     private updateUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         const newUser: IUser = {
             id: req.params.userId,
             firstName: req.body.firstName,
@@ -96,7 +96,7 @@ export class UserController implements IController {
     }
 
     private deleteUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         this.userService.deleteUser(req.params.userId)
             .then(() => res.sendStatus(204))
             .catch(next);
@@ -110,7 +110,7 @@ export class UserController implements IController {
     }
 
     private getLastEventFromUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req);
+        throwIfNotAdmin(req.user);
         this.userService.getLastEventFromUser(req.params.userId).then(event => {
             res.send(event);
         }).catch(next);

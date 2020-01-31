@@ -16,7 +16,7 @@ def cli_method(f):
     @functools.wraps(f)
     def cli_command_wrapper(*args, **kwargs):
         try:
-            return f(*args, *kwargs)
+            return f(*args, **kwargs)
         except Server.BackendError as e:
             raise Server.BackendError(e.msg, e.server) from None
     return cli_command_wrapper
@@ -250,7 +250,7 @@ def cli_method(f):
     @functools.wraps(f)
     def cli_command_wrapper(*args, **kwargs):
         try:
-            return f(*args, *kwargs)
+            return f(*args, **kwargs)
         except Server.BackendError as e:
             raise Server.BackendError(e.msg, e.server) from None
     return cli_command_wrapper

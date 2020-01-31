@@ -1,10 +1,12 @@
 import * as express from 'express';
-import { IController } from './abstractController.controller';
-import { IAnnotation } from '../../../common/interfaces';
 import { inject, injectable } from 'inversify';
-import TYPES from '../types';
-import { AnnotationService } from '../services/annotation.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import TYPES from '../types';
+
+import { IController } from './abstractController.controller';
+import { IAnnotation } from '../models/annotation.model';
+import { AnnotationService } from '../services/annotation.service';
+
 
 @injectable()
 export class AnnotationController implements IController {
@@ -28,7 +30,7 @@ export class AnnotationController implements IController {
             imageId: req.body.imageId,
             comment: req.body.comment,
         };
-        this.annotationService.create(newAnnotation, req)
+        this.annotationService.create(newAnnotation, req.user)
             .then(annotation => res.send(annotation))
             .catch(next);
     }
@@ -40,17 +42,14 @@ export class AnnotationController implements IController {
             data: req.body.data,
             comment: req.body.comment,
         };
-        this.annotationService.update(newAnnotation, req)
+        this.annotationService.update(newAnnotation, req.user)
                             .then(updatedAnnotation => res.send(updatedAnnotation))
                             .catch (next);
     }
 
     private deleteAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user.id);
-        const oldAnnotation: IAnnotation = {
-            id: req.params.annotationId as number,
-        };
-        this.annotationService.delete(oldAnnotation)
+        throwIfNotAdmin(req.user);
+        this.annotationService.delete(req.params.annotationId)
         .then(() => res.sendStatus(204))
         .catch(next);
     }
@@ -59,15 +58,8 @@ export class AnnotationController implements IController {
         const annotationInfo: IAnnotation = {
             id: req.params.annotationId as number,
         };
-        this.annotationService.getAnnotation(annotationInfo.id)
-        .then(originalAnnotation => {
-            const newAnnotation: IAnnotation = {
-                data: originalAnnotation.data,
-                imageId: originalAnnotation.image.id,
-                comment: originalAnnotation.comment,
-            };
-            res.send(this.annotationService.create(newAnnotation, req));
-        })
+        this.annotationService.clone(annotationInfo.id, req.user)
+        .then(clonedAnnotation => res.send(clonedAnnotation))
         .catch(next);
     }
 
@@ -82,7 +74,7 @@ export class AnnotationController implements IController {
         .then(annotation => {
             switch(req.params.field){
                 case "comment": res.send({ comment: annotation.comment }); break
-                case "proto": res.send(annotation.prototype); break
+                case "proto": res.send(annotation.proto); break
                 case "data": res.send(annotation.data); break
             }
         }).catch(next);
