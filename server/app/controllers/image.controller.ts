@@ -3,8 +3,8 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as multer from 'multer';
 import * as path from 'path';
-import * as uniqueFilename from 'unique-filename';
 import TYPES from '../types';
+import * as tmp from 'tmp'
 import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { ImageService } from '../services/image.service';
@@ -28,8 +28,8 @@ export class ImageController implements IController {
         filename: (req:express.Request, file, callback) => {
             if (isAdmin(req) === false) {
                 callback(createError('User is not admin.', 401), null);
-            }
-            const unique_filename = path.parse(config.get('storageFolders.tmp')).name;
+            }   
+            const unique_filename = path.parse(tmp.tmpNameSync(config.get('storageFolders.tmp'))).name;
             callback(null, unique_filename+path.parse(file.originalname).ext);
         }
     });

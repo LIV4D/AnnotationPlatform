@@ -62,7 +62,7 @@ export class ImageService {
         try{
             const sourcePath = path.parse(imageLocalPath);
             const destPath = path.join(config.get('storageFolders.image'), imageId.toString()+sourcePath.ext);
-            const thumbnailPath = path.join(config.get('storageFolders.thumbnail'), imageId.toString()+'.jpg'););
+            const thumbnailPath = path.join(config.get('storageFolders.thumbnail'), imageId.toString()+'.jpg');
 
             // Remove previous image and thumbnail if they exist
             if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
