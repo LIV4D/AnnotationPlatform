@@ -44,7 +44,6 @@ class TaskTable(EntityTable):
             assign_to = assign_to.id
         if assign_to is not None:
             payload.assignedUserId = assign_to
-        print(payload)
         return server.post('/api/tasks/create', payload=payload)
 
     @cli_method
