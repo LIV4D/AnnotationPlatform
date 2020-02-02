@@ -15,7 +15,7 @@ def cli_method(f):
     @functools.wraps(f)
     def cli_command_wrapper(*args, **kwargs):
         try:
-            return f(*args, *kwargs)
+            return f(*args, **kwargs)
         except Server.BackendError as e:
             raise Server.BackendError(e.msg, e.server) from None
     return cli_command_wrapper
@@ -29,7 +29,7 @@ def _format_entity(entity, data):
         from json import loads
         data = loads(data)
     if is_dict(data):
-        return entity.from_json(data)
+        return entity.from_json(data, )
     elif isinstance(data, (list, tuple)):
         return EntityList.from_json(entity, data)
     raise ValueError("Type %s is not parsable as %s." % (data_type.__name__, entity.__name__))
@@ -65,16 +65,17 @@ class Entity(JSONClass):
         pk = self.primary_key()
         return None if pk is None else self.get(pk)
 
+    def __str__(self):
+        return str(self.primary_key_value())
+
     def __repr__(self):
         pk_name = self.primary_key()
         pk = None if pk_name is None else self.get(pk_name, None)
         classname = self.__class__.__name__
-        attributes = [name+": "+repr(value).replace("\n", "\n  |   |"+" "*len(name)) for name, value in self.attributes(JSONAttribute).items() if name != pk_name]
+        attributes = [name+": "+repr(value).replace("\n", "\n  |   "+(' ' if isinstance(value, Entity) else '|')+" "*len(name))
+                      for name, value in self.attributes(JSONAttribute).items() if name != pk_name]
         return "\n  |  ".join([classname + ("" if pk is None else "[%s=%s]" % (pk_name, str(pk)))]
                               + attributes)
-
-    def attr_changed(self, attr):
-        pass
 
     # Table Shortcuts
     @classmethod
@@ -89,6 +90,10 @@ class Entity(JSONClass):
 
     def delete(self):
         self.table().delete(self)
+
+    def attr_to_json(self, attr, value, context=None):
+        if isinstance(value, Entity) and isinstance(context, dict) and context.get('entity_to_str', False):
+            return str(value)
 
 
 class EntityTable:
@@ -121,6 +126,8 @@ class EntityTable:
             single = True
             id = [id]
         r = self._getById(id)
+        if isinstance(r, requests.Response):
+            r = r.json()
         if single:
             r = r[0]
         return _format_entity(self.__entity__, r)
@@ -226,44 +233,24 @@ class EntityList:
     def keys(self):
         return (e.primary_key_value() for e in self._list)
 
-    def to_json(self, to_str=False):
+    def to_json(self, to_str=False, entity_to_str=False):
         if not to_str:
             l = []
             for v in self._list:
                 if isinstance(v, JSONClass):
-                    v = v.to_json(to_str=False)
+                    v = v.to_json(to_str=False, context={'entity_to_str': entity_to_str})
                 l.append(v)
             return l
         else:
             from json import dumps
             return dumps(self.to_json(to_str=False), indent=True)
 
-    def to_pandas(self):
+    def to_pandas(self, entity_to_str=False):
         from pandas.io.json import json_normalize
-        return json_normalize(self.to_json(to_str=False))
+        return json_normalize(self.to_json(to_str=False, entity_to_str=entity_to_str))
 
     def __repr__(self):
         if self.__len__():
-            return repr(self.to_pandas())
+            return repr(self.to_pandas(entity_to_str=True))
         else:
             return "Empty %s list." % self._entity.__name__
-
-
-def format_entity(entity):
-    def decorator(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            r = f(*args, **kwargs)
-            return _format_entity(entity, r)
-        return wrapper
-    return decorator
-
-
-def cli_method(f):
-    @functools.wraps(f)
-    def cli_command_wrapper(*args, **kwargs):
-        try:
-            return f(*args, *kwargs)
-        except Server.BackendError as e:
-            raise Server.BackendError(e.msg, e.server) from None
-    return cli_command_wrapper

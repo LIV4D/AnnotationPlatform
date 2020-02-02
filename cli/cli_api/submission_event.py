@@ -10,11 +10,14 @@ class SubmissionEvent(Entity):
     date = JSONAttr.String(read_only=True)
     timestamp = JSONAttr.Float()
     user = JSONAttr(User, read_only=True)
-    parentEvent = JSONAttr.SameClass(read_only=True)
+    parentEventId = JSONAttr.Int(read_only=True)
 
     @classmethod
     def table(cls):
         return submissionEvents
+
+    def __str__(self):
+        return '%s [%s]' % (str(self.user), self.date)
 
 
 class SubmissionEventTable(EntityTable):
@@ -30,4 +33,4 @@ class SubmissionEventTable(EntityTable):
         return server.get("/api/submissionEvents/get/proto", payload={'ids': indexes})
 
 
-submissionEvents = SubmissionEvent()
+submissionEvents = SubmissionEventTable()

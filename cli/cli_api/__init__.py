@@ -11,7 +11,7 @@ from . import config
 class cli:
     annotations = annotations
     images = images
-    submission_event = submissionEvents
+    submission_events = submissionEvents
     task_types = taskTypes
     tasks = tasks
     users = users

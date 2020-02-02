@@ -71,7 +71,7 @@ class ClsAttribute:
         return None
 
     # --- GETTER / SETTER ---
-    def __set__(self, handler, value):
+    def set(self, handler, value):
         if handler is None:
             raise AttributeError('Read only')
         else:
@@ -82,6 +82,9 @@ class ClsAttribute:
                 handler._attr_changed(attr_name=self.name)
                 self.attr_changed(handler=handler, value=value)
 
+    def __set__(self, handler, value):
+        return self.set(handler, value)
+
     def check_attr(self, handler, value):
         return value
 
@@ -91,11 +94,14 @@ class ClsAttribute:
     def attr_changed(self, handler, value):
         pass
 
-    def __get__(self, instance, owner_type):
-        if instance is None:
+    def get(self, handler):
+        if handler is None:
             return self
         else:
-            return self.get_attr(handler=instance)
+            return self.get_attr(handler=handler)
+
+    def __get__(self, instance, owner_type):
+        return self.get(handler=instance)
 
     def get_attr(self, handler, default=None):
         return handler.__dict__.get(self.name, default)

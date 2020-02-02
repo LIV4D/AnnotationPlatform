@@ -8,7 +8,7 @@ import { createError } from '../utils/error';
 @injectable()
 export class SubmissionEventService {
 
-    @inject(TYPES.EvenementRepository)
+    @inject(TYPES.SubmissionEventRepository)
     private submissionEventRepository: SubmissionEventRepository;
 
     public async createSubmissionEvent(newEvenement: ISubmissionEvent): Promise<SubmissionEvent> {

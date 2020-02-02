@@ -16,6 +16,6 @@ export interface ITaskGallery {
     taskId: number;
     isComplete: boolean;
     thumbnail: string;
-    taskGroupTitle: string;
+    taskTypeTitle: string;
     imageId: number;
  }

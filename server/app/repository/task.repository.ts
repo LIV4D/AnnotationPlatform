@@ -39,29 +39,18 @@ export class TaskRepository {
         return await connection.getRepository(Task).findByIds(ids);
     }
 
-    public async findTasksByUser(userId: string): Promise<Task[]> {
-        const connection = await this.connectionProvider();
-        return await connection
-            .getRepository(Task)
-            .createQueryBuilder('task')
-            .where('task.user.id = :id', { id: userId })
-            .leftJoinAndSelect('task.image', 'image')
-            .leftJoinAndSelect('task.taskGroup', 'taskGroup')
-            .leftJoinAndSelect('task.user', 'user')
-            .getMany();
-    }
+    public async findByFilter(filter: {userId?:number, imageId?:number}): Promise<Task[]>{
+        let whereConditions = [];
+        if(filter.imageId!==undefined) 
+            whereConditions.push('task.annotation.image.id = '+filter.imageId.toString());
+        if(filter.userId!==undefined) 
+            whereConditions.push('task.assignedUser.id = '+filter.userId.toString());
 
-    public async findTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {
         const connection = await this.connectionProvider();
-        return await connection
-            .getRepository(Task)
-            .createQueryBuilder('task')
-            .where('task.user.id = :usrId', { usrId: userId })
-            .andWhere('task.image.id = :imgId', { imgId: imageId })
-            .andWhere('task.isVisible = :isVisible', { isVisible: true })
-            .leftJoinAndSelect('task.taskGroup', 'taskGroup')
-            .leftJoinAndSelect('task.user', 'user')
-            .getMany();
+        return await connection.getRepository(Task)
+                               .createQueryBuilder('task')
+                               .where(whereConditions.join(" AND "))
+                               .getMany()
     }
 
     public async findTaskListByUser(userId: string, page: number = 0,
@@ -71,9 +60,7 @@ export class TaskRepository {
         .getRepository(Task)
         .createQueryBuilder('task')
         .where('task.user.id = :id', { id: userId })
-        .andWhere('task.isVisible = :visible', { visible: true })
-        .leftJoinAndSelect('task.image.annotation', 'annotation')
-        .leftJoinAndSelect('task.taskGroup', 'taskGroup');
+        .andWhere('task.isVisible = :visible', { visible: true });
 
         const tasks =  await qb.getMany();
         let taskList: ITaskGallery[];
@@ -90,7 +77,7 @@ export class TaskRepository {
                 taskId: task.id,
                 isComplete: task.isComplete,
                 thumbnail: dataUrl,
-                taskGroupTitle: task.type.title,
+                taskTypeTitle: task.taskType.title,
                 imageId: task.annotation.image.id,
             };
             return taskGallery;

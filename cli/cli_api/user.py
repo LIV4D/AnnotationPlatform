@@ -13,6 +13,9 @@ class User(Entity):
     def table(cls):
         return users
 
+    def __str__(self):
+        return self.firstName + ' ' + self.lastName
+
 
 class UserTable(EntityTable):
     __entity__ = User
@@ -39,7 +42,7 @@ class UserTable(EntityTable):
         return server.put('/api/users/update/%i' % entity.id, payload=entity.to_json(to_str=False))
 
     def _getById(self, indexes):
-        return [server.get('/api/users/%i' % i) for i in indexes]
+        return [server.get('/api/users/get/%i' % i) for i in indexes]
 
 
 users = UserTable()

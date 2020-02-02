@@ -37,7 +37,7 @@ class ImageTable(EntityTable):
     @cli_method
     @format_entity()
     def list(self):
-        return server.get('/api/images/list/prototype')
+        return server.get('/api/images/list/proto')
 
     def _getById(self, indexes):
         return server.get('/api/images/get/proto', payload={'ids': indexes})

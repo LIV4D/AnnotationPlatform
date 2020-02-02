@@ -55,13 +55,16 @@ class AnnotationTable(EntityTable):
     __entity__ = Annotation
 
     @cli_method
-    def create(image: int, comment: str = None, data: AnnotationData = None):
+    @format_entity()
+    def create(self, image: int, comment: str = None, data: AnnotationData = None):
         if isinstance(image, Image):
             image = image.id
+        if data is None:
+            data = AnnotationData.create()
         comment = if_none(comment, "")
         payload = dict(comment=comment, imageId=image,
                        data=data.to_json(to_str=False))
-        return server.post("/api/annotation/create", payload)
+        return server.post("/api/annotations/create", payload=payload)
 
     @cli_method
     @format_entity()
@@ -69,7 +72,7 @@ class AnnotationTable(EntityTable):
         return server.get('/api/annotations/list/proto')
 
     def _getById(self, indexes):
-        return server.get('/api/annotation/get/proto', payload={'ids': indexes})
+        return server.get('/api/annotations/get/proto', payload={'ids': indexes})
 
     def _update(self, entity):
         return server.put('/api/annotations/update/%i' % entity.id, payload=entity.to_json(to_str=False))

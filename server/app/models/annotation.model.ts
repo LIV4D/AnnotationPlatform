@@ -22,20 +22,20 @@ export class Annotation {
     @ManyToOne(type => Image, image => image.annotations, {eager: true})
     public image: Image;
 
-    @Column({ nullable: true })
+    @Column()
     public imageId: number;
 
-    @Column('jsonb', {nullable: true })
+    @Column('jsonb')
     public data: AnnotationData;
 
-    @Column({ nullable: true })
+    @Column({ default: '' })
     public comment: string;
 
     @OneToOne(type => SubmissionEvent, evenements => evenements.annotation, {eager: true})
     @JoinColumn()
     public submitEvent: SubmissionEvent;
 
-    @Column({ nullable: true })
+    @Column()
     public submitEventId: number;
 
     @OneToMany(type => Task, tasks => tasks.annotation)

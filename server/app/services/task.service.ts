@@ -42,14 +42,14 @@ export class TaskService {
         return tasks;
     }
 
+    public async getTasksByFilter(filter: {userId?: number, imageId?: number}){
+        return this.taskRepository.findByFilter(filter);
+    }
+
     public async updateTask(updatedTask: ITask, user: User) {
         const oldTask = await this.getTask(updatedTask.id, user);
         oldTask.update(updatedTask);
         return await this.taskRepository.create(oldTask);
-    }
-
-    public async getTasksByUser(userId: string): Promise<Task[]> {
-        return await this.taskRepository.findTasksByUser(userId);
     }
 
     public async submitTask(submission: ISubmission, user: User) {
@@ -66,10 +66,6 @@ export class TaskService {
             data: submission.data,
         };
         this.annotationService.update(newAnnotation, user, {description: "Task submission", timestamp: submission.uptime});
-    }
-
-    public async getTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {
-        return await this.taskRepository.findTasksByUserByImage(userId, imageId);
     }
 
     public async getUserGallery(userId: string, page?: number, pageSize?: number, isComplete?: boolean): Promise<ITaskGallery[]> {

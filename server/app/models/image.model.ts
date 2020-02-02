@@ -13,15 +13,14 @@ export class Image {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column({ nullable: true })
+    @Column()
     public preprocessing: boolean;
 
     @Column('jsonb')
     public metadata: Metadata;
 
-    @Column({ nullable: false })
+    @Column()
     public type: string;
-
 
     @OneToMany(type => Annotation, annotation => annotation.image)
     public annotations: Annotation[];

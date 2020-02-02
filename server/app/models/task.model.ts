@@ -10,16 +10,16 @@ export class Task {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => TaskType, taskGroup => taskGroup.tasks, {eager: true})
-    public type: TaskType;
+    @ManyToOne(type => TaskType, taskType => taskType.tasks, {eager: true})
+    public taskType: TaskType;
 
-    @Column({ nullable: true })
-    public typeId: number;
+    @Column()
+    public taskTypeId: number;
 
     @ManyToOne(type => Annotation, annotation => annotation.tasks, {eager: true})
     public annotation!: Annotation;
 
-    @Column({ nullable: true })
+    @Column()
     public annotationId: number;
 
     @Column({ default: true })
@@ -28,7 +28,7 @@ export class Task {
     @Column({ default: false })
     public isComplete: boolean;
 
-    @Column({ nullable: true })
+    @Column({ default: '' })
     public comment: string;
 
     @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true})
@@ -40,13 +40,13 @@ export class Task {
     @ManyToOne(type => User, user => user.createdTasks, {eager: true})
     public creator: User;
 
-    @Column({ nullable: true })
+    @Column()
     public creatorId: number;
 
     public interface(): ITask {
         return {
             id: this.id,
-            typeId: this.typeId,
+            taskTypeId: this.taskTypeId,
             annotationId: this.annotationId,
             isComplete: this.isComplete,
             isVisible: this.isVisible,
@@ -57,7 +57,7 @@ export class Task {
     }
 
     public update(itask: ITask): void {
-        if(!isNullOrUndefined(itask.typeId))         this.typeId = itask.typeId; 
+        if(!isNullOrUndefined(itask.taskTypeId))         this.taskTypeId = itask.taskTypeId; 
         if(!isNullOrUndefined(itask.annotationId))   this.annotationId = itask.annotationId;
         if(!isNullOrUndefined(itask.isComplete))     this.isComplete = itask.isComplete;
         if(!isNullOrUndefined(itask.isVisible))      this.isVisible = itask.isVisible;
@@ -76,7 +76,7 @@ export class Task {
     public proto(): ProtoTask {
         return {
             id: this.id,
-            type: this.type.proto(),
+            taskType: this.taskType.proto(),
             annotation: this.annotation.proto(),
             isComplete: this.isComplete,
             isVisible: this.isVisible,
@@ -90,7 +90,7 @@ export class Task {
 
 export interface ITask {
     id?: number;
-    typeId?: number;
+    taskTypeId?: number;
     annotationId?: number;
     isComplete?: boolean;
     isVisible?: boolean;
@@ -102,7 +102,7 @@ export interface ITask {
 
 export interface ProtoTask {
     id: number;
-    type: ProtoTaskType;
+    taskType: ProtoTaskType;
     annotation: ProtoAnnotation;
     isComplete: boolean;
     isVisible: boolean;

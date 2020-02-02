@@ -2,13 +2,14 @@ from .server import server
 from .entity_api import EntityTable, Entity, JSONAttr, PRIMARY, cli_method, format_entity
 from .task_type import TaskType
 from .annotation import Annotation, annotations
+from .image import Image
 from .user import User
 from .utilities.collections import if_none, AttributeDict
 
 
 class Task(Entity):
     id = PRIMARY(JSONAttr.Int())
-    type = JSONAttr(TaskType)
+    taskType = JSONAttr(TaskType)
     annotation = JSONAttr(Annotation)
     isComplete = JSONAttr.Bool()
     isVisible = JSONAttr.Bool()
@@ -25,23 +26,25 @@ class TaskTable(EntityTable):
     __entity__ = Task
 
     @cli_method
-    def create(self, type, annotation=None, complete=False, visible=True, comment=None, assign_to=None):
+    @format_entity()
+    def create(self, type, annotation, complete=False, visible=True, comment=None, assign_to=None):
         payload = AttributeDict.create(
-                    type=type.id if isinstance(type, TaskType) else type,
+                    taskTypeId=type.id if isinstance(type, TaskType) else type,
                     isComplete=complete,
                     isVisible=visible,
                     comment=if_none(comment, ""))
 
-        if annotation is None:
-            annotation = annotations.create()
         if isinstance(annotation, Annotation):
             annotation = annotation.id
-        payload.annotation = annotation
+        elif isinstance(annotation, Image):
+            annotation = annotations.create(image=annotation)
+        payload.annotationId = annotation
 
         if isinstance(assign_to, User):
             assign_to = assign_to.id
         if assign_to is not None:
-            payload.assignedUser = assign_to
+            payload.assignedUserId = assign_to
+        print(payload)
         return server.post('/api/tasks/create', payload=payload)
 
     @cli_method
@@ -54,6 +57,9 @@ class TaskTable(EntityTable):
 
     def _getById(self, indexes):
         return server.get("/api/tasks/get/proto", payload={'ids': indexes})
+
+    def _delete(self, id):
+        return server.delete('/api/tasks/delete/%i' % id)
 
 
 tasks = TaskTable()

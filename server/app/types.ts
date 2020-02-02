@@ -9,16 +9,16 @@ const TYPES = {
     ImageRepository: Symbol.for('ImageRepository'),
     AnnotationRepository: Symbol.for('AnnotationRepository'),
     TaskRepository: Symbol.for('TaskRepository'),
-    TaskTypeRepository: Symbol.for('TaskGroupRepository'),
+    TaskTypeRepository: Symbol.for('TaskTypeRepository'),
     UserRepository: Symbol.for('UserRepository'),
-    EvenementRepository: Symbol.for('EvenementRepository'),
+    SubmissionEventRepository: Symbol.for('SubmissionEventRepository'),
     // Services
     ImageService: Symbol.for('ImageService'),
     AnnotationService: Symbol.for('AnnotationService'),
     TaskService: Symbol.for('TaskService'),
-    TaskGroupService: Symbol.for('TaskGroupService'),
+    TaskTypeService: Symbol.for('TaskTypeService'),
     UserService: Symbol.for('UserService'),
-    EvenementService: Symbol.for('EvenementService'),
+    SubmissionEventService: Symbol.for('SubmissionEventService'),
 };
 
 export default TYPES;

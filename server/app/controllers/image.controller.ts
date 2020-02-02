@@ -49,14 +49,14 @@ export class ImageController implements IController {
 
         // List
         app.get('/api/images/list', this.list);
-        app.get('/api/images/list/:attr', this.list);
+        app.get('/api/images/list/:attr([a-zA-Z][a-zA-Z0-9]+)', this.list);
         app.get('/api/images/gallery', this.getGallery);
         
         // Get
-        app.get('/api/images/get/:imageId', this.getTask);
-        app.get('/api/images/get/:imageId/:attr', this.getTask);
+        app.get('/api/images/get/:imageId([0-9]+)', this.getTask);
+        app.get('/api/images/get/:imageId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getTask);
         app.get('/api/images/get', this.getMultipleTasks);
-        app.get('/api/images/get/:attr', this.getMultipleTasks);
+        app.get('/api/images/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleTasks);
 
         // Download image files
         app.get('/api/images/download/:imageId/raw', this.getImageFile);
@@ -85,7 +85,7 @@ export class ImageController implements IController {
         }
 
         this.imageService.createImage(newImage, imageFile.path, preprocessingPath)
-            .then(image => res.send(image))
+            .then(image => res.send(image.proto()))
             .catch(next);
     }
 

@@ -11,10 +11,10 @@ export class TaskType {
     @Column({ length : 32, unique : true })
     public title: string;
 
-    @Column({ nullable: false })
+    @Column({ default: '' })
     public description: string;
 
-    @OneToMany(type => Task, task => task.type)
+    @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
 
     public interface(): ITaskType {
@@ -26,13 +26,13 @@ export class TaskType {
     }
 
     public update(itype: ITaskType): void {
-        if(isNullOrUndefined(itype.title))       this.title = itype.title;
-        if(isNullOrUndefined(itype.description)) this.description = itype.description;
+        if(!isNullOrUndefined(itype.title))       this.title = itype.title;
+        if(!isNullOrUndefined(itype.description)) this.description = itype.description;
     }
 
     public static fromInterface(itype: ITaskType): TaskType {
         const type = new TaskType();
-        if(isNullOrUndefined(itype.id)) type.id = itype.id;
+        if(!isNullOrUndefined(itype.id)) type.id = itype.id;
         type.update(itype);
         return type;
     }

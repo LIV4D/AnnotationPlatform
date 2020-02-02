@@ -81,9 +81,9 @@ def dict_walk(dict):
 
 
 def dict_walk_zip(dict1, dict2, raise_on_ignore=False):
-    for k, v2 in dict2.items():
+    for k, v1 in dict1.items():
         try:
-            v1 = dict1[k]
+            v2 = dict2[k]
         except KeyError:
             if raise_on_ignore:
                 raise KeyError('Unknown key %s.' % k)
@@ -168,6 +168,9 @@ class AttributeDict(OrderedDict):
         if item in self:
             return self[item]
         raise AttributeError('%s is unknown' % item)
+
+    def __setattr__(self, item, value):
+        self[item] = value
 
     def __iter__(self):
         for v in self.values():

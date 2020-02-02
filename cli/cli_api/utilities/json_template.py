@@ -41,9 +41,9 @@ class JSONAttribute(ClsAttribute):
             value = _parse_type(value, self)
         return value
 
-    def attr_to_json(self, handler, value):
+    def attr_to_json(self, handler, value, context=None):
         if isinstance(value, (JSONClass, JSONClassList)):
-            return value.to_json(to_str=False)
+            return value.to_json(to_str=False, context=context)
         return value
 
     def attr_from_json(self, handler, value):
@@ -51,8 +51,8 @@ class JSONAttribute(ClsAttribute):
 
     # ---   DECORATORS ---
     def to_json(self, f):
-        def attr_to_json(self, handler, value):
-            return f(handler, value)
+        def attr_to_json(self, handler, value, context=None):
+            return f(handler, value, context=context)
         self.attr_to_json = attr_to_json
 
     def from_json(self, f):
@@ -256,17 +256,17 @@ class JSONClassList:
         for k, v in self._mapping.items():
             yield k, self._list[v]
 
-    def to_json(self, to_str=True):
+    def to_json(self, to_str=True, context=None):
         if not to_str:
             l = []
             for v in self._list:
                 if isinstance(v, JSONClass):
-                    v = v.to_json(to_str=False)
+                    v = v.to_json(to_str=False, context=context)
                 l.append(v)
             return l
         else:
             from json import dumps
-            return dumps(self.to_json(to_str=False), indent=True)
+            return dumps(self.to_json(to_str=False, context=context), indent=True)
 
 
 class JSONClass(ClassAttrHandler):
@@ -324,7 +324,7 @@ class JSONClass(ClassAttrHandler):
         if attr is not None:
             if attr.read_only:
                 raise AttributeError('%s is a read-only attribute' % attr.name)
-            attr.set_attr(handler=self, value=value)
+            attr.set(handler=self, value=value)
         else:
             raise AttributeError('%s unknown.' % key)
 
@@ -333,7 +333,7 @@ class JSONClass(ClassAttrHandler):
             import json
             model = json.loads(model)
         if is_dict(model):
-            for d1, d2, k, v_old, v_new in dict_walk_zip(self.dict_template(), model, raise_on_ignore=True):
+            for d1, d2, k, v_old, v_new in dict_walk_zip(self.dict_template(), model, raise_on_ignore=False):
                 if isinstance(v_old, JSONAttribute):
                     attr = v_old
                     v_old = getattr(self, attr.name)
@@ -343,9 +343,9 @@ class JSONClass(ClassAttrHandler):
                         elif isinstance(attr, JSONClass):
                             v_old.update(v_new, recursive=recursive)
                         else:
-                            attr.set_attr(self, attr.attr_from_json(self, v_new))
+                            attr.set(self, attr.attr_from_json(self, v_new))
                     else:
-                        attr.set_attr(self, v_new)
+                        attr.set(self, v_new)
                 elif v_old != v_new:
                     raise JSONClass.ParseException('Value of %s is not compatible with %s template' % (k, type(self)))
         elif type(self) == type(model):
@@ -359,9 +359,9 @@ class JSONClass(ClassAttrHandler):
                     elif isinstance(attr, JSONClass):
                         v_old.update(v_new, recursive=recursive)
                     else:
-                        attr.set_attr(self, v_new)
+                        attr.set(self, v_new)
                 else:
-                    attr.set_attr(self, v_new)
+                    attr.set(self, v_new)
         else:
             raise ValueError('Invalid model: %s.' % repr(model))
 
@@ -388,16 +388,23 @@ class JSONClass(ClassAttrHandler):
         c.update(json, recursive=False)
         return c
 
-    def to_json(self, to_str=True):
+    def to_json(self, to_str=True, context=None):
         if not to_str:
             template = dict_deep_copy(self.dict_template())
             for d, k, v in dict_walk(template):
                 if isinstance(v, JSONAttribute):
-                    d[k] = v.attr_to_json(self, v.get_attr(self))
+                    v_attr = v.get_attr(self)
+                    v_json = self.attr_to_json(v, v_attr, context=context)
+                    if v_json is None:
+                        v_json = v.attr_to_json(self, v.get_attr(self), context=context)
+                    d[k] = v_json
             return template
         else:
             from json import dumps
             return dumps(self.to_json(to_str=False), indent=True)
+
+    def attr_to_json(self, attr, value, context=None):
+        pass
 
     def __getitem__(self, item):
         return DictTemplate(self, self.dict_template())[item]
@@ -441,7 +448,7 @@ class DictTemplate:
     def __setitem__(self, key, value):
         item = self._d[key]
         if isinstance(item, JSONAttribute):
-            item.set_attr(self._attr_handler(), value)
+            item.set(self._attr_handler(), value)
         else:
             raise KeyError('%s is part of the template %s and is not editable.'
                            % (key, type(self._attr_handler()).__name__))

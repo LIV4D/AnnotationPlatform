@@ -9,28 +9,28 @@ export class SubmissionEvent {
     @PrimaryGeneratedColumn('increment')
     public id: number;
 
-    @Column({ nullable: true })
+    @Column({ default: '' })
     public description: string;
 
-    @Column({ nullable: true })
+    @Column()
     public date: Date;
 
-    @Column({ nullable: true })
+    @Column({ default: 0 })
     public timestamp: number;
 
     @ManyToOne(type => User, user => user.submissions, {eager: true})
     public user: User;
 
-    @Column({ nullable: true })
+    @Column()
     public userId: number;
 
-    @OneToOne(type => Annotation, annotation => annotation.submitEvent, {nullable: true})
+    @OneToOne(type => Annotation, annotation => annotation.submitEvent)
     public annotation: Annotation;
 
-    @ManyToOne(type => SubmissionEvent, parentEvent => parentEvent.childEvents, {nullable: true, eager: true})
+    @ManyToOne(type => SubmissionEvent, parentEvent => parentEvent.childEvents, {nullable: true})
     public parentEvent: SubmissionEvent;
 
-    @Column({ nullable: true })
+    @Column({nullable: true})
     public parentEventId: number;
 
     @OneToMany(type => SubmissionEvent, child => child.parentEvent)
@@ -74,7 +74,7 @@ export class SubmissionEvent {
             date: this.date,
             timestamp: this.timestamp,
             user: this.user,
-            parentEvent: !isNullOrUndefined(this.parentEvent)?this.parentEvent.id:null,
+            parentEventId: this.parentEventId,
         };
     }
 }
@@ -96,5 +96,5 @@ export interface ProtoSubmissionEvent {
     date: Date;
     timestamp: number;
     user: User;
-    parentEvent: number;
+    parentEventId: number;
 }

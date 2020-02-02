@@ -22,6 +22,7 @@ class TaskTypeTable(EntityTable):
     __entity__ = TaskType
 
     @cli_method
+    @format_entity()
     def create(self, title, description):
         payload = dict(title=title, description=description)
         return server.post('/api/taskTypes/create', payload=payload)

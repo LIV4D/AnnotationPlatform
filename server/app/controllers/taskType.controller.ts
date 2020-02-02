@@ -8,7 +8,7 @@ import { ITaskType} from '../models/taskType.model'
 
 @injectable()
 export class TaskTypeController implements IController {
-    @inject(TYPES.TaskGroupService)
+    @inject(TYPES.TaskTypeService)
     private taskTypeService: TaskTypeService;
 
     public setRoutes(app: express.Application): void {
@@ -16,10 +16,10 @@ export class TaskTypeController implements IController {
         app.put('/api/taskTypes/update/:taskTypeId', this.updateTaskType);
         app.delete('/api/taskTypes/delete/:taskTypeId', this.deleteTaskType);
         // Get
-        app.get('/api/taskTypes/get/:taskTypeId', this.getTaskType);
-        app.get('/api/taskTypes/get/:taskTypeId/:attr', this.getTaskType);
+        app.get('/api/taskTypes/get/:taskTypeId([0-9]+)', this.getTaskType);
+        app.get('/api/taskTypes/get/:taskTypeId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getTaskType);
         app.get('/api/taskTypes/get', this.getMultipleTaskTypes);
-        app.get('/api/taskTypes/get/:attr', this.getMultipleTaskTypes);
+        app.get('/api/taskTypes/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleTaskTypes);
         // List
         app.get('/api/taskTypes/list', this.list);
         app.get('/api/taskTypes/list/:attr', this.list);
@@ -31,7 +31,7 @@ export class TaskTypeController implements IController {
             description: req.body.description,
         };
         this.taskTypeService.createTaskType(newTaskType)
-            .then(taskType => res.json(taskType.id))
+            .then(taskType => res.send(taskType.proto()))
             .catch(next);
     }
 

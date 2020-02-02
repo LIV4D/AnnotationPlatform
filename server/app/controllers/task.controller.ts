@@ -5,7 +5,7 @@ import { isNullOrUndefined } from 'util';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
-import { ITask } from '../models/task.model'
+import { Task, ITask } from '../models/task.model'
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
 
@@ -22,23 +22,24 @@ export class TaskController implements IController {
         app.post('api/tasks/submit/:taskId', this.submitTask);
 
         // Get
-        app.get('/api/tasks/get/:taskId', this.getTask);
+        app.get('/api/tasks/get/:taskId([0-9]+)', this.getTask);
+        app.get('/api/tasks/get/:taskId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getTask);
         app.get('/api/tasks/get', this.getMultipleTasks);
-        app.get('/api/tasks/get/:taskId/:attr', this.getTask);
-        app.get('/api/tasks/get/:attr', this.getMultipleTasks)
+        app.get('/api/tasks/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleTasks)
         app.get('/api/tasks/get/next/:userId', this.getNextTaskByUser);
 
         // List
         app.get('/api/tasks/list', this.list);
+        app.get('/api/tasks/list/:attr([a-zA-Z][a-zA-Z0-9]+)', this.list);
         app.get('/api/tasks/gallery/:userId', this.getUserGallery);
 
     }
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        
+        console.log(req.body);
         const newTask: ITask = {
-            typeId: req.body.typeId,
+            taskTypeId: req.body.taskTypeId,
             annotationId: req.body.annotationId,
             isComplete: req.body.isComplete === 'true',
             isVisible: req.body.isVisible === 'true',
@@ -47,84 +48,28 @@ export class TaskController implements IController {
             creatorId: req.user.id
         };
         this.taskService.createTask(newTask)
-            .then(task => res.json(task.id))
+            .then(task => { console.log(task); return res.send(task.proto())})
             .catch(next);
     }
 
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.taskService.getTask(req.params.taskId, req.user)
-            .then(task => {
-                delete task.assignedUser.password;
-                delete task.assignedUser.salt;
-                delete task.creator.password;
-                delete task.creator.salt;
-
-                switch(req.params.attr){
-                    case undefined: res.send(task); break;
-                    case "proto": res.send(task.proto()); break
-                }
-            })
+            .then(task => res.send(this.export_task(task, req.params.attr)))
             .catch(next);
     }
 
     private getMultipleTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const ids = req.body.ids;
         this.taskService.getTasks(ids)
-            .then(tasks => {
-                res.send(tasks.map( task => {
-                    delete task.assignedUser.password;
-                    delete task.assignedUser.salt;
-                    delete task.creator.password;
-                    delete task.creator.salt;
-
-                    switch(req.params.attr){
-                        case undefined:  return task;
-                        case "proto": return task.proto();
-                    }
-                    return null;
-                }));                
-            })
+            .then(tasks => res.send(tasks.map(task=>this.export_task(task, req.params.attr))))               
             .catch(next);
     }
 
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-
-        const isListByUser = !isNullOrUndefined(req.params.userId);
-        if (isListByUser) {
-            // if (req.params.userId !== req.user.id) {
-            //     throwIfNotAdmin(req);
-            // }
-
-            // list by user:
-            this.taskService.getTasksByUser(req.params.userId)
-            .then(tasks => {
-                const taskProtoTypes = tasks.map(task => {
-                    const iTask: ITask = {
-                        id: task.id,
-                        comment: task.comment,
-                        isComplete: task.isComplete,
-                    };
-                    return iTask;
-                });
-                res.send(taskProtoTypes);
-            })
+        const filter = isNullOrUndefined(req.body.filter) ? {} : req.body.filter; 
+        this.taskService.getTasksByFilter(filter)
+            .then(tasks => res.send(tasks.map(task=>this.export_task(task, req.params.attr))))
             .catch(next);
-        } else {
-            // throwIfNotAdmin(req);
-            this.taskService.getTasks()
-            .then(tasks => {
-                const taskProtoTypes = tasks.map(task => {
-                    const iTask: ITask = {
-                        id: task.id,
-                        comment: task.comment,
-                        isComplete: task.isComplete,
-                    };
-                    return iTask;
-                });
-                res.send(taskProtoTypes);
-            })
-            .catch(next);
-        }
     }
 
     private getUserGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -157,12 +102,27 @@ export class TaskController implements IController {
             next(error);
         }
     }
+
+    private export_task(task: Task, format: string): any {
+        if(!isNullOrUndefined(task.assignedUser)){
+            delete task.assignedUser.password;
+            delete task.assignedUser.salt;
+        }
+        delete task.creator.password;
+        delete task.creator.salt;
+
+        switch(format){
+            case undefined: return task;
+            case 'proto': return task.proto();
+        }
+        return null;
+    }
     
     private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         if (req.user.id !== req.params.userId) {
             throwIfNotAdmin(req.user);
         }
-        this.taskService.getTasksByUser(req.params.userId)
+        this.taskService.getTasksByFilter({userId: req.params.userId})
             .then(tasks => {
                 tasks.forEach((task) => {
                     if (!task.isComplete && !task.isVisible) {

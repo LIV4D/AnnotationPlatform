@@ -74,10 +74,8 @@ export class User {
     }
 
     public update(iuser: IUser){
-        if(!isNullOrUndefined(iuser.id))        this.id = iuser.id;
         if(!isNullOrUndefined(iuser.firstName)) this.firstName = iuser.firstName;
         if(!isNullOrUndefined(iuser.lastName))  this.lastName = iuser.lastName;
-        if(!isNullOrUndefined(iuser.email))     this.email = iuser.email;
         if(!isNullOrUndefined(iuser.isAdmin))   this.isAdmin = iuser.isAdmin;
         if(!isNullOrUndefined(iuser.password)) {
             const hash = User.hashPassword(iuser.password);
@@ -91,6 +89,8 @@ export class User {
 
     public static fromInterface(iuser: IUser): User {
         const u = new User();
+        if(!isNullOrUndefined(iuser.id))    u.id = iuser.id;
+        if(!isNullOrUndefined(iuser.email)) u.email = iuser.email;
         u.update(iuser);
         return u;
     }

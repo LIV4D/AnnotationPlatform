@@ -21,13 +21,13 @@ export class AnnotationController implements IController {
 
         // List
         app.get('/api/annotations/list', this.list);
-        app.get('/api/annotations/list/:attr', this.list);
+        app.get('/api/annotations/list/:attr([a-zA-Z][a-zA-Z0-9]+)', this.list);
 
         // Get
-        app.get('/api/annotations/get/:annotationId', this.getAnnotation);
-        app.get('/api/annotations/get/:annotationId/:attr', this.getAnnotation);
+        app.get('/api/annotations/get/:annotationId([0-9]+)', this.getAnnotation);
+        app.get('/api/annotations/get/:annotationId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get', this.getMultipleAnnotations);
-        app.get('/api/annotations/get/:attr', this.getMultipleAnnotations);
+        app.get('/api/annotations/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleAnnotations);
     }
 
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -38,7 +38,7 @@ export class AnnotationController implements IController {
             comment: req.body.comment,
         };
         this.annotationService.create(newAnnotation, req.user)
-            .then(annotation => res.send(annotation))
+            .then(annotation => {console.log(annotation); res.send(annotation.proto())})
             .catch(next);
     }
 

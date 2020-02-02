@@ -15,7 +15,7 @@ import { User } from '../models/user.model'
 export class AnnotationService {
     @inject(TYPES.AnnotationRepository)
     private annotationRepository: AnnotationRepository;
-    @inject(TYPES.EvenementService)
+    @inject(TYPES.SubmissionEventService)
     private submissionEventService: SubmissionEventService;
 
     public async create(newAnnotation: IAnnotation, user: User): Promise<Annotation> {
