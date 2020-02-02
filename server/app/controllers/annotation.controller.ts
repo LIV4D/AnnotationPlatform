@@ -38,7 +38,7 @@ export class AnnotationController implements IController {
             comment: req.body.comment,
         };
         this.annotationService.create(newAnnotation, req.user)
-            .then(annotation => {console.log(annotation); res.send(annotation.proto())})
+            .then(annotation => res.send(annotation.proto()))
             .catch(next);
     }
 

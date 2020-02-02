@@ -37,18 +37,17 @@ export class TaskController implements IController {
 
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        console.log(req.body);
         const newTask: ITask = {
             taskTypeId: req.body.taskTypeId,
             annotationId: req.body.annotationId,
-            isComplete: req.body.isComplete === 'true',
-            isVisible: req.body.isVisible === 'true',
+            isComplete: req.body.isComplete,
+            isVisible: req.body.isVisible,
             comment: req.body.comment,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id
         };
         this.taskService.createTask(newTask)
-            .then(task => { console.log(task); return res.send(task.proto())})
+            .then(task => res.send(task.proto()))
             .catch(next);
     }
 
@@ -79,7 +78,7 @@ export class TaskController implements IController {
         const userId = req.params.userId as string;
         const page = req.query.page as number;
         const pageSize = req.query.pageSize as number;
-        const isComplete = (req.query.isComplete === 'true');
+        const isComplete = req.query.isComplete;
 
         this.taskService
             .getUserGallery(userId, page, pageSize, isComplete)
@@ -92,7 +91,7 @@ export class TaskController implements IController {
             taskId: req.params.taskId as number,
             data: req.body.data,
             uptime: req.body.uptime,
-            isComplete: req.body.isComplete === 'true',
+            isComplete: req.body.isComplete,
         };
 
         try {
@@ -110,6 +109,9 @@ export class TaskController implements IController {
         }
         delete task.creator.password;
         delete task.creator.salt;
+
+        delete task.annotation.submitEvent.user.password;
+        delete task.annotation.submitEvent.user.salt;
 
         switch(format){
             case undefined: return task;
@@ -142,10 +144,10 @@ export class TaskController implements IController {
             isComplete: false,
         };
         if (!isNullOrUndefined(req.body.isVisible)) {
-            updatedTask.isVisible = (req.body.isVisible === 'true');
+            updatedTask.isVisible = req.body.isVisible;
         }
         if (!isNullOrUndefined(req.body.isComplete)) {
-            updatedTask.isComplete = (req.body.isComplete === 'true');
+            updatedTask.isComplete = req.body.isComplete;
         }
         this.taskService.updateTask(updatedTask, req.user)
             .then(task => res.send(task))

@@ -90,7 +90,7 @@ class JSONAttr(JSONAttribute):
     class Bool(JSONAttribute):
         def __init__(self, default=None, list=False, read_only=False):
             if default is None:
-                default = 0 if not list else []
+                default = False if not list else []
             super(JSONAttr.Bool, self).__init__(types=(bool,), default=default, islist=list, read_only=read_only)
 
     class Dict(JSONAttribute):

@@ -50,6 +50,9 @@ class Annotation(Entity):
     def table(cls):
         return annotations
 
+    def __str__(self):
+        return 'img=%i, %s' % (self.image.id, self.submitEvent.user)
+
 
 class AnnotationTable(EntityTable):
     __entity__ = Annotation

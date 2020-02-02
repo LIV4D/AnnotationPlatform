@@ -19,32 +19,34 @@ export class AnnotationRepository {
     }
 
     public async create(annotation: Annotation): Promise<Annotation> {
-        const connection =  await this.connectionProvider();
-        return await connection.getRepository(Annotation).save(annotation);
+        const repository =  (await this.connectionProvider()).getRepository(Annotation);
+        annotation = await repository.save(annotation, );
+        return await repository.findOne(annotation.id); // Reload foreign relation
     }
 
     public async update(annotation: Annotation): Promise<Annotation> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Annotation).save(annotation);
+        const repository =  (await this.connectionProvider()).getRepository(Annotation);
+        annotation = await repository.save(annotation, );
+        return await repository.findOne(annotation.id); // Reload foreign relation
     }
 
     public async find(id: number): Promise<Annotation> {
-        const connection =  await this.connectionProvider();
-        return await connection.getRepository(Annotation).findOne(id);
+        const repository =  (await this.connectionProvider()).getRepository(Annotation);
+        return await repository.findOne(id);
     }
 
     public async findByIds(ids: number[]): Promise<Annotation[]> {
-        const connection =  await this.connectionProvider();
-        return await connection.getRepository(Annotation).findByIds(ids);
+        const repository =  (await this.connectionProvider()).getRepository(Annotation);
+        return await repository.findByIds(ids);
     }
 
     public async findForImage(imageId: number): Promise<Annotation> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Annotation).findOne({ image: { id: imageId } });
+        const repository =  (await this.connectionProvider()).getRepository(Annotation);
+        return await repository.findOne({ image: { id: imageId } });
     }
 
     public async delete(annotation: Annotation): Promise<DeleteResult> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Annotation).delete(annotation);
+        const repository =  (await this.connectionProvider()).getRepository(Annotation);
+        return await repository.delete(annotation);
     }
 }

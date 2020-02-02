@@ -17,6 +17,9 @@ class TaskType(Entity):
     def table(cls):
         return taskTypes
 
+    def __str__(self):
+        return self.title
+
 
 class TaskTypeTable(EntityTable):
     __entity__ = TaskType

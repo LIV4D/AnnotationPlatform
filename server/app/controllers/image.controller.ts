@@ -70,9 +70,6 @@ export class ImageController implements IController {
             type: req.body.type,
             metadata: isNullOrUndefined(req.body.metadata)?new Metadata():req.body.metadata,
         };
-
-        console.log('payload', req.body);
-        console.log('files', req.files);
         
         const imageFile = req.files['image'][0];
         newImage.metadata['filename'] = imageFile.originalname;
@@ -145,7 +142,7 @@ export class ImageController implements IController {
                         const thumbPath = path.resolve(this.imageService.getThumbnailPathSync(image.id));
                         item.thumbnail = 'data:image/jpg;base64, ' + fs.readFileSync(thumbPath, 'base64');
                     } catch {
-                        console.log(`Thumbnail for image `+image.id.toString()+` not found.`);
+                        console.error(`Thumbnail for image `+image.id.toString()+` not found.`);
                     }
                     arr.push(item);
                 });

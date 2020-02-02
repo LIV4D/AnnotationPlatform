@@ -15,7 +15,7 @@ class Task(Entity):
     isVisible = JSONAttr.Bool()
     comment = JSONAttr.String()
     assignedUser = JSONAttr(User)
-    creatorUser = JSONAttr(User)
+    creator = JSONAttr(User)
 
     @classmethod
     def table(cls):
@@ -37,7 +37,7 @@ class TaskTable(EntityTable):
         if isinstance(annotation, Annotation):
             annotation = annotation.id
         elif isinstance(annotation, Image):
-            annotation = annotations.create(image=annotation)
+            annotation = annotations.create(image=annotation).id
         payload.annotationId = annotation
 
         if isinstance(assign_to, User):

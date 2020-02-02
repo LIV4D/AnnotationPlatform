@@ -20,23 +20,24 @@ export class TaskRepository {
     }
 
     public async findAll(): Promise<Task[]> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).find();
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.find();
     }
 
     public async create(task: Task): Promise<Task> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).save(task);
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        task = await repository.save(task);
+        return repository.findOne(task.id); // Reload task
     }
 
     public async find(id: number): Promise<Task> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).findOne(id);
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.findOne(id);
     }
 
     public async findByIds(ids: number[]): Promise<Task[]> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).findByIds(ids);
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.findByIds(ids);
     }
 
     public async findByFilter(filter: {userId?:number, imageId?:number}): Promise<Task[]>{
@@ -46,21 +47,27 @@ export class TaskRepository {
         if(filter.userId!==undefined) 
             whereConditions.push('task.assignedUser.id = '+filter.userId.toString());
 
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Task)
-                               .createQueryBuilder('task')
-                               .where(whereConditions.join(" AND "))
-                               .getMany()
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository
+                     .createQueryBuilder('task')
+                     .leftJoinAndSelect('task.taskType', 'taskType')
+                     .leftJoinAndSelect('task.annotation', 'annotation')
+                        .leftJoinAndSelect('annotation.image', 'image')
+                        .leftJoinAndSelect('annotation.submitEvent', 'submitEvent')
+                            .leftJoinAndSelect('submitEvent.user', 'lastSubmittedBy')
+                     .leftJoinAndSelect('task.assignedUser', 'assignedUser')
+                     .leftJoinAndSelect('task.creator', 'creator')
+                     .where(whereConditions.join(" AND "))
+                     .getMany()
     }
 
     public async findTaskListByUser(userId: string, page: number = 0,
                                     pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
-        const connection = await this.connectionProvider();
-        const qb = await connection
-        .getRepository(Task)
-        .createQueryBuilder('task')
-        .where('task.user.id = :id', { id: userId })
-        .andWhere('task.isVisible = :visible', { visible: true });
+        const repository =  (await this.connectionProvider()).getRepository(Task);                                
+        const qb = await repository
+                         .createQueryBuilder('task')
+                         .where('task.user.id = :id', { id: userId })
+                         .andWhere('task.isVisible = :visible', { visible: true });
 
         const tasks =  await qb.getMany();
         let taskList: ITaskGallery[];
@@ -95,7 +102,7 @@ export class TaskRepository {
     }
 
     public async delete(task: Task): Promise<DeleteResult> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Task).delete(task);
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.delete(task);
     }
 }

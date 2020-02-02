@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, BeforeInsert, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
-import { User } from './user.model';
+import { User, ProtoUser } from './user.model';
 import { Annotation } from './annotation.model';
 
 @Entity()
@@ -73,7 +73,7 @@ export class SubmissionEvent {
             description: this.description,
             date: this.date,
             timestamp: this.timestamp,
-            user: this.user,
+            user: this.user.proto(),
             parentEventId: this.parentEventId,
         };
     }
@@ -95,6 +95,6 @@ export interface ProtoSubmissionEvent {
     description: string;
     date: Date;
     timestamp: number;
-    user: User;
+    user: ProtoUser;
     parentEventId: number;
 }

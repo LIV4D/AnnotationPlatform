@@ -10,67 +10,63 @@ export class SubmissionEventRepository {
         this.connectionProvider = connectionProvider;
     }
 
-    public async create(evenement: SubmissionEvent): Promise<SubmissionEvent> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(SubmissionEvent).save(evenement);
+    public async create(event: SubmissionEvent): Promise<SubmissionEvent> {
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        event = await repository.save(event);
+        return await repository.findOne(event.id); // Reload foreign entity
     }
 
     public async findAll(): Promise<SubmissionEvent[]> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(SubmissionEvent).find( { relations: ['image', 'user'] });
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository.find( { relations: ['image', 'user'] });
     }
 
     public async findByUser(userId: number): Promise<SubmissionEvent[]>  {
-        const connection = await this.connectionProvider();
-        const queryBuilder = await connection
-                            .getRepository(SubmissionEvent)
-                            .createQueryBuilder('evenement')
-                            .where('evenement.user.id = :usrId', { usrId: userId });
-        return await queryBuilder.getMany();
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository
+                      .createQueryBuilder('event')
+                      .where('event.user.id = :usrId', { usrId: userId })
+                      .getMany();
     }
 
     public async findByAnnotation(annotationId: number) {
-        const connection = await this.connectionProvider();
-        return await connection
-                    .getRepository(SubmissionEvent)
-                    .createQueryBuilder('evenement')
-                    .where('evenement.annotation.id = :annotID', { annotID: annotationId })
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository
+                    .createQueryBuilder('event')
+                    .where('event.annotation.id = :annotID', { annotID: annotationId })
                     .getMany();
     }
 
     public async findByUserAndAnnotation(userId: number, annotationId: number): Promise<SubmissionEvent[]> {
-        const connection = await this.connectionProvider();
-        return await connection
-                    .getRepository(SubmissionEvent)
-                    .createQueryBuilder('evenement')
-                    .where('evenement.user.id = :usrId', { usrId: userId })
-                    .andWhere('evenement.annotation.id = :annotId', { annotId: annotationId })
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository
+                    .createQueryBuilder('event')
+                    .where('event.user.id = :usrId', { usrId: userId })
+                    .andWhere('event.annotation.id = :annotId', { annotId: annotationId })
                     .getMany();
     }
 
     public async findByFilter(filter: {userId?:number, imageId?:number}): Promise<SubmissionEvent[]>{
         let whereConditions = [];
         if(filter.imageId!==undefined) 
-            whereConditions.push('evenement.annotation.image.id = '+filter.imageId.toString());
+            whereConditions.push('event.annotation.image.id = '+filter.imageId.toString());
         if(filter.userId!==undefined) 
-            whereConditions.push('evenement.user.id = '+filter.userId.toString());
+            whereConditions.push('event.user.id = '+filter.userId.toString());
 
-        const connection = await this.connectionProvider();
-        return await connection
-                     .getRepository(SubmissionEvent)
-                     .createQueryBuilder('evenement')
-                     .where(whereConditions.join(" AND "))
-                     .getMany()
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository
+                    .createQueryBuilder('event')
+                    .leftJoinAndSelect('event.user', 'user')
+                    .where(whereConditions.join(" AND "))
+                    .getMany()
     }
 
     public async find(submitId: number): Promise<SubmissionEvent> {
-        const connection = await this.connectionProvider();
-        return await connection
-                    .getRepository(SubmissionEvent)
-                    .findOne(submitId);
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository.findOne(submitId);
     }
     public async findByIds(ids: number[]): Promise<SubmissionEvent[]> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(SubmissionEvent).findByIds(ids);
+        const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
+        return await repository.findByIds(ids);
     }
 }

@@ -86,7 +86,7 @@ class Entity(JSONClass):
         return self.table().update(self)
 
     def revert(self):
-        self.update(self.table()._getById((self.primary_key_value(),))[0].json())
+        self.update(self.table()[self.primary_key_value()])
 
     def delete(self):
         self.table().delete(self)

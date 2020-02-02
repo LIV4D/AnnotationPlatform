@@ -41,7 +41,7 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
         items = data.items;
         entityName = data.entityName;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
     if (!items || items.length === 0) { return; }
     await insertItems(connection, entityName, items);

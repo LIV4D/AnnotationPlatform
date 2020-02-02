@@ -31,7 +31,7 @@ export class Annotation {
     @Column({ default: '' })
     public comment: string;
 
-    @OneToOne(type => SubmissionEvent, evenements => evenements.annotation, {eager: true})
+    @OneToOne(type => SubmissionEvent, event => event.annotation, {eager: true})
     @JoinColumn()
     public submitEvent: SubmissionEvent;
 

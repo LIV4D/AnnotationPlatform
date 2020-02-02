@@ -14,15 +14,15 @@ export class ImageRepository {
     }
 
     public async findAll(): Promise<Image[]> {
-        const connection = await this.connectionProvider();
-        return await connection.getRepository(Image).find();
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.find();
     }
 
     // tslint:disable-next-line: max-line-length
     public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<Image[]> {
-        const connection = await this.connectionProvider();
+        const repository =  (await this.connectionProvider()).getRepository(Image);
 
-        const queryBuilder = connection.getRepository(Image)
+        const queryBuilder = repository
             .createQueryBuilder('image')
             .skip(page * pageSize)
             .take(pageSize);
@@ -61,37 +61,37 @@ export class ImageRepository {
     }
 
     public async create(image: Image): Promise<Image> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).save(image));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.save(image);
     }
 
     public async update(image: Image): Promise<Image> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).save(image));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.save(image);
     }
 
     public async find(id: number): Promise<Image> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).findOne(id));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.findOne(id);
     }
 
     public async findByIds(ids: number[]): Promise<Image[]> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).findByIds(ids));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.findByIds(ids);
     }
 
     public async findByPath(path: string): Promise<Image> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).findOne({ where: { path } }));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.findOne({ where: { path } });
     }
 
     public async findWithForeignKeys(id: number): Promise<Image> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).findOne({ where: { id }, relations: ['tasks', 'annotations'] }));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.findOne({ where: { id }, relations: ['tasks', 'annotations'] });
     }
 
     public async delete(image: Image): Promise<DeleteResult> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Image).delete(image));
+        const repository =  (await this.connectionProvider()).getRepository(Image);
+        return await repository.delete(image);
     }
 }
