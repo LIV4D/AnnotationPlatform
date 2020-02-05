@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServicesModule } from './services.module';
+import { FacadeModule } from './services/facade.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    ServicesModule
+    FacadeModule
   ],
   declarations: []
 })

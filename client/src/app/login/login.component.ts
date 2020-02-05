@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FacadeService } from '../shared/facade.service';
+import { FacadeService } from '../shared/services/facade.service';
 import { CommonModule } from '@angular/common';
 
 

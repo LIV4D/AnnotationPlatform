@@ -16,4 +16,4 @@ import { FacadeService } from './facade.service';
         // nService ...
     ]
   })
-  export class ServicesModule { }
+  export class FacadeModule { }
