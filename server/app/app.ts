@@ -94,8 +94,10 @@ export class Application {
         controllers.forEach(controller => controller.setRoutes(this.app));
     }
 
+    /**
+     * Serves Angular files in production.
+     */
     private staticFiles(): void {
-        // Serve Angular files in production
         if (this.app.get('env') === 'production') {
             this.app.use(express.static(this.staticPath));
             const indexPath = path.resolve(this.staticPath + 'index.html');
@@ -106,6 +108,9 @@ export class Application {
         }
     }
 
+    /**
+     * Determines how an error is handled when caught by the server. Different depending on environment.
+     */
     private errorHandling(): void {
         this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
             const err: any = new Error('Not Found');
