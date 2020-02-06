@@ -5,6 +5,9 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as fs from 'fs';
+/*
+Morgan is used for logging request details. It generates logs automatically for any request sent through express.
+*/
 import * as morgan from 'morgan';
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
@@ -36,33 +39,36 @@ export class Application {
         this.errorHandeling();
     }
 
+    /**
+     * Configures the (morgan) logger and express application with different middleware, tokens and services.
+     */
     private config(): void {
+        // This line will notify the logger to skip any line which starts with the specified strings when ussed later.
         const skipLog = (req: express.Request): boolean => {
             return !(req.url.startsWith('/api/') || req.url.startsWith('/login') || req.url.startsWith('/auth'));
         };
-        morgan.token('user', req => req.user ? req.user.name : '-');
-        morgan.token('customDate',
-                    (req) => { const d = new Date();
-                               return d.getDate().toString() + '/' + d.getMonth().toString() + ' ' + d.toTimeString().slice(0, 8); });
-        morgan.token('ip-addr', req => req.ip.slice(req.ip.lastIndexOf(':') + 1));
-        const f = '[:customDate] :user@:ip-addr | :method :url | :status :response-time[1]ms :res[content-length]';
-        this.app.use(morgan(f, { skip: skipLog }));
+        this.configTokens();
+        // This line specfies the format written in for the logger.
+        const format = '[:customDate] :user@:ip-addr | :method :url | :status :response-time[1]ms :res[content-length]';
+
+        this.app.use(morgan(format, { skip: skipLog }));
         this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
     }
 
-    private staticFiles(): void {
-        // Serve Angular files in production
-        if (this.app.get('env') === 'production') {
-            this.app.use(express.static(this.staticPath));
-            const indexPath = path.resolve(this.staticPath + 'index.html');
-            if (fs.existsSync(indexPath) === false) {
-                throw new Error('Client index not found. Is the client correctly compiled and the static path correctly setup ?');
-            }
-            this.app.get('/**', (req, res) => res.sendFile(indexPath));
-        }
+    /**
+     * Tokens are the different information which can be logged using morgan.
+     * Therefore, these lines say that there is a user token (the request's sender),
+     * a date token (date when the request was sent), and finally an ip-address token (ip)
+     */
+    private configTokens(): void {
+        morgan.token('user', req => req.user ? req.user.name : '-');
+        morgan.token('customDate',
+                    (req) => { const d = new Date();
+                               return d.getDate().toString() + '/' + d.getMonth().toString() + ' ' + d.toTimeString().slice(0, 8); });
+        morgan.token('ip-addr', req => req.ip.slice(req.ip.lastIndexOf(':') + 1));
     }
 
     private authentication(): void {
@@ -75,6 +81,18 @@ export class Application {
         passport.use(new JwtStrategy(options, userService.loginJwt));
         passport.use(new LocalStrategy({ session: false }, userService.loginLocal));
         this.app.use(passport.initialize());
+    }
+
+    private staticFiles(): void {
+        // Serve Angular files in production
+        if (this.app.get('env') === 'production') {
+            this.app.use(express.static(this.staticPath));
+            const indexPath = path.resolve(this.staticPath + 'index.html');
+            if (fs.existsSync(indexPath) === false) {
+                throw new Error('Client index not found. Is the client correctly compiled and the static path correctly setup ?');
+            }
+            this.app.get('/**', (req, res) => res.sendFile(indexPath));
+        }
     }
 
     private routes(): void {
