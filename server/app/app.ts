@@ -5,10 +5,9 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as fs from 'fs';
-/*
-Morgan is used for logging request details. It generates logs automatically for any request sent through express.
-*/
+// Morgan is used for logging request details (https://www.npmjs.com/package/morgan).
 import * as morgan from 'morgan';
+// Passport is used for authenticating requests within express (http://www.passportjs.org/docs/).
 import * as passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as passportJwt from 'passport-jwt';
@@ -36,7 +35,7 @@ export class Application {
         this.authentication();
         this.routes();
         this.staticFiles();
-        this.errorHandeling();
+        this.errorHandling();
     }
 
     /**
@@ -71,6 +70,9 @@ export class Application {
         morgan.token('ip-addr', req => req.ip.slice(req.ip.lastIndexOf(':') + 1));
     }
 
+    /**
+     * Configures the authentication of the express application to authenticate using JSON web tokens (jwt) for endpoints.
+     */
     private authentication(): void {
         const options: StrategyOptions = {
             ...config.get('jwtAuthOptions'),
@@ -81,6 +83,15 @@ export class Application {
         passport.use(new JwtStrategy(options, userService.loginJwt));
         passport.use(new LocalStrategy({ session: false }, userService.loginLocal));
         this.app.use(passport.initialize());
+    }
+
+    /**
+     * Gets all the routes defined within the different controllers of the container and associates them with the Express application.
+     */
+    private routes(): void {
+        this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
+        const controllers: IController[] = container.getAll<IController>(TYPES.Controller);
+        controllers.forEach(controller => controller.setRoutes(this.app));
     }
 
     private staticFiles(): void {
@@ -95,13 +106,7 @@ export class Application {
         }
     }
 
-    private routes(): void {
-        this.app.use('/api/*', passport.authenticate('jwt', { session: false }));
-        const controllers: IController[] = container.getAll<IController>(TYPES.Controller);
-        controllers.forEach(controller => controller.setRoutes(this.app));
-    }
-
-    private errorHandeling(): void {
+    private errorHandling(): void {
         this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
             const err: any = new Error('Not Found');
             err.status = 404;
