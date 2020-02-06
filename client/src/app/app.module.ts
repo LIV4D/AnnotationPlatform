@@ -9,7 +9,8 @@ import { TasksComponent } from './tasks/tasks.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { LoginFacadeService } from './login/login.facade.service';
-import { LoginService } from './shared/services/Login.service';
+import { LoginService } from './shared/services/login.service';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 
 @NgModule({
    declarations: [
@@ -18,7 +19,8 @@ import { LoginService } from './shared/services/Login.service';
       GalleryComponent,
       TasksComponent,
       DashboardComponent,
-      LoginComponent
+      LoginComponent,
+      NavigationBarComponent
    ],
    imports: [
       BrowserModule,
