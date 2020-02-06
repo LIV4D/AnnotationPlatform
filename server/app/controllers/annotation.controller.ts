@@ -7,7 +7,6 @@ import { IController } from './abstractController.controller';
 import { IAnnotation } from '../models/annotation.model';
 import { AnnotationService } from '../services/annotation.service';
 
-
 @injectable()
 export class AnnotationController implements IController {
     @inject(TYPES.AnnotationService)
@@ -74,12 +73,12 @@ export class AnnotationController implements IController {
         this.annotationService.getAllAnnotations()
             .then(annotations => {
                 res.send(annotations.map(annotation => {
-                    switch(req.params.field){
+                    switch (req.params.field) {
                         case undefined: return annotation;
-                        case "comment": return annotation.comment;
-                        case "proto": return annotation.proto;
-                        case "data": return annotation.data;
-                        case "submitEvent": return annotation.submitEvent; 
+                        case 'comment': return annotation.comment;
+                        case 'proto': return annotation.proto;
+                        case 'data': return annotation.data;
+                        case 'submitEvent': return annotation.submitEvent;
                     }
                     return null;
                 }));
@@ -89,12 +88,12 @@ export class AnnotationController implements IController {
     private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.annotationService.getAnnotation(parseInt(req.params.annotationId))
         .then(annotation => {
-            switch(req.params.field){
+            switch (req.params.field) {
                 case undefined: res.send(annotation); break;
-                case "comment": res.send({ comment: annotation.comment }); break;
-                case "proto": res.send(annotation.proto); break;
-                case "data": res.send(annotation.data); break;
-                case "submitEvent": res.send(annotation.submitEvent); break; 
+                case 'comment': res.send({ comment: annotation.comment }); break;
+                case 'proto': res.send(annotation.proto); break;
+                case 'data': res.send(annotation.data); break;
+                case 'submitEvent': res.send(annotation.submitEvent); break;
             }
         }).catch(next);
     }
@@ -103,12 +102,12 @@ export class AnnotationController implements IController {
         this.annotationService.getAnnotations(req.body.ids)
         .then(annotations => {
             res.send(annotations.map(annotation => {
-                switch(req.params.field){
+                switch (req.params.field) {
                     case undefined: return annotation;
-                    case "comment": return annotation.comment;
-                    case "proto": return annotation.proto;
-                    case "data": return annotation.data;
-                    case "submitEvent": return annotation.submitEvent; 
+                    case 'comment': return annotation.comment;
+                    case 'proto': return annotation.proto;
+                    case 'data': return annotation.data;
+                    case 'submitEvent': return annotation.submitEvent;
                 }
                 return null;
             }));
