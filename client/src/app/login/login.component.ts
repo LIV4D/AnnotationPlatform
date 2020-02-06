@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FacadeService } from '../shared/services/facade.service';
-
+import { LoginFacadeService } from './login.facade.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +10,7 @@ export class LoginComponent implements OnInit {
 
   isAuthenticated: boolean;
 
-  constructor(private facadeService: FacadeService) { }
+  constructor(private facadeService: LoginFacadeService) { }
 
   ngOnInit() {
     this.isAuthenticated = this.facadeService.isAuthenticated();

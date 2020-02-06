@@ -5,7 +5,7 @@ import { DebugElement } from '@angular/core';
 
 import { LoginComponent } from './login.component';
 
-describe('LoginComponent', () => {
+describe('Login-Component', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 

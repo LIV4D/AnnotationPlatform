@@ -1,8 +1,8 @@
 import { Injectable, Injector } from '@angular/core';
-import { LoginService } from './login.service';
+import { LoginService } from '../shared/services/Login.service';
 
 @Injectable()
-export class FacadeService {
+export class LoginFacadeService {
 
   /// LoginService wrapper
   private _loginService: LoginService;
