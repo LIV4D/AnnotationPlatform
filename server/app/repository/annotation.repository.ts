@@ -13,6 +13,9 @@ export class AnnotationRepository {
         this.connectionProvider = connectionProvider;
     }
 
+    /**
+     * @returns all annotations within the database
+     */
     public async findAll(): Promise<Annotation[]> {
         const connection = await this.connectionProvider();
         return await connection.getRepository(Annotation).find();

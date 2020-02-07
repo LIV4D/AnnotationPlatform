@@ -95,6 +95,12 @@ export class AnnotationController implements IController {
         .catch(next);
     }
 
+    /**
+     * Lists all the annotation within the database while checking the types of annotations sent back.
+     * @param req an express request with annotation data
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
+     */
     private list(req: express.Request, res: express.Response, next: express.NextFunction): void {
         this.annotationService.getAllAnnotations()
             .then(annotations => {
