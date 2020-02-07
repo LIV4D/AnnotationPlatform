@@ -8,22 +8,22 @@
         </div>
 
         <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
-        <ul class="nav navbar-nav" >
-            <li routerLinkActive="active"><a routerLink="/editor" >Editor</a></li>
-            <li routerLinkActive="active"><a routerLink="/gallery" >Gallery</a></li>
-            <li routerLinkActive="active"><a routerLink="/tasks" >Tasks</a></li>
-            <li routerLinkActive="active"><a routerLink="/dashboard" >Dashboard</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown" appDropdown>
-            <a style="cursor: pointer;" class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a style="cursor: pointer;">Full screen</a></li>
-                <li><a style="cursor: pointer;">Report Bug</a></li>
-                <li><a style="cursor: pointer;">Logout</a></li>
+            <ul class="nav navbar-nav" >
+                <li routerLinkActive="active"><a routerLink="/editor" >Editor</a></li>
+                <li routerLinkActive="active"><a routerLink="/gallery" >Gallery</a></li>
+                <li routerLinkActive="active"><a routerLink="/tasks" >Tasks</a></li>
+                <li routerLinkActive="active"><a routerLink="/dashboard" >Dashboard</a></li>
             </ul>
-            </li>
-        </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" appDropdown>
+                <a style="cursor: pointer;" class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a style="cursor: pointer;">Full screen</a></li>
+                    <li><a style="cursor: pointer;">Report Bug</a></li>
+                    <li><a style="cursor: pointer;">Logout</a></li>
+                </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
