@@ -55,10 +55,7 @@ import { LayoutModule } from '@angular/cdk/layout';
       AppRoutingModule,
       BrowserAnimationsModule,
 
-<<<<<<< HEAD
       // TODO: This is for testing purposes -- must be moved to another module when approved
-=======
->>>>>>> aca0b44... adapting old angular-material to the project -- it's really ugly BTW
       MatTreeModule,
       MatToolbarModule,
       MatButtonModule,
