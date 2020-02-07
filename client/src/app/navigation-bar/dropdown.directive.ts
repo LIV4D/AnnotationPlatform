@@ -1,5 +1,6 @@
 import { Directive, HostListener, HostBinding, ElementRef, Renderer2, OnInit } from '@angular/core';
 
+// This directive is being used for testing purposes -- It works with the bootstrap css
 @Directive({
   selector: '[appDropdown]'
 })
