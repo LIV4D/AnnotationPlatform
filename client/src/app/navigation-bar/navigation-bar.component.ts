@@ -8,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
 export class NavigationBarComponent implements OnInit {
   
   collapsed = true;
-  recipe = true;
 
   constructor() { }
 
