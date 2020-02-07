@@ -1,0 +1,101 @@
+@import '../shared/colorConstants.scss';
+
+
+input {
+    height: 40px;
+    width: 250px;
+    padding: 10px;
+    font-size: 20px;
+    outline: none;
+    background-color: $input-background-color;
+    border-color: $gray-ultra-light;
+    border-radius: 6px;
+}
+
+.formContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 33px;
+    max-width: 300px;
+    border-radius: 3px;
+    background-color: $gray-light;
+    border: 10px solid $gray-very-light;
+    box-shadow: 0 0 10px $shadow-color;
+}
+
+.loginDiv, .registerDiv {
+    text-align: center;
+}
+
+.errorMsg {
+    margin-top: 5px;
+    color: $error-color;
+}
+
+.loginBtn {
+    font-size: 24px;
+    font-weight: bold;
+    width: 220px;
+    height: 40px;
+    background-color: $login-color;
+    color: $font-color-light;
+    border-radius: 5px;  
+    margin: 10px auto;  
+    padding: 3px;
+}
+
+.loginBtn:hover {
+    background-color: $login-hover-color;
+}
+
+.field {
+    margin: 10px;
+    text-align: center;
+}
+
+.field-center {
+    text-align: center;
+}
+
+input.invalidField {
+    border: 2px solid $error-color;
+    background-color: $error-bg-color;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 0 5px $shadow-color;
+}
+
+button.invalid {
+    cursor: not-allowed;
+    background-color: $gray;
+}
+
+button.invalid:hover {
+    background-color: $gray;
+}
+
+#title {
+    position: absolute;
+    font-size: 50px;
+    font-weight: bold;
+    color: $font-color-light;
+    text-align: center;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+#forgotpw {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+
