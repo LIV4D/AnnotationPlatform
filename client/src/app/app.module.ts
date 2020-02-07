@@ -15,6 +15,7 @@ import { DropdownDirective } from './navigation-bar/dropdown.directive';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// TODO: This will have to be moved to its own module -- after confirmation
 import {
    MatTreeModule,
    MatToolbarModule,
@@ -54,6 +55,7 @@ import { LayoutModule } from '@angular/cdk/layout';
       AppRoutingModule,
       BrowserAnimationsModule,
 
+      // TODO: This will have to be moved to its own module -- after confirmation
       MatTreeModule,
       MatToolbarModule,
       MatButtonModule,

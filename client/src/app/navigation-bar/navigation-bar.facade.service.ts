@@ -5,6 +5,7 @@ import { LoginService } from '../shared/services/login.service';
 export class NavigationBarFacadeService {
 
   /// NavBarService wrapper -- TODO: NavBarService is not created yet
+
   // private _navBarService: NavBarService;
   // public get navBarService(): NavBarService {
   //   if (!this._navBarService) {
