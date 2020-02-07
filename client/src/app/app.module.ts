@@ -11,6 +11,8 @@ import { LoginComponent } from './login/login.component';
 import { LoginFacadeService } from './login/login.facade.service';
 import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { DropdownDirective } from './navigation-bar/dropdown.directive';
+import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 
 @NgModule({
    declarations: [
@@ -20,17 +22,14 @@ import { NavigationBarComponent } from './navigation-bar/navigation-bar.componen
       TasksComponent,
       DashboardComponent,
       LoginComponent,
-      NavigationBarComponent
+      NavigationBarComponent,
+      DropdownDirective
    ],
    imports: [
       BrowserModule,
       AppRoutingModule,
    ],
-   providers: [
-      LoginFacadeService,
-      LoginService],
-   bootstrap: [
-      AppComponent
-   ]
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService],
+   bootstrap: [AppComponent]
 })
 export class AppModule { }
