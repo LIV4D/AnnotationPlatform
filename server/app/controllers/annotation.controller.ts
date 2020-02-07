@@ -33,7 +33,7 @@ export class AnnotationController implements IController {
      * Creates an annotation using the request's information
      * then sends it to be created by the Annotation Service and sent through the response.
      */
-    private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private createAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
 
         const newAnnotation: IAnnotation = {
             data: req.body.data,
@@ -45,7 +45,7 @@ export class AnnotationController implements IController {
             .catch(next);
     }
 
-    private updateAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private updateAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
 
         const newAnnotation: IAnnotation = {
             id: req.params.annotationId as number,
@@ -57,14 +57,14 @@ export class AnnotationController implements IController {
                             .catch (next);
     }
 
-    private deleteAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private deleteAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
         throwIfNotAdmin(req.user);
         this.annotationService.delete(req.params.annotationId)
         .then(() => res.sendStatus(204))
         .catch(next);
     }
 
-    private cloneAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private cloneAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
         const annotationInfo: IAnnotation = {
             id: req.params.annotationId as number,
         };
@@ -73,7 +73,7 @@ export class AnnotationController implements IController {
         .catch(next);
     }
 
-    private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private list(req: express.Request, res: express.Response, next: express.NextFunction): void {
         this.annotationService.getAllAnnotations()
             .then(annotations => {
                 res.send(annotations.map(annotation => {
@@ -89,7 +89,7 @@ export class AnnotationController implements IController {
             }).catch(next);
     }
 
-    private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private getAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
         this.annotationService.getAnnotation(parseInt(req.params.annotationId))
         .then(annotation => {
             switch (req.params.field) {
@@ -102,7 +102,7 @@ export class AnnotationController implements IController {
         }).catch(next);
     }
 
-    private getMultipleAnnotations = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private getMultipleAnnotations(req: express.Request, res: express.Response, next: express.NextFunction): void {
         this.annotationService.getAnnotations(req.body.ids)
         .then(annotations => {
             res.send(annotations.map(annotation => {
