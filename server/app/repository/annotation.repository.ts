@@ -50,6 +50,11 @@ export class AnnotationRepository {
         return await repository.findOne({ image: { id: imageId } });
     }
 
+    /**
+     * Deletes the specified annotation from the database.
+     * @param annotation an annotation to be deleted
+     * @returns whether the annotation was deleted or not
+     */
     public async delete(annotation: Annotation): Promise<DeleteResult> {
         const repository =  (await this.connectionProvider()).getRepository(Annotation);
         return await repository.delete(annotation);

@@ -73,6 +73,11 @@ export class AnnotationService {
         return await this.annotationRepository.create(annotation);
     }
 
+    /**
+     * Checks to see if an annotation exists then sends it to the proper repository to be deleted.
+     * @param annotationId an annotation id for the annotation to be deleted
+     * @returns whether the annotation was deleted or not
+     */
     public async delete(annotationId: number): Promise<DeleteResult> {
         const annotation = await this.annotationRepository.find(annotationId);
         if (isNullOrUndefined(annotation)) {

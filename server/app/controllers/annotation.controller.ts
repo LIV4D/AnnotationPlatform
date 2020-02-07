@@ -67,6 +67,12 @@ export class AnnotationController implements IController {
                             .catch (next);
     }
 
+    /**
+     * Deletes an annotation specified by the request, but only if the user is an admin.
+     * @param req an express request with annotation data
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
+     */
     private deleteAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
         throwIfNotAdmin(req.user);
         this.annotationService.delete(req.params.annotationId)
