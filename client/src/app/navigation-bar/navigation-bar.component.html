@@ -1,4 +1,6 @@
-<nav class="navbar navbar-default">
+<!-- This code is here for comparison purposes -->
+
+<!-- <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
@@ -26,4 +28,22 @@
             </ul>
         </div>
     </div>
-</nav>
+</nav> -->
+
+
+
+<mat-toolbar color="primary">
+    <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Editor</span>
+    <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" >Gallery</span>
+    <span routerLinkActive="active" routerLink="/tasks" style="margin-right: 10px" >Tasks</span>
+    <span routerLinkActive="active" routerLink="/dashboard" style="margin-right: 10px" >Dashboard</span>
+
+    <div id="loadingDiv" *ngIf='showLoading'>
+        <span id="loadingLabel"> <mat-icon id="loadingIcon">{{loadingDownload?"cloud_download":"cloud_upload"}}</mat-icon> {{loadingLabel}}</span>
+        <div id="loadingBar"> <div id="bar" [ngStyle]="{'width': (loadingProgress*100).toString()+'%'}"></div> </div>
+    </div>
+
+    <span style="right: 70px; position: absolute;" > Logout</span>
+    <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" src="../../assets/icons/bug.svg"/>
+    <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" >fullscreen</mat-icon>
+</mat-toolbar>

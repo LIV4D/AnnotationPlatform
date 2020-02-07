@@ -13,6 +13,30 @@ import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { DropdownDirective } from './navigation-bar/dropdown.directive';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import {
+   MatTreeModule,
+   MatToolbarModule,
+   MatButtonModule,
+   MatSidenavModule,
+   MatIconModule,
+   MatListModule,
+   MatMenuModule,
+   MatDialogModule,
+   MatDividerModule,
+   MatExpansionModule,
+   MatTableModule,
+   MatSliderModule,
+   MatPaginatorModule,
+   MatSortModule,
+   MatSlideToggleModule,
+   MatCheckboxModule,
+   MatFormFieldModule,
+   MatInputModule,
+} from '@angular/material/';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
    declarations: [
@@ -28,6 +52,28 @@ import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.faca
    imports: [
       BrowserModule,
       AppRoutingModule,
+      BrowserAnimationsModule,
+
+      MatTreeModule,
+      MatToolbarModule,
+      MatButtonModule,
+      MatSidenavModule,
+      MatIconModule,
+      MatListModule,
+      MatMenuModule,
+      MatDialogModule,
+      MatDividerModule,
+      MatExpansionModule,
+      MatTableModule,
+      MatSliderModule,
+      MatTooltipModule,
+      LayoutModule,
+      MatPaginatorModule,
+      MatSortModule,
+      MatSlideToggleModule,
+      MatCheckboxModule,
+      MatFormFieldModule,
+      MatInputModule
    ],
    providers: [LoginFacadeService, LoginService, NavigationBarFacadeService],
    bootstrap: [AppComponent]
