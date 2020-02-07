@@ -80,6 +80,12 @@ export class AnnotationController implements IController {
         .catch(next);
     }
 
+    /**
+     * Clones an annotation specified by the request then sends it through the response.
+     * @param req an express request with annotation data
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
+     */
     private cloneAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
         const annotationInfo: IAnnotation = {
             id: req.params.annotationId as number,

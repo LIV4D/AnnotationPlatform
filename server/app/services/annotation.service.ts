@@ -56,20 +56,27 @@ export class AnnotationService {
         return await this.annotationRepository.create(originalAnnotation);
     }
 
+    /**
+     * Gets the annotation from the annotation id specified then sends a submission event for the cloned and
+     * finally creates an exact clone of the annotation with the proper repository.
+     * @param annotationId an annotation id for the annotation to be cloned
+     * @param user a user that wishes to clone an existing annotation
+     * @returns the annotation that has been found on the server (or null if not saved properly)
+     */
     public async clone(annotationId: number, user: User): Promise<Annotation> {
         const originalAnnotation = await this.getAnnotation(annotationId);
 
         const event = await this.submissionEventService.createSubmissionEvent({
             userId: user.id,
             parentEventId: originalAnnotation.submitEventId,
-            description: "Cloned annotation"
+            description: 'Cloned annotation',
         });
 
         const newIAnnotation = originalAnnotation.interface();
         delete newIAnnotation.id;
         newIAnnotation.submitEventId = event.id;
 
-        const annotation = Annotation.fromInterface(newIAnnotation); 
+        const annotation = Annotation.fromInterface(newIAnnotation);
         return await this.annotationRepository.create(annotation);
     }
 
