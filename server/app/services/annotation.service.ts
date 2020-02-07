@@ -20,8 +20,8 @@ export class AnnotationService {
 
     /**
      * Creates a submission event for the annotation to be created and then sends it to the proper repository so it can create it.
-     * @param newAnnotation the annotation that has been previously initialised
-     * @param user the user that wishes to create a new annotation
+     * @param newAnnotation an annotation that has been previously initialised
+     * @param user a user that wishes to create a new annotation
      * @returns the annotation that has been found on the server (or null if not saved properly)
      */
     public async create(newAnnotation: IAnnotation, user: User): Promise<Annotation> {
@@ -35,12 +35,19 @@ export class AnnotationService {
         return  await this.annotationRepository.create(annotation);
     }
 
+    /**
+     * Creates a submission event for updating the annotation and then send it to the proper repository so it can create it.
+     * @param newAnnotation an annotation that has been previously initialised
+     * @param user a user that wishes to update an existing annotation
+     * @param eventInfo information pertaining to the time of the event and a description of it
+     * @returns the annotation that has been found on the server (or null if not saved properly)
+     */
     public async update(newAnnotation: IAnnotation, user: User, eventInfo:{description?:string, timestamp?: number}={}): Promise<Annotation> {
         const originalAnnotation = await this.getAnnotation(newAnnotation.id);
         const event = await this.submissionEventService.createSubmissionEvent({
             userId: user.id,
             parentEventId: originalAnnotation.submitEventId,
-            description: isNullOrUndefined(eventInfo.description) ? "Annotation update" : eventInfo.description,
+            description: isNullOrUndefined(eventInfo.description) ? 'Annotation update' : eventInfo.description,
             timestamp: isNullOrUndefined(eventInfo.timestamp) ? 0 : eventInfo.timestamp,
         });
 

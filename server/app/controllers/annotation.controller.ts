@@ -32,6 +32,9 @@ export class AnnotationController implements IController {
     /**
      * Creates an annotation using the request's information
      * then sends it to be created by the Annotation Service and sent through the response.
+     * @param req an express request with annotation data
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
      */
     private createAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
 
@@ -45,6 +48,13 @@ export class AnnotationController implements IController {
             .catch(next);
     }
 
+    /**
+     * Creates an annotation using the updated information from the request
+     * then send to the annotation service to update an existing service and is finally sent through the response.
+     * @param req an express request with annotation data
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
+     */
     private updateAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
 
         const newAnnotation: IAnnotation = {
