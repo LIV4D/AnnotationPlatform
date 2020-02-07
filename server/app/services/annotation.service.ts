@@ -18,10 +18,16 @@ export class AnnotationService {
     @inject(TYPES.SubmissionEventService)
     private submissionEventService: SubmissionEventService;
 
+    /**
+     * Creates a submission event for the annotation to be created and then sends it to the proper repository so it can create it.
+     * @param newAnnotation the annotation that has been previously initialised
+     * @param user the user that wishes to create a new annotation
+     * @returns the annotation that has been found on the server (or null if not saved properly)
+     */
     public async create(newAnnotation: IAnnotation, user: User): Promise<Annotation> {
         const event = await this.submissionEventService.createSubmissionEvent({
             userId: user.id,
-            description: "Initial submit"
+            description: 'Initial submit',
         });
 
         newAnnotation.submitEventId = event.id;

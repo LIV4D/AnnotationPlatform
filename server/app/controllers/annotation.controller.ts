@@ -29,6 +29,10 @@ export class AnnotationController implements IController {
         app.get('/api/annotations/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleAnnotations);
     }
 
+    /**
+     * Creates an annotation using the request's information
+     * then sends it to be created by the Annotation Service and sent through the response.
+     */
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
         const newAnnotation: IAnnotation = {

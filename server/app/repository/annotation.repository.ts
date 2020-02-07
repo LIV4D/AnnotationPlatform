@@ -18,6 +18,11 @@ export class AnnotationRepository {
         return await connection.getRepository(Annotation).find();
     }
 
+    /**
+     * Saves the annotation sent as a parameter to the database.
+     * @param annotation the annotation that has been previously initialised
+     * @returns the annotation that has been found on the server (or null if not saved properly)
+     */
     public async create(annotation: Annotation): Promise<Annotation> {
         const repository =  (await this.connectionProvider()).getRepository(Annotation);
         annotation = await repository.save(annotation, );
