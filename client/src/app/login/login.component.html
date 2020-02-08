@@ -2,20 +2,18 @@
   LIV4D RETINA INTERFACE
 </div>
 <div class="formContainer">
-  <!-- 
-<form [formGroup]="loginForm">
+<form >
   <div class="field">
-      <input [matTooltip]=formErrors.email  matTooltipPosition="right" class="control-form" placeholder="Email" type="text" id="email" formControlName="email" [ngClass]="{'invalidField': formErrors.email}">
+      <input  matTooltipPosition="right" class="control-form" placeholder="Email" type="text" id="email" formControlName="email" >
   </div>
   <div class="field">
-    <input [matTooltip]=formErrors.password matTooltipPosition="right" class="control-form" placeholder="Password" type="password" id="password" formControlName="password" [ngClass]="{'invalidField': formErrors.password}">
-    <div *ngIf="formErrors.server" class="errorMsg centered">
-      {{formErrors.server}}
+    <input  matTooltipPosition="right" class="control-form" placeholder="Password" type="password" id="password" formControlName="password" >
+    <div>
+
     </div>
   </div>
   <div class="loginDiv">
-    <button type="submit" [ngClass]="{'invalid': !loginForm.valid}" class="loginBtn" [disabled]="!loginForm.valid" (click)="login()">LOGIN</button>
+    <button type="submit" class="loginBtn" >LOGIN</button>
   </div>
 </form>
--->
 </div>
