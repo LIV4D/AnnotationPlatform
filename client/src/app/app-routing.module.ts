@@ -8,6 +8,8 @@ import { EditorComponent } from './editor/editor.component';
 import { GalleryComponent } from './gallery/gallery.component';
 
 const routes: Routes = [
+  // TODO: empty route redirect to dashboard or editor ?
+  // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '', component: LoginComponent },
   { path: 'gallery', component: GalleryComponent },
   { path: 'editor', component: EditorComponent },
