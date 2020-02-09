@@ -27,20 +27,6 @@ export class UserController implements IController {
         app.get('/api/users/list', this.listUsers);
     }
 
-    private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
-        this.userService.getUsers()
-            .then(users => {
-                users.forEach(user => {
-                    delete user.password;
-                    delete user.salt;
-                    return user;
-                });
-                res.send(users);
-            })
-            .catch(next);
-    }
-
     private createUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newUser: IUser = {
@@ -104,6 +90,14 @@ export class UserController implements IController {
             .catch(next);
     }
 
+    private getUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.userService.getUser(req.params.userId).then(user => {
+            delete user.password;
+            delete user.salt;
+            res.send(user);
+        }).catch(next);
+    }
+
     private getEventsbyUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin(req);
         this.userService.getEventsFromUser(req.params.userId)
@@ -118,11 +112,17 @@ export class UserController implements IController {
         }).catch(next);
     }
 
-    private getUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.userService.getUser(req.params.userId).then(user => {
-            delete user.password;
-            delete user.salt;
-            res.send(user);
-        }).catch(next);
+    private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        throwIfNotAdmin(req.user);
+        this.userService.getUsers()
+            .then(users => {
+                users.forEach(user => {
+                    delete user.password;
+                    delete user.salt;
+                    return user;
+                });
+                res.send(users);
+            })
+            .catch(next);
     }
 }
