@@ -9,7 +9,7 @@ import { TasksComponent } from './tasks/tasks.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { LoginFacadeService } from './login/login.facade.service';
-import { LoginService } from './shared/services/Login.service';
+import { LoginService } from './shared/services/login.service';
 
 @NgModule({
    declarations: [

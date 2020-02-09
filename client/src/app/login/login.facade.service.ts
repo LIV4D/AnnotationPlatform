@@ -1,16 +1,17 @@
 import { Injectable, Injector } from '@angular/core';
-import { LoginService } from '../shared/services/Login.service';
+import { LoginService } from '../shared/services/login.service';
 
 @Injectable()
 export class LoginFacadeService {
 
   /// LoginService wrapper
+  // tslint:disable-next-line:variable-name
   private _loginService: LoginService;
   public get loginService(): LoginService {
-    if (!this._loginService) {
+    if (!this.loginService) {
       this._loginService = this.injector.get(LoginService);
     }
-    return this._loginService;
+    return this.loginService;
   }
   /// ... add the other service wrappers
 
@@ -18,7 +19,7 @@ export class LoginFacadeService {
 
   /// Login function wrapper
   isAuthenticated() {
-    return this.loginService.isAuthenticated();
+    return this._loginService.isAuthenticated();
   }
 
   /// ... add the other functions for the other services
