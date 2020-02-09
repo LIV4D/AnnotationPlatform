@@ -9,7 +9,7 @@ import { AnnotationRepository } from '../repository/annotation.repository';
 import { createError } from '../utils/error';
 import { SubmissionEvent } from '../models/submissionEvent.model';
 import { SubmissionEventService } from './submissionEvent.service';
-import { User } from '../models/user.model'
+import { User } from '../models/user.model';
 
 @injectable()
 export class AnnotationService {
@@ -42,7 +42,7 @@ export class AnnotationService {
      * @param eventInfo information pertaining to the time of the event and a description of it
      * @returns the annotation that has been found on the server (or null if not saved properly)
      */
-    public async update(newAnnotation: IAnnotation, user: User, eventInfo:{description?:string, timestamp?: number}={}): Promise<Annotation> {
+    public async update(newAnnotation: IAnnotation, user: User, eventInfo: {description?: string, timestamp?: number}= {}): Promise<Annotation> {
         const originalAnnotation = await this.getAnnotation(newAnnotation.id);
         const event = await this.submissionEventService.createSubmissionEvent({
             userId: user.id,
@@ -83,12 +83,13 @@ export class AnnotationService {
     /**
      * Checks to see if an annotation exists then sends it to the proper repository to be deleted.
      * @param annotationId an annotation id for the annotation to be deleted
+     * @throws an error if the annotation doesn't exist
      * @returns whether the annotation was deleted or not
      */
     public async delete(annotationId: number): Promise<DeleteResult> {
         const annotation = await this.annotationRepository.find(annotationId);
         if (isNullOrUndefined(annotation)) {
-            createError('This annotation does not exist', 404);
+            throw createError('This annotation does not exist', 404);
         }
 
         // TODO: Should an event by added here? Should events be deleted?
@@ -96,6 +97,12 @@ export class AnnotationService {
         return await this.annotationRepository.delete(annotation);
     }
 
+    /**
+     * Finds the annotation within the proper repository.
+     * @param id an annotation id for the annotation which is to be retrieved
+     * @throws an error if the annotation doesn't exist
+     * @returns the annotation
+     */
     public async getAnnotation(id: number): Promise<Annotation> {
         const annotation = await this.annotationRepository.find(id);
         if (isNullOrUndefined(annotation)) {
@@ -104,6 +111,11 @@ export class AnnotationService {
         return annotation;
     }
 
+    /**
+     * Finds all the annotations within the proper repository.
+     * @param ids annotation ids for all the annotation that need to be retrieved
+     * @throws an error if the annotation doesn't exist
+     */
     public async getAnnotations(ids: number[]): Promise<Annotation[]> {
         const annotations = await this.annotationRepository.findByIds(ids);
         if (annotations.length === 0) {

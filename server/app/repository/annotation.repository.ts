@@ -32,17 +32,31 @@ export class AnnotationRepository {
         return await repository.findOne(annotation.id); // Reload foreign relation
     }
 
+    /**
+     * This function is deprecated. Update the annotation then create another or use the annotation service.
+     * @param annotation the annotation to be updated
+     */
     public async update(annotation: Annotation): Promise<Annotation> {
         const repository =  (await this.connectionProvider()).getRepository(Annotation);
         annotation = await repository.save(annotation, );
         return await repository.findOne(annotation.id); // Reload foreign relation
     }
 
+    /**
+     * Finds the first appropriate annotation with a given id.
+     * @param id an annotation id for the annotation which is to be retrieved
+     * @returns the first entity with the given entity
+     */
     public async find(id: number): Promise<Annotation> {
         const repository =  (await this.connectionProvider()).getRepository(Annotation);
         return await repository.findOne(id);
     }
 
+    /**
+     * Finds the first appropriate annotations for each given id.
+     * @param ids annotation ids for all the annotation that need to be retrieved
+     * @returns the annotation with the specified ids
+     */
     public async findByIds(ids: number[]): Promise<Annotation[]> {
         const repository =  (await this.connectionProvider()).getRepository(Annotation);
         return await repository.findByIds(ids);

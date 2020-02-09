@@ -33,6 +33,7 @@ export class AnnotationController implements IController {
      * Creates an annotation using the request's information
      * then sends it to be created by the Annotation Service and sent through the response.
      * @param req an express request with annotation data
+     * (needs data, imageId and comment (constituents of an annotation interface) in the body and a user)
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
@@ -51,7 +52,7 @@ export class AnnotationController implements IController {
     /**
      * Creates an annotation using the updated information from the request
      * then send to the annotation service to update an existing service and is finally sent through the response.
-     * @param req an express request with annotation data
+     * @param req an express request with annotation data (needs an annotationID in the params and a user)
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
@@ -69,7 +70,7 @@ export class AnnotationController implements IController {
 
     /**
      * Deletes an annotation specified by the request, but only if the user is an admin.
-     * @param req an express request with annotation data
+     * @param req an express request with annotation data (needs an annotationID in the params and a user)
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
@@ -82,7 +83,7 @@ export class AnnotationController implements IController {
 
     /**
      * Clones an annotation specified by the request then sends it through the response.
-     * @param req an express request with annotation data
+     * @param req an express request with annotation data (needs an annotationID in the params and a user)
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
@@ -97,7 +98,7 @@ export class AnnotationController implements IController {
 
     /**
      * Lists all the annotation within the database while checking the types of annotations sent back.
-     * @param req an express request with annotation data
+     * @param req an express request with annotation data (needs a field in the params)
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
@@ -117,6 +118,12 @@ export class AnnotationController implements IController {
             }).catch(next);
     }
 
+    /**
+     * Gets a specific annotation using an id via the request.
+     * @param req an express request with annotation data (needs an annotationId and a field in the params)
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
+     */
     private getAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
         this.annotationService.getAnnotation(parseInt(req.params.annotationId))
         .then(annotation => {
@@ -130,6 +137,12 @@ export class AnnotationController implements IController {
         }).catch(next);
     }
 
+    /**
+     * Gets multiple specific annotation with the given ids.
+     * @param req an express request with annotation data (needs a field in the params and ids in the body)
+     * @param res an express response where the annotation data will be put
+     * @param next is the following function in the express application
+     */
     private getMultipleAnnotations(req: express.Request, res: express.Response, next: express.NextFunction): void {
         this.annotationService.getAnnotations(req.body.ids)
         .then(annotations => {
