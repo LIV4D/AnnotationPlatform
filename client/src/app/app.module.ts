@@ -14,6 +14,12 @@ import { LoginComponent } from './login/login.component';
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
 import { LoginService } from './shared/services/login.service';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { DropdownDirective } from './navigation-bar/dropdown.directive';
+import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { MatTooltipModule } from '@angular/material/tooltip';
+// import { LayoutModule } from '@angular/cdk/layout';
 
 // Material
 import { MaterialModule } from '../material/material.module';
@@ -28,18 +34,17 @@ import { MaterialModule } from '../material/material.module';
       GalleryComponent,
       TasksComponent,
       DashboardComponent,
-      LoginComponent
+      LoginComponent,
+      NavigationBarComponent,
+      DropdownDirective
    ],
    imports: [
       BrowserModule,
       AppRoutingModule,
-      MaterialModule
+      MaterialModule,
+      BrowserAnimationsModule,
    ],
-   providers: [
-      LoginFacadeService,
-      LoginService],
-   bootstrap: [
-      AppComponent
-   ]
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService],
+   bootstrap: [AppComponent]
 })
 export class AppModule { }

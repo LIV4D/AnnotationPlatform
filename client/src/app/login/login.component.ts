@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginFacadeService } from './login.facade.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -20,10 +21,10 @@ export class LoginComponent implements OnInit {
 
   validationMessages = {
     email: {
-        required: 'Email required'
+      required: 'Email required'
     },
     password: {
-        required: 'Password required'
+      required: 'Password required'
     }
   };
 
@@ -33,6 +34,10 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.isAuthenticated = this.facadeService.isAuthenticated();
+  }
+
+  public login(): void {
+    this.facadeService.loginAppService();
   }
 
 }
