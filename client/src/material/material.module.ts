@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbar } from '@angular/material/toolbar';
 import { LayoutModule } from '@angular/cdk/layout';
+import { NgModule } from '@angular/core';
 
 
 
@@ -8,7 +10,9 @@ import { LayoutModule } from '@angular/cdk/layout';
 
     exports: [
         MatTooltipModule,
-        LayoutModule
+        MatIconModule,
+        LayoutModule,
+        MatToolbar
     ]
 })
 
