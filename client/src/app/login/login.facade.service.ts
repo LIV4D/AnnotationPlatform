@@ -1,5 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { LoginService } from '../shared/services/login.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class LoginFacadeService {
@@ -20,6 +21,14 @@ export class LoginFacadeService {
   /// Login function wrapper
   isAuthenticated() {
     return this._loginService.isAuthenticated();
+  }
+
+  login(email: string, password: string): Observable<any> {
+    return this._loginService.login(email, password);
+  }
+
+  loginAppService() {
+    return this._loginService.loginAppService();
   }
 
   /// ... add the other functions for the other services

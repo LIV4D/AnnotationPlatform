@@ -2,6 +2,8 @@ import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AppService } from './app.service';
+// import { ROUTES } from '../routes';
 
 @Injectable()
 export class LoginService {
@@ -35,6 +37,20 @@ export class LoginService {
           this._user = user;
           return user;
         }));
+  }
+
+  loginAppService() {
+    // this.appService.loading = true;
+    // this.loginService.login(this.loginForm.value.email, this.loginForm.value.password)
+    //     .subscribe(
+    //     data => {
+    //         this.appService.loading = false;
+    //         this.router.navigate(['/' + ROUTES.TASKS]);
+    //     },
+    //     error => {
+    //         this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
+    //         this.appService.loading = false;
+    //     });
   }
 
   isAuthenticated(): boolean {
