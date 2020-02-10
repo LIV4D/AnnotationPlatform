@@ -6,8 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navigation-bar.component.scss']
 })
 export class NavigationBarComponent implements OnInit {
-  
+
   collapsed = true;
+  showLoading = false;
+  loadingLabel = '';
+  loadingProgress = 0;
+  loadingDownload = true;
 
   constructor() { }
 

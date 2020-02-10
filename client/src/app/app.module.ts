@@ -23,7 +23,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Material
 import { MaterialModule } from '../material/material.module';
-import { MatIconModule } from '@angular/material/icon';
+// import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -42,7 +42,7 @@ import { MatIconModule } from '@angular/material/icon';
       BrowserModule,
       AppRoutingModule,
       MaterialModule,
-      MatIconModule,
+      // MatIconModule,
       BrowserAnimationsModule,
    ],
    providers: [LoginFacadeService, LoginService, NavigationBarFacadeService],
