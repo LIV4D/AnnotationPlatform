@@ -15,7 +15,6 @@ import { LoginComponent } from './login/login.component';
 import { LoginFacadeService } from './login/login.facade.service';
 import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
-import { DropdownDirective } from './navigation-bar/dropdown.directive';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { MatTooltipModule } from '@angular/material/tooltip';
@@ -35,8 +34,7 @@ import { MaterialModule } from '../material/material.module';
       TasksComponent,
       DashboardComponent,
       LoginComponent,
-      NavigationBarComponent,
-      DropdownDirective
+      NavigationBarComponent
    ],
    imports: [
       BrowserModule,
