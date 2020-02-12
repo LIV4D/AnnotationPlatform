@@ -5,21 +5,23 @@ import { Image, ProtoImage } from './image.model';
 import { SubmissionEvent, ProtoSubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
 
-export class StringHierarchy { [key:string]: StringHierarchy | string}
+export class StringHierarchy { [key: string]: StringHierarchy | string}
 
+// tslint:disable-next-line:max-classes-per-file
 export class AnnotationData {
     biomarker: {[key: string]: Buffer};
     hierarchy: StringHierarchy;
-    nongraphic: {[key: string]: string | Boolean | Buffer | number}
+    nongraphic: {[key: string]: string | Boolean | Buffer | number};
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Entity()
 export class Annotation {
 
     @PrimaryGeneratedColumn('increment')
     public id: number;
 
-    @ManyToOne(type => Image, image => image.annotations, {eager: true})
+    @ManyToOne(type => Image, image => image.annotations, { eager: true })
     public image: Image;
 
     @Column()
@@ -31,7 +33,7 @@ export class Annotation {
     @Column({ default: '' })
     public comment: string;
 
-    @OneToOne(type => SubmissionEvent, event => event.annotation, {eager: true})
+    @OneToOne(type => SubmissionEvent, event => event.annotation, { eager: true })
     @JoinColumn()
     public submitEvent: SubmissionEvent;
 
@@ -50,15 +52,16 @@ export class Annotation {
     }
 
     public update(iannotation: IAnnotation): void {
-        if(!isNullOrUndefined(iannotation.data))            this.data = iannotation.data;
-        if(!isNullOrUndefined(iannotation.comment))         this.comment = iannotation.comment;
-        if(!isNullOrUndefined(iannotation.submitEventId))  this.submitEventId = iannotation.submitEventId;
-    } 
+        if (!isNullOrUndefined(iannotation.data)) { this.data = iannotation.data; }
+        if (!isNullOrUndefined(iannotation.comment)) { this.comment = iannotation.comment; }
+        if (!isNullOrUndefined(iannotation.submitEventId)) { this.submitEventId = iannotation.submitEventId; }
+    }
 
+    // tslint:disable-next-line:member-ordering
     public static fromInterface(iannotation: IAnnotation): Annotation {
         const a = new Annotation();
-        if(!isNullOrUndefined(iannotation.id))             a.id = iannotation.id;
-        if(!isNullOrUndefined(iannotation.imageId))        a.imageId = iannotation.imageId;
+        if (!isNullOrUndefined(iannotation.id)) { a.id = iannotation.id; }
+        if (!isNullOrUndefined(iannotation.imageId)) { a.imageId = iannotation.imageId; }
         a.update(iannotation);
         return a;
     }
@@ -72,7 +75,6 @@ export class Annotation {
     }
 }
 
-
 export interface IAnnotation {
     id?: number;
     imageId?: number;
@@ -80,7 +82,6 @@ export interface IAnnotation {
     comment?: string;
     submitEventId?: number;
 }
-
 
 export interface ProtoAnnotation {
     id: number;
