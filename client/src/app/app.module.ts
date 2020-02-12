@@ -2,6 +2,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Components
 import { AppComponent } from './app.component';
@@ -41,9 +43,12 @@ import { MaterialModule } from '../material/material.module';
       AppRoutingModule,
       MaterialModule,
       // MatIconModule,
+      HttpClientModule,
       BrowserAnimationsModule,
+      FormsModule,
+      ReactiveFormsModule
    ],
-   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService],
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient],
    bootstrap: [AppComponent]
 })
 export class AppModule { }

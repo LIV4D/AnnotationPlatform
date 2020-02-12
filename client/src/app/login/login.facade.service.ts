@@ -23,12 +23,12 @@ export class LoginFacadeService {
     return this._loginService.isAuthenticated();
   }
 
-  login(email: string, password: string): Observable<any> {
-    return this._loginService.login(email, password);
-  }
+  // async login(email: string, password: string): Promise<Observable<any>> {
+  //   return this._loginService.login(email, password);
+  // }
 
-  loginAppService() {
-    return this._loginService.loginAppService();
+  loginAppService(email: string, password: string) {
+    this._loginService.loginAppService(email, password);
   }
 
   /// ... add the other functions for the other services

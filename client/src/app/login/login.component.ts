@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginFacadeService } from './login.facade.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -30,14 +31,36 @@ export class LoginComponent implements OnInit {
 
   isAuthenticated: boolean;
 
-  constructor(private facadeService: LoginFacadeService) { }
+  constructor(private fb: FormBuilder, private facadeService: LoginFacadeService, private router: Router) {
+    this.buildForm();
+  }
+
+  buildForm(): void {
+    this.loginForm = this.fb.group({
+      email: [this.email, [
+        Validators.required]],
+      password: [this.password, [
+        Validators.required]]
+    });
+    this.loginForm.valueChanges
+      .subscribe(data => this.onValueChanged(data));
+
+    this.onValueChanged();
+  }
+
+  onValueChanged(data?: any): void {
+    console.log('test');
+  }
 
   ngOnInit() {
-    this.isAuthenticated = this.facadeService.isAuthenticated();
+    this.isAuthenticated = false;
   }
 
   public login(): void {
-    this.facadeService.loginAppService();
+    // this.router.navigate(['/dashboard']);
+    this.facadeService.loginAppService(this.loginForm.value.email, this.loginForm.value.password);
+    this.isAuthenticated = this.facadeService.isAuthenticated();
+    // console.log('allo');
   }
 
 }
