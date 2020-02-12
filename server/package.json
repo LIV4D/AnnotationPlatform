@@ -14,6 +14,7 @@
     "clean": "rimraf out node_modules",
     "postinstall": "rimraf false",
     "seeding-standard": "NODE_ENV=standard ts-node -T seeding/loadSeeds.ts",
+    "seeding-standard-windows": "SET NODE_ENV=standard && ts-node -T seeding/loadSeeds.ts",
     "seeding-test": "NODE_ENV=test ts-node -T seeding/loadSeeds.ts"
   },
   "dependencies": {
@@ -60,7 +61,7 @@
     "@types/mocha": "5.2.5",
     "@types/morgan": "1.7.35",
     "@types/multer": "1.3.7",
-    "@types/node": "^10.12.10",
+    "@types/node": "^10.17.14",
     "@types/passport": "0.4.6",
     "@types/passport-jwt": "3.0.1",
     "@types/passport-local": "1.0.33",
