@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
     this.isAuthenticated = false;
   }
 
-  public login(): void {
+  public login() {
     // this.router.navigate(['/dashboard']);
     this.facadeService.loginAppService(this.loginForm.value.email, this.loginForm.value.password);
     this.isAuthenticated = this.facadeService.isAuthenticated();

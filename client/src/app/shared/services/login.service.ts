@@ -35,7 +35,7 @@ export class LoginService {
     return this._user ? this._user.user.name : null;
   }
 
-  async login(email: string, password: string): Promise<Observable<any>> {
+  login(email: string, password: string): Observable<any> {
     this._user = email;
     const pw = password;
     return this.http.post<any>('/auth/login', { username: email, password: pw }).
@@ -51,16 +51,18 @@ export class LoginService {
         }));
   }
 
-  async loginAppService(email: string, password: string) {
+  loginAppService(email: string, password: string) {
     this.appService.loading = true;
-    await this.login(email, password)
-      .catch(
+    this.login(this.loginForm.value.email, this.loginForm.value.password)
+      .subscribe(
+        data => {
+          this.appService.loading = false;
+          this.router.navigate(['/dashboard']);
+        },
         error => {
           this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
           this.appService.loading = false;
         });
-    this.appService.loading = false;
-    this.router.navigate(['/dashboard']);
   }
 
   isAuthenticated(): boolean {
