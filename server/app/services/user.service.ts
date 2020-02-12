@@ -17,7 +17,7 @@ export class UserService {
     private loginError = { message: 'Incorrect email or password' };
     private jwtLoginError = { message: 'The auth token provided is not valid' };
 
-    public loginJwt = (payload: any, done: VerifiedCallback) => {        
+    public loginJwt = (payload: any, done: VerifiedCallback) => {
         this.userRepository.find(payload.id).then(user => {
             if (user && crypto.timingSafeEqual(user.password, Buffer.from(payload.password))) {
                 return done(null, user);

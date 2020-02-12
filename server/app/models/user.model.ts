@@ -53,59 +53,58 @@ export class User {
         };
     }
 
+    public static fromInterface(iuser: IUser): User {
+        const u = new User();
+        if (!isNullOrUndefined(iuser.id)) { u.id = iuser.id; }
+        if (!isNullOrUndefined(iuser.email)) { u.email = iuser.email; }
+        u.update(iuser);
+        return u;
+    }
+
     public hashCompare(passwordProvided: string) {
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
         return crypto.timingSafeEqual(this.password, hashProvided);
     }
 
     public title(): string {
-        return this.firstName.split(' ').map(n=>n.length?n.substr(0,1):"").reduce((s, n) => n.length?s+n+". ":s, "") 
+        return this.firstName.split(' ').map(n => n.length ? n.substr(0, 1) : '').reduce((s, n) => n.length ? s + n + '. ' : s, '')
                 + this.lastName;
     }
 
-    public interface(): IUser{
+    public interface(): IUser {
         return {
             id: this.id,
             firstName: this.firstName,
             lastName: this.lastName,
             email: this.email,
-            isAdmin: this.isAdmin
-        }
+            isAdmin: this.isAdmin,
+        };
     }
 
-    public update(iuser: IUser){
-        if(!isNullOrUndefined(iuser.firstName)) this.firstName = iuser.firstName;
-        if(!isNullOrUndefined(iuser.lastName))  this.lastName = iuser.lastName;
-        if(!isNullOrUndefined(iuser.isAdmin))   this.isAdmin = iuser.isAdmin;
-        if(!isNullOrUndefined(iuser.password)) {
+    public update(iuser: IUser) {
+        if (!isNullOrUndefined(iuser.firstName)) { this.firstName = iuser.firstName; }
+        if (!isNullOrUndefined(iuser.lastName)) { this.lastName = iuser.lastName; }
+        if (!isNullOrUndefined(iuser.isAdmin)) { this.isAdmin = iuser.isAdmin; }
+        if (!isNullOrUndefined(iuser.password)) {
             const hash = User.hashPassword(iuser.password);
             this.password = hash.hash;
             this.salt = hash.salt;
         }
-        
+
         // Validate
         validateSync(this);
     }
 
-    public static fromInterface(iuser: IUser): User {
-        const u = new User();
-        if(!isNullOrUndefined(iuser.id))    u.id = iuser.id;
-        if(!isNullOrUndefined(iuser.email)) u.email = iuser.email;
-        u.update(iuser);
-        return u;
-    }
-
-    public proto(): ProtoUser{
+    public proto(): ProtoUser {
         return {
             id: this.id,
             firstName: this.firstName,
             lastName: this.lastName,
             email: this.email,
-            isAdmin: this.isAdmin
+            isAdmin: this.isAdmin,
         };
     }
 }
-
 
 export interface IUser {
     id?: number;
@@ -116,10 +115,10 @@ export interface IUser {
     password?: string;
 }
 
-export interface ProtoUser{
-    id: number,
-    firstName: string,
-    lastName: string,
-    email: string,
-    isAdmin: boolean
+export interface ProtoUser {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    isAdmin: boolean;
 }
