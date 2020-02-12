@@ -16,7 +16,7 @@ export async function loadSeeds(): Promise<any> {
     const databaseConfig: ConnectionOptions = {
         ...config.get('database'),
         name: 'seedingConnection',
-        dropSchema: true,
+        dropSchema: false,
     };
     const connection = await createConnection(databaseConfig);
     for (const file of seedingFiles) {
