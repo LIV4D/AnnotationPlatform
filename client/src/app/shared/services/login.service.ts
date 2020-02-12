@@ -1,19 +1,31 @@
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+// import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
-// import { ROUTES } from '../routes';
+import { Router } from '@angular/router';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Injectable, Injector } from '@angular/core';
 
 @Injectable()
 export class LoginService {
+
+  formErrors = {
+    email: '',
+    password: '',
+    server: ''
+  };
+
+  public loginForm: FormGroup;
+  // public _email: string;
+  // public password: string;
 
   // tslint:disable-next-line:variable-name
   private _user: any;
   // tslint:disable-next-line:variable-name
   private _name: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private appService: AppService, private router: Router) { }
 
   get email(): string {
     return this._user ? this._user.user.email : null;
@@ -24,7 +36,7 @@ export class LoginService {
   }
 
   login(email: string, password: string): Observable<any> {
-    this._user = null;
+    this._user = email;
     const pw = password;
     return this.http.post<any>('/auth/login', { username: email, password: pw }).
       pipe(
@@ -39,18 +51,18 @@ export class LoginService {
         }));
   }
 
-  loginAppService() {
-    // this.appService.loading = true;
-    // this.loginService.login(this.loginForm.value.email, this.loginForm.value.password)
-    //     .subscribe(
-    //     data => {
-    //         this.appService.loading = false;
-    //         this.router.navigate(['/' + ROUTES.TASKS]);
-    //     },
-    //     error => {
-    //         this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
-    //         this.appService.loading = false;
-    //     });
+  loginAppService(email: string, password: string) {
+    this.appService.loading = true;
+    this.login(this.loginForm.value.email, this.loginForm.value.password)
+      .subscribe(
+        data => {
+          this.appService.loading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error => {
+          this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
+          this.appService.loading = false;
+        });
   }
 
   isAuthenticated(): boolean {

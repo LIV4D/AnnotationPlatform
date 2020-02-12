@@ -2,6 +2,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Components
 import { AppComponent } from './app.component';
@@ -15,7 +17,6 @@ import { LoginComponent } from './login/login.component';
 import { LoginFacadeService } from './login/login.facade.service';
 import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
-import { DropdownDirective } from './navigation-bar/dropdown.directive';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { MatTooltipModule } from '@angular/material/tooltip';
@@ -35,17 +36,19 @@ import { MaterialModule } from '../material/material.module';
       TasksComponent,
       DashboardComponent,
       LoginComponent,
-      NavigationBarComponent,
-      DropdownDirective
+      NavigationBarComponent
    ],
    imports: [
       BrowserModule,
       AppRoutingModule,
       MaterialModule,
       // MatIconModule,
+      HttpClientModule,
       BrowserAnimationsModule,
+      FormsModule,
+      ReactiveFormsModule
    ],
-   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService],
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient],
    bootstrap: [AppComponent]
 })
 export class AppModule { }
