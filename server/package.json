@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "tsc && NODE_ENV=production node out/www.js",
+    "start-windows": "tsc -w && SET NODE_ENV=development && nodemon out/server/app/www.js",
     "dev": "tsc && concurrently --kill-others \"tsc -w\" \"NODE_ENV=development nodemon out/www.js\"",
     "lint": "tslint -c tslint.json --format stylish app/**/*.ts test/**/*.ts",
     "test": "NODE_ENV=test mocha -r ts-node/register test/**/*.spec.ts --timeout 3000",
@@ -12,8 +13,9 @@
     "tsc:w": "tsc -w",
     "clean": "rimraf out node_modules",
     "postinstall": "rimraf false",
-    "seeding-dev": "NODE_ENV=development ts-node -T seeding/loadSeeds.ts",
-    "seeding-prod": "NODE_ENV=production ts-node -T seeding/loadSeeds.ts"
+    "seeding-standard": "NODE_ENV=standard ts-node -T seeding/loadSeeds.ts",
+    "seeding-standard-windows": "SET NODE_ENV=standard && ts-node -T seeding/loadSeeds.ts",
+    "seeding-test": "NODE_ENV=test ts-node -T seeding/loadSeeds.ts"
   },
   "dependencies": {
     "body-parser": "1.18.3",
