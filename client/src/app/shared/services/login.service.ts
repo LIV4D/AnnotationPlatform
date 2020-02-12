@@ -53,7 +53,7 @@ export class LoginService {
 
   loginAppService(email: string, password: string) {
     this.appService.loading = true;
-    this.login(this.loginForm.value.email, this.loginForm.value.password)
+    this.login(email, password)
       .subscribe(
         data => {
           this.appService.loading = false;

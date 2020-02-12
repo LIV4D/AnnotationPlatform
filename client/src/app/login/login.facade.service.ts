@@ -7,20 +7,13 @@ export class LoginFacadeService {
 
   /// LoginService wrapper
   // tslint:disable-next-line:variable-name
-  private _loginService: LoginService;
-  public get loginService(): LoginService {
-    if (!this.loginService) {
-      this._loginService = this.injector.get(LoginService);
-    }
-    return this.loginService;
-  }
   /// ... add the other service wrappers
 
-  constructor(private injector: Injector) {  }
+  constructor(private loginService: LoginService) {  }
 
   /// Login function wrapper
   isAuthenticated() {
-    return this._loginService.isAuthenticated();
+    return this.loginService.isAuthenticated();
   }
 
   // async login(email: string, password: string): Promise<Observable<any>> {
@@ -28,7 +21,7 @@ export class LoginFacadeService {
   // }
 
   loginAppService(email: string, password: string) {
-    this._loginService.loginAppService(email, password);
+    this.loginService.loginAppService(email, password);
   }
 
   /// ... add the other functions for the other services

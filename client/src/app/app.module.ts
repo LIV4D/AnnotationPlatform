@@ -24,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Material
 import { MaterialModule } from '../material/material.module';
+import { AppService } from './shared/services/app.service';
 // import { MatIconModule } from '@angular/material/icon';
 
 
@@ -48,7 +49,7 @@ import { MaterialModule } from '../material/material.module';
       FormsModule,
       ReactiveFormsModule
    ],
-   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient],
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService],
    bootstrap: [AppComponent]
 })
 export class AppModule { }
