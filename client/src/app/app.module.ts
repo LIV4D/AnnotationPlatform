@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Components
@@ -25,6 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Material
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
+import { AuthInterceptor } from './shared/services/authentification.intercept';
 // import { MatIconModule } from '@angular/material/icon';
 
 
@@ -49,7 +50,12 @@ import { AppService } from './shared/services/app.service';
       FormsModule,
       ReactiveFormsModule
    ],
-   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService],
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService, {
+      provide: HTTP_INTERCEPTORS,
+      useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
+      multi: true,
+      deps: [LoginService]
+  }],
    bootstrap: [AppComponent]
 })
 export class AppModule { }

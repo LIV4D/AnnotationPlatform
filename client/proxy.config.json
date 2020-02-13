@@ -6,7 +6,7 @@
         "changeOrigin": true
     },
     "/auth/login/*": {
-        "target": "http://localhost:5050",
+        "target": "http://10.200.18.50:5050",
         "secure" : false,
         "logLevel": "debug",
         "changeOrigin": true
