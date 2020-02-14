@@ -26,6 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 // import { MatIconModule } from '@angular/material/icon';
 
 
@@ -38,7 +39,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       TasksComponent,
       DashboardComponent,
       LoginComponent,
-      NavigationBarComponent
+      NavigationBarComponent,
+      ToolboxComponent
    ],
    imports: [
       BrowserModule,
