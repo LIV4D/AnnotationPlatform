@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
     // this.router.navigate(['/dashboard']);
     this.facadeService.loginAppService(this.loginForm.value.email, this.loginForm.value.password);
     this.isAuthenticated = this.facadeService.isAuthenticated();
-    // console.log('allo');
   }
 
 }
