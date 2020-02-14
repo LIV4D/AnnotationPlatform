@@ -27,6 +27,7 @@ import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
+import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 // import { MatIconModule } from '@angular/material/icon';
 
 
@@ -40,7 +41,8 @@ import { ToolboxComponent } from './editor/toolbox/toolbox.component';
       DashboardComponent,
       LoginComponent,
       NavigationBarComponent,
-      ToolboxComponent
+      ToolboxComponent,
+      ToolElementComponent
    ],
    imports: [
       BrowserModule,
