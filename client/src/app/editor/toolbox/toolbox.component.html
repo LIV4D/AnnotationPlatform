@@ -1,1 +1,3 @@
-<p>toolbox works!</p>
+<div class="flex-container"> <!-- (window:keydown)="onKeyDown($event)" -->
+  <app-tool-element *ngFor="let tool of toolboxService.listOfTools" [tool]="tool"></app-tool-element>
+</div>

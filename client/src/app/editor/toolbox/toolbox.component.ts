@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToolElementComponent } from './tool-element/tool-element.component';
 
 @Component({
   selector: 'app-toolbox',

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Tool } from '../../../models/tool.model';
 
 @Component({
   selector: 'app-tool-element',
@@ -6,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tool-element.component.scss']
 })
 export class ToolElementComponent implements OnInit {
-
+  listOfTools: Tool[];
   constructor() { }
 
   ngOnInit(): void {
