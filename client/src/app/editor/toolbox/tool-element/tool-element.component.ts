@@ -13,7 +13,6 @@ export class ToolElementComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log('tool: ' + this.tool.imagePath);
   }
 
 }
