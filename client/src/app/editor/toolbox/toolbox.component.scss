@@ -9,11 +9,12 @@ span {
     color: $font-color-gray;
 }
 
+// TODO: This may be useless
 mat-panel-title {
     padding: 8px;
 }
 
-app-tool {
+app-tool-element {
     width: 28px;
     height: 28px;
     margin: 0 auto;

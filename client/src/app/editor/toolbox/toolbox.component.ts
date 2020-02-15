@@ -7,7 +7,7 @@ import { Tool } from 'src/app/shared/models/tool.model';
   styleUrls: ['./toolbox.component.scss']
 })
 export class ToolboxComponent implements OnInit {
-
+  // TODO : This will move to its rightful place (Service)
   listOfTools: Tool[] = [
     new Tool('name', '../../../assets/icons/hand.svg'),
     new Tool('name', '../../../assets/icons/brush.svg'),
