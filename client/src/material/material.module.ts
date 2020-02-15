@@ -6,9 +6,9 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './../app/app.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 // import { MatToolbarMixinBase } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
@@ -24,9 +24,9 @@ import { MatTreeModule } from '@angular/material/tree';
         MatIconModule,
         LayoutModule,
         MatToolbarModule,
-        MatTableDataSource,
-        MatSort,
-        MatPaginator
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule
     ],
     exports: [
         // AppComponent,
@@ -36,9 +36,9 @@ import { MatTreeModule } from '@angular/material/tree';
         MatIconModule,
         LayoutModule,
         MatToolbarModule,
-        MatTableDataSource,
-        MatSort,
-        MatPaginator
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule
     ]
 })
 
