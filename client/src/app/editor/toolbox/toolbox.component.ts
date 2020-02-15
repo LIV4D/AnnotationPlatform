@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToolElementComponent } from './tool-element/tool-element.component';
+import { Tool } from 'src/app/shared/models/tool.model';
 
 @Component({
   selector: 'app-toolbox',
@@ -7,6 +7,17 @@ import { ToolElementComponent } from './tool-element/tool-element.component';
   styleUrls: ['./toolbox.component.scss']
 })
 export class ToolboxComponent implements OnInit {
+
+  listOfTools: Tool[] = [
+    new Tool('name', '../../../assets/icons/hand.svg'),
+    new Tool('name', '../../../assets/icons/brush.svg'),
+    new Tool('name', '../../../assets/icons/brush-fill.svg'),
+    new Tool('name', '../../../assets/icons/eraser.svg'),
+    new Tool('name', '../../../assets/icons/lasso-eraser.svg'),
+    new Tool('name', '../../../assets/icons/picker.svg'),
+    new Tool('name', '../../../assets/icons/undo.svg'),
+    new Tool('name', '../../../assets/icons/redo.svg')
+  ];
 
   constructor() { }
 

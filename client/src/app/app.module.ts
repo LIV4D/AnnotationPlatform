@@ -28,7 +28,6 @@ import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
-import { Tool } from './models/tool.model/tool.model.component';
 // import { MatIconModule } from '@angular/material/icon';
 
 
@@ -43,8 +42,7 @@ import { Tool } from './models/tool.model/tool.model.component';
       LoginComponent,
       NavigationBarComponent,
       ToolboxComponent,
-      ToolElementComponent,
-      Tool.ModelComponent
+      ToolElementComponent
    ],
    imports: [
       BrowserModule,

@@ -1,0 +1,8 @@
+@import "../../colorConstants.scss";
+
+app-toolbox {
+  overflow: hidden;
+  width: $tools-width;
+  height: 100%;
+  position: absolute;
+}
