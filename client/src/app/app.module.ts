@@ -19,14 +19,13 @@ import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { MatTooltipModule } from '@angular/material/tooltip';
-// import { LayoutModule } from '@angular/cdk/layout';
+
 
 // Material
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
-// import { MatIconModule } from '@angular/material/icon';
+
 
 
 

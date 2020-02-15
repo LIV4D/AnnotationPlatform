@@ -1,1 +1,38 @@
-<p>tasks works!</p>
+<div id="completeButtons">
+    <button mat-button (click)="showIncomplete()" id="incompleteButton" [class.selected]="!showCompleted">
+        <span>Incomplete</span>
+    </button>
+    <button mat-button (click)="showComplete()" id="completeButton" [class.selected]="showCompleted">
+        <span>Completed</span>
+    </button>
+</div>
+<div class="example-container">
+  <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
+      <ng-container matColumnDef="imageSrc">
+          <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
+          <mat-cell *matCellDef="let task"> <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="image">
+          <mat-header-cell *matHeaderCellDef disableClear>Image</mat-header-cell>
+          <mat-cell *matCellDef="let task"> {{task.imageId}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="complete">
+          <mat-header-cell *matHeaderCellDef disableClear>Complete Tasks</mat-header-cell>
+          <mat-cell *matCellDef="let task"> {{task.completeCount}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="incomplete">
+        <mat-header-cell *matHeaderCellDef disableClear>Incomplete Tasks</mat-header-cell>
+        <mat-cell *matCellDef="let task"> {{task.incompleteCount}} </mat-cell>
+    </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+      (mouseup)="loadImage(row.imageId.toString())"
+      ng-hide="row.incompleteCount > 0"
+      >
+  </mat-row>
+  </mat-table>
+
+  <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
+
+  <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
+</div>
