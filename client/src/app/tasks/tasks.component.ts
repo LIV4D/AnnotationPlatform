@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } fro
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { AppService } from '../shared/services/app.service';
+import { TaskFacadeService } from './tasks.facade.service';
 import { Router } from '@angular/router';
 // import { EditorService } from '../edit-layout/editor/editor.service';
 // import { TasksService } from '../shared/services/app.service';
@@ -28,13 +28,13 @@ export class TasksComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  // constructor(private appService: AppService, private router: Router, private tasksService: TasksService,
+   constructor( private router: Router, private facadeService: TaskFacadeService){
   //   private editorService: EditorService) {
   //   this.showPagination = false;
   //   this.length = 0;
   //   this.pageSize = 25;
   //   this.noData = false;
-  // }
+   }
 
     ngOnInit(): void {
         this.loadData();

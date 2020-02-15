@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Components
 import { AppComponent } from './app.component';
@@ -12,13 +13,14 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
-import { LoginService } from './shared/services/login.service';
-import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TaskFacadeService } from './tasks/tasks.facade.service';
+import { LoginService } from './shared/services/login.service';
+import { HeaderService } from './shared/services/header.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -27,7 +29,8 @@ import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
-//mport { MatIconModule } from '@angular/material/icon';
+
+//import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
    declarations: [
@@ -49,7 +52,15 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       FormsModule,
       ReactiveFormsModule
    ],
-   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService, {
+   providers: [
+      LoginFacadeService,
+      LoginService,
+      NavigationBarFacadeService,
+      HttpClient,
+      AppService,
+      TaskFacadeService,
+      HeaderService,
+       {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,
