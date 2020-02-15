@@ -20,14 +20,14 @@ import { NavigationBarComponent } from './navigation-bar/navigation-bar.componen
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Pipes
+import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
-
-
-
+//mport { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
    declarations: [
@@ -37,13 +37,13 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       TasksComponent,
       DashboardComponent,
       LoginComponent,
-      NavigationBarComponent
+      NavigationBarComponent,
+      SafeImagePipe,
    ],
    imports: [
       BrowserModule,
       AppRoutingModule,
       MaterialModule,
-      // MatIconModule,
       HttpClientModule,
       BrowserAnimationsModule,
       FormsModule,
