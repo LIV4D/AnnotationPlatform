@@ -10,6 +10,22 @@ import { HeaderService } from './header.service';
 export class TasksService {
     constructor(private http: HttpClient, private headerService: HeaderService) {}
 
+    loadData(): void {
+        console.log('loadData');
+      }
+
+      loadImage(imageId: string): void {
+        console.log('loadImage');
+      }
+
+      showComplete(): void {
+        console.log('showComplete');
+      }
+
+      showIncomplete(): void {
+          console.log('showIncomplete');
+      }
+
     getTasks(page: number, pageSize: number, completed: boolean): Observable<ITaskList> {
         const params = new HttpParams()
                             .set('page', page ? page.toString() : '0')

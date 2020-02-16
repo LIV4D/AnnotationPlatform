@@ -8,6 +8,23 @@ export class TaskFacadeService {
 
   constructor(private appService: AppService, private taskService: TasksService) {  }
 
+  loadData(): void {
+    this.taskService.loadData();
+  }
 
+  loadImage(imageId: string): void {
+    this.taskService.loadImage(imageId);
+  }
+
+  showComplete(): void {
+    this.taskService.showComplete();
+  }
+
+  showIncomplete(): void {
+      this.taskService.showIncomplete();
+  }
 
 }
+
+
+

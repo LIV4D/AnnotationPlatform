@@ -28,7 +28,7 @@ export class TasksComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-   constructor( private router: Router, private facadeService: TaskFacadeService){
+   constructor( private router: Router, private facadeService: TaskFacadeService) {
   //   private editorService: EditorService) {
   //   this.showPagination = false;
   //   this.length = 0;
@@ -37,23 +37,19 @@ export class TasksComponent implements OnInit {
    }
 
     ngOnInit(): void {
-        this.loadData();
-    }
-
-    loadData(): void {
-      console.log('loadData');
+        this.facadeService.loadData();
     }
 
     loadImage(imageId: string): void {
-      console.log('loadImage');
+      this.facadeService.loadImage(imageId);
     }
 
     showComplete(): void {
-      console.log('showComplete');
+      this.facadeService.showComplete();
     }
 
     showIncomplete(): void {
-        console.log('showIncomplete');
+      this.facadeService.showIncomplete();
     }
 }
 

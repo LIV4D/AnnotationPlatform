@@ -30,7 +30,7 @@ import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 
-//import { MatIconModule } from '@angular/material/icon';
+// import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
    declarations: [
