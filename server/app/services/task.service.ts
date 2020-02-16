@@ -6,12 +6,11 @@ import { AnnotationService } from './annotation.service';
 import { TaskRepository } from '../repository/task.repository';
 import { Task, ITask } from '../models/task.model';
 import { IAnnotation } from '../models/annotation.model';
-import { ISubmission} from '../../../common/interfaces';
+import { ISubmission } from '../../../common/interfaces';
 import { User } from '../models/user.model';
-import { ITaskGallery } from '../interfaces/gallery.interface'
+import { ITaskGallery } from '../interfaces/gallery.interface';
 import { createError } from '../utils/error';
 import { throwIfNotAdmin } from '../utils/userVerification';
-
 
 @injectable()
 export class TaskService {
@@ -19,6 +18,12 @@ export class TaskService {
     private taskRepository: TaskRepository;
     @inject(TYPES.AnnotationService)
     private annotationService: AnnotationService;
+
+    public static throwIfNotAuthorized(task: Task, user: User) {
+        if (task.assignedUserId !== user.id && task.creatorId !== user.id) {
+            throwIfNotAdmin(user);
+        }
+    }
 
     public async createTask(newTask: ITask): Promise<Task> {
         const task = Task.fromInterface(newTask);
@@ -35,14 +40,14 @@ export class TaskService {
     }
 
     public async getTasks(ids?: number[]): Promise<Task[]> {
-        const tasks = ids===undefined ? await this.taskRepository.findAll() : await this.taskRepository.findByIds(ids);
-        if (tasks.length===0) {
+        const tasks = ids === undefined ? await this.taskRepository.findAll() : await this.taskRepository.findByIds(ids);
+        if (tasks.length === 0) {
             throw createError('Those tasks do not exist.', 404);
         }
         return tasks;
     }
 
-    public async getTasksByFilter(filter: {userId?: number, imageId?: number}){
+    public async getTasksByFilter(filter: {userId?: number, imageId?: number}) {
         return this.taskRepository.findByFilter(filter);
     }
 
@@ -58,14 +63,14 @@ export class TaskService {
             throw createError('This task does not exist.', 404);
         }
         if (task.assignedUser.id !== user.id) {
-            createError("Your aren't the assigned user for this task.", 401);
+            createError('You aren\'t this task\'s assigned user.', 401);
         }
-    
+
         const newAnnotation: IAnnotation = {
             id: task.annotation.id,
             data: submission.data,
         };
-        this.annotationService.update(newAnnotation, user, {description: "Task submission", timestamp: submission.uptime});
+        this.annotationService.update(newAnnotation, user, { description: 'Task submission', timestamp: submission.uptime });
     }
 
     public async getUserGallery(userId: string, page?: number, pageSize?: number, isComplete?: boolean): Promise<ITaskGallery[]> {
@@ -79,11 +84,5 @@ export class TaskService {
         }
         TaskService.throwIfNotAuthorized(task, user);
         return await this.taskRepository.delete(task);
-    }
-
-    public static throwIfNotAuthorized(task: Task, user: User){
-        if (task.assignedUserId !== user.id && task.creatorId !== user.id) {
-            throwIfNotAdmin(user);
-        }
     }
 }
