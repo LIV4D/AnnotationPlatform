@@ -1,0 +1,9 @@
+<div id="biomarkersDiv">
+  <!-- <app-biomarkers *ngIf="loaded" app-biomarkers #biomarkers></app-biomarkers> -->
+  <!-- <app-visualization (flip)="flipHorizontal()" [canvas]="canvas"></app-visualization> -->
+  <div class="spacer"></div>
+  <app-timer *ngIf="!localEditing"></app-timer>
+  <!-- <app-comments *ngIf="!appService.localEditing"></app-comments> -->
+  <button mat-button *ngIf="localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Save</button>
+  <button mat-button *ngIf="!localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button>
+</div>

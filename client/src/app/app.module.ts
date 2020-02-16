@@ -28,6 +28,11 @@ import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
+import { RightMenuComponent } from './editor/right-menu/right-menu.component';
+import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
+import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
+import { TimerComponent } from './editor/right-menu/timer/timer.component';
+import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
 // import { MatIconModule } from '@angular/material/icon';
 
 
@@ -42,7 +47,12 @@ import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element
       LoginComponent,
       NavigationBarComponent,
       ToolboxComponent,
-      ToolElementComponent
+      ToolElementComponent,
+      RightMenuComponent,
+      BiomarkersComponent,
+      TaskSubmissionComponent,
+      TimerComponent,
+      VisualizationComponent
    ],
    imports: [
       BrowserModule,

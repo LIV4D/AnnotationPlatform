@@ -1,9 +1,9 @@
 @import "../../../../colorConstants.scss";
 
-// .isSelected {
-//   background-color: $input-background-color;
-//   border-radius: 3px;
-// }
+.isSelected {
+  background-color: $input-background-color;
+  border-radius: 3px;
+}
 
 button {
   width: 28px;
@@ -24,10 +24,10 @@ img {
   vertical-align: middle;
 }
 
-// .mat-button {
-//   min-width: 0px !important;
-// }
+.mat-button {
+  min-width: 0px !important;
+}
 
-// .mat-button[disabled] {
-//   opacity: 0.5;
-// }
+.mat-button[disabled] {
+  opacity: 0.5;
+}
