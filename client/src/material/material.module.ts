@@ -6,6 +6,8 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './../app/app.component';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatSliderModule} from '@angular/material/slider';
 
 // import { MatToolbarMixinBase } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
@@ -20,7 +22,9 @@ import { MatTreeModule } from '@angular/material/tree';
         MatTooltipModule,
         MatIconModule,
         LayoutModule,
-        MatToolbarModule
+        MatToolbarModule,
+        MatCheckboxModule,
+        MatSliderModule
     ],
     exports: [
         // AppComponent,
@@ -29,7 +33,9 @@ import { MatTreeModule } from '@angular/material/tree';
         MatTooltipModule,
         MatIconModule,
         LayoutModule,
-        MatToolbarModule
+        MatToolbarModule,
+        MatCheckboxModule,
+        MatSliderModule
     ]
 })
 

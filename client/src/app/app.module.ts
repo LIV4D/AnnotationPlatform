@@ -19,7 +19,6 @@ import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { MatTooltipModule } from '@angular/material/tooltip';
 // import { LayoutModule } from '@angular/cdk/layout';
 
 // Material
@@ -33,7 +32,6 @@ import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.c
 import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
 import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
-// import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -58,7 +56,6 @@ import { VisualizationComponent } from './editor/right-menu/visualization/visual
       BrowserModule,
       AppRoutingModule,
       MaterialModule,
-      // MatIconModule,
       HttpClientModule,
       BrowserAnimationsModule,
       FormsModule,
