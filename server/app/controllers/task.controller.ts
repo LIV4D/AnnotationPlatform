@@ -5,10 +5,9 @@ import { isNullOrUndefined } from 'util';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
-import { Task, ITask } from '../models/task.model'
+import { Task, ITask } from '../models/task.model';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
-
 
 @injectable()
 export class TaskController implements IController {
@@ -25,7 +24,7 @@ export class TaskController implements IController {
         app.get('/api/tasks/get/:taskId([0-9]+)', this.getTask);
         app.get('/api/tasks/get/:taskId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getTask);
         app.get('/api/tasks/get', this.getMultipleTasks);
-        app.get('/api/tasks/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleTasks)
+        app.get('/api/tasks/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleTasks);
         app.get('/api/tasks/get/next/:userId', this.getNextTaskByUser);
 
         // List
@@ -44,7 +43,7 @@ export class TaskController implements IController {
             isVisible: req.body.isVisible,
             comment: req.body.comment,
             assignedUserId: req.body.assignedUserId,
-            creatorId: req.user.id
+            creatorId: req.user.id,
         };
         this.taskService.createTask(newTask)
             .then(task => res.send(task.proto()))
@@ -60,14 +59,14 @@ export class TaskController implements IController {
     private getMultipleTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const ids = req.body.ids;
         this.taskService.getTasks(ids)
-            .then(tasks => res.send(tasks.map(task=>this.export_task(task, req.params.attr))))               
+            .then(tasks => res.send(tasks.map(task => this.export_task(task, req.params.attr))))
             .catch(next);
     }
 
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const filter = isNullOrUndefined(req.body.filter) ? {} : req.body.filter; 
+        const filter = isNullOrUndefined(req.body.filter) ? {} : req.body.filter;
         this.taskService.getTasksByFilter(filter)
-            .then(tasks => res.send(tasks.map(task=>this.export_task(task, req.params.attr))))
+            .then(tasks => res.send(tasks.map(task => this.export_task(task, req.params.attr))))
             .catch(next);
     }
 
@@ -103,7 +102,7 @@ export class TaskController implements IController {
     }
 
     private export_task(task: Task, format: string): any {
-        if(!isNullOrUndefined(task.assignedUser)){
+        if (!isNullOrUndefined(task.assignedUser)) {
             delete task.assignedUser.password;
             delete task.assignedUser.salt;
         }
@@ -113,18 +112,18 @@ export class TaskController implements IController {
         delete task.annotation.submitEvent.user.password;
         delete task.annotation.submitEvent.user.salt;
 
-        switch(format){
+        switch (format) {
             case undefined: return task;
             case 'proto': return task.proto();
         }
         return null;
     }
-    
+
     private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         if (req.user.id !== req.params.userId) {
             throwIfNotAdmin(req.user);
         }
-        this.taskService.getTasksByFilter({userId: req.params.userId})
+        this.taskService.getTasksByFilter({ userId: req.params.userId })
             .then(tasks => {
                 tasks.forEach((task) => {
                     if (!task.isComplete && !task.isVisible) {
