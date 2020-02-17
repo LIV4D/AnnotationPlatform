@@ -69,7 +69,7 @@ export class ImageController implements IController {
         const newImage: IImage = {
             type: req.body.type,
             metadata: isNullOrUndefined(req.body.metadata)?new Metadata():req.body.metadata,
-            preprocessing: isNullOrUndefined(req.files['preprocessing']),
+            preprocessing: !isNullOrUndefined(req.files['preprocessing']),
         };
         
         const imageFile = req.files['image'][0];

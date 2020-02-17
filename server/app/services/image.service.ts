@@ -101,7 +101,7 @@ export class ImageService {
             const destPath = path.join(config.get('storageFolders.preprocessing'), imageId.toString()+'.jpg');
             
              // Remove previous image and thumbnail if they exist
-             if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
+            if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
 
             // Convert image and save it to permanent folder
             await sharp(preprocessingLocalPath).jpeg()
