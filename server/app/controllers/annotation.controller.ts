@@ -37,7 +37,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private createAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
         const newAnnotation: IAnnotation = {
             data: req.body.data,
@@ -56,7 +56,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private updateAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private updateAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
         const newAnnotation: IAnnotation = {
             id: req.params.annotationId as number,
@@ -74,7 +74,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private deleteAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private deleteAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         this.annotationService.delete(req.params.annotationId)
         .then(() => res.sendStatus(204))
@@ -87,7 +87,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private cloneAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private cloneAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const annotationInfo: IAnnotation = {
             id: req.params.annotationId as number,
         };
@@ -102,7 +102,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private list(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.annotationService.getAllAnnotations()
             .then(annotations => {
                 res.send(annotations.map(annotation => {
@@ -124,7 +124,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private getAnnotation(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.annotationService.getAnnotation(parseInt(req.params.annotationId))
         .then(annotation => {
             switch (req.params.field) {
@@ -143,7 +143,7 @@ export class AnnotationController implements IController {
      * @param res an express response where the annotation data will be put
      * @param next is the following function in the express application
      */
-    private getMultipleAnnotations(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private getMultipleAnnotations = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.annotationService.getAnnotations(req.body.ids)
         .then(annotations => {
             res.send(annotations.map(annotation => {
