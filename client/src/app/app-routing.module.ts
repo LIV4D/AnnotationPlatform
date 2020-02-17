@@ -1,26 +1,24 @@
-import { NoImageGuard } from './edit-layout/editor/no-image.guard';
-import { TasksComponent } from './tasks/tasks.component';
-import { EditLayoutComponent } from './edit-layout/edit-layout.component';
-import { GalleryComponent } from './gallery/gallery.component';
-import { environment } from './../environments/environment';
-import { LoginGuard } from './login/login.guard';
-import { ROUTES } from './routes';
-import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { LoginComponent } from './login/login.component';
+import { Routes, RouterModule } from '@angular/router';
 
+import { LoginComponent } from './login/login.component';
+import { TasksComponent } from './tasks/tasks.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { EditorComponent } from './editor/editor.component';
+import { GalleryComponent } from './gallery/gallery.component';
 
 const routes: Routes = [
-    { path: ROUTES.LOGIN, component: LoginComponent },
-    { path: ROUTES.EDITOR, component: EditLayoutComponent, canActivate: [LoginGuard, NoImageGuard] },
-    { path: ROUTES.GALLERY, component: GalleryComponent, canActivate: [LoginGuard] },
-    { path: ROUTES.TASKS, component: TasksComponent, canActivate: [LoginGuard] },
-    { path: '', redirectTo: '/' + ROUTES.LOGIN, pathMatch: 'full' },
-    { path: '**', component: LoginComponent }
+  // TODO: empty route redirect to dashboard or editor ?
+  // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', component: LoginComponent },
+  { path: 'gallery', component: GalleryComponent },
+  { path: 'editor', component: EditorComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'tasks', component: TasksComponent }
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

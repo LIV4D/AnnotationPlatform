@@ -1,19 +1,19 @@
 <div id="title">
-    LIV4D RETINA INTERFACE
+  LIV4D RETINA INTERFACE
 </div>
 <div class="formContainer">
-  <form [formGroup]="loginForm">
-    <div class="field">
-        <input [matTooltip]=formErrors.email  matTooltipPosition="right" class="control-form" placeholder="Email" type="text" id="email" formControlName="email" [ngClass]="{'invalidField': formErrors.email}">
+<form [formGroup]="loginForm">
+  <div class="field">
+      <input [matTooltip]=formErrors.email  matTooltipPosition="right" class="control-form" placeholder="Email" type="text" id="email" formControlName="email" [ngClass]="{'invalidField': formErrors.email}">
+  </div>
+  <div class="field">
+    <input [matTooltip]=formErrors.password matTooltipPosition="right" class="control-form" placeholder="Password" type="password" id="password" formControlName="password" [ngClass]="{'invalidField': formErrors.password}">
+    <div *ngIf="formErrors.server" class="errorMsg centered">
+      {{formErrors.server}}
     </div>
-    <div class="field">
-      <input [matTooltip]=formErrors.password matTooltipPosition="right" class="control-form" placeholder="Password" type="password" id="password" formControlName="password" [ngClass]="{'invalidField': formErrors.password}">
-      <div *ngIf="formErrors.server" class="errorMsg centered">
-        {{formErrors.server}}
-      </div>
-    </div>
-    <div class="loginDiv">
-      <button type="submit" [ngClass]="{'invalid': !loginForm.valid}" class="loginBtn" [disabled]="!loginForm.valid" (click)="login()">LOGIN</button>
-    </div>
-  </form>
+  </div>
+  <div class="loginDiv">
+    <button type="submit" [ngClass]="{'invalid': !loginForm.valid}" class="loginBtn" [disabled]="!loginForm.valid" (click)="login()">LOGIN</button>
+  </div>
+</form>
 </div>

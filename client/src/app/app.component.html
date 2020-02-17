@@ -1,5 +1,4 @@
-<ngx-loading [show]="appService.loading" [config]="{ fullScreenBackdrop:true }"></ngx-loading>
-<app-header *ngIf="router.url != '/login'"></app-header>
-<app-bugtracker></app-bugtracker>
-<router-outlet></router-outlet>
-
+<app-navigation-bar></app-navigation-bar>
+<article>
+  <router-outlet></router-outlet>
+</article>

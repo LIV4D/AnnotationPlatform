@@ -52,12 +52,20 @@ export class ImageService {
         }
 
         try{
+            // Makes the directory for storing images and thumbnails if necessary.
+            if (!fs.existsSync(config.get('storageFolders.image'))) {
+                fs.mkdirSync(config.get('storageFolders.image'), {recursive : true} );
+            }
+            if (!fs.existsSync(config.get('storageFolders.thumbnail'))) {
+                fs.mkdirSync(config.get('storageFolders.thumbnail'), {recursive : true} );
+            }
+
             const destPath = path.join(config.get('storageFolders.image'), imageId.toString()+'.jpg');
             const thumbnailPath = path.join(config.get('storageFolders.thumbnail'), imageId.toString()+'.jpg');
 
             // Remove previous image and thumbnail if they exist
-            if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
-            if(fs.existsSync(thumbnailPath)) fs.unlinkSync(thumbnailPath);
+            if (fs.existsSync(destPath)) { fs.unlinkSync(destPath); }
+            if (fs.existsSync(thumbnailPath)) { fs.unlinkSync(thumbnailPath); }
 
             // Convert image and save it to permanent folder
             await sharp(imageLocalPath).jpeg()
@@ -85,10 +93,15 @@ export class ImageService {
             }
         }
         try{
+            // Makes the directory for storing preprocessed images if necessary.
+            if (!fs.existsSync(config.get('storageFolders.preprocessing'))) {
+                fs.mkdirSync(config.get('storageFolders.preprocessing'), {recursive : true} ); 
+            }
+
             const destPath = path.join(config.get('storageFolders.preprocessing'), imageId.toString()+'.jpg');
             
              // Remove previous image and thumbnail if they exist
-             if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
+            if(fs.existsSync(destPath)) fs.unlinkSync(destPath);
 
             // Convert image and save it to permanent folder
             await sharp(preprocessingLocalPath).jpeg()
