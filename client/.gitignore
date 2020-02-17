@@ -46,4 +46,4 @@ testem.log
 Thumbs.db
 
 #Python Build files
-*.pyc
+*/*.pyc
