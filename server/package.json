@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "tsc && NODE_ENV=production node out/www.js",
-    "start-windows": "tsc && SET NODE_ENV=production && node out/www.js",
+    "start-windows": "concurrently --kill-others \"tsc -w \" \"SET NODE_ENV=development && nodemon out/server/app/www.js\"",
     "dev": "concurrently --kill-others \"tsc -w \" \"NODE_ENV=development nodemon out/server/app/www.js \"",
     "lint": "tslint -c tslint.json --format stylish app/**/*.ts test/**/*.ts",
     "test": "NODE_ENV=test mocha -r ts-node/register test/**/*.spec.ts --timeout 3000",
