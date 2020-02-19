@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { timer, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -6,23 +7,12 @@ import { Injectable } from '@angular/core';
 export class TimerService {
 
   running = false;
+  timer = timer(1000, 1000);
 
-  constructor() { }
+  constructor() {
+   }
 
   toggle() {
-    if (!this.running) {
-      this.start();
-    } else {
-      this.stop();
-    }
-    this.running = !this.running;
-  }
-
-  start() {
-
-  }
-
-  stop() {
-
+    return this.timer;
   }
 }

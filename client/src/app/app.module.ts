@@ -36,7 +36,6 @@ import { EditorContentComponent } from './editor/editor-content/editor-content.c
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 
 
-
 @NgModule({
    declarations: [
       AppComponent,
