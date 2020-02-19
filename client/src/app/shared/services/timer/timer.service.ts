@@ -17,8 +17,7 @@ export class TimerService {
 
   initTime(seconds: number): Date {
     seconds = seconds + this.timeOffset;
-    const counter: Date = new Date(0, 0, 0, 0, 0, 0, 0);
-    counter.setSeconds(seconds);
+    const counter: Date = this.setCounter(seconds);
     return counter;
   }
 
@@ -29,12 +28,17 @@ export class TimerService {
 
   resetTimer(counter: Date, obsTimer) {
     this.timeOffset = 0;
-    counter = new Date(0, 0, 0, 0, 0, 0);
-    counter.setSeconds(0);
+    counter = this.setCounter(0);
 
     if (obsTimer !== undefined) {
       this.backup(0, obsTimer).unsubscribe();
     }
+    return counter;
+  }
+
+  private setCounter(seconds: number) {
+    const counter = new Date(0, 0, 0, 0, 0, 0);
+    counter.setSeconds(seconds);
 
     return counter;
   }
