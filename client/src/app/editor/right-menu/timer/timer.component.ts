@@ -15,4 +15,11 @@ export class TimerComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  toggleTimer(): void {
+    if (this.timerService.running) {
+        this.timerService.stop();
+    } else {
+        this.timerService.start();
+    }
+  }
 }
