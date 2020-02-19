@@ -15,14 +15,14 @@ export class TimerService {
     return this.timer;
   }
 
-  initTime(seconds: number): Date {
+  initTime(minutes: number, seconds: number): Date {
     seconds = seconds + this.timeOffset;
     const counter: Date = this.setCounter(seconds);
     return counter;
   }
 
-  backup(seconds: number, obsTimer) {
-    this.timeOffset = seconds;
+  backup(minutes: number, seconds: number, obsTimer) {
+    this.timeOffset = seconds + (minutes * 60) ;
     return obsTimer;
   }
 
@@ -31,7 +31,7 @@ export class TimerService {
     counter = this.setCounter(0);
 
     if (obsTimer !== undefined) {
-      this.backup(0, obsTimer).unsubscribe();
+      this.backup(0, 0, obsTimer).unsubscribe();
     }
     return counter;
   }
@@ -39,7 +39,6 @@ export class TimerService {
   private setCounter(seconds: number) {
     const counter = new Date(0, 0, 0, 0, 0, 0);
     counter.setSeconds(seconds);
-
     return counter;
   }
 }

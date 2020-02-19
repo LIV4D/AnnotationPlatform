@@ -12,12 +12,12 @@ export class TimerFacadeService {
     return this.timerService.toggle();
   }
 
-  backup(counter: number, obsTimer) {
-    return this.timerService.backup(counter, obsTimer);
+  backup(minutes: number, counter: number, obsTimer) {
+    return this.timerService.backup(minutes, counter, obsTimer);
   }
 
-  initTime(seconds: number): Date {
-    return this.timerService.initTime(seconds);
+  initTime(minutes: number, seconds: number): Date {
+    return this.timerService.initTime(minutes, seconds);
   }
 
   resetTimer(counter: Date, obsTimer) {
