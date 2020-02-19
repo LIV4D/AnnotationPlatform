@@ -24,7 +24,7 @@ export class TimerComponent implements OnInit, OnDestroy {
 
     this.obsTimer = this.toggle ? this.timerFacade.toggle()
     .subscribe( (seconds) => this.counter = this.timerFacade.initTime(0, seconds) )
-    : this.timerFacade.backup(this.counter.getMinutes(), this.counter.getSeconds(), this.obsTimer).unsubscribe();
+    : this.timerFacade.backup(this.counter.getHours(), this.counter.getMinutes(), this.counter.getSeconds(), this.obsTimer).unsubscribe();
   }
 
   resetTimer() {

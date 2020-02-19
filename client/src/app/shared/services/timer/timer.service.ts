@@ -21,8 +21,8 @@ export class TimerService {
     return counter;
   }
 
-  backup(minutes: number, seconds: number, obsTimer) {
-    this.timeOffset = seconds + (minutes * 60) ;
+  backup(hours: number, minutes: number, seconds: number, obsTimer) {
+    this.timeOffset = seconds + (minutes * 60) + (hours * 60) ;
     return obsTimer;
   }
 
@@ -31,7 +31,7 @@ export class TimerService {
     counter = this.setCounter(0);
 
     if (obsTimer !== undefined) {
-      this.backup(0, 0, obsTimer).unsubscribe();
+      this.backup(0, 0, 0, obsTimer).unsubscribe();
     }
     return counter;
   }
