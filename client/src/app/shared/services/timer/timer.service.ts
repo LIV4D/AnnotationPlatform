@@ -15,9 +15,8 @@ export class TimerService {
     return this.timer;
   }
 
-  test(seconds: number, timeOffset: number): Date {
-    console.log('TEST');
-    seconds = seconds + timeOffset;
+  initTime(seconds: number): Date {
+    seconds = seconds + this.timeOffset;
     const counter: Date = new Date(0, 0, 0, 0, 0, 0, 0);
     counter.setSeconds(seconds);
     return counter;
