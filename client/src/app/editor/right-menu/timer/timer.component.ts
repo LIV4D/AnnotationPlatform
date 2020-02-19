@@ -21,19 +21,16 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   toggleTimer(): void {
     this.toggle = !this.toggle;
-    this.obsTimer = this.toggle ? this.timerService.toggle().subscribe(
-        (seconds) => {
-          seconds = seconds + this.timeOffset;
-          this.counter = new Date(0, 0, 0, 0, 0, 0, 0);
-          this.counter.setSeconds(seconds);
-        }
-      ) : this.backup();
+    this.obsTimer = this.toggle ? this.timerService.toggle()
+    .subscribe( (seconds) => this.counter = this.timerService.test(seconds, this.timeOffset) )
+    // : this.backup();
+    : this.timerService.backup(this.counter.getSeconds(), this.obsTimer).unsubscribe();
   }
 
-  backup() {
-    this.timeOffset = this.counter.getSeconds();
-    this.obsTimer.unsubscribe();
-  }
+  // backup() {
+  //   this.timeOffset = this.counter.getSeconds();
+  //   this.obsTimer.unsubscribe();
+  // }
 
   ngOnDestroy() {
     this.obsTimer.unsubscribe();
