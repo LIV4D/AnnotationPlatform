@@ -22,7 +22,6 @@ export class TimerService {
     return counter;
   }
 
-
   backup(seconds: number, obsTimer) {
     this.timeOffset = seconds;
     return obsTimer;

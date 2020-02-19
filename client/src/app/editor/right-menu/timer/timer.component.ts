@@ -9,7 +9,6 @@ import { TimerFacadeService } from './timer.facade.service';
 export class TimerComponent implements OnInit, OnDestroy {
 
   counter: Date;
-  timeOffset = 0;
   toggle = false;
   obsTimer;
 
