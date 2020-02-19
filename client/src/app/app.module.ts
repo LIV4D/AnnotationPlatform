@@ -32,6 +32,8 @@ import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.c
 import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
 import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
+import { EditorContentComponent } from './editor/editor-content/editor-content.component';
+import { LayersComponent } from './editor/editor-content/layers/layers.component';
 
 
 
@@ -50,7 +52,9 @@ import { VisualizationComponent } from './editor/right-menu/visualization/visual
       BiomarkersComponent,
       TaskSubmissionComponent,
       TimerComponent,
-      VisualizationComponent
+      VisualizationComponent,
+      EditorContentComponent,
+      LayersComponent
    ],
    imports: [
       BrowserModule,
