@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Timer.FacadeService } from './timer.facade.service';
+import { TimerFacadeService } from './timer.facade.service';
 
 describe('Timer.FacadeService', () => {
-  let service: Timer.FacadeService;
+  let service: TimerFacadeService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Timer.FacadeService);
+    service = TestBed.inject(TimerFacadeService);
   });
 
   it('should be created', () => {

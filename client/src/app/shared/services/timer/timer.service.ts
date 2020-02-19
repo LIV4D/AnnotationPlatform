@@ -22,7 +22,7 @@ export class TimerService {
   }
 
   backup(hours: number, minutes: number, seconds: number, obsTimer) {
-    this.timeOffset = seconds + (minutes * 60) + (hours * 60) ;
+    this.timeOffset = seconds + (minutes * 60) + (hours * 60 * 60) ;
     return obsTimer;
   }
 
