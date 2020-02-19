@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "tsc && NODE_ENV=production node out/www.js",
-    "start-windows": "tsc -w && SET NODE_ENV=development && nodemon out/server/app/www.js",
-    "dev": "tsc && concurrently --kill-others \"tsc -w\" \"NODE_ENV=development nodemon out/www.js\"",
+    "start-windows": "concurrently --kill-others \"tsc -w \" \"SET NODE_ENV=development && nodemon out/server/app/www.js\"",
+    "dev": "concurrently --kill-others \"tsc -w \" \"NODE_ENV=development nodemon out/server/app/www.js \"",
     "lint": "tslint -c tslint.json --format stylish app/**/*.ts test/**/*.ts",
     "test": "NODE_ENV=test mocha -r ts-node/register test/**/*.spec.ts --timeout 3000",
     "tsc": "tsc",
@@ -18,6 +18,8 @@
     "seeding-test": "NODE_ENV=test ts-node -T seeding/loadSeeds.ts"
   },
   "dependencies": {
+    "@types/sharp": "^0.24.0",
+    "@types/tmp": "^0.1.0",
     "body-parser": "1.18.3",
     "class-validator": "0.9.1",
     "config": "3.0.0",
@@ -39,8 +41,10 @@
     "request": "2.88.0",
     "request-promise-native": "1.0.5",
     "serve-favicon": "2.5.0",
-    "ts-node": "7.0.1",
-    "typeorm": "0.2.7",
+    "sharp": "^0.24.1",
+    "tmp": "^0.1.0",
+    "ts-node": "^7.0.1",
+    "typeorm": "^0.2.7",
     "xml2js": "0.4.19"
   },
   "devDependencies": {

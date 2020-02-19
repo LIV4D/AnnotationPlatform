@@ -10,13 +10,13 @@ export class Task {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => TaskType, taskType => taskType.tasks, {eager: true})
+    @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
     public taskType: TaskType;
 
     @Column()
     public taskTypeId: number;
 
-    @ManyToOne(type => Annotation, annotation => annotation.tasks, {eager: true})
+    @ManyToOne(type => Annotation, annotation => annotation.tasks, { eager: true })
     public annotation!: Annotation;
 
     @Column()
@@ -31,17 +31,25 @@ export class Task {
     @Column({ default: '' })
     public comment: string;
 
-    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true})
+    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true })
     public assignedUser: User;
 
     @Column({ nullable: true })
     public assignedUserId: number;
 
-    @ManyToOne(type => User, user => user.createdTasks, {eager: true})
+    @ManyToOne(type => User, user => user.createdTasks, { eager: true })
     public creator: User;
 
     @Column()
     public creatorId: number;
+
+    public static fromInterface(itask: ITask): Task {
+        const task = new Task();
+        task.update(itask);
+        if (!isNullOrUndefined(itask.id)) { task.id = itask.id; }
+        if (!isNullOrUndefined(itask.creatorId))  { task.creatorId = itask.creatorId; }
+        return task;
+    }
 
     public interface(): ITask {
         return {
@@ -57,20 +65,12 @@ export class Task {
     }
 
     public update(itask: ITask): void {
-        if(!isNullOrUndefined(itask.taskTypeId))         this.taskTypeId = itask.taskTypeId; 
-        if(!isNullOrUndefined(itask.annotationId))   this.annotationId = itask.annotationId;
-        if(!isNullOrUndefined(itask.isComplete))     this.isComplete = itask.isComplete;
-        if(!isNullOrUndefined(itask.isVisible))      this.isVisible = itask.isVisible;
-        if(!isNullOrUndefined(itask.comment))        this.comment = itask.comment;
-        if(!isNullOrUndefined(itask.assignedUserId)) this.assignedUserId = itask.assignedUserId;
-    }
-
-    public static fromInterface(itask: ITask): Task {
-        const task = new Task();
-        task.update(itask);
-        if(!isNullOrUndefined(itask.id))        task.id = itask.id;
-        if(!isNullOrUndefined(itask.creatorId)) task.creatorId = itask.creatorId;
-        return task;
+        if (!isNullOrUndefined(itask.taskTypeId)) {  this.taskTypeId = itask.taskTypeId; }
+        if (!isNullOrUndefined(itask.annotationId)) { this.annotationId = itask.annotationId; }
+        if (!isNullOrUndefined(itask.isComplete)) { this.isComplete = itask.isComplete; }
+        if (!isNullOrUndefined(itask.isVisible)) { this.isVisible = itask.isVisible; }
+        if (!isNullOrUndefined(itask.comment)) { this.comment = itask.comment; }
+        if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
     }
 
     public proto(): ProtoTask {
@@ -87,7 +87,6 @@ export class Task {
     }
 }
 
-
 export interface ITask {
     id?: number;
     taskTypeId?: number;
@@ -98,7 +97,6 @@ export interface ITask {
     assignedUserId?: number;
     creatorId?: number;
 }
-
 
 export interface ProtoTask {
     id: number;

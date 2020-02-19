@@ -40,12 +40,14 @@ export class TaskRepository {
         return await repository.findByIds(ids);
     }
 
-    public async findByFilter(filter: {userId?:number, imageId?:number}): Promise<Task[]>{
+    public async findByFilter(filter: {userId?: number, imageId?: number}): Promise<Task[]> {
         let whereConditions = [];
-        if(filter.imageId!==undefined) 
-            whereConditions.push('task.annotation.image.id = '+filter.imageId.toString());
-        if(filter.userId!==undefined) 
-            whereConditions.push('task.assignedUser.id = '+filter.userId.toString());
+        if (filter.imageId !== undefined) {
+            whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
+        }
+        if (filter.userId !== undefined) {
+            whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
+        }
 
         const repository =  (await this.connectionProvider()).getRepository(Task);
         return await repository
@@ -57,13 +59,13 @@ export class TaskRepository {
                             .leftJoinAndSelect('submitEvent.user', 'lastSubmittedBy')
                      .leftJoinAndSelect('task.assignedUser', 'assignedUser')
                      .leftJoinAndSelect('task.creator', 'creator')
-                     .where(whereConditions.join(" AND "))
-                     .getMany()
+                     .where(whereConditions.join(' AND '))
+                     .getMany();
     }
 
     public async findTaskListByUser(userId: string, page: number = 0,
                                     pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
-        const repository =  (await this.connectionProvider()).getRepository(Task);                                
+        const repository =  (await this.connectionProvider()).getRepository(Task);
         const qb = await repository
                          .createQueryBuilder('task')
                          .where('task.user.id = :id', { id: userId })
