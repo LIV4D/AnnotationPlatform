@@ -16,10 +16,13 @@ export class TimerComponent implements OnInit {
   }
 
   toggleTimer(): void {
-    if (this.timerService.running) {
-        this.timerService.stop();
-    } else {
-        this.timerService.start();
-    }
+    // Call timerService's toggleTimer() method
+    this.timerService.toggle();
+
+    // if (this.timerService.running) {
+    //     this.timerService.stop();
+    // } else {
+    //     this.timerService.start();
+    // }
   }
 }
