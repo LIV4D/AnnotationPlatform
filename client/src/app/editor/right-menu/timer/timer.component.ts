@@ -9,8 +9,7 @@ import { TimerService } from 'src/app/shared/services/timer/timer.service';
 export class TimerComponent implements OnInit, OnDestroy {
 
   counter: Date;
-  public minuteText = '00';
-  public secondText = '00';
+  timeOffset = 0;
   toggle = false;
   obsTimer;
 
@@ -23,11 +22,17 @@ export class TimerComponent implements OnInit, OnDestroy {
   toggleTimer(): void {
     this.toggle = !this.toggle;
     this.obsTimer = this.toggle ? this.timerService.toggle().subscribe(
-        (x) => {
-          this.counter = new Date(0, 0, 0, 0, 0, 0);
-          this.counter.setSeconds(x);
+        (seconds) => {
+          seconds = seconds + this.timeOffset;
+          this.counter = new Date(0, 0, 0, 0, 0, 0, 0);
+          this.counter.setSeconds(seconds);
         }
-      ) : this.obsTimer.unsubscribe();
+      ) : this.backup();
+  }
+
+  backup() {
+    this.timeOffset = this.counter.getSeconds();
+    this.obsTimer.unsubscribe();
   }
 
   ngOnDestroy() {

@@ -5,9 +5,7 @@ import { timer, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TimerService {
-
-  running = false;
-  timer = timer(1000, 1000);
+  timer = timer(0, 1000);
 
   constructor() {
    }
