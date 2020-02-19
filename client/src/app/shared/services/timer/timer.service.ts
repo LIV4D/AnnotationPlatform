@@ -26,4 +26,16 @@ export class TimerService {
     this.timeOffset = seconds;
     return obsTimer;
   }
+
+  resetTimer(counter: Date, obsTimer) {
+    this.timeOffset = 0;
+    counter = new Date(0, 0, 0, 0, 0, 0);
+    counter.setSeconds(0);
+
+    if (obsTimer !== undefined) {
+      this.backup(0, obsTimer).unsubscribe();
+    }
+
+    return counter;
+  }
 }

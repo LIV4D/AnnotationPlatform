@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TimerFacadeService } from './timer.facade.service';
+import { LogoutService } from 'src/app/shared/services/logout.service';
 
 @Component({
   selector: 'app-timer',
@@ -24,6 +25,11 @@ export class TimerComponent implements OnInit, OnDestroy {
     this.obsTimer = this.toggle ? this.timerFacade.toggle()
     .subscribe( (seconds) => this.counter = this.timerFacade.initTime(seconds) )
     : this.timerFacade.backup(this.counter.getSeconds(), this.obsTimer).unsubscribe();
+  }
+
+  resetTimer() {
+    this.toggle = false;
+    this.counter = this.timerFacade.resetTimer(this.counter, this.obsTimer);
   }
 
   ngOnDestroy() {

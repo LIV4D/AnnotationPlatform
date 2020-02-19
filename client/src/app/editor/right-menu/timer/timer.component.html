@@ -3,5 +3,5 @@
   <!-- <span> {{minuteText}} : {{secondText}} </span> -->
   <span> {{ counter | date:'HH:mm:ss' }} </span>
   <mat-icon id="playTimerIcon" matTooltip="Start/Pause Timer" (click)="toggleTimer()"> {{ toggle ? 'pause' : 'play_arrow' }} </mat-icon>
-  <mat-icon id="resetTimerIcon" matTooltip="Reset Timer"> replay </mat-icon>
+  <mat-icon id="resetTimerIcon" matTooltip="Reset Timer" (click)="resetTimer()"> replay </mat-icon>
 </div>

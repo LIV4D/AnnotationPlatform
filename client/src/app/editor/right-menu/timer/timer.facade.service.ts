@@ -19,4 +19,8 @@ export class TimerFacadeService {
   initTime(seconds: number): Date {
     return this.timerService.initTime(seconds);
   }
+
+  resetTimer(counter: Date, obsTimer) {
+    return this.timerService.resetTimer(counter, obsTimer);
+  }
 }
