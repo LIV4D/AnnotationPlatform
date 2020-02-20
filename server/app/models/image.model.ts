@@ -40,6 +40,10 @@ export class Image {
         if(!isNullOrUndefined(iimage.preprocessing)) this.preprocessing = iimage.preprocessing;
     }
 
+
+     /**
+     * Make an entity from the interface: image.service.create()
+     */
     public static fromInterface(iimage: IImage): Image {
         const image = new Image();
         image.update(iimage);
@@ -47,6 +51,11 @@ export class Image {
         return image;
     }
 
+     /**
+     * Entity in a proto form
+     * The proto is sent instead of the entiy to the cli
+     * for letting  a communication with the serveur and the cli
+     */
     public proto(): ProtoImage {
         return {
             id: this.id,
