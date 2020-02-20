@@ -5,11 +5,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TaskFacadeService } from './tasks.facade.service';
 import { Router } from '@angular/router';
 // import { EditorService } from '../edit-layout/editor/editor.service';
-// import { TasksService } from '../shared/services/app.service';
-import { merge, of as observableOf } from 'rxjs';
-import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { ITaskList } from '../shared/interfaces/taskList.interface';
-import { $ } from 'protractor';
+
+
 
 @Component({
   selector: 'app-tasks',
@@ -29,27 +26,34 @@ export class TasksComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
    constructor( private router: Router, private facadeService: TaskFacadeService) {
-  //   private editorService: EditorService) {
-  //   this.showPagination = false;
-  //   this.length = 0;
-  //   this.pageSize = 25;
-  //   this.noData = false;
+     this.showPagination = false;
+     this.length = 0;
+     this.pageSize = 25;
+     this.noData = false;
    }
 
     ngOnInit(): void {
-        this.facadeService.loadData();
+        this.LoadData();
     }
 
+    LoadData() {
+      this.facadeService.loadData(this);
+
+
+    }
     loadImage(imageId: string): void {
       this.facadeService.loadImage(imageId);
     }
 
     showComplete(): void {
-      this.facadeService.showComplete();
+      this.showCompleted = true;
+      this.LoadData();
     }
 
     showIncomplete(): void {
-      this.facadeService.showIncomplete();
+      this.showCompleted = false;
+      this.LoadData();
+
     }
 }
 

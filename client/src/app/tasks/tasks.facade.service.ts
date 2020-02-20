@@ -1,28 +1,25 @@
+import { TasksComponent } from './tasks.component';
 import { Injectable, Injector } from '@angular/core';
-import { AppService } from '../shared/services/app.service';
+// { AppService } from '../shared/services/app.service';
 import { TasksService } from '../shared/services/tasks.service';
 import { Observable } from 'rxjs';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Injectable()
 export class TaskFacadeService {
 
-  constructor(private appService: AppService, private taskService: TasksService) {  }
+  constructor(private taskService: TasksService) {  }
 
-  loadData(): void {
-    this.taskService.loadData();
+  // tslint:disable-next-line:max-line-length
+  loadData(tasksComponent: TasksComponent): void {
+    this.taskService.loadData(tasksComponent);
   }
 
   loadImage(imageId: string): void {
     this.taskService.loadImage(imageId);
   }
 
-  showComplete(): void {
-    this.taskService.showComplete();
-  }
-
-  showIncomplete(): void {
-      this.taskService.showIncomplete();
-  }
 
 }
 
