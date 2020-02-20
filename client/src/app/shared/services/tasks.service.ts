@@ -1,3 +1,4 @@
+import { ITask } from './../../../../../server/app/models/task.model';
 import { TasksComponent } from './../../tasks/tasks.component';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,6 +11,7 @@ import { AppService } from './app.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { $ } from 'protractor';
+import { ITask } from '../interfaces/ITask.interface';
 
 
 @Injectable({
@@ -37,9 +39,10 @@ export class TasksService {
                 return observableOf([]);
             })
             // tslint:disable-next-line:no-shadowed-variable
-            ).subscribe((data: ITaskList) => {
-                tasksComponent.data = data.objects;
-                length = data.objectCount;
+            ).subscribe((data: ITask[]) => {
+                console.log(data);
+                // tasksComponent.data = data.objects;
+                // length = data.objectCount;
                 if (length === 0) {
                     tasksComponent.noData = true;
                 }
@@ -59,9 +62,11 @@ export class TasksService {
                             .set('completed', completed ? 'true' : 'false');
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         // tslint:disable-next-line:object-literal-shorthand
-        const req = this.http.get<ITaskList>(`/api/taskList/${userId}`, {params: params, observe: 'events', reportProgress: true});
-        this.http.get(`/api/tasks/list`).subscribe((response: Response) => {
-          console.log(response);
+        // const req = this.http.get<ITaskList>(`//api/tasks/list/${userId}`, {params: params, observe: 'events', reportProgress: true});
+        const req = this.http.get<ITask[]>(`/api/tasks/list`);
+
+        this.http.get<ITask[]>(`/api/tasks/list`).subscribe((response: ITask[]) => {
+            console.log(response);
         });
         return this.headerService.display_progress(req, 'Downloading: Tasks List');
     }

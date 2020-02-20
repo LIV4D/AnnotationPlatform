@@ -4,6 +4,6 @@ export interface ITaskGroup {
     tasks: Task[];
     imageId: number;
     imageSrc: string;
-    completeCount: number;
+    // completeCount: number;
     incompleteCount: number;
 }
