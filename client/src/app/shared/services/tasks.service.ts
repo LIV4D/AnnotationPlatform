@@ -60,6 +60,9 @@ export class TasksService {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         // tslint:disable-next-line:object-literal-shorthand
         const req = this.http.get<ITaskList>(`/api/taskList/${userId}`, {params: params, observe: 'events', reportProgress: true});
+        this.http.get(`/api/tasks/list`).subscribe((response: Response) => {
+          console.log(response);
+        });
         return this.headerService.display_progress(req, 'Downloading: Tasks List');
     }
 
