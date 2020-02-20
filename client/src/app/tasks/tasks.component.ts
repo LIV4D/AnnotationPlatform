@@ -22,14 +22,20 @@ export class TasksComponent implements OnInit {
     data: any = [];
     noData: boolean;
     showCompleted: boolean;
-    @ViewChild(MatSort) sort: MatSort;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+
+
+    @ViewChild(MatSort, {static: true}) sort: MatSort;
+    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
 
    constructor( private router: Router, private facadeService: TaskFacadeService) {
      this.showPagination = false;
      this.length = 0;
      this.pageSize = 25;
      this.noData = false;
+
+     this.dataSource.paginator = this.paginator;
+     this.dataSource.sort = this.sort;
    }
 
     ngOnInit(): void {
