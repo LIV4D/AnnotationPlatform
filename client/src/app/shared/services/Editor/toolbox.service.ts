@@ -16,26 +16,30 @@ import { BehaviorSubject } from 'rxjs';
 export class ToolboxService {
 
     selectedTool: BehaviorSubject<Tool>;
+    listOfTools: Tool[];
 
-    listOfTools = [
-        new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)'), // , toolServices),
-        new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)'), // toolServices),
-        // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
-        new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)'), // toolServices),
-        // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
-        new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)'), // toolServices),
-        new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)'), // toolServices),
-        new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)'), // toolServices),
-        new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
-                 navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)'), // toolServices),
-        new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
-                 navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)') // , toolServices)
-    ];
+    constructor() {
+        this.listOfTools = [
+            new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)'), // , toolServices),
+            new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)'), // toolServices),
+            // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
+            new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)'), // toolServices),
+            // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
+            new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)'), // toolServices),
+            new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)'), // toolServices),
+            new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)'), // toolServices),
+            new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
+                     navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)'), // toolServices),
+            new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
+                     navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)') // , toolServices)
+        ];
+
+        this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
+    }
 
     setSelectedTool(newSelectedTool: string): void {
         const newSelectedToolTool: Tool = this.listOfTools.filter((tool) => tool.name === newSelectedTool)[0];
         this.selectedTool.next(newSelectedToolTool);
-
     }
 
     setUndo() {
