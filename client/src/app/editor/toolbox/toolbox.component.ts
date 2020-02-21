@@ -5,26 +5,12 @@ import { HOTKEYS } from './../../shared/constants/hotkeys';
 import { TOOL_NAMES } from './../../shared/constants/tools';
 import { ToolboxFacadeService } from './toolbox.facade.service';
 
-import { Eraser } from './../../model/eraser';
-
 @Component({
   selector: 'app-toolbox',
   templateUrl: './toolbox.component.html',
   styleUrls: ['./toolbox.component.scss']
 })
 export class ToolboxComponent implements OnInit {
-  // TODO : This will move to its rightful place (Service)
-  listOfTools: Tool[] = [
-    new Tool('name', '../../../assets/icons/hand.svg'),
-    new Tool('name', '../../../assets/icons/brush.svg'),
-    new Tool('name', '../../../assets/icons/brush-fill.svg'),
-    new Tool('name', '../../../assets/icons/eraser.svg'),
-    new Tool('name', '../../../assets/icons/lasso-eraser.svg'),
-    new Tool('name', '../../../assets/icons/picker.svg'),
-    new Tool('name', '../../../assets/icons/undo.svg'),
-    new Tool('name', '../../../assets/icons/redo.svg')
-  ];
-
   constructor(public toolboxFacadeService: ToolboxFacadeService, public appService: AppService) { }
 
   ngOnInit(): void {
