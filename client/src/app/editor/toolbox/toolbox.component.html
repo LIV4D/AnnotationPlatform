@@ -1,3 +1,3 @@
-<div class="flex-container"> <!-- (window:keydown)="onKeyDown($event)" -->
+<div class="flex-container" (window:keydown)="onKeyDown($event)">
   <app-tool-element *ngFor="let tool of listOfTools" [tool]="tool"></app-tool-element>
 </div>

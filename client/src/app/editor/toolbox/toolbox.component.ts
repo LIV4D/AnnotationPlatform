@@ -67,4 +67,8 @@ export class ToolboxComponent implements OnInit {
     return navigator.platform.indexOf('Mac') === -1 ? event.ctrlKey : event.metaKey;
   }
 
+  get listOfTools() {
+    return this.toolboxFacadeService.listOfTools;
+  }
+
 }

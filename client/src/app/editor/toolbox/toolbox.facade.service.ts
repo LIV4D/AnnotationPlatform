@@ -14,6 +14,10 @@ export class ToolboxFacadeService {
         this.toolboxService.setSelectedTool(newSelectedTool);
     }
 
+    get listOfTools() {
+        return this.toolboxService.listOfTools;
+    }
+
     public setUndo() {
         this.toolboxService.setUndo();
         this.toolboxService.setUndoRedoState();
