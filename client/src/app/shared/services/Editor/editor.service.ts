@@ -4,6 +4,7 @@ import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
 import { BackgroundCanvas } from '../../models/background-canvas.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LocalStorage } from './local-storage.model';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,8 @@ export class EditorService {
   }
 
   init(svgLoaded: EventEmitter<any>): void {
+    console.log('EditorService::init()');
+
     // this.biomarkersService.dataSource = null;
     this.zoomFactor = 1.0;
     this.offsetX = 0;
@@ -90,26 +93,45 @@ export class EditorService {
     this.resize();
   }
 
+  // Check if the browser's local storage contains a usable revision
+  // that should be loaded.
+  shouldLoadLocalStorage(lastImageId: string): boolean {
+    return lastImageId && // Load if there is an imageId in the localStorage...
+        (
+            !this.imageId || // ... and there is no currently selected imageId ...
+            (                // .. or that selected image is the same one as localStorage and
+                //    not a local file system image
+                this.imageId === lastImageId &&
+                this.imageId !== 'local'
+            )
+        );
+  }
+
   // Load everything in the editor.
   public loadAll(): void {
-    console.log('THIS IS BEING LOADED IN LOADALL()');
+    console.log('EditorService::loadAll()');
 
     // Check if a an image is saved in localStorage
-    // const lastImageId = LocalStorage.lastSavedImageId();
-    // if (this.shouldLoadLocalStorage(lastImageId)) {
-    //     this.imageId = lastImageId;
-    //     this.getMainImage();
-    //     LocalStorage.load(this, this.layersService);
-    //     this.loadRevision(false);
-    //     this.loadMetadata(this.imageId);
-    //     return;
-    // }
-    // // Check if imageId is set
-    // if (!this.imageId) {
-    //     return;
-    // }
-    // this.getMainImage();
-    // this.loadRevision(true);
+    const lastImageId = LocalStorage.lastSavedImageId();
+    console.log('before if');
+    if (this.shouldLoadLocalStorage(lastImageId)) {
+      console.log('inside if');
+
+      this.imageId = lastImageId;
+      this.getMainImage();
+      LocalStorage.load(this, this.layersService);
+      this.loadRevision(false);
+      this.loadMetadata(this.imageId);
+      return;
+    }
+    // Check if imageId is set
+    if (!this.imageId) {
+      console.log('!this.imageId');
+      return;
+    }
+    console.log('before getMainImage() call');
+    this.getMainImage();
+    this.loadRevision(true);
   }
 
   // Load canvases and local variables when opening a local image.
@@ -213,6 +235,88 @@ export class EditorService {
     return oldXOffset !== this.offsetX || oldYOffset !== this.offsetY;
   }
 
+  getMainImage(): void {
+    console.log('EditorService::getMainImage()');
+
+    const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events',
+                                                                       reportProgress: true });
+    // this.headerService.display_progress(req, 'Downloading: Image').subscribe(
+    //     res => {
+    //         const reader: FileReader = new FileReader();
+    //         reader.onload = () => {
+    //             const image = new Image();
+    //             image.onload = () => {
+    //                 this.loadMainImage(image);
+    //                 this.loadPretreatmentImage();
+    //             };
+    //             image.src = reader.result as string;
+    //         };
+    //         reader.readAsDataURL(res);
+    //     });
+  }
+
+  // Loads a revision from the server. Draws that revision optionnaly.
+  loadRevision(draw: boolean): void {
+    const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+    const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
+                                                                               reportProgress: true, observe: 'events' });
+    // this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
+    //     res => {
+    //         this.svgBox.innerHTML = res.svg;
+    //         const parser = new DOMParser();
+    //         const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
+    //         const arbre: SVGGElement[] = [];
+    //         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+    //             const elems = e.getElementsByTagName('g');
+    //             for (let j = 0; j < elems.length; j++) {
+    //                 if (elems[j].parentElement.tagName !== 'g') {
+    //                     arbre.push(elems[j]);
+    //                 }
+    //             }
+    //         });
+
+    //         this.commentService.comment = res.diagnostic;
+
+    //         if (draw) {
+    //             this.layersService.biomarkerCanvas = [];
+    //             arbre.forEach((e: SVGGElement) => {
+    //                 this.layersService.createFlatCanvasRecursive(e);
+    //             });
+    //             this.layersService.toggleBorders(true);
+    //             setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+    //         }
+    //         this.svgLoaded.emit(arbre);
+    //     }, error => {
+    //         if (error.status === 404) {
+    //             const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
+    //                                           { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
+    //             this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
+    //                     this.svgBox.innerHTML = (res as any).svg;
+    //                     const parser = new DOMParser();
+    //                     const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+    //                     const arbre: SVGGElement[] = [];
+    //                     Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+    //                         const elems = e.getElementsByTagName('g');
+    //                         for (let j = 0; j < elems.length; j++) {
+    //                             if (elems[j].parentElement.tagName !== 'g') {
+    //                                 arbre.push(elems[j]);
+    //                             }
+    //                         }
+    //                     });
+    //                     this.commentService.comment = (res as any).diagnostic;
+    //                     if (draw) {
+    //                         this.layersService.biomarkerCanvas = [];
+    //                         arbre.forEach((e: SVGGElement) => {
+    //                             this.layersService.createFlatCanvasRecursive(e);
+    //                         });
+    //                         setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+    //                     }
+    //                     this.svgLoaded.emit(arbre);
+    //                 });
+    //         }
+    //     });
+  }
+
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
   updateCanvasDisplayRatio(): void {
     const ratio = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width /
@@ -228,6 +332,14 @@ export class EditorService {
   // Return the width/height ratio of the original image.
   originalImageRatio(): number {
     return this.backgroundCanvas.originalCanvas.width / this.backgroundCanvas.originalCanvas.height;
+  }
+
+  loadMetadata(imageId: string): void {
+    console.log('EditorService::loadMetadata()');
+
+    // this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+    //     this.imageServer = res;
+    // });
   }
 
   setImageId(id: string): void {
