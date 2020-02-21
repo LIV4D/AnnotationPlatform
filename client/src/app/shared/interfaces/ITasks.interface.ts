@@ -1,4 +1,4 @@
-export interface ITask {
+export interface ITasks {
     id?: number;
     taskTypeId?: number;
     annotationId?: number;

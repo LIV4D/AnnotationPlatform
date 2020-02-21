@@ -6,10 +6,25 @@ import {map, filter} from 'rxjs/operators';
 @Injectable()
 export class HeaderService {
 
-    cbProgress: (progress: number) => void;
-    cbShowProgress: (show: boolean, name?: string, download?: boolean) => void;
+
+    progress: number;
+    show: boolean;
+    name?: string;
+    download?: boolean;
+
+
 
     constructor() {
+    }
+
+    cbShowProgress(Show: boolean, Name?: string, Download?: boolean) {
+        this.show = Show;
+        this.name = Name;
+        this.download = Download;
+    }
+
+    cbProgress(Progress: number) {
+        this.progress = Progress;
     }
 
     display_progress(request: Observable<any>, name: string, download= true): Observable<any> {

@@ -1,4 +1,4 @@
-import { ITask } from './../../../../../server/app/models/task.model';
+
 import { TasksComponent } from './../../tasks/tasks.component';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { AppService } from './app.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { $ } from 'protractor';
-import { ITask } from '../interfaces/ITask.interface';
+import { ITasks } from '../interfaces/ITasks.interface';
 
 
 @Injectable({
@@ -34,12 +34,12 @@ export class TasksService {
                 // tslint:disable-next-line:max-line-length
                 return this.getTasks(tasksComponent.paginator.pageIndex, tasksComponent.pageSize, tasksComponent.showCompleted);
             }),
-            catchError(() => {
+           /* catchError(() => {
                 this.appService.loading = false;
                 return observableOf([]);
-            })
+            }) */
             // tslint:disable-next-line:no-shadowed-variable
-            ).subscribe((data: ITask[]) => {
+            ).subscribe((data: ITasks[]) => {
                 console.log(data);
                 // tasksComponent.data = data.objects;
                 // length = data.objectCount;
@@ -55,7 +55,7 @@ export class TasksService {
       }
 
 
-    getTasks(page: number, pageSize: number, completed: boolean): Observable<ITaskList> {
+    getTasks(page: number, pageSize: number, completed: boolean): Observable<ITasks[]> {
         const params = new HttpParams()
                             .set('page', page ? page.toString() : '0')
                             .set('pageSize', pageSize ? pageSize.toString() : '25')
@@ -63,11 +63,11 @@ export class TasksService {
         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
         // tslint:disable-next-line:object-literal-shorthand
         // const req = this.http.get<ITaskList>(`//api/tasks/list/${userId}`, {params: params, observe: 'events', reportProgress: true});
-        const req = this.http.get<ITask[]>(`/api/tasks/list`);
+        const req = this.http.get<ITasks[]>(`/api/tasks/list`, {observe: 'events', reportProgress: true});
 
-        this.http.get<ITask[]>(`/api/tasks/list`).subscribe((response: ITask[]) => {
-            console.log(response);
-        });
+        // this.http.get<ITasks[]>(`/api/tasks/list`).subscribe((response: ITasks[]) => {
+        //    console.log(response);
+        // });
         return this.headerService.display_progress(req, 'Downloading: Tasks List');
     }
 
