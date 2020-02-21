@@ -13,17 +13,21 @@
           <mat-cell *matCellDef="let task"> <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
       </ng-container>
       <ng-container matColumnDef="image">
-          <mat-header-cell *matHeaderCellDef disableClear>Image</mat-header-cell>
-          <mat-cell *matCellDef="let task"> {{task.imageId}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef disableClear>Id</mat-header-cell>
+          <mat-cell *matCellDef="let task"> {{task.id}} </mat-cell>
       </ng-container>
       <ng-container matColumnDef="complete">
-          <mat-header-cell *matHeaderCellDef disableClear>Complete Tasks</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
           <mat-cell *matCellDef="let task"> {{task.completeCount}} </mat-cell>
       </ng-container>
       <ng-container matColumnDef="incomplete">
-        <mat-header-cell *matHeaderCellDef disableClear>Incomplete Tasks</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task.incompleteCount}} </mat-cell>
-    </ng-container>
+        <mat-header-cell *matHeaderCellDef disableClear>Creator</mat-header-cell>
+        <mat-cell *matCellDef="let task"> {{task.creatorId}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="time">
+        <mat-header-cell *matHeaderCellDef disableClear>Time</mat-header-cell>
+        <mat-cell *matCellDef="let task"> N/A </mat-cell>
+      </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"
       (mouseup)="loadImage(row.imageId.toString())"

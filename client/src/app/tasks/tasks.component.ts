@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./tasks.component.scss']
 })
 export class TasksComponent implements OnInit {
-    displayedColumns = ['imageSrc', 'image', 'complete', 'incomplete'];
+    displayedColumns = ['imageSrc', 'image', 'complete', 'incomplete', 'time'];
     dataSource = new MatTableDataSource();
     showPagination: boolean;
     length: number;

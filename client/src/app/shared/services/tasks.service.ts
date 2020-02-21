@@ -34,15 +34,15 @@ export class TasksService {
                 // tslint:disable-next-line:max-line-length
                 return this.getTasks(tasksComponent.paginator.pageIndex, tasksComponent.pageSize, tasksComponent.showCompleted);
             }),
-           /* catchError(() => {
+            catchError(() => {
                 this.appService.loading = false;
                 return observableOf([]);
-            }) */
+            })
             // tslint:disable-next-line:no-shadowed-variable
             ).subscribe((data: ITasks[]) => {
                 console.log(data);
-                // tasksComponent.data = data.objects;
-                // length = data.objectCount;
+                tasksComponent.data = data;
+                length = data.length;
                 if (length === 0) {
                     tasksComponent.noData = true;
                 }
