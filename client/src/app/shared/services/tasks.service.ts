@@ -59,8 +59,14 @@ export class TasksService {
             });
       }
 
+      /**
+       * Loads image: Load an image from the data base
+       * @param imageId: id of the task's assignated image
+       */
       loadImage(imageId: string): void {
-        console.log('loadImage');
+        this.appService.localEditing = false;
+        localStorage.setItem('previousPage', 'tasks');
+        // this.editorService.loadImageFromServer(imageId);
       }
 
 
