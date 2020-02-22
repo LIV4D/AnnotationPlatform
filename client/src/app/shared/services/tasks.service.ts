@@ -17,35 +17,44 @@ import { ITasks } from '../interfaces/ITasks.interface';
 @Injectable({
     providedIn: 'root'
 })
+
 export class TasksService {
-    // tslint:disable-next-line:max-line-length
     constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
 
-    // tslint:disable-next-line:max-line-length
+    /**
+     * Load data
+     * Load the Tasks from the server by getting
+     */
     loadData(tasksComponent: TasksComponent): void {
-        console.log('loadData');
         tasksComponent.noData = false;
+
+        // PageIndex set to zero when the user change the sorting
         tasksComponent.sort.sortChange.subscribe(() => tasksComponent.paginator.pageIndex = 0);
+
+        // Observable: Converts sortChange and page Observables into a single Observable
+        // The new observable emits all of the items emitted by all of those Observables.
         merge(tasksComponent.sort.sortChange, tasksComponent.paginator.page)
             .pipe(
+            // BehaviorSubject: emmiting empty at the begining
             startWith({}),
+            // Observable: Switch to a new observable each time the request change
             switchMap(() => {
-                this.appService.loading = true;
-                // tslint:disable-next-line:max-line-length
-                return this.getTasks(tasksComponent.paginator.pageIndex, tasksComponent.pageSize, tasksComponent.showCompleted);
+                this.appService.loading = true; // Enable loading bar
+                // getTasks from the server
+                return this.getTasks(tasksComponent.paginator.pageIndex,
+                                    tasksComponent.pageSize,
+                                    tasksComponent.showCompleted);
             }),
+            // Observable: Return an empty observable in the case of an error
             catchError(() => {
-                this.appService.loading = false;
+                this.appService.loading = false; // Disable loading bar
                 return observableOf([]);
             })
-            // tslint:disable-next-line:no-shadowed-variable
+            // Observer: Data emited from the server are added on data
             ).subscribe((data: ITasks[]) => {
-                console.log(data);
                 tasksComponent.data = data;
                 length = data.length;
-                if (length === 0) {
-                    tasksComponent.noData = true;
-                }
+                if (length === 0) { tasksComponent.noData = true; }
                 this.appService.loading = false;
             });
       }
