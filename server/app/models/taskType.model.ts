@@ -21,7 +21,7 @@ export class TaskType {
         return {
             id: this.id,
             title: this.title,
-            description: this.description
+            description: this.description,
         };
     }
 
@@ -46,13 +46,11 @@ export class TaskType {
     }
 }
 
-
 export interface ProtoTaskType {
     id: number;
     title: string;
     description: string;
 }
-
 
 export interface ITaskType {
     id?: number;

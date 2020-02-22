@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskTypeService } from '../services/taskType.service';
-import { ITaskType} from '../models/taskType.model'
+import { ITaskType } from '../models/taskType.model';
 
 @injectable()
 export class TaskTypeController implements IController {
