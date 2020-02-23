@@ -48,7 +48,7 @@ export class LayersService {
 
     // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
     // TODO: THIS IS TEMPORARY
-    // this.MAX_CAPACITY = 15;
+    this.MAX_CAPACITY = 15;
 
     // this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
     // this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
