@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { IGallery } from './gallery.interface';
+import { HeaderService } from '../header.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,7 @@ export class GalleryService {
   selected: any;
   selectedImageId = '';
 
-  // constructor(public http: HttpClient, private headerService: HeaderService) {}
-  constructor(public http: HttpClient) {}
+  constructor(public http: HttpClient, private headerService: HeaderService) {}
 
   getImageTypes(): Observable<any> {
       return this.http.get('/api/imageTypes');
@@ -26,7 +26,8 @@ export class GalleryService {
           .set('pageSize', pageSize ? pageSize.toString() : '25')
           .set('filters', filters);
 
+      // tslint:disable-next-line: object-literal-shorthand
       const req = this.http.get<IGallery>('/api/gallery/', {params: params, observe: 'events', reportProgress: true});
-      // return this.headerService.display_progress(req, 'Downloading: Gallery');
+      return this.headerService.display_progress(req, 'Downloading: Gallery');
   }
 }

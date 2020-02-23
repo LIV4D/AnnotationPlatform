@@ -1,1 +1,97 @@
-<p>gallery works!</p>
+<!--LOCAL IMAGE BROWSING-->
+<div id="localButtons">
+  <button mat-button (click)="fileInput.click()" id="OCTButton">
+      <mat-icon>library_add</mat-icon>
+      <span> Browse Image</span>
+      <input #fileInput type="file" accept="image/*" (change)="onLocalImageLoaded($event)" style="display:none;" />
+  </button>
+
+  <span>Image Type: </span>
+  <select [(ngModel)]="galleryService.selected">
+      <option *ngFor="let type of imageTypes" [ngValue]="type">
+          {{type.name}}
+      </option>
+  </select>
+</div>
+
+<!--FILTER-->
+<mat-accordion>
+  <mat-expansion-panel>
+      <mat-expansion-panel-header>
+          <img id="filterIcon" src="/assets/icons/filter-solid.svg" />
+          <span id="searchOptions">Search Options</span>
+      </mat-expansion-panel-header>
+      <div class="fields">
+          <div class="center">
+              <div class="field">
+                  <div class="label">Image Type : </div><input #imageTypeField maxlength="50"></div>
+          </div>
+          <div class="center">
+              <div class="field">
+                  <div class="label">Eye Side : </div><input #eyeSideField maxlength="50"></div>
+          </div>
+          <div class="center">
+              <div class="field">
+                  <div class="label">Hospital : </div><input #hospitalField maxlength="50"></div>
+          </div>
+          <div class="center">
+              <div class="field">
+                  <div class="label">Patient : </div><input #patientField maxlength="50"></div>
+          </div>
+          <div class="center">
+              <div class="field">
+                  <div class="label">Visit : </div><input #visitField maxlength="50"></div>
+          </div>
+          <div class="center">
+              <div class="field">
+                  <div class="label">Code : </div><input #codeField maxlength="50"></div>
+          </div>
+          <div class="right">
+              <button id="searchButton" (click)="getImages()" mat-button><mat-icon>search</mat-icon></button>
+          </div>
+      </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<!--Table-->
+<div class="example-container">
+  <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
+      <ng-container matColumnDef="src">
+          <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+          <mat-cell *matCellDef="let image"><img [src]="image.src | safeImage" height="64px" /></mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Id</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.id}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="imageType">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>ImageType</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.imageType || 'N\\A'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="eye">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Eye Side</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.eye || 'N\\A'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="hospital">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Hospital</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.hospital || 'N\\A'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="patient">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Patient</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.patient || 'N\\A'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="visit">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Visit</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.visit || 'N\\A'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Code</mat-header-cell>
+          <mat-cell *matCellDef="let image"> {{image.code || 'N\\A'}} </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <!-- <mat-row *matRowDef="let row; columns: displayedColumns;" (mouseup)="loadImage(row.id.toString())">
+      </mat-row> -->
+  </mat-table>
+  <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
+</div>
+

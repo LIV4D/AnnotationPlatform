@@ -34,6 +34,8 @@ import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
 import { EditorContentComponent } from './editor/editor-content/editor-content.component';
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
+import { SafeImagePipe } from './shared/services/safe-image.pipe';
+import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 
 @NgModule({
@@ -53,7 +55,9 @@ import { LayersComponent } from './editor/editor-content/layers/layers.component
       TimerComponent,
       VisualizationComponent,
       EditorContentComponent,
-      LayersComponent
+      LayersComponent,
+      SafeImagePipe,
+      ZoomComponent
    ],
    imports: [
       BrowserModule,

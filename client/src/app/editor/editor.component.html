@@ -1,4 +1,4 @@
-<div> <!-- (document:keydown)="onKeyDown($event)" (mouseup)="onMouseUp($event)" (click)="closeMenu()" -->
+<div> <!--  (click)="closeMenu()" (document:keydown)="onKeyDown($event)" (mouseup)="onMouseUp($event)" -->
   <div class="container">
       <!--TOOLS-->
       <app-toolbox></app-toolbox>
@@ -35,7 +35,6 @@
                   </div>
               </div> -->
 
-              <!-- TODO: Where's this one in the html ?? -->
               <!--LOAD SVG LOCAL IMAGE-->
               <!-- <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
                   <span>Load Annotations</span>
@@ -44,14 +43,18 @@
 
 
               <!--ZOOM WINDOW-->
-              <!-- <div id="zoomSlider">
-                  <mat-slider vertical *ngIf="!deviceService.isDesktop() || appService.pointerDetected" [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"></mat-slider>
+              <div id="zoomSlider">
+                  <!-- <mat-slider vertical *ngIf="!deviceService.isDesktop() || appService.pointerDetected"
+                    [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"
+                  ></mat-slider> -->
               </div>
               <app-zoom *ngIf="editorService.imageLoaded"></app-zoom>
-              <span id="zoomFactorDisplay"> x {{editorService.zoomFactor.toFixed(1)}} </span> -->
+              <span id="zoomFactorDisplay"> x 1.0 </span>
+              <!-- {{editorService.zoomFactor.toFixed(1)}} -->
           </div>
 
-          <!-- <app-editor id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor> -->
+          <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor-content> -->
+          <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)"></app-editor-content> -->
           <app-editor-content id="app-editor" #editor></app-editor-content>
 
 
