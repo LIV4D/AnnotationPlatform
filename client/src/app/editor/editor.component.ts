@@ -42,7 +42,7 @@ export class EditorComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    console.log('EditorComponent::ngAfterViewChecked()');
+    // console.log('EditorComponent::ngAfterViewChecked()');
     this.cdRef.detectChanges();
   }
 

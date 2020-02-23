@@ -1,4 +1,4 @@
-<div id="editor-box" #editorBox appMouseWheel
+<!-- <div id="editor-box" #editorBox appMouseWheel
     (wheel)="onMouseWheel($event)"
     (mousemove)="onMouseMove($event)"
     (mousedown)="onMouseDown($event)"
@@ -14,6 +14,15 @@
     (pointermove)="onPointerMove($event)"
     (pointercancel)="onPointerLeave($event)"
     (pointerleave)="onPointerLeave($event)"
+
+    [ngStyle]="{'transform': 'scaleX(' + editorService.scaleX + ')'}">
+    <canvas id="main-canvas"></canvas>
+    <app-layers id="app-layers"></app-layers>
+    <span id="svg-box"></span>
+</div> -->
+
+<div id="editor-box" #editorBox appMouseWheel
+    (wheel)="onMouseWheel($event)"
 
     [ngStyle]="{'transform': 'scaleX(' + editorService.scaleX + ')'}">
     <canvas id="main-canvas"></canvas>
