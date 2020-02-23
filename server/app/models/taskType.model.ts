@@ -19,8 +19,8 @@ export class TaskType {
     @Column({ default: '' })
     public checklist: string;
 
-    @Column({ default: [] })
-    public biomarkers: string[];
+    @Column({ default: '' })
+    public biomarkers: string;
 
     @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
