@@ -42,80 +42,82 @@ export class EditorComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-      this.cdRef.detectChanges();
+    console.log('EditorComponent::ngAfterViewChecked()');
+    this.cdRef.detectChanges();
   }
 
-  public onSvgLoaded(arbre: SVGGElement[]): void {
-      this.rightMenu.svgLoaded(arbre);
-  }
+  // public onSvgLoaded(arbre: SVGGElement[]): void {
+  //   console.log('EditorComponent::onSvgLoaded()');
+  //   this.rightMenu.svgLoaded(arbre);
+  // }
 
-  public flip(): void {
-      this.editorComponent.flip();
-  }
+  // public flip(): void {
+  //     this.editorComponent.flip();
+  // }
 
-  public openBiomarkers(event: MouseEvent): void {
-      // if (! this.deviceService.isDesktop()) {
-      //     return;
-      // }
-      event.stopPropagation();
-      // const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
-      // if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
-      //     document.getElementById('bodyblack').style.opacity = '0.6';
-      //     this.editorService.menuState = true;
-      //     this.positionMenu(event);
-      // }
-  }
+  // public openBiomarkers(event: MouseEvent): void {
+  //     // if (! this.deviceService.isDesktop()) {
+  //     //     return;
+  //     // }
+  //     // event.stopPropagation();
+  //     // const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
+  //     // if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
+  //     //     document.getElementById('bodyblack').style.opacity = '0.6';
+  //     //     this.editorService.menuState = true;
+  //     //     this.positionMenu(event);
+  //     // }
+  // }
 
-  public getPosition(event: MouseEvent): any {
-      let posx = 0;
-      let posy = 0;
-      if (event.pageX || event.pageY) {
-          posx = event.pageX;
-          posy = event.pageY;
-      } else if (event.clientX || event.clientY) {
-          posx = event.clientX + document.body.scrollLeft +
-              document.documentElement.scrollLeft;
-          posy = event.clientY + document.body.scrollTop +
-              document.documentElement.scrollTop;
-      }
-      return { x: posx, y: posy };
-  }
+  // public getPosition(event: MouseEvent): any {
+  //     let posx = 0;
+  //     let posy = 0;
+  //     if (event.pageX || event.pageY) {
+  //         posx = event.pageX;
+  //         posy = event.pageY;
+  //     } else if (event.clientX || event.clientY) {
+  //         posx = event.clientX + document.body.scrollLeft +
+  //             document.documentElement.scrollLeft;
+  //         posy = event.clientY + document.body.scrollTop +
+  //             document.documentElement.scrollTop;
+  //     }
+  //     return { x: posx, y: posy };
+  // }
 
-  public positionMenu(clientPos): void {
-      const appEditor = document.getElementById('edit-viewport');
-      this.menuPosition = clientPos;
-      this.menuPositionX = this.menuPosition.x;
-      this.menuPositionY = this.menuPosition.y;
+  // public positionMenu(clientPos): void {
+  //     const appEditor = document.getElementById('edit-viewport');
+  //     this.menuPosition = clientPos;
+  //     this.menuPositionX = this.menuPosition.x;
+  //     this.menuPositionY = this.menuPosition.y;
 
-      this.menuWidth = this.contextMenu.nativeElement.offsetWidth;
-      this.menuHeight = this.contextMenu.nativeElement.offsetHeight;
-      this.windowWidth = appEditor.offsetWidth;
-      this.windowHeight = appEditor.offsetHeight;
+  //     this.menuWidth = this.contextMenu.nativeElement.offsetWidth;
+  //     this.menuHeight = this.contextMenu.nativeElement.offsetHeight;
+  //     this.windowWidth = appEditor.offsetWidth;
+  //     this.windowHeight = appEditor.offsetHeight;
 
-      if ((this.windowWidth - (Number(this.menuPositionX) - appEditor.getBoundingClientRect().left)) < this.menuWidth) {
-          this.menuPositionX = Number(this.windowWidth - this.menuWidth) + 'px';
-      } else {
-          this.menuPositionX = Number(this.menuPositionX) - appEditor.getBoundingClientRect().left + 'px';
-      }
-      if ((this.windowHeight - (Number(this.menuPositionY) - appEditor.getBoundingClientRect().top)) < this.menuHeight) {
-          this.menuPositionY = this.windowHeight - this.menuHeight + 'px';
-      } else {
-          this.menuPositionY = Number(this.menuPositionY) - appEditor.getBoundingClientRect().top + 'px';
-      }
-  }
+  //     if ((this.windowWidth - (Number(this.menuPositionX) - appEditor.getBoundingClientRect().left)) < this.menuWidth) {
+  //         this.menuPositionX = Number(this.windowWidth - this.menuWidth) + 'px';
+  //     } else {
+  //         this.menuPositionX = Number(this.menuPositionX) - appEditor.getBoundingClientRect().left + 'px';
+  //     }
+  //     if ((this.windowHeight - (Number(this.menuPositionY) - appEditor.getBoundingClientRect().top)) < this.menuHeight) {
+  //         this.menuPositionY = this.windowHeight - this.menuHeight + 'px';
+  //     } else {
+  //         this.menuPositionY = Number(this.menuPositionY) - appEditor.getBoundingClientRect().top + 'px';
+  //     }
+  // }
 
-  selectBiomarker(item: HTMLElement): void {
-      // this.biomarkersService.setFocusBiomarker(item);
-  }
+  // selectBiomarker(item: HTMLElement): void {
+  //     // this.biomarkersService.setFocusBiomarker(item);
+  // }
 
-  closeMenu(): void {
-      this.editorService.menuState = false;
-      document.getElementById('bodyblack').style.opacity = '0';
-  }
+  // closeMenu(): void {
+  //     this.editorService.menuState = false;
+  //     document.getElementById('bodyblack').style.opacity = '0';
+  // }
 
-  loadSVG(event: any): void {
-      this.editorService.loadSVGLocal(event);
-  }
+  // loadSVG(event: any): void {
+  //     this.editorService.loadSVGLocal(event);
+  // }
 
   // onMouseUp(event: MouseEvent): void {
   //     this.toolboxService.setUndoRedoState();
@@ -176,18 +178,18 @@ export class EditorComponent implements OnInit, AfterViewChecked {
   //     }
   // }
 
-  public commandOrCtrlPressed(event: KeyboardEvent): boolean {
-      return navigator.platform.indexOf('Mac') === -1 ? event.ctrlKey : event.metaKey;
-  }
+  // public commandOrCtrlPressed(event: KeyboardEvent): boolean {
+  //     return navigator.platform.indexOf('Mac') === -1 ? event.ctrlKey : event.metaKey;
+  // }
 
   // this only works for mobile (when using the slider)
-  zoomSliderChange(event: any): void {
-      const v = Math.pow(event.value / 100, 3);
-      this.editorService.setZoomFactor(v);
-      console.log('zoomSliderChange() was called');
-  }
+  // zoomSliderChange(event: any): void {
+  //     const v = Math.pow(event.value / 100, 3);
+  //     this.editorService.setZoomFactor(v);
+  //     console.log('zoomSliderChange() was called');
+  // }
 
-  updateSlider(zoomFactor: number): void {
-      this.sliderZoom = Math.pow(zoomFactor, 1 / 3) * 100;
-  }
+  // updateSlider(zoomFactor: number): void {
+  //     this.sliderZoom = Math.pow(zoomFactor, 1 / 3) * 100;
+  // }
 }

@@ -1,4 +1,4 @@
-<div (click)="closeMenu()" > <!-- (document:keydown)="onKeyDown($event)" (mouseup)="onMouseUp($event)" -->
+<div> <!--  (click)="closeMenu()" (document:keydown)="onKeyDown($event)" (mouseup)="onMouseUp($event)" -->
   <div class="container">
       <!--TOOLS-->
       <app-toolbox></app-toolbox>
@@ -36,10 +36,10 @@
               </div> -->
 
               <!--LOAD SVG LOCAL IMAGE-->
-              <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
+              <!-- <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
                   <span>Load Annotations</span>
                   <input #fileInput type="file" accept="image/svg+xml" (change)="loadSVG($event)" style="display:none;"/>
-              </button>
+              </button> -->
 
 
               <!--ZOOM WINDOW-->
@@ -54,8 +54,8 @@
           </div>
 
           <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor-content> -->
-          <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)"></app-editor-content>
-          <!-- <app-editor-content id="app-editor" #editor></app-editor-content> -->
+          <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)"></app-editor-content> -->
+          <app-editor-content id="app-editor" #editor></app-editor-content>
 
 
           <!--SELECT BIOMARKER ON RIGHT CLICK-->

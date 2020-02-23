@@ -215,7 +215,7 @@ export class LayersService {
         this.appService.loading = true;
         this.biomarkerCanvas.forEach((b) => {
             if (showBorders) {
-                this.borderService.erode(b.borderCanvas, b.currentCanvas);
+                // this.borderService.erode(b.borderCanvas, b.currentCanvas);
             }
             b.drawBorders = showBorders;
             b.draw();
