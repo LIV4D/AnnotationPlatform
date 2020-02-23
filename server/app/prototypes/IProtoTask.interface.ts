@@ -1,5 +1,5 @@
 import { IProtoTaskType } from './IProtoTaskType.interface';
-import { ProtoUser } from '../models/user.model';
+import { IProtoUser } from './IProtoUser.interface';
 import { IProtoAnnotation } from './IProtoAnnotation.interface';
 
 export interface IProtoTask {
@@ -9,6 +9,6 @@ export interface IProtoTask {
     isComplete: boolean;
     isVisible: boolean;
     comment: string;
-    assignedUser: ProtoUser;
-    creator: ProtoUser;
+    assignedUser: IProtoUser;
+    creator: IProtoUser;
 }

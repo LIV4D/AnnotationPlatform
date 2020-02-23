@@ -16,7 +16,7 @@ export class SubmissionEventService {
         return await this.submissionEventRepository.create(evenement);
     }
 
-    public async getEvent(id: number): Promise<SubmissionEvent>{
+    public async getEvent(id: number): Promise<SubmissionEvent> {
         const event = await this.submissionEventRepository.find(id);
         if (event == null) {
             throw createError('This event does not exist.', 404);
@@ -24,15 +24,15 @@ export class SubmissionEventService {
         return event;
     }
 
-    public async getEvents(ids: number[]): Promise<SubmissionEvent[]>{
+    public async getEvents(ids: number[]): Promise<SubmissionEvent[]> {
         const events = await this.submissionEventRepository.findByIds(ids);
-        if (events.length == 0) {
+        if (events.length === 0) {
             throw createError('These events do not exist.', 404);
         }
         return events;
     }
 
-    public async getAllEvents(filter: {userId?:number, imageId?:number}): Promise<SubmissionEvent[]>{
+    public async getAllEvents(filter: {userId?: number, imageId?: number}): Promise<SubmissionEvent[]> {
         return this.submissionEventRepository.findByFilter(filter);
     }
 }
