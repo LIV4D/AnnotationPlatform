@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
-import { IProtoTaskType } from '../prototypes/IProtoTaskType.interface';
+import { IProtoTaskType } from '../prototype interfaces/IProtoTaskType.interface';
 import { ITaskType } from '../interfaces/ITaskType.interface';
 
 @Entity()

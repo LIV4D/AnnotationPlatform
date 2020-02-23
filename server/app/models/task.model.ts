@@ -4,7 +4,7 @@ import { isNullOrUndefined } from 'util';
 import { TaskType } from './taskType.model';
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
-import { IProtoTask } from '../prototypes/IProtoTask.interface';
+import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
 import { ITask } from '../interfaces/ITask.interface';
 
 @Entity()

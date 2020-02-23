@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Annotation } from './annotation.model';
-import { IProtoImage } from '../prototypes/IProtoImage';
+import { IProtoImage } from '../prototype interfaces/IProtoImage.interface';
 import { IImage } from '../interfaces/IImage.interface';
 
 export class Metadata {

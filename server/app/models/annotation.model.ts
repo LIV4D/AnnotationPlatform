@@ -4,7 +4,7 @@ import { isNullOrUndefined } from 'util';
 import { Image } from './image.model';
 import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
-import { IProtoAnnotation } from '../prototypes/IProtoAnnotation.interface';
+import { IProtoAnnotation } from '../prototype interfaces/IProtoAnnotation.interface';
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
 
 export class StringHierarchy { [key: string]: StringHierarchy | string}
