@@ -92,13 +92,9 @@ export class GalleryComponent implements OnInit {
             this.editorService.imageLocal = image;
             this.editorService.imageId = 'local';
             LocalStorage.clear();
-            // resize image here if format still weird
-
-            // console.log('editorService.imageId : ' + this.editorService.imageId);
             this.router.navigate(['/' + 'editor']);
         };
         image.src = reader.result as string;
-        // console.log('image.src : ' + image.src);
     };
 
     reader.readAsDataURL(event.target.files[0]);
@@ -112,9 +108,9 @@ export class GalleryComponent implements OnInit {
     });
   }
 
-  loadImage(imageId: string): void {
-      this.appService.localEditing = false;
-      localStorage.setItem('previousPage', 'gallery');
-      this.editorService.loadImageFromServer(imageId);
-  }
+  // loadImage(imageId: string): void {
+  //     this.appService.localEditing = false;
+  //     localStorage.setItem('previousPage', 'gallery');
+  //     this.editorService.loadImageFromServer(imageId);
+  // }
 }

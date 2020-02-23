@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/models/point.model';
@@ -9,7 +9,7 @@ import { Point } from 'src/app/shared/models/point.model';
   styleUrls: ['./editor-content.component.scss']
 })
 
-export class EditorContentComponent implements OnInit {
+export class EditorContentComponent implements OnInit, OnDestroy {
 
   constructor(public editorService: EditorService, public appService: AppService, ) {
         this.delayEventTimer = null;
@@ -32,18 +32,36 @@ export class EditorContentComponent implements OnInit {
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
-      this.editorService.init(this.svgLoaded);
-      // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
-      // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
+    this.editorService.init(this.svgLoaded);
+    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
+    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
 
   ngOnDestroy(): void {
-      this.image = null;
-      this.cursorDown = false;
-      this.middleMouseDown = false;
-      this.zoomInitFactor = null;
+    this.image = null;
+    this.cursorDown = false;
+    this.middleMouseDown = false;
+    this.zoomInitFactor = null;
   }
 
+  onMouseWheel(event: WheelEvent): void {
+      const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
+      const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25 ) / 300;
+
+      if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
+          this.editorService.zoom(delta, position);
+      } else if (!this.cursorDown && !this.editorService.layersService.firstPoint) {
+          // let brushWidth =  this.toolPropertiesService.brushWidth;
+          // const brushInc = delta > 0 ? 1 : -1;
+          // if (brushWidth < 20) {
+          //     brushWidth += brushInc;
+          // } else {
+          //     brushWidth += brushInc * brushWidth / 10;
+          // }
+          // brushWidth = Math.round(brushWidth);
+          // this.toolPropertiesService.setBrushWidth(brushWidth);
+      }
+  }
   // onMouseDown(event: MouseEvent): void {
   //     this.cursorDown = true;
   //     if (event.which === 2 && !this.editorService.menuState) {
@@ -88,24 +106,6 @@ export class EditorContentComponent implements OnInit {
   //     this.enableKeyEvents(true);
   // }
 
-  onMouseWheel(event: WheelEvent): void {
-      const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-      const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25 ) / 300;
-
-      if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
-          this.editorService.zoom(delta, position);
-      } else if (!this.cursorDown && !this.editorService.layersService.firstPoint) {
-          // let brushWidth =  this.toolPropertiesService.brushWidth;
-          // const brushInc = delta > 0 ? 1 : -1;
-          // if (brushWidth < 20) {
-          //     brushWidth += brushInc;
-          // } else {
-          //     brushWidth += brushInc * brushWidth / 10;
-          // }
-          // brushWidth = Math.round(brushWidth);
-          // this.toolPropertiesService.setBrushWidth(brushWidth);
-      }
-  }
 
   // onPointerDown(event: PointerEvent): void {
   //     this.delayEventHandling(() => {

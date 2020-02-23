@@ -179,59 +179,58 @@ export class LayersService {
         ctx.imageSmoothingEnabled = false;
     }
 
-    public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
-        const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
-        if (currentBiomarkerCanvas == null) {
-            console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
-        }
-        return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
-    }
+    // public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
+    //     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
+    //     if (currentBiomarkerCanvas == null) {
+    //         console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+    //     }
+    //     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
+    // }
 
-    public getBiomarkerCanvas(): BiomarkerCanvas[] {
-        return this.biomarkerCanvas.filter(element => element.isVisible());
-    }
+    // public getBiomarkerCanvas(): BiomarkerCanvas[] {
+    //     return this.biomarkerCanvas.filter(element => element.isVisible());
+    // }
 
-    public resetBiomarkerCanvas(ids: Array<string>): void {
-        // this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
-        ids.forEach(id => {
-            const biomarker = this.getBiomarkerCanvasById(id);
-            biomarker.reset();
-            biomarker.draw();
-        });
-    }
+    // public resetBiomarkerCanvas(ids: Array<string>): void {
+    //     // this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
+    //     ids.forEach(id => {
+    //         const biomarker = this.getBiomarkerCanvasById(id);
+    //         biomarker.reset();
+    //         biomarker.draw();
+    //     });
+    // }
 
-    public getBiomarkerCanvasById(id: string): BiomarkerCanvas {
-        const result = this.biomarkerCanvas.find((b) => {
-            return (b.id === ANNOTATION_PREFIX + id);
-        });
-        return result;
-    }
+    // public getBiomarkerCanvasById(id: string): BiomarkerCanvas {
+    //     const result = this.biomarkerCanvas.find((b) => {
+    //         return (b.id === ANNOTATION_PREFIX + id);
+    //     });
+    //     return result;
+    // }
 
-    get biomarkerOverlayContext(): CanvasRenderingContext2D {
-        return this.biomarkerOverlayCanvas.getContext('2d');
-    }
+    // get biomarkerOverlayContext(): CanvasRenderingContext2D {
+    //     return this.biomarkerOverlayCanvas.getContext('2d');
+    // }
 
-    toggleBorders(showBorders: boolean): void {
-        this.appService.loading = true;
-        this.biomarkerCanvas.forEach((b) => {
-            if (showBorders) {
-                // this.borderService.erode(b.borderCanvas, b.currentCanvas);
-            }
-            b.drawBorders = showBorders;
-            b.draw();
-        });
-        this.appService.loading = false;
-    }
+    // toggleBorders(showBorders: boolean): void {
+    //     this.appService.loading = true;
+    //     this.biomarkerCanvas.forEach((b) => {
+    //         if (showBorders) {
+    //             // this.borderService.erode(b.borderCanvas, b.currentCanvas);
+    //         }
+    //         b.drawBorders = showBorders;
+    //         b.draw();
+    //     });
+    //     this.appService.loading = false;
+    // }
 
-    toggleShadows(showShadows: boolean): void {
-        this.appService.loading = true;
-        this.biomarkerCanvas.forEach((b) => {
-            b.drawShadows = showShadows;
-            b.draw();
-        });
-        this.appService.loading = false;
-
-    }
+    // toggleShadows(showShadows: boolean): void {
+    //     this.appService.loading = true;
+    //     this.biomarkerCanvas.forEach((b) => {
+    //         b.drawShadows = showShadows;
+    //         b.draw();
+    //     });
+    //     this.appService.loading = false;
+    // }
 
     public resize(width: number, height: number): void {
         this.biomarkerCanvas.forEach(biomarker => {
@@ -248,42 +247,42 @@ export class LayersService {
     }
 
     // Add a point on the canvas to indicate the first point
-    public addFirstPoint(): void {
-        this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
-        this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
-        this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
-        this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
-    }
+    // public addFirstPoint(): void {
+    //     this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
+    //     this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
+    //     this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
+    //     this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
+    // }
 
-    public updateDashStroke(): void {
-        const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+    // public updateDashStroke(): void {
+    //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
 
-        dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
-        dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
-        dashStroke.setAttribute('x2', this.lastPoint.x.toString());
-        dashStroke.setAttribute('y2', this.lastPoint.y.toString());
-    }
+    //     dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
+    //     dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
+    //     dashStroke.setAttribute('x2', this.lastPoint.x.toString());
+    //     dashStroke.setAttribute('y2', this.lastPoint.y.toString());
+    // }
 
-    public removeFirstPoint(): void {
-        this.lastPoint = null;
-        this.firstPoint.setAttribute('cx', '-10');
-        this.firstPoint.setAttribute('cy', '-10');
-        this.firstPoint = null;
+    // public removeFirstPoint(): void {
+    //     this.lastPoint = null;
+    //     this.firstPoint.setAttribute('cx', '-10');
+    //     this.firstPoint.setAttribute('cy', '-10');
+    //     this.firstPoint = null;
 
-        const dashStroke = document.getElementById('dashStroke') as HTMLElement;
-        dashStroke.setAttribute('x1', '-10');
-        dashStroke.setAttribute('y1', '-10');
-        dashStroke.setAttribute('x2', '-10');
-        dashStroke.setAttribute('y2', '-10');
-    }
+    //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+    //     dashStroke.setAttribute('x1', '-10');
+    //     dashStroke.setAttribute('y1', '-10');
+    //     dashStroke.setAttribute('x2', '-10');
+    //     dashStroke.setAttribute('y2', '-10');
+    // }
 
-    public nearFirstPoint(): void {
-        this.firstPoint.setAttribute('fill', 'white');
-    }
+    // public nearFirstPoint(): void {
+    //     this.firstPoint.setAttribute('fill', 'white');
+    // }
 
-    public farFirstPoint(): void {
-        this.firstPoint.setAttribute('fill', 'grey');
-    }
+    // public farFirstPoint(): void {
+    //     this.firstPoint.setAttribute('fill', 'grey');
+    // }
 }
 
 // TODO: MINE

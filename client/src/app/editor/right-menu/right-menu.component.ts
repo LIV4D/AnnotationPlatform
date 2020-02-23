@@ -52,7 +52,7 @@ export class RightMenuComponent implements OnInit {
   }
 
   public saveLocal(): void {
-      this.editorService.saveSVGFile();
+      // this.editorService.saveSVGFile();
   }
 
   // public openTaskDialog(): void {

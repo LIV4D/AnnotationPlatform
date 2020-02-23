@@ -89,8 +89,8 @@
           <mat-cell *matCellDef="let image"> {{image.code || 'N\\A'}} </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" (mouseup)="loadImage(row.id.toString())">
-      </mat-row>
+      <!-- <mat-row *matRowDef="let row; columns: displayedColumns;" (mouseup)="loadImage(row.id.toString())">
+      </mat-row> -->
   </mat-table>
   <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
 </div>
