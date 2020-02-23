@@ -1,11 +1,11 @@
-import { IProtoTaskType } from './ProtoTaskType.interface';
+import { IProtoTaskType } from './IProtoTaskType.interface';
 import { ProtoUser } from '../models/user.model';
-import { ProtoAnnotation } from '../models/annotation.model';
+import { IProtoAnnotation } from './IProtoAnnotation.interface';
 
 export interface IProtoTask {
     id: number;
     taskType: IProtoTaskType;
-    annotation: ProtoAnnotation;
+    annotation: IProtoAnnotation;
     isComplete: boolean;
     isVisible: boolean;
     comment: string;

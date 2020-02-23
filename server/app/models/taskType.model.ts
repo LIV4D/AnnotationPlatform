@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
-import { ProtoTaskType } from '../prototypes/ProtoTaskType.interface';
+import { IProtoTaskType } from '../prototypes/IProtoTaskType.interface';
 import { ITaskType } from '../interfaces/ITaskType.interface';
 
 @Entity()
@@ -39,7 +39,7 @@ export class TaskType {
         if (!isNullOrUndefined(itype.description)) { this.description = itype.description; }
     }
 
-    public proto(): ProtoTaskType {
+    public proto(): IProtoTaskType {
         return {
             id: this.id,
             title: this.title,

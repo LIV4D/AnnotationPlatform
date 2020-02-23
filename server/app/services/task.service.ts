@@ -6,7 +6,7 @@ import { AnnotationService } from './annotation.service';
 import { TaskRepository } from '../repository/task.repository';
 import { Task } from '../models/task.model';
 import { ITask } from '../interfaces/ITask.interface';
-import { IAnnotation } from '../models/annotation.model';
+import { IAnnotation } from '../interfaces/IAnnotation.interface';
 import { ISubmission } from '../../../common/interfaces';
 import { User } from '../models/user.model';
 import { ITaskGallery } from '../interfaces/gallery.interface';
