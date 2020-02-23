@@ -8,7 +8,9 @@ import { EditorComponent } from './editor/editor.component';
 import { GalleryComponent } from './gallery/gallery.component';
 
 const routes: Routes = [
-  // TODO: empty route redirect to dashboard or editor ?
+  // TODO: empty route redirect to tasks clinician if is login
+  // TODO: empty route redirect to ? for others if is login
+  // TODO: empty route redirect to loginPage if is not login
   // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '', component: LoginComponent },
   { path: 'gallery', component: GalleryComponent },
