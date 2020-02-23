@@ -32,7 +32,7 @@
 
 
 <!-- This code is for the Angular-Material (taken from the old project) -->
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" *ngIf="router.url != '/'">
     <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Editor</span>
     <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" >Gallery</span>
     <span routerLinkActive="active" routerLink="/tasks" style="margin-right: 10px" >Tasks</span>
