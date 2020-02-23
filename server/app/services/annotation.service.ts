@@ -42,6 +42,7 @@ export class AnnotationService {
      * @param eventInfo information pertaining to the time of the event and a description of it
      * @returns the annotation that has been found on the server (or null if not saved properly)
      */
+    // tslint:disable-next-line:max-line-length
     public async update(newAnnotation: IAnnotation, user: User, eventInfo: {description?: string, timestamp?: number}= {}): Promise<Annotation> {
         const originalAnnotation = await this.getAnnotation(newAnnotation.id);
         const event = await this.submissionEventService.createSubmissionEvent({

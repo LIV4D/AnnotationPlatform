@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskTypeService } from '../services/taskType.service';
-import { ITaskType } from '../models/taskType.model';
+import { ITaskType } from '../interfaces/ITaskType.interface';
 
 @injectable()
 export class TaskTypeController implements IController {
@@ -37,10 +37,10 @@ export class TaskTypeController implements IController {
 
     private updateTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedTaskType: ITaskType = {
-            id: req.params.taskTypeId, 
-            title: req.body.title, 
+            id: req.params.taskTypeId,
+            title: req.body.title,
             description: req.body.description,
-        }
+        };
 
         this.taskTypeService.updateTaskType(updatedTaskType)
             .then(tType => res.send(tType))
@@ -56,7 +56,7 @@ export class TaskTypeController implements IController {
         this.taskTypeService.getAllTaskTypes()
             .then(taskTypes => {
                 res.send(taskTypes.map(taskType => {
-                    switch(req.params.attr){
+                    switch (req.params.attr) {
                         case undefined: return taskType;
                         case 'proto': return taskType.proto();
                     }
@@ -68,11 +68,11 @@ export class TaskTypeController implements IController {
     private getTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.taskTypeService.getTaskType(req.params.taskTypeId)
             .then(taskType => {
-                switch(req.params.attr){
+                switch (req.params.attr) {
                     case undefined: res.send(taskType); break;
                     case 'proto': res.send(taskType); break;
                 }
-                
+
             }).catch(next);
     }
 
@@ -80,7 +80,7 @@ export class TaskTypeController implements IController {
         this.taskTypeService.getTaskTypes(req.body.ids)
             .then(taskTypes => {
                 res.send(taskTypes.map(taskType => {
-                    switch(req.params.attr){
+                    switch (req.params.attr) {
                         case undefined: return taskType;
                         case 'proto': return taskType.proto();
                     }

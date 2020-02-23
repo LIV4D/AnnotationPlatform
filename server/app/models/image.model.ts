@@ -26,6 +26,13 @@ export class Image {
     @OneToMany(type => Annotation, annotation => annotation.image)
     public annotations: Annotation[];
 
+    public static fromInterface(iimage: IImage): Image {
+        const image = new Image();
+        image.update(iimage);
+        if (!isNullOrUndefined(iimage.id)) {   image.id = iimage.id; }
+        return image;
+    }
+
     public interface(): IImage {
         return {
             id: this.id,
@@ -36,16 +43,9 @@ export class Image {
     }
 
     public update(iimage: IImage): void {
-        if(!isNullOrUndefined(iimage.type))          this.type = iimage.type; 
-        if(!isNullOrUndefined(iimage.metadata))      this.metadata = iimage.metadata;
-        if(!isNullOrUndefined(iimage.preprocessing)) this.preprocessing = iimage.preprocessing;
-    }
-
-    public static fromInterface(iimage: IImage): Image {
-        const image = new Image();
-        image.update(iimage);
-        if(!isNullOrUndefined(iimage.id))   image.id = iimage.id;
-        return image;
+        if (!isNullOrUndefined(iimage.type)) {          this.type = iimage.type; }
+        if (!isNullOrUndefined(iimage.metadata)) {      this.metadata = iimage.metadata; }
+        if (!isNullOrUndefined(iimage.preprocessing)) { this.preprocessing = iimage.preprocessing; }
     }
 
     public proto(): ProtoImage {
@@ -69,5 +69,5 @@ export interface ProtoImage {
     id: number;
     type: string;
     metadata: Metadata;
-    preprocessing: boolean
+    preprocessing: boolean;
 }

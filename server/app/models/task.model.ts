@@ -4,7 +4,7 @@ import { isNullOrUndefined } from 'util';
 import { TaskType } from './taskType.model';
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
-import { ProtoTask } from '../prototypes/ProtoTask';
+import { IProtoTask } from '../prototypes/IProtoTask.interface';
 import { ITask } from '../interfaces/ITask.interface';
 
 @Entity()
@@ -56,7 +56,6 @@ export class Task {
     @ManyToOne(type => User, user => user.createdTasks, { eager: true })
     public creator: User;
 
-
     public static fromInterface(itask: ITask): Task {
         const task = new Task();
         task.update(itask);
@@ -89,7 +88,7 @@ export class Task {
         if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
     }
 
-    public proto(): ProtoTask {
+    public proto(): IProtoTask {
         return {
             id: this.id,
             taskType: this.taskType.proto(),
@@ -105,4 +104,3 @@ export class Task {
         };
     }
 }
-
