@@ -44,15 +44,19 @@
 
 
               <!--ZOOM WINDOW-->
-              <!-- <div id="zoomSlider">
-                  <mat-slider vertical *ngIf="!deviceService.isDesktop() || appService.pointerDetected" [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"></mat-slider>
+              <div id="zoomSlider">
+                  <!-- <mat-slider vertical *ngIf="!deviceService.isDesktop() || appService.pointerDetected"
+                    [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"
+                  ></mat-slider> -->
               </div>
               <app-zoom *ngIf="editorService.imageLoaded"></app-zoom>
-              <span id="zoomFactorDisplay"> x {{editorService.zoomFactor.toFixed(1)}} </span> -->
+              <span id="zoomFactorDisplay"> x </span>
+              <!-- {{editorService.zoomFactor.toFixed(1)}} -->
           </div>
 
-          <!-- <app-editor id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor> -->
-          <app-editor-content id="app-editor" #editor></app-editor-content>
+          <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor-content> -->
+          <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)"></app-editor-content>
+          <!-- <app-editor-content id="app-editor" #editor></app-editor-content> -->
 
 
           <!--SELECT BIOMARKER ON RIGHT CLICK-->

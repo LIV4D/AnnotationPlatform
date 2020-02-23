@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { BackgroundCanvas } from '../../models/background-canvas.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalStorage } from './local-storage.model';
+import { Point } from '../../models/point.model';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +70,7 @@ export class EditorService {
     this.adjustOffsets();
 
     // Call zoom to redraw everything.
-    // this.zoom(-100, new Point(0, 0));
+    this.zoom(-100, new Point(0, 0));
   }
 
   init(svgLoaded: EventEmitter<any>): void {

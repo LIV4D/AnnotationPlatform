@@ -12,8 +12,9 @@ export class LayersComponent implements OnInit {
   constructor(private layersService: LayersService, private editorService: EditorService) { }
 
   ngOnInit(): void {
-    console.log('LayersComponent::ngOnInit()');
-    this.layersService.init();
+    // console.log('LayersComponent::ngOnInit()');
+    // this.layersService.init();
+
     // this.editorService.canvasDisplayRatio.subscribe(
     //     value => {
     //         this.updateCursorRadius();
