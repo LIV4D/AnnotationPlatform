@@ -7,17 +7,14 @@ import { Annotation, ProtoAnnotation } from './annotation.model';
 
 @Entity()
 export class Task {
+
+    // Columns
+
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
-    public taskType: TaskType;
-
     @Column()
     public taskTypeId: number;
-
-    @ManyToOne(type => Annotation, annotation => annotation.tasks, { eager: true })
-    public annotation!: Annotation;
 
     @Column()
     public annotationId: number;
@@ -31,17 +28,32 @@ export class Task {
     @Column({ default: '' })
     public comment: string;
 
-    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true })
-    public assignedUser: User;
-
     @Column({ nullable: true })
     public assignedUserId: number;
+
+    @Column()
+    public creatorId: number;
+
+    @Column()
+    public imageId: number;
+
+    @Column()
+    public projectId: number;
+
+    // Relationships
+
+    @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
+    public taskType: TaskType;
+
+    @ManyToOne(type => Annotation, annotation => annotation.tasks, { eager: true })
+    public annotation!: Annotation;
+
+    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true })
+    public assignedUser: User;
 
     @ManyToOne(type => User, user => user.createdTasks, { eager: true })
     public creator: User;
 
-    @Column()
-    public creatorId: number;
 
     public static fromInterface(itask: ITask): Task {
         const task = new Task();
@@ -61,6 +73,8 @@ export class Task {
             comment: this.comment,
             assignedUserId: this.assignedUserId,
             creatorId: this.creatorId,
+            imageId: this.imageId,
+            projectId: this.projectId,
         };
     }
 
@@ -83,6 +97,9 @@ export class Task {
             comment: this.comment,
             assignedUser: !isNullOrUndefined(this.assignedUser) ? this.assignedUser.proto() : null,
             creator: this.creator.proto(),
+            // image: this.imageId.proto(),
+            // project: this.imageId.proto()
+
         };
     }
 }
@@ -96,6 +113,8 @@ export interface ITask {
     comment?: string;
     assignedUserId?: number;
     creatorId?: number;
+    imageId?: number;
+    projectId?: number;
 }
 
 export interface ProtoTask {
@@ -107,4 +126,6 @@ export interface ProtoTask {
     comment: string;
     assignedUser: ProtoUser;
     creator: ProtoUser;
+    // image: number;
+    // project: number;
 }
