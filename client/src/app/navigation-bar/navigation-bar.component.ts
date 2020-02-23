@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationBarFacadeService } from './navigation-bar.facade.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -13,9 +15,13 @@ export class NavigationBarComponent implements OnInit {
   loadingProgress = 0;
   loadingDownload = true;
 
-  constructor() { }
+  constructor(private navigationBarFacadeService: NavigationBarFacadeService, private router: Router) {  }
 
   ngOnInit() {
   }
 
+  logout(): void {
+    this.navigationBarFacadeService.logout();
+
+}
 }

@@ -81,6 +81,7 @@ export class LoginService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this._user = null;
+    this.router.navigate(['/']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
   }
 
   // isAuthenticated() {
