@@ -5,7 +5,8 @@ import { isNullOrUndefined } from 'util';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
-import { Task, ITask } from '../models/task.model';
+import { Task } from '../models/task.model';
+import { ITask } from "../interfaces/ITask.interface";
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
 

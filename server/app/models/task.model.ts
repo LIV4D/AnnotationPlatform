@@ -1,9 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
-import { TaskType, ProtoTaskType } from './taskType.model';
-import { User, ProtoUser } from './user.model';
-import { Annotation, ProtoAnnotation } from './annotation.model';
+import { TaskType } from './taskType.model';
+import { User } from './user.model';
+import { Annotation } from './annotation.model';
+import { ProtoTask } from '../prototypes/ProtoTask';
+import { ITask } from '../interfaces/ITask.interface';
 
 @Entity()
 export class Task {
@@ -104,28 +106,3 @@ export class Task {
     }
 }
 
-export interface ITask {
-    id?: number;
-    taskTypeId?: number;
-    annotationId?: number;
-    isComplete?: boolean;
-    isVisible?: boolean;
-    comment?: string;
-    assignedUserId?: number;
-    creatorId?: number;
-    imageId?: number;
-    projectId?: number;
-}
-
-export interface ProtoTask {
-    id: number;
-    taskType: ProtoTaskType;
-    annotation: ProtoAnnotation;
-    isComplete: boolean;
-    isVisible: boolean;
-    comment: string;
-    assignedUser: ProtoUser;
-    creator: ProtoUser;
-    // image: number;
-    // project: number;
-}

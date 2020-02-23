@@ -7,6 +7,7 @@ export class Metadata {
     [key: string]: string | number | boolean;
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Entity()
 export class Image {
 
@@ -57,14 +58,12 @@ export class Image {
     }
 }
 
-
 export interface IImage {
     id?: number;
     type?: string;
     metadata?: Metadata;
     preprocessing?: boolean;
 }
-
 
 export interface ProtoImage {
     id: number;
