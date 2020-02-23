@@ -86,7 +86,7 @@ export class BiomarkerCanvas extends Canvas {
                                                     destX, destY, window.width, window.height);
 
       if (this.drawBorders) {
-          this.borderService.erode(this.borderCanvas, this.currentCanvas, destX, destY, window.width + destX, window.height + destY);
+          // this.borderService.erode(this.borderCanvas, this.currentCanvas, destX, destY, window.width + destX, window.height + destY);
       }
 
       if (display) {

@@ -1,7 +1,0 @@
-import { BiomarkerCanvas } from './biomarker-canvas.model';
-
-describe('BiomarkerCanvas', () => {
-  it('should create an instance', () => {
-    expect(new BiomarkerCanvas()).toBeTruthy();
-  });
-});
