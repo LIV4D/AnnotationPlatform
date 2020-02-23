@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 
 const SIZE = 80;
@@ -8,7 +8,7 @@ const SIZE = 80;
   templateUrl: './zoom.component.html',
   styleUrls: ['./zoom.component.scss']
 })
-export class ZoomComponent implements OnInit {
+export class ZoomComponent {
 
   mouseDown: boolean;
 
@@ -16,15 +16,12 @@ export class ZoomComponent implements OnInit {
       this.mouseDown = false;
   }
 
-  ngOnInit(): void {
-  }
-
   public setDimensions(): any {
     const styles = {
       // CSS property names
-      'height': SIZE + 'px',
-      'width': (SIZE * this.editorService.originalImageRatio()) + 'px',
-      'transform': 'scaleX(' + this.editorService.scaleX + ')'
+      height: SIZE + 'px',
+      width: (SIZE * this.editorService.originalImageRatio()) + 'px',
+      transform: 'scaleX(' + this.editorService.scaleX + ')'
     };
     return styles;
   }
@@ -69,7 +66,7 @@ export class ZoomComponent implements OnInit {
 
   onTouchEnd(event: TouchEvent): void {
     console.log('onTouchEnd(event: TouchEvent)');
-    this.mouseDown = event.targetTouches.length == 0;
+    this.mouseDown = event.targetTouches.length === 0;
   }
 
   moveEvent(clientX: number, clientY: number): void {

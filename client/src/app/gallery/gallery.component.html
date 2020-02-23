@@ -5,6 +5,7 @@
       <span> Browse Image</span>
       <input #fileInput type="file" accept="image/*" (change)="onLocalImageLoaded($event)" style="display:none;" />
   </button>
+
   <span>Image Type: </span>
   <select [(ngModel)]="galleryService.selected">
       <option *ngFor="let type of imageTypes" [ngValue]="type">

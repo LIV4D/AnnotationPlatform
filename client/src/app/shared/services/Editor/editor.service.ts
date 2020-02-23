@@ -68,33 +68,34 @@ export class EditorService {
 
     // Resizes the canvases to the current window size.
     resize(): void {
-        if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-        const viewportRatio = this.viewportRatio();
-        let H, W;
-        if (this.originalImageRatio() > viewportRatio) {
-            W = this.backgroundCanvas.originalCanvas.width;
-            H = W * (1 / viewportRatio);
-        } else {
-            H = this.backgroundCanvas.originalCanvas.height;
-            W = H * viewportRatio;
-        }
-        const h = H / this.zoomFactor;
-        const w = W / this.zoomFactor;
+      console.log('EditorService::resize()');
+      if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
+      const viewportRatio = this.viewportRatio();
+      let H, W;
+      if (this.originalImageRatio() > viewportRatio) {
+          W = this.backgroundCanvas.originalCanvas.width;
+          H = W * (1 / viewportRatio);
+      } else {
+          H = this.backgroundCanvas.originalCanvas.height;
+          W = H * viewportRatio;
+      }
+      const h = H / this.zoomFactor;
+      const w = W / this.zoomFactor;
 
-        // Resize main image.
-        this.fullCanvasWidth = W;
-        this.fullCanvasHeight = H;
-        this.backgroundCanvas.displayCanvas.width = w;
-        this.backgroundCanvas.displayCanvas.height = h;
+      // Resize main image.
+      this.fullCanvasWidth = W;
+      this.fullCanvasHeight = H;
+      this.backgroundCanvas.displayCanvas.width = w;
+      this.backgroundCanvas.displayCanvas.height = h;
 
-        // Resize layers.
-        this.layersService.resize(w, h);
+      // Resize layers.
+      this.layersService.resize(w, h);
 
-        // Adjust the offsets so the image is in place.
-        this.adjustOffsets();
+      // Adjust the offsets so the image is in place.
+      this.adjustOffsets();
 
-        // Call zoom to redraw everything.
-        this.zoom(-100, new Point(0, 0));
+      // Call zoom to redraw everything.
+      this.zoom(-100, new Point(0, 0));
     }
 
     init(svgLoaded: EventEmitter<any>): void {
@@ -162,30 +163,30 @@ export class EditorService {
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
         }, 0);
         this.updateCanvasDisplayRatio();
-        this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
-            { headers: new HttpHeaders(), responseType: 'json' }).pipe(
-            ).subscribe(
-            res => {
-                this.layersService.biomarkerCanvas = [];
-                this.svgBox.innerHTML = (res as any).svg;
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-                const arbre: SVGGElement[] = [];
-                Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                    const elems = e.getElementsByTagName('g');
-                    for (let j = 0; j < elems.length; j++) {
-                        if (elems[j].parentElement.tagName !== 'g') {
-                            arbre.push(elems[j]);
-                        }
-                    }
-                });
-                arbre.forEach((e: SVGGElement) => {
-                    this.layersService.createFlatCanvasRecursive(e,
-                        this.backgroundCanvas.originalCanvas.width,
-                        this.backgroundCanvas.originalCanvas.height);
-                });
-                this.svgLoaded.emit(arbre);
-            });
+        // this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
+        //     { headers: new HttpHeaders(), responseType: 'json' }).pipe(
+        //     ).subscribe(
+        //     res => {
+        //         this.layersService.biomarkerCanvas = [];
+        //         this.svgBox.innerHTML = (res as any).svg;
+        //         const parser = new DOMParser();
+        //         const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+        //         const arbre: SVGGElement[] = [];
+        //         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+        //             const elems = e.getElementsByTagName('g');
+        //             for (let j = 0; j < elems.length; j++) {
+        //                 if (elems[j].parentElement.tagName !== 'g') {
+        //                     arbre.push(elems[j]);
+        //                 }
+        //             }
+        //         });
+        //         arbre.forEach((e: SVGGElement) => {
+        //             this.layersService.createFlatCanvasRecursive(e,
+        //                 this.backgroundCanvas.originalCanvas.width,
+        //                 this.backgroundCanvas.originalCanvas.height);
+        //         });
+        //         this.svgLoaded.emit(arbre);
+        //     });
     }
 
     // Loads a revision from the server. Draws that revision optionnaly.
@@ -501,6 +502,7 @@ export class EditorService {
         this.updateCanvasDisplayRatio();
     }
 
+    // this only works for zoom slider (when using mobile device)
     setZoomFactor(zoomFactor: number): void {
         // Cap the values.
         if (zoomFactor > 1) { zoomFactor = 1;
@@ -550,15 +552,20 @@ export class EditorService {
 
     // Function that transforms the editor view according to the zoomFactor and offsets properties.
     transform(): void {
-        if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-        this.backgroundCanvas.setOffset(this.offsetX, this.offsetY);
-        this.backgroundCanvas.draw();
-        this.layersService.biomarkerCanvas.forEach(layer => {
-            layer.setOffset(this.offsetX, this.offsetY);
-            layer.draw();
-        });
-        // Redraw the zoom rectangle.
-        this.updateZoomRect();
+      if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
+        return;
+      }
+      this.backgroundCanvas.setOffset(this.offsetX, this.offsetY);
+
+      this.backgroundCanvas.draw();
+
+      this.layersService.biomarkerCanvas.forEach(layer => {
+          layer.setOffset(this.offsetX, this.offsetY);
+          layer.draw();
+      });
+
+      // Redraw the zoom rectangle.
+      this.updateZoomRect();
     }
 
     // Return the width/height ratio of the viewport (displayed).

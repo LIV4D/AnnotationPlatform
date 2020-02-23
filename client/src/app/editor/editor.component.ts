@@ -180,9 +180,11 @@ export class EditorComponent implements OnInit, AfterViewChecked {
       return navigator.platform.indexOf('Mac') === -1 ? event.ctrlKey : event.metaKey;
   }
 
+  // this only works for mobile (when using the slider)
   zoomSliderChange(event: any): void {
       const v = Math.pow(event.value / 100, 3);
       this.editorService.setZoomFactor(v);
+      console.log('zoomSliderChange() was called');
   }
 
   updateSlider(zoomFactor: number): void {

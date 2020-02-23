@@ -53,11 +53,11 @@ export class GalleryComponent implements OnInit {
     // Create filters
     // WARNING : key must correspond to valid column in model
     const filtersObj = {'imageType.name': this.imageTypeField.nativeElement.value,
-        'eye': this.eyeSideField.nativeElement.value,
-        'hospital': this.hospitalField.nativeElement.value,
-        'patient': this.patientField.nativeElement.value,
-        'visit' : this.visitField.nativeElement.value,
-        'code': this.codeField.nativeElement.value,
+        eye: this.eyeSideField.nativeElement.value,
+        hospital: this.hospitalField.nativeElement.value,
+        patient: this.patientField.nativeElement.value,
+        visit: this.visitField.nativeElement.value,
+        code: this.codeField.nativeElement.value,
     };
 
     const filters = JSON.stringify(filtersObj);
@@ -92,11 +92,13 @@ export class GalleryComponent implements OnInit {
             this.editorService.imageLocal = image;
             this.editorService.imageId = 'local';
             LocalStorage.clear();
-            console.log('editorService.imageId : ' + this.editorService.imageId);
+            // resize image here if format still weird
+
+            // console.log('editorService.imageId : ' + this.editorService.imageId);
             this.router.navigate(['/' + 'editor']);
         };
         image.src = reader.result as string;
-        console.log('image.src : ' + image.src);
+        // console.log('image.src : ' + image.src);
     };
 
     reader.readAsDataURL(event.target.files[0]);

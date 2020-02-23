@@ -1,4 +1,4 @@
-<div> <!-- (document:keydown)="onKeyDown($event)" (mouseup)="onMouseUp($event)" (click)="closeMenu()" -->
+<div (click)="closeMenu()" > <!-- (document:keydown)="onKeyDown($event)" (mouseup)="onMouseUp($event)" -->
   <div class="container">
       <!--TOOLS-->
       <app-toolbox></app-toolbox>
@@ -35,12 +35,11 @@
                   </div>
               </div> -->
 
-              <!-- TODO: Where's this one in the html ?? -->
               <!--LOAD SVG LOCAL IMAGE-->
-              <!-- <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
+              <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
                   <span>Load Annotations</span>
                   <input #fileInput type="file" accept="image/svg+xml" (change)="loadSVG($event)" style="display:none;"/>
-              </button> -->
+              </button>
 
 
               <!--ZOOM WINDOW-->
@@ -50,7 +49,7 @@
                   ></mat-slider> -->
               </div>
               <app-zoom *ngIf="editorService.imageLoaded"></app-zoom>
-              <span id="zoomFactorDisplay"> x </span>
+              <span id="zoomFactorDisplay"> x 1.0 </span>
               <!-- {{editorService.zoomFactor.toFixed(1)}} -->
           </div>
 
