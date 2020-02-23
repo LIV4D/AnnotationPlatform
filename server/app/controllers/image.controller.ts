@@ -10,7 +10,9 @@ import { isNullOrUndefined } from 'util';
 import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { ImageService } from '../services/image.service';
-import { Metadata, IImage } from '../models/image.model';
+import { Metadata } from '../models/image.model';
+// tslint:disable-next-line:quotemark
+import { IImage } from "../interfaces/IImage.interface";
 import { IGallery, IGalleryObject } from '../interfaces/gallery.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { isAdmin } from '../utils/userVerification';
@@ -35,7 +37,7 @@ export class ImageController implements IController {
 
     public setRoutes(app: express.Application): void {
         app.post('/api/images/create',
-                    this.upload.fields([{name: 'image', maxCount: 1}, {name: 'preprocessing', maxCount: 1}]),
+                    this.upload.fields([{ name: 'image', maxCount: 1}, {name: 'preprocessing', maxCount: 1 }]),
                     this.createImage);
         app.put('/api/images/update/:imageId', this.updateImage);
         app.put('/api/images/updateFile/:imageId',

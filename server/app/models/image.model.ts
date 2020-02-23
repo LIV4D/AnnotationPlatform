@@ -2,6 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Annotation } from './annotation.model';
+import { IProtoImage } from '../prototypes/IProtoImage';
+import { IImage } from '../interfaces/IImage.interface';
 
 export class Metadata {
     [key: string]: string | number | boolean;
@@ -48,7 +50,7 @@ export class Image {
         if (!isNullOrUndefined(iimage.preprocessing)) { this.preprocessing = iimage.preprocessing; }
     }
 
-    public proto(): ProtoImage {
+    public proto(): IProtoImage {
         return {
             id: this.id,
             type: this.type,
@@ -56,18 +58,4 @@ export class Image {
             preprocessing: this.preprocessing,
         };
     }
-}
-
-export interface IImage {
-    id?: number;
-    type?: string;
-    metadata?: Metadata;
-    preprocessing?: boolean;
-}
-
-export interface ProtoImage {
-    id: number;
-    type: string;
-    metadata: Metadata;
-    preprocessing: boolean;
 }

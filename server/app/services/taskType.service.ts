@@ -7,7 +7,6 @@ import { ITaskType } from '../interfaces/ITaskType.interface';
 import { TaskTypeRepository } from '../repository/taskType.repository';
 import { createError } from '../utils/error';
 
-
 @injectable()
 export class TaskTypeService {
     @inject(TYPES.TaskTypeRepository)
