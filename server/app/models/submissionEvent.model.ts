@@ -2,8 +2,9 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, BeforeInse
 import { isNullOrUndefined } from 'util';
 
 import { User } from './user.model';
-import { IProtoUser } from '../prototypes/IProtoUser.interface';
 import { Annotation } from './annotation.model';
+import { IProtoSubmissionEvent } from '../prototypes/IProtoSubmissionEvent.interface';
+import { ISubmissionEvent } from '../interfaces/ISubmissionEvent.interface';
 
 @Entity()
 export class SubmissionEvent {
@@ -68,7 +69,7 @@ export class SubmissionEvent {
         if (!isNullOrUndefined(ievent.parentEventId)) { this.parentEventId = ievent.parentEventId; }
     }
 
-    public proto(): ProtoSubmissionEvent {
+    public proto(): IProtoSubmissionEvent {
         return {
             id: this.id,
             description: this.description,
@@ -78,22 +79,4 @@ export class SubmissionEvent {
             parentEventId: this.parentEventId,
         };
     }
-}
-
-export interface ISubmissionEvent {
-    id?: number;
-    date?: Date;
-    timestamp?: number;
-    description?: string;
-    userId?: number;
-    parentEventId?: number;
-}
-
-export interface ProtoSubmissionEvent {
-    id: number;
-    description: string;
-    date: Date;
-    timestamp: number;
-    user: IProtoUser;
-    parentEventId: number;
 }

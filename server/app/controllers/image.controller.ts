@@ -29,15 +29,15 @@ export class ImageController implements IController {
             if (isAdmin(req) === false) {
                 callback(createError('User is not admin.', 401), null);
             }
-            const unique_filename = path.parse(tmp.tmpNameSync(config.get('storageFolders.tmp'))).name;
-            callback(null, unique_filename + path.parse(file.originalname).ext);
+            const uniqueFilename = path.parse(tmp.tmpNameSync(config.get('storageFolders.tmp'))).name;
+            callback(null, uniqueFilename + path.parse(file.originalname).ext);
         },
     });
     public upload = multer({ storage: this.storage });
 
     public setRoutes(app: express.Application): void {
         app.post('/api/images/create',
-                    this.upload.fields([{ name: 'image', maxCount: 1}, {name: 'preprocessing', maxCount: 1 }]),
+                    this.upload.fields([{ name: 'image', maxCount: 1 }, { name: 'preprocessing', maxCount: 1 }]),
                     this.createImage);
         app.put('/api/images/update/:imageId', this.updateImage);
         app.put('/api/images/updateFile/:imageId',

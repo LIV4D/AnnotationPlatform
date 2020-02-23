@@ -1,8 +1,8 @@
 import { IProtoImage } from './IProtoImage';
-import { ProtoSubmissionEvent } from '../models/submissionEvent.model';
+import { IProtoSubmissionEvent } from './IProtoSubmissionEvent.interface';
 export interface IProtoAnnotation {
     id: number;
     image: IProtoImage;
     comment: string;
-    submitEvent: ProtoSubmissionEvent;
+    submitEvent: IProtoSubmissionEvent;
 }

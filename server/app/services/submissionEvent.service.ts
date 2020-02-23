@@ -2,7 +2,8 @@ import { inject, injectable } from 'inversify';
 
 import TYPES from '../types';
 import { SubmissionEventRepository } from '../repository/submissionEvent.repository';
-import { SubmissionEvent, ISubmissionEvent } from '../models/submissionEvent.model';
+import { SubmissionEvent } from '../models/submissionEvent.model';
+import { ISubmissionEvent } from "../interfaces/ISubmissionEvent.interface";
 import { createError } from '../utils/error';
 
 @injectable()
