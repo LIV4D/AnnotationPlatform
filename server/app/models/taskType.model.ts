@@ -16,6 +16,12 @@ export class TaskType {
     @Column({ default: '' })
     public description: string;
 
+    @Column({ default: '' })
+    public checklist: string;
+
+    @Column({ default: [] })
+    public biomarkers: string[];
+
     @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
 
@@ -44,6 +50,8 @@ export class TaskType {
             id: this.id,
             title: this.title,
             description: this.description,
+            // checklist: this.checklist,
+            // biomarkers: this.biomarkers,
         };
     }
 }
