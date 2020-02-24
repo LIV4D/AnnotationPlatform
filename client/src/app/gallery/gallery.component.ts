@@ -9,7 +9,7 @@ import { merge } from 'rxjs';
 import { of as observableOf } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { IGallery } from '../shared/services/Gallery/gallery.interface';
-import { LocalStorage } from '../shared/services/Editor/local-storage.model';
+import { LocalStorage } from '../shared/models/local-storage.model';
 
 @Component({
   selector: 'app-gallery',

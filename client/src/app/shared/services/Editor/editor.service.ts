@@ -4,7 +4,7 @@ import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
 import { BackgroundCanvas } from '../../models/background-canvas.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LocalStorage } from './local-storage.model';
+import { LocalStorage } from '../../models/local-storage.model';
 import { Point } from '../../models/point.model';
 import { Image as ImageServer } from '../../models/image.model';
 import { tap } from 'rxjs/operators';
