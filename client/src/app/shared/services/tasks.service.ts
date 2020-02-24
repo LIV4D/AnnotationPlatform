@@ -60,6 +60,7 @@ export class TasksService {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITasks[]) => {
               tasksComponent.data = data;
+              tasksComponent.completedTasksData = data.filter(d => d.isComplete === true);
               length = data.length;
               if (length === 0) { tasksComponent.noData = true; }
               this.appService.loading = false;

@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { TaskFacadeService } from './tasks.facade.service';
 import { Router } from '@angular/router';
+import { ITasks } from '../shared/interfaces/ITasks.interface';
 // import { EditorService } from '../edit-layout/editor/editor.service';
 
 
@@ -20,6 +21,7 @@ export class TasksComponent implements OnInit {
     length: number;
     pageSize: number;
     data: any = [];
+    completedTasksData: any = [];
     noData: boolean;
     showCompleted: boolean;
 
