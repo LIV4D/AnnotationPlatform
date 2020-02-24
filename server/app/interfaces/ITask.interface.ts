@@ -9,4 +9,5 @@ export interface ITask {
     creatorId?: number;
     imageId?: number;
     projectId?: number;
+    lastModifiedTime?: Date;
 }

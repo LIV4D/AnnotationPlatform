@@ -42,6 +42,9 @@ export class Task {
     @Column()
     public projectId: number;
 
+    @Column({ nullable: true })
+    public lastModifiedTime: Date;
+
     // Relationships
 
     @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
@@ -76,6 +79,7 @@ export class Task {
             creatorId: this.creatorId,
             imageId: this.imageId,
             projectId: this.projectId,
+            lastModifiedTime: this.lastModifiedTime,
         };
     }
 
@@ -86,6 +90,7 @@ export class Task {
         if (!isNullOrUndefined(itask.isVisible)) { this.isVisible = itask.isVisible; }
         if (!isNullOrUndefined(itask.comment)) { this.comment = itask.comment; }
         if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
+        if (!isNullOrUndefined(itask.lastModifiedTime)) { this.lastModifiedTime = itask.lastModifiedTime; }
     }
 
     public proto(): IProtoTask {
