@@ -21,7 +21,6 @@ export class ToolboxComponent implements OnInit {
       switch (event.keyCode) {
         case HOTKEYS.KEY_P_PAN: {
           this.toolboxFacadeService.setSelectedTool(TOOL_NAMES.PAN);
-          console.log('PAN');
           break;
         }
         case HOTKEYS.KEY_E_ERASER: {
