@@ -1,4 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
+import { LoginService } from '../shared/services/login.service';
 
 @Injectable()
 export class NavigationBarFacadeService {
@@ -14,8 +15,11 @@ export class NavigationBarFacadeService {
   // }
   /// ... add the other service wrappers
 
-  constructor(private injector: Injector) {  }
+  constructor(private injector: Injector, private loginService: LoginService) {  }
+
+  logout() {
+    this.loginService.logout();
+  }
 
   /// ... add the other functions for the other services
-
 }

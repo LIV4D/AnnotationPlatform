@@ -32,7 +32,7 @@
 
 
 <!-- This code is for the Angular-Material (taken from the old project) -->
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" *ngIf="router.url != '/'">
     <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Editor</span>
     <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" >Gallery</span>
     <span routerLinkActive="active" routerLink="/tasks" style="margin-right: 10px" >Tasks</span>
@@ -43,7 +43,7 @@
         <div id="loadingBar"> <div id="bar" [ngStyle]="{'width': (loadingProgress*100).toString()+'%'}"></div> </div>
     </div>
 
-    <span style="right: 70px; position: absolute;" > Logout</span>
+    <span style="right: 70px; position: absolute;" (click)="logout()" > Logout</span>
     <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" src="../../assets/icons/bug.svg"/>
     <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" >fullscreen</mat-icon>
 </mat-toolbar>

@@ -57,7 +57,8 @@ export class LoginService {
       .subscribe(
         data => {
           this.appService.loading = false;
-          this.router.navigate(['/dashboard']);
+          // Todo: Bring to tasks page only for clinician user
+          this.router.navigate(['/tasks']);
         },
         error => {
           this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
@@ -80,6 +81,7 @@ export class LoginService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this._user = null;
+    this.router.navigate(['/']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
   }
 
   // isAuthenticated() {
