@@ -121,7 +121,7 @@ export class LayersService {
         canvas.width = canvas.height * canvasRatio;
     }
     this.setCanvasStyle(canvas);
-        // Remove some of this...
+    // Remove some of this...
     let x = 0;
     let y = 0;
     if (imageRatio > canvasRatio) {
