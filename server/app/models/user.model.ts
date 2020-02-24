@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail, validateSync } from 'class-validator';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';
@@ -43,6 +43,9 @@ export class User {
 
     @OneToMany(type => SubmissionEvent, evenement => evenement.user)
     public submissions: SubmissionEvent[];
+
+    @ManyToOne(type => Task, task => task.preferredUsers)
+    public preferredTask: Task;
 
     public static hashPassword(password: string, salt?: Buffer) {
         const size = 64;

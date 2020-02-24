@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { TaskType } from './taskType.model';
@@ -58,6 +58,9 @@ export class Task {
 
     @ManyToOne(type => User, user => user.createdTasks, { eager: true })
     public creator: User;
+
+    @OneToMany(type => User, user => user.preferredTask, { eager: true })
+    public preferredUsers: Map<number, User>;
 
     public static fromInterface(itask: ITask): Task {
         const task = new Task();
