@@ -19,7 +19,7 @@ export async function loadSeeds(): Promise<any> {
     const databaseConfig: ConnectionOptions = {
         ...config.get('database'),
         name: 'seedingConnection',
-        dropSchema: false,
+        dropSchema: true,
     };
 
     // Create the tables in the DB and allows connection
