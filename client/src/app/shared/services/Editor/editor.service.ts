@@ -91,7 +91,8 @@ export class EditorService {
       console.log('EditorService::resize()');
       if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
       const viewportRatio = this.viewportRatio();
-      let H, W;
+      let H;
+      let W;
       if (this.originalImageRatio() > viewportRatio) {
           W = this.backgroundCanvas.originalCanvas.width;
           H = W * (1 / viewportRatio);
@@ -138,7 +139,8 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
         this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
         const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
-        let x = 0, y = 0;
+        let x = 0;
+        let y = 0;
         if (imageRatio > viewportRatio) {
             y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) / 2;
         } else {
@@ -419,7 +421,8 @@ export class EditorService {
             }
             const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
             const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-            let h: number, w: number;
+            let h: number;
+            let w: number;
             if (this.originalImageRatio() > this.viewportRatio()) {
                 w = zoomCanvas.width / this.zoomFactor;
                 h = Math.min(w * (realHeight / realWidth), zoomCanvas.height);
