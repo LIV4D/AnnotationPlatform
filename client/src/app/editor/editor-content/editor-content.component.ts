@@ -48,9 +48,9 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
     const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 300;
 
-    if (!this.cursorDown && !this.editorFacadeService.layersService.firstPoint && event.ctrlKey === false) {
+    if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
-    } else if (!this.cursorDown && !this.editorFacadeService.layersService.firstPoint) {
+    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
       // let brushWidth =  this.toolPropertiesService.brushWidth;
       // const brushInc = delta > 0 ? 1 : -1;
       // if (brushWidth < 20) {

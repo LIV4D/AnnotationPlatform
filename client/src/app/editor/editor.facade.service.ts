@@ -17,8 +17,8 @@ export class EditorFacadeService {
         this.editorService.zoom(delta, position);
     }
 
-    get layersService() {
-        return this.editorService.layersService;
+    get firstPoint() {
+        return this.editorService.layersService.firstPoint;
     }
 
     get backgroundCanvas() {
