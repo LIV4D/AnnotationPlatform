@@ -12,7 +12,7 @@ const routes: Routes = [
   // TODO: empty route redirect to ? for others if is login
   // TODO: empty route redirect to loginPage if is not login
   // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: '', component: LoginComponent },
+  { path: '', component: LoginComponent,  pathMatch: 'full'  },
   { path: 'gallery', component: GalleryComponent },
   { path: 'editor', component: EditorComponent },
   { path: 'dashboard', component: DashboardComponent },

@@ -15,7 +15,7 @@ export class NavigationBarComponent implements OnInit {
   loadingProgress = 0;
   loadingDownload = true;
 
-  constructor(private navigationBarFacadeService: NavigationBarFacadeService, private router: Router) {  }
+  constructor(private navigationBarFacadeService: NavigationBarFacadeService, public router: Router) {  }
 
   ngOnInit() {
   }
