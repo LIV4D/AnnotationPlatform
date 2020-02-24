@@ -45,4 +45,8 @@ export class EditorFacadeService {
         this.toolboxService.onCursorDown(point);
     }
 
+    public onCursorUpToolbox(): void {
+        this.toolboxService.onCursorUp();
+    }
+
 }

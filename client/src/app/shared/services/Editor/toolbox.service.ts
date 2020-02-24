@@ -64,10 +64,6 @@ export class ToolboxService {
         // this.layersService.redo();
     }
 
-    move() {
-        this.editorService.translate(20, 20);
-    }
-
     setUndoRedoState(): void {
         // if (this.layersService.undoStack.getLength() === 0) {
         //     this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
