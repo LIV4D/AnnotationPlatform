@@ -244,7 +244,7 @@ export class LayersService {
       this.tempMaskCanvas.width = width;
       this.tempMaskCanvas.height = height;
       this.tempDrawCanvas.width = width;
-      this.tempDrawCanvas.height =    height;
+      this.tempDrawCanvas.height = height;
   }
 
   // Add a point on the canvas to indicate the first point
