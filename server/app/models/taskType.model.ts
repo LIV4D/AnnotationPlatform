@@ -2,6 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
+import { IProtoTaskType } from '../prototype interfaces/IProtoTaskType.interface';
+import { ITaskType } from '../interfaces/ITaskType.interface';
 
 @Entity()
 export class TaskType {
@@ -14,48 +16,42 @@ export class TaskType {
     @Column({ default: '' })
     public description: string;
 
+    @Column({ default: '' })
+    public checklist: string;
+
+    @Column({ default: '' })
+    public biomarkers: string;
+
     @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
+
+    public static fromInterface(itype: ITaskType): TaskType {
+        const type = new TaskType();
+        if (!isNullOrUndefined(itype.id)) { type.id = itype.id; }
+        type.update(itype);
+        return type;
+    }
 
     public interface(): ITaskType {
         return {
             id: this.id,
             title: this.title,
-            description: this.description
+            description: this.description,
         };
     }
 
     public update(itype: ITaskType): void {
-        if(!isNullOrUndefined(itype.title))       this.title = itype.title;
-        if(!isNullOrUndefined(itype.description)) this.description = itype.description;
+        if (!isNullOrUndefined(itype.title)) {       this.title = itype.title; }
+        if (!isNullOrUndefined(itype.description)) { this.description = itype.description; }
     }
 
-    public static fromInterface(itype: ITaskType): TaskType {
-        const type = new TaskType();
-        if(!isNullOrUndefined(itype.id)) type.id = itype.id;
-        type.update(itype);
-        return type;
-    }
-
-    public proto(): ProtoTaskType {
+    public proto(): IProtoTaskType {
         return {
             id: this.id,
             title: this.title,
-            description: this.description
+            description: this.description,
+            // checklist: this.checklist,
+            // biomarkers: this.biomarkers,
         };
     }
-}
-
-
-export interface ProtoTaskType {
-    id: number;
-    title: string;
-    description: string;
-}
-
-
-export interface ITaskType {
-    id?: number;
-    title?: string;
-    description?: string;
 }
