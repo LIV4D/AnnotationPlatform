@@ -32,26 +32,26 @@ export class LayersService {
   constructor(private appService: AppService) { }
 
   init(): void {
-      this.appLayers = document.getElementById('app-layers') as HTMLElement;
-      this.biomarkerOverlayCanvas = document.createElement('canvas');
-      this.biomarkerOverlayCanvas.id = 'biomarkerOverlay';
-      this.setCanvasStyle(this.biomarkerOverlayCanvas);
-      this.biomarkerOverlayCanvas.style.zIndex = '3';
-      this.appLayers.appendChild(this.biomarkerOverlayCanvas);
+    this.appLayers = document.getElementById('app-layers') as HTMLElement;
+    this.biomarkerOverlayCanvas = document.createElement('canvas');
+    this.biomarkerOverlayCanvas.id = 'biomarkerOverlay';
+    this.setCanvasStyle(this.biomarkerOverlayCanvas);
+    this.biomarkerOverlayCanvas.style.zIndex = '3';
+    this.appLayers.appendChild(this.biomarkerOverlayCanvas);
 
-      this.tempMaskCanvas = document.createElement('canvas');
-      const maskCtx = this.tempMaskCanvas.getContext('2d');
-      maskCtx.imageSmoothingEnabled = false;
+    this.tempMaskCanvas = document.createElement('canvas');
+    const maskCtx = this.tempMaskCanvas.getContext('2d');
+    maskCtx.imageSmoothingEnabled = false;
 
-      this.tempDrawCanvas = document.createElement('canvas');
-      const drawCtx = this.tempDrawCanvas.getContext('2d');
-      drawCtx.imageSmoothingEnabled = false;
+    this.tempDrawCanvas = document.createElement('canvas');
+    const drawCtx = this.tempDrawCanvas.getContext('2d');
+    drawCtx.imageSmoothingEnabled = false;
 
-      // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
-      this.MAX_CAPACITY = 15;
-      // this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
-      // this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
-      this.biomarkerCanvas = [];
+    // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
+    this.MAX_CAPACITY = 15;
+    // this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+    // this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+    this.biomarkerCanvas = [];
   }
 
   // undo(): void {
@@ -125,10 +125,10 @@ export class LayersService {
     let x = 0;
     let y = 0;
     if (imageRatio > canvasRatio) {
-            y = (canvas.height - image.height) / 2;
-        } else {
-            x = (canvas.width - image.width) / 2;
-        }
+        y = (canvas.height - image.height) / 2;
+    } else {
+        x = (canvas.width - image.width) / 2;
+    }
     context.drawImage(image, x, y, image.width, image.height);
     canvas.id = ANNOTATION_PREFIX + id;
     this.appLayers.appendChild(canvas);
@@ -138,46 +138,46 @@ export class LayersService {
   }
 
   createFlatCanvasRecursive(node: SVGGElement, width: number = 0, height: number = 0): void {
-      if (node.tagName === 'image') {
-          node.style.visibility = 'visible';
-          const image = new Image();
-          if (height !== 0 && width !== 0) {
-              image.width = width;
-              image.height = height;
-          }
-          image.onload = () => {
-              this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
-          };
-          if (!node.hasAttribute('xlink:href')) {
-              // Add a transparent pixel to have a valid xlink:href
-              node.setAttribute('xlink:href', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=');
-          }
-          image.src = node.getAttribute('xlink:href');
-      } else {
-          Array.from(node.children).forEach((child: SVGGElement) => {
-              child.style.visibility = 'visible';
-              this.createFlatCanvasRecursive(child, width, height);
-          });
+    if (node.tagName === 'image') {
+      node.style.visibility = 'visible';
+      const image = new Image();
+      if (height !== 0 && width !== 0) {
+        image.width = width;
+        image.height = height;
       }
+      image.onload = () => {
+          this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
+      };
+      if (!node.hasAttribute('xlink:href')) {
+        // Add a transparent pixel to have a valid xlink:href
+        node.setAttribute('xlink:href', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=');
+      }
+      image.src = node.getAttribute('xlink:href');
+    } else {
+      Array.from(node.children).forEach((child: SVGGElement) => {
+        child.style.visibility = 'visible';
+        this.createFlatCanvasRecursive(child, width, height);
+      });
+    }
   }
 
   public setCanvasStyle(canvas: HTMLCanvasElement): void {
-      canvas.style.height = '100%';
-      canvas.style.width = '100%';
-      canvas.style.backgroundColor = 'transparent';
-      canvas.style.zIndex = '2';
-      canvas.style.padding = '0';
-      canvas.style.margin = 'auto';
-      canvas.style.display = 'block';
-      canvas.style.position = 'absolute';
-      canvas.style.top = '0%';
-      canvas.style.left = '0%';
-      canvas.style.visibility = 'visible'; // important
-      canvas.style.opacity = '0.65'; // important
-      canvas.style['mix-blend-mode'] = 'color';
+    canvas.style.height = '100%';
+    canvas.style.width = '100%';
+    canvas.style.backgroundColor = 'transparent';
+    canvas.style.zIndex = '2';
+    canvas.style.padding = '0';
+    canvas.style.margin = 'auto';
+    canvas.style.display = 'block';
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0%';
+    canvas.style.left = '0%';
+    canvas.style.visibility = 'visible'; // important
+    canvas.style.opacity = '0.65'; // important
+    canvas.style['mix-blend-mode'] = 'color';
 
-      const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = false;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
   }
 
   // public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
@@ -234,17 +234,17 @@ export class LayersService {
   // }
 
   public resize(width: number, height: number): void {
-      this.biomarkerCanvas.forEach(biomarker => {
-          biomarker.displayCanvas.width = width;
-          biomarker.displayCanvas.height = height;
-      });
-      this.biomarkerOverlayCanvas.width = width;
-      this.biomarkerOverlayCanvas.height = height;
+    this.biomarkerCanvas.forEach(biomarker => {
+        biomarker.displayCanvas.width = width;
+        biomarker.displayCanvas.height = height;
+    });
+    this.biomarkerOverlayCanvas.width = width;
+    this.biomarkerOverlayCanvas.height = height;
 
-      this.tempMaskCanvas.width = width;
-      this.tempMaskCanvas.height = height;
-      this.tempDrawCanvas.width = width;
-      this.tempDrawCanvas.height = height;
+    this.tempMaskCanvas.width = width;
+    this.tempMaskCanvas.height = height;
+    this.tempDrawCanvas.width = width;
+    this.tempDrawCanvas.height = height;
   }
 
   // Add a point on the canvas to indicate the first point
