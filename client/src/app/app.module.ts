@@ -19,6 +19,7 @@ import { LoginService } from './shared/services/login.service';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EditorFacadeService } from './editor/editor.facade.service';
 // import { LayoutModule } from '@angular/cdk/layout';
 
 // Material
@@ -68,7 +69,7 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
       FormsModule,
       ReactiveFormsModule
    ],
-   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService, {
+   providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService, EditorFacadeService, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,
