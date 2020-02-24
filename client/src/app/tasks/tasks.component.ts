@@ -27,7 +27,6 @@ export class TasksComponent implements OnInit {
     @ViewChild(MatSort, {static: true}) sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-
    constructor( private router: Router, private facadeService: TaskFacadeService) {
      this.showPagination = false;
      this.length = 0;
@@ -41,6 +40,14 @@ export class TasksComponent implements OnInit {
     ngOnInit(): void {
         this.LoadData();
     }
+
+
+    /**
+     * Logs tasks component: Executed each time a tab is changed
+     * May be usefull
+     * @param val: event
+     */
+    log(val) { }
 
     LoadData() {
       this.facadeService.loadData(this);

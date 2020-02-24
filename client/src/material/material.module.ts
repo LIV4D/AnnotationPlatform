@@ -6,6 +6,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './../app/app.component';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -24,6 +25,7 @@ import { MatTreeModule } from '@angular/material/tree';
         MatIconModule,
         LayoutModule,
         MatToolbarModule,
+        MatTabsModule,
         MatTableModule,
         MatSortModule,
         MatPaginatorModule
@@ -36,6 +38,7 @@ import { MatTreeModule } from '@angular/material/tree';
         MatIconModule,
         LayoutModule,
         MatToolbarModule,
+        MatTabsModule,
         MatTableModule,
         MatSortModule,
         MatPaginatorModule
