@@ -3,12 +3,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AppService } from '../shared/services/app.service';
 import { Router } from '@angular/router';
-import { GalleryService } from '../shared/services/Editor/gallery.service';
+import { GalleryService } from '../shared/services/Gallery/gallery.service';
 import { EditorService } from '../shared/services/Editor/editor.service';
 import { merge } from 'rxjs';
 import { of as observableOf } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
-import { IGallery } from '../shared/services/Editor/gallery.interface';
+import { IGallery } from '../shared/services/Gallery/gallery.interface';
 import { LocalStorage } from '../shared/services/Editor/local-storage.model';
 
 @Component({

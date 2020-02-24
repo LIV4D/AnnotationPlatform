@@ -10,7 +10,7 @@ import { Image as ImageServer } from '../../models/image.model';
 import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
-import { GalleryService } from './gallery.service';
+import { GalleryService } from '../Gallery/gallery.service';
 
 // Min and max values for zooming
 const ZOOM = {
