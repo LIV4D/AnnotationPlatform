@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
-import { EditorService } from 'src/app/shared/services/Editor/editor.service';
+import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/models/point.model';
 
@@ -11,9 +11,9 @@ import { Point } from 'src/app/shared/models/point.model';
 
 export class EditorContentComponent implements OnInit, OnDestroy {
 
-  constructor(public editorService: EditorService, public appService: AppService, ) {
-        this.delayEventTimer = null;
-     }
+  constructor(public editorFacadeService: EditorFacadeService, public appService: AppService, ) {
+    this.delayEventTimer = null;
+  }
 
   image: HTMLImageElement;
   zoomFactor: number;
@@ -32,7 +32,7 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
-    this.editorService.init(this.svgLoaded);
+    this.editorFacadeService.init(this.svgLoaded);
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
@@ -45,66 +45,68 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   }
 
   onMouseWheel(event: WheelEvent): void {
-      const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-      const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25 ) / 300;
+    const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
+    const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 300;
 
-      if (!this.cursorDown && !this.editorService.layersService.firstPoint && event.ctrlKey === false) {
-          this.editorService.zoom(delta, position);
-      } else if (!this.cursorDown && !this.editorService.layersService.firstPoint) {
-          // let brushWidth =  this.toolPropertiesService.brushWidth;
-          // const brushInc = delta > 0 ? 1 : -1;
-          // if (brushWidth < 20) {
-          //     brushWidth += brushInc;
-          // } else {
-          //     brushWidth += brushInc * brushWidth / 10;
-          // }
-          // brushWidth = Math.round(brushWidth);
-          // this.toolPropertiesService.setBrushWidth(brushWidth);
-      }
+    if (!this.cursorDown && !this.editorFacadeService.layersService.firstPoint && event.ctrlKey === false) {
+      this.editorFacadeService.zoom(delta, position);
+    } else if (!this.cursorDown && !this.editorFacadeService.layersService.firstPoint) {
+      // let brushWidth =  this.toolPropertiesService.brushWidth;
+      // const brushInc = delta > 0 ? 1 : -1;
+      // if (brushWidth < 20) {
+      //     brushWidth += brushInc;
+      // } else {
+      //     brushWidth += brushInc * brushWidth / 10;
+      // }
+      // brushWidth = Math.round(brushWidth);
+      // this.toolPropertiesService.setBrushWidth(brushWidth);
+    }
   }
-  // onMouseDown(event: MouseEvent): void {
-  //     this.cursorDown = true;
-  //     if (event.which === 2 && !this.editorService.menuState) {
-  //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-  //         // panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-  //         this.middleMouseDown = true;
-  //     } else if (event.which === 1 && !this.editorService.menuState  && !this.middleMouseDown) {
-  //         // this.toolboxService.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-  //     }
-  //     this.enableKeyEvents(false);
-  // }
+  onMouseDown(event: MouseEvent): void {
+    this.cursorDown = true;
+    if (event.which === 2 && !this.editorFacadeService.menuState) {
+      // const panTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+      const panTool = this.editorFacadeService.panTool;
+      panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      this.middleMouseDown = true;
+    } else if (event.which === 1 && !this.editorFacadeService.menuState && !this.middleMouseDown) {
+      this.editorFacadeService.onCursorDownToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    }
+    // this.enableKeyEvents(false);
+  }
 
-  // onMouseUp(event: MouseEvent): void {
-  //     this.cursorDown = false;
-  //     if (event.which === 2 && !this.editorService.menuState) {
-  //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-  //         // panTool.onCursorUp();
-  //         this.middleMouseDown = false;
-  //     } else if (!this.middleMouseDown) {
-  //         // this.toolboxService.onCursorUp();
-  //     }
-  //     this.enableKeyEvents(true);
-  // }
+  onMouseUp(event: MouseEvent): void {
+        this.cursorDown = false;
+    //     if (event.which === 2 && !this.editorService.menuState) {
+    //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+    //         // panTool.onCursorUp();
+    //         this.middleMouseDown = false;
+    //     } else if (!this.middleMouseDown) {
+    //         // this.toolboxService.onCursorUp();
+    //     }
+    //     this.enableKeyEvents(true);
+  }
 
-  // onMouseMove(event: MouseEvent): void {
-  //     if (this.middleMouseDown) {
-  //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-  //         // panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-  //     } else {
-  //         // this.toolboxService.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-  //     }
-  // }
+  onMouseMove(event: MouseEvent): void {
+    if (this.middleMouseDown) {
+      // const panTool = this.editorFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+      const panTool = this.editorFacadeService.panTool;
+      panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    } else {
+      this.editorFacadeService.onCursorMoveToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    }
+  }
 
-  // onMouseLeave(event: MouseEvent): void {
-  //     if (event.which === 2 && !this.editorService.menuState) {
-  //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-  //         // panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-  //         this.middleMouseDown = false;
-  //     }
-  //     this.cursorDown = false;
-  //     // this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-  //     this.enableKeyEvents(true);
-  // }
+  onMouseLeave(event: MouseEvent): void {
+    //     if (event.which === 2 && !this.editorService.menuState) {
+    //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+    //         // panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    //         this.middleMouseDown = false;
+    //     }
+    //     this.cursorDown = false;
+    //     // this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    //     this.enableKeyEvents(true);
+  }
 
 
   // onPointerDown(event: PointerEvent): void {
@@ -275,20 +277,20 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   // }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
-      if (!this.editorService.backgroundCanvas) { return undefined; }
-      let clientX: number;
-      let clientY: number;
-      // X coordinate is adjusted if the image is flipped horizontally.
-      clientX = this.editorService.scaleX === 1
-          ? clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left
-          : this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
+    if (!this.editorFacadeService.backgroundCanvas) { return undefined; }
+    let clientX: number;
+    let clientY: number;
+    // X coordinate is adjusted if the image is flipped horizontally.
+    clientX = this.editorFacadeService.scaleX === 1
+      ? clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left
+      : this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
 
-      clientY = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
-      const canvasX = clientX * this.editorService.backgroundCanvas.displayCanvas.width /
-          this.editorService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-      const canvasY = clientY * this.editorService.backgroundCanvas.displayCanvas.height /
-          this.editorService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
-      return new Point(canvasX, canvasY);
+    clientY = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
+    const canvasX = clientX * this.editorFacadeService.backgroundCanvas.displayCanvas.width /
+      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+    const canvasY = clientY * this.editorFacadeService.backgroundCanvas.displayCanvas.height /
+      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+    return new Point(canvasX, canvasY);
   }
 
   // enableKeyEvents(enable: boolean): void {
