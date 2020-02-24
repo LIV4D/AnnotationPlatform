@@ -99,14 +99,15 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   }
 
   onMouseLeave(event: MouseEvent): void {
-    //     if (event.which === 2 && !this.editorService.menuState) {
-    //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-    //         // panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-    //         this.middleMouseDown = false;
-    //     }
-    //     this.cursorDown = false;
-    //     // this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-    //     this.enableKeyEvents(true);
+    if (event.which === 2 && !this.editorFacadeService.menuState) {
+      // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+      const panTool = this.editorFacadeService.panTool;
+      panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      this.middleMouseDown = false;
+    }
+    this.cursorDown = false;
+    this.editorFacadeService.onCursorOutToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    // this.enableKeyEvents(true);
   }
 
 
