@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
@@ -19,6 +20,7 @@ import { NavigationBarComponent } from './navigation-bar/navigation-bar.componen
 import { LoginFacadeService } from './login/login.facade.service';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { TaskFacadeService } from './tasks/tasks.facade.service';
+import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
 
@@ -38,6 +40,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       EditorComponent,
       GalleryComponent,
       TasksComponent,
+      TasksCompletedComponent,
       DashboardComponent,
       LoginComponent,
       NavigationBarComponent,
@@ -59,6 +62,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       HttpClient,
       AppService,
       TaskFacadeService,
+      TasksCompletedFacadeService,
       HeaderService,
        {
       provide: HTTP_INTERCEPTORS,
