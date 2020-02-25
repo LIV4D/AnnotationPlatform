@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import * as screenfull from 'screenfull';
+import {Screenfull} from 'screenfull';
+
 @Component({
   selector: 'app-navigation-bar',
   templateUrl: './navigation-bar.component.html',
@@ -16,6 +19,18 @@ export class NavigationBarComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  toggleFullScreen(): void {
+    const sreenfullEntity = screenfull as Screenfull;
+
+    const fullscreenIcon = document.getElementById('fullscreenIcon');
+    if (sreenfullEntity.isEnabled) {
+        fullscreenIcon.innerHTML =  'fullscreen_exit';
+    } else {
+        fullscreenIcon.innerHTML =  'fullscreen';
+    }
+    sreenfullEntity.toggle();
   }
 
 }
