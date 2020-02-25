@@ -2,6 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
+import { IProtoTaskType } from '../prototype interfaces/IProtoTaskType.interface';
+import { ITaskType } from '../interfaces/ITaskType.interface';
 
 @Entity()
 export class TaskType {
@@ -17,45 +19,31 @@ export class TaskType {
     @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
 
-    public interface(): ITaskType {
-        return {
-            id: this.id,
-            title: this.title,
-            description: this.description
-        };
-    }
-
-    public update(itype: ITaskType): void {
-        if(!isNullOrUndefined(itype.title))       this.title = itype.title;
-        if(!isNullOrUndefined(itype.description)) this.description = itype.description;
-    }
-
     public static fromInterface(itype: ITaskType): TaskType {
         const type = new TaskType();
-        if(!isNullOrUndefined(itype.id)) type.id = itype.id;
+        if (!isNullOrUndefined(itype.id)) { type.id = itype.id; }
         type.update(itype);
         return type;
     }
 
-    public proto(): ProtoTaskType {
+    public interface(): ITaskType {
         return {
             id: this.id,
             title: this.title,
-            description: this.description
+            description: this.description,
         };
     }
-}
 
+    public update(itype: ITaskType): void {
+        if (!isNullOrUndefined(itype.title)) {       this.title = itype.title; }
+        if (!isNullOrUndefined(itype.description)) { this.description = itype.description; }
+    }
 
-export interface ProtoTaskType {
-    id: number;
-    title: string;
-    description: string;
-}
-
-
-export interface ITaskType {
-    id?: number;
-    title?: string;
-    description?: string;
+    public proto(): IProtoTaskType {
+        return {
+            id: this.id,
+            title: this.title,
+            description: this.description,
+        };
+    }
 }

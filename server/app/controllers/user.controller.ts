@@ -7,7 +7,7 @@ import { inject, injectable } from 'inversify';
 import { IController } from './abstractController.controller';
 import { UserService } from '../services/user.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { IUser } from '../models/user.model';
+import { IUser } from '../interfaces/IUser.interface';
 
 @injectable()
 export class UserController implements IController {

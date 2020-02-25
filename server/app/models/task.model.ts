@@ -1,23 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
-import { TaskType, ProtoTaskType } from './taskType.model';
-import { User, ProtoUser } from './user.model';
-import { Annotation, ProtoAnnotation } from './annotation.model';
+import { TaskType } from './taskType.model';
+import { User } from './user.model';
+import { Annotation } from './annotation.model';
+import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
+import { ITask } from '../interfaces/ITask.interface';
 
 @Entity()
 export class Task {
+
+    // Columns
+
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
-    public taskType: TaskType;
-
     @Column()
     public taskTypeId: number;
-
-    @ManyToOne(type => Annotation, annotation => annotation.tasks, { eager: true })
-    public annotation!: Annotation;
 
     @Column()
     public annotationId: number;
@@ -31,17 +30,37 @@ export class Task {
     @Column({ default: '' })
     public comment: string;
 
-    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true })
-    public assignedUser: User;
-
     @Column({ nullable: true })
     public assignedUserId: number;
+
+    @Column()
+    public creatorId: number;
+
+    @Column()
+    public imageId: number;
+
+    @Column()
+    public projectId: number;
+
+    @Column({ nullable: true })
+    public lastModifiedTime: Date;
+
+    // Relationships
+
+    @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
+    public taskType: TaskType;
+
+    @ManyToOne(type => Annotation, annotation => annotation.tasks, { eager: true })
+    public annotation!: Annotation;
+
+    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true })
+    public assignedUser: User;
 
     @ManyToOne(type => User, user => user.createdTasks, { eager: true })
     public creator: User;
 
-    @Column()
-    public creatorId: number;
+    @OneToMany(type => User, user => user.preferredTask, { eager: true })
+    public preferredUsers: Map<number, User>;
 
     public static fromInterface(itask: ITask): Task {
         const task = new Task();
@@ -61,6 +80,9 @@ export class Task {
             comment: this.comment,
             assignedUserId: this.assignedUserId,
             creatorId: this.creatorId,
+            imageId: this.imageId,
+            projectId: this.projectId,
+            lastModifiedTime: this.lastModifiedTime,
         };
     }
 
@@ -71,9 +93,10 @@ export class Task {
         if (!isNullOrUndefined(itask.isVisible)) { this.isVisible = itask.isVisible; }
         if (!isNullOrUndefined(itask.comment)) { this.comment = itask.comment; }
         if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
+        if (!isNullOrUndefined(itask.lastModifiedTime)) { this.lastModifiedTime = itask.lastModifiedTime; }
     }
 
-    public proto(): ProtoTask {
+    public proto(): IProtoTask {
         return {
             id: this.id,
             taskType: this.taskType.proto(),
@@ -83,28 +106,9 @@ export class Task {
             comment: this.comment,
             assignedUser: !isNullOrUndefined(this.assignedUser) ? this.assignedUser.proto() : null,
             creator: this.creator.proto(),
+            // image: this.imageId.proto(),
+            // project: this.imageId.proto()
+
         };
     }
-}
-
-export interface ITask {
-    id?: number;
-    taskTypeId?: number;
-    annotationId?: number;
-    isComplete?: boolean;
-    isVisible?: boolean;
-    comment?: string;
-    assignedUserId?: number;
-    creatorId?: number;
-}
-
-export interface ProtoTask {
-    id: number;
-    taskType: ProtoTaskType;
-    annotation: ProtoAnnotation;
-    isComplete: boolean;
-    isVisible: boolean;
-    comment: string;
-    assignedUser: ProtoUser;
-    creator: ProtoUser;
 }

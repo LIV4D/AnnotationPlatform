@@ -2,10 +2,10 @@ import { inject, injectable } from 'inversify';
 import { DeleteResult } from 'typeorm';
 
 import TYPES from '../types';
-import { TaskType, ITaskType } from '../models/taskType.model';
+import { TaskType } from '../models/taskType.model';
+import { ITaskType } from '../interfaces/ITaskType.interface';
 import { TaskTypeRepository } from '../repository/taskType.repository';
 import { createError } from '../utils/error';
-
 
 @injectable()
 export class TaskTypeService {
@@ -27,10 +27,9 @@ export class TaskTypeService {
     }
 
     public async deleteTaskType(id: number): Promise<DeleteResult> {
-        const taskType = await this.getTaskType(id);        
+        const taskType = await this.getTaskType(id);
         return await this.taskTypeRepository.delete(taskType);
     }
-
 
     public async getTaskType(id: number): Promise<TaskType> {
         const taskType = await this.taskTypeRepository.find(id);

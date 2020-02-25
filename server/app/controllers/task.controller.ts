@@ -5,7 +5,8 @@ import { isNullOrUndefined } from 'util';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
-import { Task, ITask } from '../models/task.model';
+import { Task } from '../models/task.model';
+import { ITask } from '../interfaces/ITask.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
 
@@ -44,6 +45,7 @@ export class TaskController implements IController {
             comment: req.body.comment,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id,
+            lastModifiedTime: req.body.lastModifiedTime,
         };
         this.taskService.createTask(newTask)
             .then(task => res.send(task.proto()))
@@ -148,6 +150,10 @@ export class TaskController implements IController {
         if (!isNullOrUndefined(req.body.isComplete)) {
             updatedTask.isComplete = req.body.isComplete;
         }
+        if (!isNullOrUndefined(req.body.lastModifiedTime)) {
+            updatedTask.lastModifiedTime = req.body.lastModifiedTime;
+        }
+
         this.taskService.updateTask(updatedTask, req.user)
             .then(task => res.send(task))
             .catch(next);
