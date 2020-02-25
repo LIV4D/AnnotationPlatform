@@ -1,21 +1,14 @@
 import { Injectable, Injector } from '@angular/core';
+import { TasksCompletedComponent } from './tasks-completed.component';
+import { TasksService } from '../../shared/services/tasks.service';
 
 @Injectable()
 export class TasksCompletedFacadeService {
 
-  /// NavBarService wrapper -- TODO: NavBarService is not created yet
+  constructor(private taskService: TasksService) {  }
 
-  // private _navBarService: NavBarService;
-  // public get navBarService(): NavBarService {
-  //   if (!this._navBarService) {
-  //     this._navBarService = this.injector.get(NavBarService);
-  //   }
-  //   return this._navBarService;
-  // }
-  /// ... add the other service wrappers
-
-  constructor(private injector: Injector) {  }
-
-  /// ... add the other functions for the other services
-
+  // tslint:disable-next-line:max-line-length
+  loadCompletedTasksData(tasksCompletedComponent: TasksCompletedComponent): void {
+    this.taskService.loadCompletedTasksData(tasksCompletedComponent);
+  }
 }
