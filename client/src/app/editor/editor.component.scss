@@ -1,12 +1,5 @@
 @import "../../colorConstants.scss";
 
-app-toolbox {
-  overflow: hidden;
-  width: $tools-width;
-  height: 100%;
-  position: absolute;
-}
-
 app-right-menu {
   color: $icon-color;
   position: absolute;
@@ -16,7 +9,14 @@ app-right-menu {
   top: 0;
 }
 
-app-editor {
+app-toolbox {
+  overflow: hidden;
+  width: $tools-width;
+  height: 100%;
+  position: absolute;
+}
+
+app-editor-content {
   width: 100%;
   height: calc(100% - 93px);
   display: flex;
