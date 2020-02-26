@@ -36,7 +36,7 @@ export class Task {
     @Column()
     public creatorId: number;
 
-    @Column()
+    @Column({ nullable: true })
     public imageId: number;
 
     @Column()
