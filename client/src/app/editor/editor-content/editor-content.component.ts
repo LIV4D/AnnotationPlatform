@@ -50,9 +50,10 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
     const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 300;
 
-    if (!this.cursorDown && !this.editorFacadeService.layersService.firstPoint && event.ctrlKey === false) {
+    if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
-    } else if (!this.cursorDown && !this.editorFacadeService.layersService.firstPoint) {
+    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
+    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
       console.log('inside else-if');
 
       // let brushWidth =  this.toolPropertiesService.brushWidth;
@@ -103,14 +104,15 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   }
 
   onMouseLeave(event: MouseEvent): void {
-    //     if (event.which === 2 && !this.editorService.menuState) {
-    //         // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-    //         // panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-    //         this.middleMouseDown = false;
-    //     }
-    //     this.cursorDown = false;
-    //     // this.toolboxService.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
-    //     this.enableKeyEvents(true);
+    if (event.which === 2 && !this.editorFacadeService.menuState) {
+      // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+      const panTool = this.editorFacadeService.panTool;
+      panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      this.middleMouseDown = false;
+    }
+    this.cursorDown = false;
+    this.editorFacadeService.onCursorOutToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    // this.enableKeyEvents(true);
   }
 
 

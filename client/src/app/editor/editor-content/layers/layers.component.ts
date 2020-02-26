@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LayersService } from 'src/app/shared/services/Editor/layers.service';
-import { EditorService } from 'src/app/shared/services/Editor/editor.service';
-
+import { LayersFacadeService } from './../layers/layers.facade.service';
+import { EditorFacadeService } from './../../editor.facade.service';
 @Component({
   selector: 'app-layers',
   templateUrl: './layers.component.html',
@@ -9,11 +8,11 @@ import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 })
 export class LayersComponent implements OnInit {
 
-  constructor(private layersService: LayersService, private editorService: EditorService) { }
+  constructor(private layersFacadeService: LayersFacadeService, private editorService: EditorFacadeService) { }
 
   ngOnInit(): void {
-    console.log('LayersComponent::ngOnInit()');
-    this.layersService.init();
+    // console.log('LayersComponent::ngOnInit()');
+    this.layersFacadeService.init();
 
     // this.editorService.canvasDisplayRatio.subscribe(
     //     value => {

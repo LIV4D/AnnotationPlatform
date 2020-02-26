@@ -17,8 +17,8 @@ export class EditorFacadeService {
         this.editorService.zoom(delta, position);
     }
 
-    get layersService() {
-        return this.editorService.layersService;
+    get firstPoint() {
+        return this.editorService.layersService.firstPoint;
     }
 
     get backgroundCanvas() {
@@ -47,6 +47,10 @@ export class EditorFacadeService {
 
     public onCursorUpToolbox(): void {
         this.toolboxService.onCursorUp();
+    }
+
+    public onCursorOutToolbox(point: Point): void {
+        this.toolboxService.onCursorOut(point);
     }
 
 }
