@@ -21,6 +21,7 @@ import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.faca
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditorFacadeService } from './editor/editor.facade.service';
 import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
+import { ImageBorderService } from './shared/services/Editor/image-border.service';
 // import { LayoutModule } from '@angular/cdk/layout';
 
 // Material
@@ -41,6 +42,7 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 
 @NgModule({
@@ -76,7 +78,9 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
    ],
    providers: [LoginFacadeService, LoginService, NavigationBarFacadeService, HttpClient, AppService,
       EditorFacadeService,
-      LayersFacadeService, {
+      LayersFacadeService,
+      ToolPropertiesService,
+      ImageBorderService, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,
