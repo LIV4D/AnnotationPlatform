@@ -1,1 +1,12 @@
-<p>biomarkers works!</p>
+<div id="biomarkersDiv">
+    <div id="biomarkersHeaderDiv">
+        <span>Biomarkers</span>
+        <!--HIDE/BORDERS-->
+        <span id="button-biomarkers">
+            <button id="button-simplifyList" matTooltip="Enable/Disable Simplified Biomarkers List" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleSimplifiedView()"><mat-icon svgIcon="tree"></mat-icon></button>
+            <button id="button-showAll" matTooltip="Show/Hide All Biomarkers (O)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleAllBiomarkers()"><mat-icon>{{getVisibilityAll()}}</mat-icon></button>
+            <button id="button-edges" matTooltip="Show/Hide Borders (L)" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleBorders()"><mat-icon>{{getBorders()}}</mat-icon></button>
+        </span>
+    </div>
+
+</div>

@@ -213,26 +213,26 @@ export class LayersService {
       return this.biomarkerOverlayCanvas.getContext('2d');
   }
 
-  // toggleBorders(showBorders: boolean): void {
-  //     this.appService.loading = true;
-  //     this.biomarkerCanvas.forEach((b) => {
-  //         if (showBorders) {
-  //             // this.borderService.erode(b.borderCanvas, b.currentCanvas);
-  //         }
-  //         b.drawBorders = showBorders;
-  //         b.draw();
-  //     });
-  //     this.appService.loading = false;
-  // }
+  toggleBorders(showBorders: boolean): void {
+      this.appService.loading = true;
+      this.biomarkerCanvas.forEach((b) => {
+          if (showBorders) {
+              this.imageBorderService.erode(b.borderCanvas, b.currentCanvas);
+          }
+          b.drawBorders = showBorders;
+          b.draw();
+      });
+      this.appService.loading = false;
+  }
 
-  // toggleShadows(showShadows: boolean): void {
-  //     this.appService.loading = true;
-  //     this.biomarkerCanvas.forEach((b) => {
-  //         b.drawShadows = showShadows;
-  //         b.draw();
-  //     });
-  //     this.appService.loading = false;
-  // }
+  toggleShadows(showShadows: boolean): void {
+      this.appService.loading = true;
+      this.biomarkerCanvas.forEach((b) => {
+          b.drawShadows = showShadows;
+          b.draw();
+      });
+      this.appService.loading = false;
+  }
 
   public resize(width: number, height: number): void {
     this.biomarkerCanvas.forEach(biomarker => {
