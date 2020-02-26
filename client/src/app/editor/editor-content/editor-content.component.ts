@@ -282,9 +282,10 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   //     this.editorService.scaleX *= -1;
   // }
 
-  // onResize(): void {
-  //     // this.editorService.resize();
-  // }
+  onResize(): void {
+      this.editorFacadeService.resize();
+      // editorService.resize();
+  }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
     if (!this.editorFacadeService.backgroundCanvas) { return undefined; }

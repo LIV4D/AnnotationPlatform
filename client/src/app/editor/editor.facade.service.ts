@@ -53,6 +53,10 @@ export class EditorFacadeService {
         this.toolboxService.onCursorOut(point);
     }
 
+    public resize() {
+      this.editorService.resize();
+    }
+
     public load() {
       console.log('load()');
 

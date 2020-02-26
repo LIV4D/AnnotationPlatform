@@ -641,10 +641,11 @@ export class EditorService {
     //         this.imageServer = res;
     //     });
     // }
+
     loadMetadata(): void {
       console.log('EditorService::loadMetadata()');
 
-      this.http.get<any>('/api/gallery/list').subscribe(res => {
+      this.http.get<any>('/api/images/list').subscribe(res => {
           this.imageServer = res;
           console.log(this.imageServer);
       });
