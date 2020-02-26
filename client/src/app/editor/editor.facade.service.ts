@@ -53,4 +53,10 @@ export class EditorFacadeService {
         this.toolboxService.onCursorOut(point);
     }
 
+    public load() {
+      console.log('load()');
+
+      this.editorService.loadMetadata();
+    }
+
 }

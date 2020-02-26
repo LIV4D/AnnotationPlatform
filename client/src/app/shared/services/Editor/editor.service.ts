@@ -23,7 +23,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 @Injectable({
   providedIn: 'root'
 })
-@Injectable()
+// @Injectable()
 export class EditorService {
   imageLocal: HTMLImageElement;
   imageServer: ImageServer;
@@ -634,10 +634,21 @@ export class EditorService {
     // }
 
     // loadMetadata(imageId: string): void {
-    //     this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+    //     // this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+    //     //     this.imageServer = res;
+    //     // });
+    //     this.http.get<ImageServer>('/api/images/1/').subscribe(res => {
     //         this.imageServer = res;
     //     });
     // }
+    loadMetadata(): void {
+      console.log('EditorService::loadMetadata()');
+
+      this.http.get<any>('/api/gallery/list').subscribe(res => {
+          this.imageServer = res;
+          console.log(this.imageServer);
+      });
+    }
 
     // saveSVGFile(): void {
     //     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
