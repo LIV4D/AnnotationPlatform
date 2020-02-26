@@ -5,6 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// Pipes
+import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
+
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
@@ -65,7 +68,8 @@ import { ToolPropertiesService } from './shared/services/Editor/tool-properties.
       LayersComponent,
       SafeImagePipe,
       ZoomComponent,
-      MousewheelDirective
+      MousewheelDirective,
+      CamelCaseToTextPipe
    ],
    imports: [
       BrowserModule,
@@ -80,7 +84,8 @@ import { ToolPropertiesService } from './shared/services/Editor/tool-properties.
       EditorFacadeService,
       LayersFacadeService,
       ToolPropertiesService,
-      ImageBorderService, {
+      ImageBorderService,
+      CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,

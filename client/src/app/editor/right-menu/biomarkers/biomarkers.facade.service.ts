@@ -65,4 +65,20 @@ export class BiomarkersFacadeService {
         this.biomarkerService.toggleAllBiomarkers(visibility);
     }
 
+    get dataSource() {
+        return this.biomarkerService.dataSource;
+    }
+
+    get nestedTreeControl() {
+        return this.biomarkerService.nestedTreeControl;
+    }
+
+    get hasNestedChild() {
+        return this.biomarkerService.serviceHasNestedChild;
+    }
+
+    get flatEnabledBiomarkers() {
+        return this.biomarkerService.flatEnabledBiomarkers;
+    }
+
 }

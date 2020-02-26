@@ -303,4 +303,8 @@ export class BiomarkerService {
             b.displayCanvas.style['mix-blend-mode'] = Number(opacity) <= 75 ? 'color' : 'normal';
         });
     }
+
+    get serviceHasNestedChild() {
+        return this.hasNestedChild;
+    }
 }

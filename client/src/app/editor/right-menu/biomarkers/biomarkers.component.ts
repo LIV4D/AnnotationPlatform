@@ -3,6 +3,11 @@ import { BiomarkersFacadeService } from './biomarkers.facade.service';
 import { AppService } from './../../../shared/services/app.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CamelCaseToTextPipe } from './../../../shared/pipes/camel-case-to-text.pipe';
+import { MatList } from '@angular/material/list';
+
+export interface DialogData {
+  confirmDelete: boolean;
+}
 
 @Component({
   selector: 'app-biomarkers',
