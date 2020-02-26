@@ -5,7 +5,6 @@ import { IController } from './abstractController.controller';
 import { SubmissionEventService } from '../services/submissionEvent.service';
 import { isNullOrUndefined } from 'util';
 
-
 @injectable()
 export class SubmissionEventController implements IController {
     @inject(TYPES.SubmissionEventService)
@@ -26,9 +25,9 @@ export class SubmissionEventController implements IController {
         this.submissionService.getAllEvents(filter)
             .then(events => {
                 res.send(events.map(event => {
-                    switch(req.params.attr){
+                    switch (req.params.attr) {
                         case undefined: return event;
-                        case "proto": return event.proto;
+                        case 'proto': return event.proto;
                     }
                     return null;
                 }));
@@ -38,9 +37,9 @@ export class SubmissionEventController implements IController {
     private getEvent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.submissionService.getEvent(parseInt(req.params.annotationId))
         .then(event => {
-            switch(req.params.attr){
+            switch (req.params.attr) {
                 case undefined: res.send(event); break;
-                case "proto": res.send(event.proto); break;
+                case 'proto': res.send(event.proto); break;
             }
         }).catch(next);
     }
@@ -49,9 +48,9 @@ export class SubmissionEventController implements IController {
         this.submissionService.getEvents(req.body.ids)
         .then(events => {
             res.send(events.map(event => {
-                switch(req.params.attr){
+                switch (req.params.attr) {
                     case undefined: return event;
-                    case "proto": return event.proto;
+                    case 'proto': return event.proto;
                 }
                 return null;
             }));

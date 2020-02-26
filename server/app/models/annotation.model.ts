@@ -1,9 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, OneToOne } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
-import { Image, ProtoImage } from './image.model';
-import { SubmissionEvent, ProtoSubmissionEvent } from './submissionEvent.model';
+import { Image } from './image.model';
+import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
+import { IProtoAnnotation } from '../prototype interfaces/IProtoAnnotation.interface';
+import { IAnnotation } from '../interfaces/IAnnotation.interface';
 
 export class StringHierarchy { [key: string]: StringHierarchy | string}
 
@@ -11,7 +13,7 @@ export class StringHierarchy { [key: string]: StringHierarchy | string}
 export class AnnotationData {
     biomarker: {[key: string]: Buffer};
     hierarchy: StringHierarchy;
-    nongraphic: {[key: string]: string | Boolean | Buffer | number};
+    nongraphic: {[key: string]: string | boolean | Buffer | number};
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -66,26 +68,11 @@ export class Annotation {
         return a;
     }
 
-    public proto(): ProtoAnnotation {
+    public proto(): IProtoAnnotation {
         return {id: this.id,
                 image: this.image.proto(),
                 comment: this.comment,
                 submitEvent: this.submitEvent.proto(),
             };
     }
-}
-
-export interface IAnnotation {
-    id?: number;
-    imageId?: number;
-    data?: AnnotationData;
-    comment?: string;
-    submitEventId?: number;
-}
-
-export interface ProtoAnnotation {
-    id: number;
-    image: ProtoImage;
-    comment: string;
-    submitEvent: ProtoSubmissionEvent;
 }

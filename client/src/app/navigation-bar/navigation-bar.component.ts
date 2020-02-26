@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationBarFacadeService } from './navigation-bar.facade.service';
+import { Router } from '@angular/router';
 
 import * as screenfull from 'screenfull';
 import {Screenfull} from 'screenfull';
@@ -16,7 +18,7 @@ export class NavigationBarComponent implements OnInit {
   loadingProgress = 0;
   loadingDownload = true;
 
-  constructor() { }
+  constructor(private navigationBarFacadeService: NavigationBarFacadeService, public router: Router) {  }
 
   ngOnInit() {
   }
@@ -33,4 +35,7 @@ export class NavigationBarComponent implements OnInit {
     sreenfullEntity.toggle();
   }
 
+  logout(): void {
+    this.navigationBarFacadeService.logout();
+  }
 }

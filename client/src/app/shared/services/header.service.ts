@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import {map, filter} from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Injectable({
@@ -8,13 +8,45 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class HeaderService {
 
-  constructor() { }
+  progress: number;
+  isShown: boolean;
+  name?: string;
+  isDownloading?: boolean;
 
-  cbProgress: (progress: number) => void;
-  cbShowProgress: (show: boolean, name?: string, download?: boolean) => void;
+  constructor() {}
 
-  display_progress(request: Observable<any>, name: string, download= true): Observable<any> {
-      this.cbShowProgress(true, name, download);
+
+  /**
+   * show progress
+   * @param showned: a progress bar can be showned or hidden
+   * @param [Name]: name of the progress bar
+   * @param [Download]: tells if the progress bar is downloading, True by default
+   */
+  cbShowProgress(isShown: boolean, Name?: string, isDownloading?: boolean) {
+    this.isShown = isShown;
+    this.name = Name;
+    this.isDownloading = isDownloading;
+  }
+
+
+  /**
+   * progress
+   * @param Progress: progression number of the bar
+   */
+  cbProgress(Progress: number) {
+    this.progress = Progress;
+  }
+
+
+  /**
+   * Displays progress: Display progress of a loading of datas in a progress bar
+   * @param request: Observable<any> emiting datas
+   * @param name: name of the progress bar
+   * @param [download] : tells if the progress bar is downloading, True by default
+   * @returns progress : Observable<any> response from the request
+   */
+  display_progress(request: Observable<any>, name: string, isDownloading= true): Observable<any> {
+      this.cbShowProgress(true, name, isDownloading);
       return request.pipe(filter(res => {
           if (res.type === HttpEventType.DownloadProgress) {
               if (this.cbProgress) {
@@ -31,4 +63,5 @@ export class HeaderService {
           return false;
       }), map(res => (res as HttpResponse<any>).body));
   }
+
 }
