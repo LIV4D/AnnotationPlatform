@@ -39,6 +39,9 @@ import { LayersComponent } from './editor/editor-content/layers/layers.component
 import { SafeImagePipe } from './shared/services/safe-image.pipe';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
+// Directives
+import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+
 
 @NgModule({
    declarations: [
@@ -59,7 +62,8 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
       EditorContentComponent,
       LayersComponent,
       SafeImagePipe,
-      ZoomComponent
+      ZoomComponent,
+      MousewheelDirective
    ],
    imports: [
       BrowserModule,
