@@ -1,7 +1,8 @@
 
 // Components
 import { TasksComponent } from './../../tasks/tasks.component';
-import { TasksCompletedComponent } from './../../tasks/tasks-completed/tasks-completed.component'
+import { TasksCompletedComponent } from './../../tasks/tasks-completed/tasks-completed.component';
+import { TasksToCompleteComponent } from './../../tasks/tasks-to-complete/tasks-to-complete.component';
 
 // Services
 import { HeaderService } from './header.service';
@@ -33,7 +34,7 @@ export class TasksService {
    * Load data
    * Load the Tasks from the server by getting
    */
-  loadData(tasksComponent: TasksComponent): void {
+  loadData(tasksComponent: TasksComponent| TasksCompletedComponent | TasksToCompleteComponent): void {
       tasksComponent.noData = false;
 
       // PageIndex set to zero when the user change the sorting
@@ -61,7 +62,6 @@ export class TasksService {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITasks[]) => {
               tasksComponent.data = data;
-              tasksComponent.completedTasksData = data.filter(d => d.isComplete === true);
               length = data.length;
               if (length === 0) { tasksComponent.noData = true; }
               this.appService.loading = false;
