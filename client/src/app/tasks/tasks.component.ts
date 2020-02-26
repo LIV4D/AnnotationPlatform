@@ -35,13 +35,21 @@ export class TasksComponent implements OnInit {
      this.pageSize = 25;
      this.noData = false;
 
-     this.dataSource.paginator = this.paginator;
-     this.dataSource.sort = this.sort;
+
    }
 
     ngOnInit(): void {
+
         this.LoadData();
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        setTimeout(() => this.dataSource.paginator = this.paginator);
     }
+
+    ngAfterViewInit() {
+      this.dataSource.paginator = this.paginator;
+      console.log(this.paginator);
+  }
 
 
     /**
