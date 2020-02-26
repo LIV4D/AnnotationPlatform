@@ -45,7 +45,7 @@ export class TaskController implements IController {
             comment: req.body.comment,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id,
-            lastModifiedTime: req.body.lastModifiedTime,
+            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date()  : req.body.lastModifiedTime,
         };
         this.taskService.createTask(newTask)
             .then(task => res.send(task.proto()))

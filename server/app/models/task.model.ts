@@ -36,10 +36,10 @@ export class Task {
     @Column()
     public creatorId: number;
 
-    @Column()
+    @Column({ nullable: true })
     public imageId: number;
 
-    @Column()
+    @Column({ nullable: true })
     public projectId: number;
 
     @Column({ nullable: true })
