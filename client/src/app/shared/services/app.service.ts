@@ -13,4 +13,8 @@ export class AppService {
         this.localEditing = false;
         this.pointerDetected = false;
     }
+
+    setLoading(isLoading: boolean) {
+      this.loading = isLoading;
+    }
 }
