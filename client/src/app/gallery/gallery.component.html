@@ -76,7 +76,8 @@
         Preview
       </mat-header-cell>
       <mat-cell *matCellDef="let image">
-        <img [src]="image.src | safeImage" height="64px" />
+        <!-- image.src -->
+        <img [src]="image.thumbnail | safeImage" height="64px" />
       </mat-cell>
     </ng-container>
 
@@ -94,7 +95,7 @@
         ImageType
       </mat-header-cell>
       <mat-cell *matCellDef="let image">
-        {{image.imageType || 'N\\A'}}
+        {{image.imageType || image.type || 'N\\A'}}
       </mat-cell>
     </ng-container>
 

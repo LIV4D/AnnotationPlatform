@@ -16,6 +16,9 @@ export class GalleryService {
   getImageTypes(): Observable<any> {
       return this.http.get('/api/imageTypes');
   }
+  getTweakedImageTypes(): Observable<any> {
+      return this.http.get('/api/images/gallery');
+  }
 
   getImages(sort: string, order: string, page: number, pageSize: number, filters?: string): Observable<IGallery> {
     console.log('GalleryService::getImages()');
@@ -29,11 +32,9 @@ export class GalleryService {
 
     console.log('params: ' + params);
 
-    const req = this.http.get<IGallery>('/api/gallery/', {params, observe: 'events', reportProgress: true});
-
-    // .subscribe( (res) => {
-    //   console.log('response is : ' + res);
-    // });
+    // TODO: It was like that but /api/gallery/ couldn't resolve to a valid path -- Check this out with partners
+    // const req = this.http.get<IGallery>('/api/gallery/', {params, observe: 'events', reportProgress: true});
+    const req = this.http.get<IGallery>('/api/images/gallery/', {params, observe: 'events', reportProgress: true});
 
     return this.headerService.display_progress(req, 'Downloading: Gallery');
   }

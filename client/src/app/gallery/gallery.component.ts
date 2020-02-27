@@ -55,7 +55,7 @@ export class GalleryComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.editorService.imageServer = null;
     this.editorService.imageLocal = null;
-    this.getImageTypes();
+    // this.getImageTypes();
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     this.getImages();
   }
@@ -63,15 +63,22 @@ export class GalleryComponent implements AfterViewInit {
   getImages(): void {
     console.log('GalleryComponent::getImage()');
 
+    // this.galleryService.getTweakedImageTypes().subscribe((data: IGallery) => {
+    //   this.length = data.objectCount;
+    //   this.data = data.objects;
+    //   console.log('data : ' + data.objects[2].metadata.filename);
+    //   setTimeout(() => this.appService.loading = false);
+    // });
+
     // Create filters
     // WARNING : key must correspond to valid column in model
     const filtersObj = {
       'imageType.name': this.imageTypeField.nativeElement.value,
-      'eye': this.eyeSideField.nativeElement.value,
-      'hospital': this.hospitalField.nativeElement.value,
-      'patient': this.patientField.nativeElement.value,
-      'visit' : this.visitField.nativeElement.value,
-      'code': this.codeField.nativeElement.value
+      eye: this.eyeSideField.nativeElement.value,
+      hospital: this.hospitalField.nativeElement.value,
+      patient: this.patientField.nativeElement.value,
+      visit : this.visitField.nativeElement.value,
+      code: this.codeField.nativeElement.value
     };
     const filters = JSON.stringify(filtersObj);
 
@@ -97,8 +104,12 @@ export class GalleryComponent implements AfterViewInit {
           return observableOf([]);
         })
       ).subscribe((data: IGallery) => {
+
         this.length = data.objectCount;
         this.data = data.objects;
+        console.log('data : ' + data.objects[2].metadata.filename);
+        console.log('data : ' + data.objects[2].type);
+        console.log('test : ' + data.objects[2].thumbnail);
         setTimeout(() => this.appService.loading = false);
       });
   }
@@ -125,6 +136,7 @@ export class GalleryComponent implements AfterViewInit {
   // Retrieves the image types from the server
   getImageTypes(): void {
     this.galleryService.getImageTypes().subscribe(res => {
+    // this.galleryService.getTweakedImageTypes().subscribe(res => {
         this.galleryService.selected = res[0];
         this.imageTypes = res;
     });

@@ -128,6 +128,8 @@ export class ImageController implements IController {
     }
 
     private getGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        console.log('ImageController::getGallery()');
+
         const arr: IGalleryObject[] = [];
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {
@@ -145,6 +147,9 @@ export class ImageController implements IController {
                     } catch {
                         console.error(`Thumbnail for image ` + image.id.toString() + ` not found.`);
                     }
+
+                    console.log('item.metadata: ' + item.metadata.filename);
+                    console.log('item.thumbPath: ' + item.thumbnail);
                     arr.push(item);
                 });
                 const gallery: IGallery = {
