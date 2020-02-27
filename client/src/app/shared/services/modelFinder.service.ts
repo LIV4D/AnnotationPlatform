@@ -6,26 +6,28 @@ import { Injectable } from '@angular/core';
 export class ModelFinderService {
 
     constructor() { }
-    public async getAttributesOf(model: string): Promise<string[]> {
+    public async getAttributesOf(model: string): Promise<Map<string, string[]>> {
         model = model.charAt(0).toLowerCase() + model.slice(1);
         const modelPath = `${model}.model`;
         const modelCapitalized = model.charAt(0).toUpperCase() + model.slice(1);
+        const returnValue: Map<string, string[]> = new Map();
 
         try {
             const modelImport = await import(`../models/${modelPath}`);
 
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
-            const properties = Object.getOwnPropertyNames(instantiatedModel);
-            console.log(this.getAllPropertyTypes(instantiatedModel));
+            returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
+            returnValue.set('propertyTypes', this.getAllPropertyTypes(instantiatedModel));
 
-            return properties;
         } catch (error) {
             console.error('There was a problem while retrieving the requested model : ' + error);
-            return ['error'];
+            returnValue.set('propertyNames', ['error']);
+            returnValue.set('propertyTypes', ['error']);
         }
+        return returnValue;
     }
 
-    public getAllPropertyTypes(object) {
+    public getAllPropertyTypes(object: any): Array<any> {
         const propertyTypes = new Array();
         Object.getOwnPropertyNames(object).forEach(propertyName => {
             propertyTypes.push(this.getPropertyType(object, propertyName));
@@ -33,7 +35,7 @@ export class ModelFinderService {
         return propertyTypes;
     }
 
-    public getPropertyType(object, name) {
+    public getPropertyType(object: any, name: any) {
         return typeof object[name];
     }
 }

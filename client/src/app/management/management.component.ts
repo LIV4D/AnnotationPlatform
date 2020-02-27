@@ -12,7 +12,6 @@ export class ManagementComponent implements OnInit {
 
     public attributesForCreation: string[];
     public attributeValues: Array<string>;
-    public modelObject: object;
     public modelName = '';
 
     constructor(private facadeService: ManagementFacadeService, private router: Router) {

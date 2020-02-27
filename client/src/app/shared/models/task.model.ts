@@ -1,9 +1,9 @@
 import { TaskType } from './taskType.model';
 
 export class Task {
-    public id: number = null;
-    public taskTypeId: number = null;
-    public annotationId: number = null;
+    public id = 0;
+    public taskTypeId = 0;
+    public annotationId = 0;
     public isComplete = false;
     public isVisible = true;
     public comment = '';
