@@ -29,6 +29,8 @@ import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { ManagementFacadeService } from './management/management.facade.service';
+import { ModelFinderService } from './shared/services/modelfinder.service';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -55,6 +57,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
    providers: [
       LoginFacadeService,
       LoginService,
+      ManagementFacadeService,
+      ModelFinderService,
       NavigationBarFacadeService,
       HttpClient,
       AppService,

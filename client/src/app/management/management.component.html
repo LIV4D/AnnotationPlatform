@@ -1,2 +1,10 @@
 <p>management works!</p>
-<textarea>I don't know what this does yet</textarea>
+<div *ngFor = "let attribute of attributesForCreation">
+
+</div>
+<div>
+  <textarea [(ngModel)] = "modelName">
+    Your model name goes here!
+  </textarea>
+  <button onclick = "generateTextFields()">Generate Fields</button>
+</div>
