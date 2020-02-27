@@ -16,6 +16,7 @@ import { TasksToCompleteComponent } from './tasks/tasks-to-complete/tasks-to-com
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { ManagementComponent } from './management/management.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -25,6 +26,9 @@ import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-compl
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
+import { ManagementCreationService } from './shared/services/management-creation.service';
+import { ManagementFacadeService } from './management/management.facade.service';
+import { ModelFinderService } from './shared/services/modelfinder.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -33,9 +37,6 @@ import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
-import { ManagementFacadeService } from './management/management.facade.service';
-import { ModelFinderService } from './shared/services/modelfinder.service';
-import { ManagementComponent } from './management/management.component';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -73,6 +74,7 @@ import { ManagementComponent } from './management/management.component';
       TaskFacadeService,
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
+      ManagementCreationService,
       HeaderService,
        {
       provide: HTTP_INTERCEPTORS,
