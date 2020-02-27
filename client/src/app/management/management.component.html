@@ -1,8 +1,12 @@
 <p>management works!</p>
-<div *ngFor = "let attribute of attributesForCreation">
-
-</div>
 <div>
-  <input cdkTextareaAutosize [(ngModel)]="modelName" placeholder="Input Model Name Here">
+  <input cdkTextareaAutosize [(ngModel)]="modelName" placeholder="Input Model Name Here (non-capitalized)">
   <button (click) = "generateTextFields()">Generate Fields</button>
 </div>
+<div *ngFor = "let attribute of attributesForCreation; let i = index">
+  <label>{{attribute}}: </label>
+  <input cdkTextareaAutosize [(ngModel)]="attributeValues[i]" placeholder="Input values">
+</div>
+<button (click) = "createModel()" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+PANCAKES
+</button>

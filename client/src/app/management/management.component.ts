@@ -10,24 +10,26 @@ import { Router } from '@angular/router';
 })
 export class ManagementComponent implements OnInit {
 
-    public attributesForCreation: any[];
+    public attributesForCreation: string[];
+    public attributeValues: Array<string>;
     public modelName = '';
 
     constructor(private facadeService: ManagementFacadeService, private router: Router) {
+        this.attributeValues = new Array<string>();
     }
 
     ngOnInit() {
     }
 
-    public generateTextFields(): void {
-        this.getAttributesForCreating(this.modelName);
+    public async generateTextFields(): Promise<void> {
+        // Maybe send the object back and get the properties here instead.
+        this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
+        this.modelName = '';
     }
 
-    public async getAttributesForCreating(model: string): Promise<void> {
-        console.log( await this.facadeService.getAttributesForCreating(model));
+    public createModel(): void {
+        // TODO: Checks to make sure the fields are all filled.
+        console.log(this.attributeValues);
     }
-    // ok so, need a function to load a model.
-    // need a function to put that model into text fields.
-    // so for each attribute of the interface, create a text field.
     // need a function to send the text fields chosen to the database so it can be created.
 }

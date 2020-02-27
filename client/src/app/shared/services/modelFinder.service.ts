@@ -8,6 +8,7 @@ export class ModelFinderService {
 
     constructor() { }
     async getAttributesOf(model: string): Promise<string[]> {
+        model = model.charAt(0).toLowerCase() + model.slice(1);
         const modelPath = `${model}.model`;
         const modelCapitalized = model.charAt(0).toUpperCase() + model.slice(1);
 
