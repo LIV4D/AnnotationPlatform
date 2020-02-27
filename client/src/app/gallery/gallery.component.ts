@@ -39,7 +39,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
               public editorService: EditorService) {
     this.showPagination = true;
     // this.length = 0;
-    // this.pageSize = 15;
     this.pageSize = 15;
     this.editorService.imageLoaded = false;
   }
@@ -59,8 +58,8 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.editorService.imageServer = null;
     this.editorService.imageLocal = null;
-    this.getImageTypes();  // commented for now
-    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    // this.getImageTypes();  // commented for now
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     this.getImages();
     // this.data.paginator = this.paginator;
@@ -109,11 +108,11 @@ export class GalleryComponent implements OnInit, AfterViewInit {
         this.length = data.objectCount;
         this.data = data.objects;
 
-        console.log('this.paginator.pageSize : ' + this.paginator.pageSize);
-        console.log('data.objects.length : ' + data.objects.length);
-        console.log('data.objectCount : ' + data.objectCount);
-        console.log('data : ' + data.objects[2].metadata.filename);
-        console.log('data : ' + data.objects[2].type);
+        // console.log('this.paginator.pageSize : ' + this.paginator.pageSize);
+        // console.log('data.objects.length : ' + data.objects.length);
+        // console.log('data.objectCount : ' + data.objectCount);
+        // console.log('data : ' + data.objects[2].metadata.filename);
+        // console.log('data : ' + data.objects[2].type);
 
         setTimeout(() => this.appService.loading = false);
       });
