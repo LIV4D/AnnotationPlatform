@@ -22,6 +22,7 @@ import { ITaskList } from '../interfaces/taskList.interface';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { $ } from 'protractor';
+import { ITaskGroup } from '../interfaces/taskGroup.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -50,9 +51,11 @@ export class TasksService {
           switchMap(() => {
               this.appService.loading = true; // Enable loading bar
               // getTasks from the server
-              return this.getTasks(tasksComponent.paginator.pageIndex,
-                                  tasksComponent.pageSize,
-                                  tasksComponent.showCompleted);
+              return this.getTasks(tasksComponent.sort.active,
+                                   tasksComponent.sort.direction,
+                                   tasksComponent.paginator.pageIndex,
+                                   tasksComponent.pageSize,
+                                   tasksComponent.showCompleted);
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
@@ -75,7 +78,7 @@ export class TasksService {
   loadCompletedTasksData(tasksCompletedComponent: TasksCompletedComponent): void {
       tasksCompletedComponent.noData = false;
 
-      // PageIndex set to zero when the user change the sorting
+      // If the user changes the sort order, reset back to the first page.
       tasksCompletedComponent.sort.sortChange.subscribe(() => tasksCompletedComponent.paginator.pageIndex = 0);
 
       // Observable: Converts sortChange and page Observables into a single Observable
@@ -88,7 +91,10 @@ export class TasksService {
           switchMap(() => {
               this.appService.loading = true; // Enable loading bar
               // getTasks from the server
-              return this.getTasks(tasksCompletedComponent.paginator.pageIndex,
+              return this.getTasks(
+                                  tasksCompletedComponent.sort.active,
+                                  tasksCompletedComponent.sort.direction,
+                                  tasksCompletedComponent.paginator.pageIndex,
                                   tasksCompletedComponent.pageSize,
                                   tasksCompletedComponent.showCompleted);
           }),
@@ -98,11 +104,10 @@ export class TasksService {
               return observableOf([]);
           })
           // Observer: Data emited from the server are added on data
-          ).subscribe((data: ITasks[]) => {
-              tasksCompletedComponent.data = data.filter(
-                filteredData => filteredData.isComplete === true);
-              length = data.length;
-              if (length === 0) { tasksCompletedComponent.noData = true; }
+          ).subscribe((data: ITaskGroup) => {
+              //tasksCompletedComponent.data = data;
+              tasksCompletedComponent.length = tasksCompletedComponent.data.length;
+              if (tasksCompletedComponent.length === 0) { tasksCompletedComponent.noData = true; }
               this.appService.loading = false;
           });
     }
@@ -123,16 +128,18 @@ export class TasksService {
    * @param page: page index of a page
    * @param pageSize: number of page index in one page
    * @param isCompleted: a task can be complited or uncompleted
-   * @returns Observable<ITasks[]>
+   * @returns Observable<ITaskGroup>
    */
-  getTasks(page: number, pageSize: number, isCompleted: boolean): Observable<ITasks[]> {
+  getTasks(sort: string, order: string, page: number, pageSize: number, isCompleted: boolean): Observable<ITaskGroup> {
     const params = new HttpParams()
+                        .set('sort', sort ? 'tasks.' + sort : 'tasks.id')
+                        .set('order', order ? order.toUpperCase() : 'ASC')
                         .set('page', page ? page.toString() : '0')
                         .set('pageSize', pageSize ? pageSize.toString() : '25')
                         .set('completed', isCompleted ? 'true' : 'false');
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
     // const req = this.http.get<ITaskList>(`//api/tasks/list/${userId}`, {params: params, observe: 'events', reportProgress: true});
-    const req = this.http.get<ITasks[]>(`/api/tasks/list/`, {observe: 'events', reportProgress: true});
+    const req = this.http.get<ITaskGroup>(`/api/tasks/list/`, {params, observe: 'events', reportProgress: true});
 
     // this.http.get<ITasks[]>(`/api/tasks/list`).subscribe((response: ITasks[]) => {
     //    console.log(response);
