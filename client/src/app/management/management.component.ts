@@ -23,8 +23,8 @@ export class ManagementComponent implements OnInit {
         this.getAttributesForCreating(this.modelName);
     }
 
-    public getAttributesForCreating(model: string): void {
-        this.facadeService.getAttributesForCreating(model);
+    public async getAttributesForCreating(model: string): Promise<void> {
+        console.log( await this.facadeService.getAttributesForCreating(model));
     }
     // ok so, need a function to load a model.
     // need a function to put that model into text fields.

@@ -1,8 +1,8 @@
 import { TaskType } from './taskType.model';
 
 export class Task {
-    public id: number;
-    public taskType: TaskType;
-    public active: boolean;
-    public completed: boolean;
+    public id: number = null;
+    public taskType: TaskType = null;
+    public active: boolean = null;
+    public completed: boolean = null;
 }

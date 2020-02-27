@@ -9,7 +9,7 @@ export class ManagementFacadeService {
 
     constructor(private modelFinder: ModelFinderService) { }
 
-    getAttributesForCreating(model: string) {
-        this.modelFinder.getAttributesOf(model);
+    public async getAttributesForCreating(model: string): Promise<string[]> {
+        return await this.modelFinder.getAttributesOf(model);
     }
 }

@@ -7,27 +7,18 @@ import { Task } from '../models/task.model';
 export class ModelFinderService {
 
     constructor() { }
-    async getAttributesOf(model: string) {
+    async getAttributesOf(model: string): Promise<string[]> {
         const modelPath = `${model}.model`;
         const modelCapitalized = model.charAt(0).toUpperCase() + model.slice(1);
 
-        console.log('test');
+        // Need to add check here to see if file exists before doing it (fs doesn't work)
         const modelImport = await import(`../models/${modelPath}`);
 
-        const testTask = new Task();
         const instantiatedModel = new (modelImport as any)[modelCapitalized]();
-        let properties = Object.getOwnPropertyDescriptors(instantiatedModel);
-        console.log(properties === undefined || properties.length === 0);
-        // properties.forEach(property => {
-        //     console.log(property);
-        // });
+        const properties = Object.getOwnPropertyNames(instantiatedModel);
 
-        properties = Object.getOwnPropertyDescriptors(testTask);
-
-        console.log(properties === undefined || properties.length === 0);
-        // properties.forEach(property => {
-        //     console.log(property);
-        // });
-        console.log('other test');
+        return properties;
+        // const propertiesOf = <TObj>(obj: (TObj | undefined) = undefined) => <T extends keyof TObj>(name: T): T => name;
+        // const properties3 = propertiesOf(instantiatedModel);
     }
 }
