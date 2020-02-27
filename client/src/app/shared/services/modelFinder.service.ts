@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Task } from '../models/task.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,17 +9,25 @@ export class ModelFinderService {
     constructor() { }
     async getAttributesOf(model: string) {
         const modelPath = `${model}.model`;
+        const modelCapitalized = model.charAt(0).toUpperCase() + model.slice(1);
 
-        const properties = import(`../models/${modelPath}`).then(() => {
-            console.log('test');
-            const instantiatedModel = new (global as any)[model]();
-            return Object.getOwnPropertyNames(instantiatedModel);
-        });
-        // const instantiatedModel = Object.create(window['../models/' + model].prototype);
+        console.log('test');
+        const modelImport = await import(`../models/${modelPath}`);
 
-        // const propertiesOf = <TObj>(obj: (TObj | undefined) = undefined) => <T extends keyof TObj>(name: T): T => name;
-        // const properties = propertiesOf(instantiatedModel);
-        console.log(`${properties} and the final test`);
+        const testTask = new Task();
+        const instantiatedModel = new (modelImport as any)[modelCapitalized]();
+        let properties = Object.getOwnPropertyDescriptors(instantiatedModel);
+        console.log(properties === undefined || properties.length === 0);
+        // properties.forEach(property => {
+        //     console.log(property);
+        // });
 
+        properties = Object.getOwnPropertyDescriptors(testTask);
+
+        console.log(properties === undefined || properties.length === 0);
+        // properties.forEach(property => {
+        //     console.log(property);
+        // });
+        console.log('other test');
     }
 }
