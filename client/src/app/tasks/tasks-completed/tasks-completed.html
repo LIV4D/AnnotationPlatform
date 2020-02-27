@@ -4,7 +4,7 @@
                 <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
                 <mat-cell *matCellDef="let task" > <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="image">
+            <ng-container matColumnDef="imageId">
                 <mat-header-cell *matHeaderCellDef disableClear>Id</mat-header-cell>
                 <mat-cell *matCellDef="let task"> {{task}} </mat-cell>
             </ng-container>
