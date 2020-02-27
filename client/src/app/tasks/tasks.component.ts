@@ -53,8 +53,6 @@ export class TasksComponent implements OnInit {
 
     LoadData() {
       this.facadeService.loadData(this);
-
-
     }
     loadImage(imageId: string): void {
       this.facadeService.loadImage(imageId);
@@ -68,7 +66,5 @@ export class TasksComponent implements OnInit {
     showIncomplete(): void {
       this.showCompleted = false;
       this.LoadData();
-
     }
 }
-

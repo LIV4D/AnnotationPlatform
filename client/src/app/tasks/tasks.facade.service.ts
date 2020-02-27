@@ -19,8 +19,6 @@ export class TaskFacadeService {
   loadImage(imageId: string): void {
     this.taskService.loadImage(imageId);
   }
-
-
 }
 
 

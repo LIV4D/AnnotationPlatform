@@ -1,6 +1,8 @@
 
 // Components
 import { TasksComponent } from './../../tasks/tasks.component';
+import { TasksCompletedComponent } from './../../tasks/tasks-completed/tasks-completed.component';
+import { TasksToCompleteComponent } from './../../tasks/tasks-to-complete/tasks-to-complete.component';
 
 // Services
 import { HeaderService } from './header.service';
@@ -32,7 +34,7 @@ export class TasksService {
    * Load data
    * Load the Tasks from the server by getting
    */
-  loadData(tasksComponent: TasksComponent): void {
+  loadData(tasksComponent: TasksComponent| TasksCompletedComponent | TasksToCompleteComponent): void {
       tasksComponent.noData = false;
 
       // PageIndex set to zero when the user change the sorting
@@ -60,9 +62,47 @@ export class TasksService {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITasks[]) => {
               tasksComponent.data = data;
-              tasksComponent.completedTasksData = data.filter(d => d.isComplete === true);
               length = data.length;
               if (length === 0) { tasksComponent.noData = true; }
+              this.appService.loading = false;
+          });
+    }
+
+  /**
+   * Load data
+   * Load the Tasks from the server by getting
+   */
+  loadCompletedTasksData(tasksCompletedComponent: TasksCompletedComponent): void {
+      tasksCompletedComponent.noData = false;
+
+      // PageIndex set to zero when the user change the sorting
+      tasksCompletedComponent.sort.sortChange.subscribe(() => tasksCompletedComponent.paginator.pageIndex = 0);
+
+      // Observable: Converts sortChange and page Observables into a single Observable
+      // The new observable emits all of the items emitted by all of those Observables.
+      merge(tasksCompletedComponent.sort.sortChange, tasksCompletedComponent.paginator.page)
+          .pipe(
+          // BehaviorSubject: emmiting empty at the begining
+          startWith({}),
+          // Observable: Switch to a new observable each time the request change
+          switchMap(() => {
+              this.appService.loading = true; // Enable loading bar
+              // getTasks from the server
+              return this.getTasks(tasksCompletedComponent.paginator.pageIndex,
+                                  tasksCompletedComponent.pageSize,
+                                  tasksCompletedComponent.showCompleted);
+          }),
+          // Observable: Return an empty observable in the case of an error
+          catchError(() => {
+              this.appService.loading = false; // Disable loading bar
+              return observableOf([]);
+          })
+          // Observer: Data emited from the server are added on data
+          ).subscribe((data: ITasks[]) => {
+              tasksCompletedComponent.data = data.filter(
+                filteredData => filteredData.isComplete === true);
+              length = data.length;
+              if (length === 0) { tasksCompletedComponent.noData = true; }
               this.appService.loading = false;
           });
     }
