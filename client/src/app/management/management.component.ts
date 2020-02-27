@@ -12,6 +12,7 @@ export class ManagementComponent implements OnInit {
 
     public attributesForCreation: string[];
     public attributeValues: Array<string>;
+    public modelObject: object;
     public modelName = '';
 
     constructor(private facadeService: ManagementFacadeService, private router: Router) {
@@ -30,6 +31,9 @@ export class ManagementComponent implements OnInit {
     public createModel(): void {
         // TODO: Checks to make sure the fields are all filled.
         console.log(this.attributeValues);
+        // for (let i = 0; i < this.attributesForCreation.length; i++) {
+
+        // }
     }
     // need a function to send the text fields chosen to the database so it can be created.
 }
