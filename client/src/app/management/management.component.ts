@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, NgModule } from '@angular/core';
 import { ManagementFacadeService } from './management.facade.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,7 +13,8 @@ export class ManagementComponent implements OnInit {
     public attributesForCreation: any[];
     public modelName = '';
 
-    constructor(private facadeService: ManagementFacadeService, private router: Router) { }
+    constructor(private facadeService: ManagementFacadeService, private router: Router) {
+    }
 
     ngOnInit() {
     }

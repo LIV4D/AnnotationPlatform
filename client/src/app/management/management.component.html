@@ -3,8 +3,6 @@
 
 </div>
 <div>
-  <textarea [(ngModel)] = "modelName">
-    Your model name goes here!
-  </textarea>
-  <button onclick = "generateTextFields()">Generate Fields</button>
+  <input cdkTextareaAutosize [(ngModel)]="modelName" placeholder="Input Model Name Here">
+  <button (click) = "generateTextFields()">Generate Fields</button>
 </div>

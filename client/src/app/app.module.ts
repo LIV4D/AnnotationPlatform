@@ -35,6 +35,7 @@ import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
+import { ManagementComponent } from './management/management.component';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -50,6 +51,7 @@ import { ModelFinderService } from './shared/services/modelfinder.service';
       LoginComponent,
       NavigationBarComponent,
       SafeImagePipe,
+      ManagementComponent,
    ],
    imports: [
       BrowserModule,
