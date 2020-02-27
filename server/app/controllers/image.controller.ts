@@ -133,7 +133,7 @@ export class ImageController implements IController {
         const arr: IGalleryObject[] = [];
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {
-                imageViewModel.map(image => {
+                imageViewModel[0].map((image: { id: number; type: any; metadata: any; }) => {
                     const  item = {
                         id: image.id,
                         type: image.type,
@@ -148,14 +148,20 @@ export class ImageController implements IController {
                         console.error(`Thumbnail for image ` + image.id.toString() + ` not found.`);
                     }
 
-                    console.log('item.metadata: ' + item.metadata.filename);
-                    console.log('item.thumbPath: ' + item.thumbnail);
+                    // console.log('item.metadata: ' + item.metadata.filename);
+                    // console.log('item.thumbPath: ' + item.thumbnail);
+
                     arr.push(item);
+
+                    console.log('arr.length : ' + arr.length);
+
                 });
+
                 const gallery: IGallery = {
                     objects: arr,
-                    objectCount: imageViewModel.length,
+                    objectCount: imageViewModel[1],
                 };
+                // console.log('TEST TEST TEST TEST ---- imageViewModel.length : ' + imageViewModel.length);
                 res.send(gallery);
             })
             .catch(next);
