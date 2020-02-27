@@ -28,7 +28,6 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   delayEventTimer: any;
   delayedEventHandler: Function;
 
-
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
