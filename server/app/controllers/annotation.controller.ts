@@ -4,7 +4,7 @@ import { throwIfNotAdmin } from '../utils/userVerification';
 import TYPES from '../types';
 
 import { IController } from './abstractController.controller';
-import { IAnnotation } from '../interfaces/IAnnotation.interface';
+import { IAnnotation } from '../../../common/interfaces/IAnnotation.interface';
 import { AnnotationService } from '../services/annotation.service';
 
 @injectable()

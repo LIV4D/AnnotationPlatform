@@ -3,7 +3,7 @@ import { isNullOrUndefined } from 'util';
 
 import { Annotation } from './annotation.model';
 import { IProtoImage } from '../prototype interfaces/IProtoImage.interface';
-import { IImage } from '../interfaces/IImage.interface';
+import { IImage } from '../../../common/interfaces/IImage.interface';
 
 export class Metadata {
     [key: string]: string | number | boolean;

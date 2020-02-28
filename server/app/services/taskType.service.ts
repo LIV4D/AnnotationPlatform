@@ -3,7 +3,7 @@ import { DeleteResult } from 'typeorm';
 
 import TYPES from '../types';
 import { TaskType } from '../models/taskType.model';
-import { ITaskType } from '../interfaces/ITaskType.interface';
+import { ITaskType } from '../../../common/interfaces/ITaskType.interface';
 import { TaskTypeRepository } from '../repository/taskType.repository';
 import { createError } from '../utils/error';
 
