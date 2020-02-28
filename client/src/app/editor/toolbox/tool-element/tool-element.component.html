@@ -1,0 +1,18 @@
+<!-- <button mat-button
+        matTooltipPosition="right"
+        class="icon">
+
+        <img src="{{ tool.imagePath }}">
+</button> -->
+
+<button mat-button 
+        [disabled]="tool.disabled" 
+        class="icon" 
+        [matTooltip]="tool.tooltip" 
+        [matTooltipShowDelay]="showDelay" 
+        matTooltipPosition="right" 
+        (click)="selectTool()"
+        [class.isSelected]="isSelected" 
+        (mouseup)="onMouseUp($event)">
+        <img src="{{ tool.imagePath }}"/>
+</button>

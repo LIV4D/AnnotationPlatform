@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationBarFacadeService } from './navigation-bar.facade.service';
 import { Router } from '@angular/router';
 
+import * as screenfull from 'screenfull';
+import {Screenfull} from 'screenfull';
+
 @Component({
   selector: 'app-navigation-bar',
   templateUrl: './navigation-bar.component.html',
@@ -20,8 +23,19 @@ export class NavigationBarComponent implements OnInit {
   ngOnInit() {
   }
 
+  toggleFullScreen(): void {
+    const sreenfullEntity = screenfull as Screenfull;
+
+    const fullscreenIcon = document.getElementById('fullscreenIcon');
+    if (sreenfullEntity.isEnabled) {
+        fullscreenIcon.innerHTML =  'fullscreen_exit';
+    } else {
+        fullscreenIcon.innerHTML =  'fullscreen';
+    }
+    sreenfullEntity.toggle();
+  }
+
   logout(): void {
     this.navigationBarFacadeService.logout();
-
-}
+  }
 }

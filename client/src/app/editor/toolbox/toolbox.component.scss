@@ -1,0 +1,25 @@
+@import './../../../../src/colorVariables.scss';
+
+.flex-container {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 2px;
+}
+
+span {
+    color: $font-color-gray;
+}
+
+// TODO: This may be useless
+mat-panel-title {
+    padding: 8px;
+}
+
+app-tool-element {
+    width: 28px;
+    height: 28px;
+    margin: 0 auto;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    cursor: pointer;
+}

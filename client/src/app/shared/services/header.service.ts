@@ -3,7 +3,9 @@ import { Observable } from 'rxjs';
 import {map, filter} from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class HeaderService {
 
   progress: number;
@@ -12,7 +14,6 @@ export class HeaderService {
   isDownloading?: boolean;
 
   constructor() {}
-
 
   /**
    * show progress
@@ -26,7 +27,6 @@ export class HeaderService {
     this.isDownloading = isDownloading;
   }
 
-
   /**
    * progress
    * @param Progress: progression number of the bar
@@ -34,7 +34,6 @@ export class HeaderService {
   cbProgress(Progress: number) {
     this.progress = Progress;
   }
-
 
   /**
    * Displays progress: Display progress of a loading of datas in a progress bar
@@ -44,22 +43,24 @@ export class HeaderService {
    * @returns progress : Observable<any> response from the request
    */
   display_progress(request: Observable<any>, name: string, isDownloading= true): Observable<any> {
-      this.cbShowProgress(true, name, isDownloading);
-      return request.pipe(filter(res => {
-          if (res.type === HttpEventType.DownloadProgress) {
-              if (this.cbProgress) {
-                  this.cbProgress(res.loaded / res.total);
-              }
-          } else if (res.type === HttpEventType.UploadProgress) {
-              if (this.cbProgress) {
-                  this.cbProgress(res.loaded / res.total);
-              }
-          } else if (res.type === HttpEventType.Response) {
-              this.cbShowProgress(false);
-              return true;
-          }
-          return false;
-      }), map(res => (res as HttpResponse<any>).body));
+    console.log('headerService::display_progress()');
+
+    this.cbShowProgress(true, name, isDownloading);
+    return request.pipe(filter(res => {
+        if (res.type === HttpEventType.DownloadProgress) {
+            if (this.cbProgress) {
+                this.cbProgress(res.loaded / res.total);
+            }
+        } else if (res.type === HttpEventType.UploadProgress) {
+            if (this.cbProgress) {
+                this.cbProgress(res.loaded / res.total);
+            }
+        } else if (res.type === HttpEventType.Response) {
+            this.cbShowProgress(false);
+            return true;
+        }
+        return false;
+    }), map(res => (res as HttpResponse<any>).body));
   }
 
 }
