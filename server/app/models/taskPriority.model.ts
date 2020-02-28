@@ -1,4 +1,3 @@
-import { TaskPriority } from './taskPriority.model';
 import { Column, Entity, PrimaryColumn, OneToOne } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
@@ -48,19 +47,4 @@ export class TaskPriority {
         if (!isNullOrUndefined(itask.priority)) { this.priority = itask.priority; }
     }
 
-    // public proto(): IProtoTask {
-    //     return {
-    //         id: this.id,
-    //         taskType: this.taskType.proto(),
-    //         annotation: this.annotation.proto(),
-    //         isComplete: this.isComplete,
-    //         isVisible: this.isVisible,
-    //         comment: this.comment,
-    //         assignedUser: !isNullOrUndefined(this.assignedUser) ? this.assignedUser.proto() : null,
-    //         creator: this.creator.proto(),
-    //         // image: this.imageId.proto(),
-    //         // project: this.imageId.proto()
-
-    //     };
-    // }
 }
