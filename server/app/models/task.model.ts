@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { TaskType } from './taskType.model';
@@ -6,6 +6,7 @@ import { User } from './user.model';
 import { Annotation } from './annotation.model';
 import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
 import { ITask } from '../interfaces/ITask.interface';
+import { TaskPriority } from './taskPriority.model';
 
 @Entity()
 export class Task {
@@ -61,6 +62,9 @@ export class Task {
 
     @OneToMany(type => User, user => user.preferredTask, { eager: true })
     public preferredUsers: Map<number, User>;
+
+    @OneToOne(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: true })
+    public taskPriority: TaskPriority;
 
     public static fromInterface(itask: ITask): Task {
         const task = new Task();

@@ -2,11 +2,12 @@ import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail, validateSync } from 'class-validator';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
+import { TaskPriority } from './taskPriority.model';
 import { IUser } from '../interfaces/IUser.interface';
 import { IProtoUser } from '../prototype interfaces/IProtoUser.interface';
 
@@ -46,6 +47,9 @@ export class User {
 
     @ManyToOne(type => Task, task => task.preferredUsers)
     public preferredTask: Task;
+
+    @OneToOne(type => TaskPriority, taskPriority => taskPriority.userId, { eager: true })
+    public taskPriority: TaskPriority;
 
     public static hashPassword(password: string, salt?: Buffer) {
         const size = 64;
