@@ -22,13 +22,12 @@ export class ManagementComponent implements OnInit {
     }
 
     public async generateTextFields(): Promise<void> {
-        // Maybe send the object back and get the properties here instead.
         this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
         this.modelName = '';
     }
 
     public createModel(): void {
-        // TODO: Checks to make sure the fields are all filled.
+
         console.log(this.attributeValues);
         this.facadeService.sendCreationEvent(this.attributesForCreation, this.attributeValues);
     }

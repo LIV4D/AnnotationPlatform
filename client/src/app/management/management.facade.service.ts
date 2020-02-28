@@ -13,17 +13,14 @@ export class ManagementFacadeService {
     public async getAttributesForCreating(model: string): Promise<string[]> {
         const properties = await this.modelFinder.getAttributesOf(model);
         // Check here for errors (like the ['error'])
-        this.storePropertyTypes(properties.get('propertyTypes') as string[]);
-        this.storeInstantiatedModel(properties.get('instantiatedModel') as object);
+        this.storeValues(properties.get('propertyTypes') as string[], properties.get('instantiatedModel') as object, model);
         return properties.get('propertyNames') as string[];
     }
 
-    public storePropertyTypes(propertyTypes: Array<any>): void {
-        this.managementCreation.storePropertyTypes(propertyTypes);
-    }
-
-    public storeInstantiatedModel(instantiatedModel: object): void {
-        this.managementCreation.storeInstantiatedModel(instantiatedModel);
+    public storeValues(propertyTypes: Array<any>, instantiatedModel: object, model: string): void {
+        this.managementCreation.setPropertyTypes(propertyTypes);
+        this.managementCreation.setInstantiatedModel(instantiatedModel);
+        this.managementCreation.setModelName(model);
     }
 
     public sendCreationEvent(properties: string[], propertyValues: string[]): string {
