@@ -1,13 +1,15 @@
+import { TaskPriority } from './taskPriority.model';
 import { Column, Entity, PrimaryColumn, OneToOne } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
 import { User } from './user.model';
+import { ITaskPriority } from '../interfaces/ITaskPriority.interface';
 
 @Entity()
 export class TaskPriority {
 
-    // Columns
+    // Columnss
 
     @PrimaryColumn()
     public taskId: number;
@@ -26,39 +28,25 @@ export class TaskPriority {
     @OneToOne(type => Task, task => task.id, { eager: true })
     public task: Task;
 
-    // public static fromInterface(itaskPriority: ITaskPriority): Task {
-    //     const task = new Task();
-    //     task.update(itask);
-    //     if (!isNullOrUndefined(itask.id)) { task.id = itask.id; }
-    //     if (!isNullOrUndefined(itask.creatorId))  { task.creatorId = itask.creatorId; }
-    //     return task;
-    // }
+    public static fromInterface(itaskPriority: ITaskPriority): TaskPriority {
+        const taskPriority = new TaskPriority();
+        taskPriority.update(itaskPriority);
+        if (!isNullOrUndefined(itaskPriority.taskId)) { taskPriority.taskId = itaskPriority.taskId; }
+        if (!isNullOrUndefined(itaskPriority.userId))  { taskPriority.userId = itaskPriority.userId; }
+        return taskPriority;
+    }
 
-    // public interface(): ITask {
-    //     return {
-    //         id: this.id,
-    //         taskTypeId: this.taskTypeId,
-    //         annotationId: this.annotationId,
-    //         isComplete: this.isComplete,
-    //         isVisible: this.isVisible,
-    //         comment: this.comment,
-    //         assignedUserId: this.assignedUserId,
-    //         creatorId: this.creatorId,
-    //         imageId: this.imageId,
-    //         projectId: this.projectId,
-    //         lastModifiedTime: this.lastModifiedTime,
-    //     };
-    // }
+    public interface(): ITaskPriority {
+        return {
+            userId: this.userId,
+            taskId: this.taskId,
+            priority: this.priority,
+        };
+    }
 
-    // public update(itask: ITask): void {
-    //     if (!isNullOrUndefined(itask.taskTypeId)) {  this.taskTypeId = itask.taskTypeId; }
-    //     if (!isNullOrUndefined(itask.annotationId)) { this.annotationId = itask.annotationId; }
-    //     if (!isNullOrUndefined(itask.isComplete)) { this.isComplete = itask.isComplete; }
-    //     if (!isNullOrUndefined(itask.isVisible)) { this.isVisible = itask.isVisible; }
-    //     if (!isNullOrUndefined(itask.comment)) { this.comment = itask.comment; }
-    //     if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
-    //     if (!isNullOrUndefined(itask.lastModifiedTime)) { this.lastModifiedTime = itask.lastModifiedTime; }
-    // }
+    public update(itask: ITaskPriority): void {
+        if (!isNullOrUndefined(itask.priority)) { this.priority = itask.priority; }
+    }
 
     // public proto(): IProtoTask {
     //     return {
