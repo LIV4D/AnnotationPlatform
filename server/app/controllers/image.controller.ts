@@ -131,6 +131,7 @@ export class ImageController implements IController {
         console.log('ImageController::getGallery()');
 
         const arr: IGalleryObject[] = [];
+        // get Images with params setted
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
             .then(imageViewModel => {
                 imageViewModel[0].map((image: { id: number; type: any; metadata: any; }) => {
