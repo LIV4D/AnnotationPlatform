@@ -6,11 +6,11 @@ import { Injectable } from '@angular/core';
 export class ModelFinderService {
 
     constructor() { }
-    public async getAttributesOf(model: string): Promise<Map<string, string[]>> {
+    public async getAttributesOf(model: string): Promise<Map<string, string[] | object>> {
         model = model.charAt(0).toLowerCase() + model.slice(1);
         const modelPath = `${model}.model`;
         const modelCapitalized = model.charAt(0).toUpperCase() + model.slice(1);
-        const returnValue: Map<string, string[]> = new Map();
+        const returnValue: Map<string, string[] | object> = new Map();
 
         try {
             const modelImport = await import(`../models/${modelPath}`);
@@ -18,6 +18,7 @@ export class ModelFinderService {
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
             returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
             returnValue.set('propertyTypes', this.getAllPropertyTypes(instantiatedModel));
+            returnValue.set('instantiatedModel', instantiatedModel);
 
         } catch (error) {
             console.error('There was a problem while retrieving the requested model : ' + error);

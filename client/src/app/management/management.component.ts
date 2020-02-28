@@ -30,9 +30,7 @@ export class ManagementComponent implements OnInit {
     public createModel(): void {
         // TODO: Checks to make sure the fields are all filled.
         console.log(this.attributeValues);
-        // for (let i = 0; i < this.attributesForCreation.length; i++) {
-
-        // }
+        this.facadeService.sendCreationEvent(this.attributesForCreation, this.attributeValues);
     }
     // need a function to send the text fields chosen to the database so it can be created.
 }
