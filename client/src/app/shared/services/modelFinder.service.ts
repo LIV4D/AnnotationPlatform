@@ -6,14 +6,18 @@ import { Injectable } from '@angular/core';
 export class ModelFinderService {
 
     constructor() { }
+    /**
+     * Gets the attributes and instantiates the interface.
+     * @param model a name of a model/interface within the common folder
+     */
     public async getAttributesOf(model: string): Promise<Map<string, string[] | object>> {
         model = model.charAt(0).toLowerCase() + model.slice(1);
-        const modelPath = `${model}.model`;
         const modelCapitalized = model.charAt(0).toUpperCase() + model.slice(1);
+        const modelPath = `I${modelCapitalized}.interface`;
         const returnValue: Map<string, string[] | object> = new Map();
 
         try {
-            const modelImport = await import(`../models/${modelPath}`);
+            const modelImport = await import(`../../../../../common/interfaces/${modelPath}`);
 
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
             returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
