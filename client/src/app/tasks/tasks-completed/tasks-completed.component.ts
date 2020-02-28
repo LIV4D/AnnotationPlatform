@@ -32,21 +32,18 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
-    this.showPagination = false;
-    this.length = 0;
+    this.showPagination = true;
+    //this.length = 0;
     this.pageSize = 25;
     this.noData = false;
   }
 
   ngOnInit() {
-
+    this.data = new MatTableDataSource();
   }
 
   ngAfterViewInit() {
     this.loadData();
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-
   }
 
   loadData() {
@@ -62,6 +59,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
       startWith({}),
       // Observable: Switch to a new observable each time the request change
       switchMap(() => {
+
         setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = true)); // Enable loading bar
         // getTasks from the server
         return this.tasksCompletedFacadeService.getTasks(
@@ -73,18 +71,21 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
+              console.log('there is an Error');
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
               return observableOf([]);
           })
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
+
+              this.pageSize = 15;
               this.data = data;
               console.log(this.data);
               // .data = this.data.tasks.filter (
               // filteredData => filteredData.completed === false);
               this.length = this.data.length;
-              this.dataSource = new MatTableDataSource(this.data);
-
+              console.log("length");
+              console.log(this.data.length);
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false));
           });
