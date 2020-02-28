@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +16,8 @@ export class ModelFinderService {
         const returnValue: Map<string, string[] | object> = new Map();
 
         try {
-            const modelImport = await import(`../../../../../common/interfaces/${modelPath}`);
+            // const modelImport = await import(`../../../../../common/interfaces/${modelPath}`);
+            const modelImport = await import(`../models/${modelPath}`);
 
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
             returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
