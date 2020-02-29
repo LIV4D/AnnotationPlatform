@@ -7,7 +7,7 @@ import TYPES from '../types';
 import { inject, injectable } from 'inversify';
 
 import { Image, Metadata } from '../models/image.model';
-import { IImage } from '../../../common/interfaces/IImage.interface';
+import { IImage } from '../interfaces/IImage.interface';
 import { ImageRepository } from '../repository/image.repository';
 import { createError } from '../utils/error';
 import { searchFileByName } from '../utils/filesystem';
