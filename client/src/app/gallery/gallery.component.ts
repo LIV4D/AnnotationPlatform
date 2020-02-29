@@ -147,8 +147,12 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   loadImage(imageId: string): void {
-      this.appService.localEditing = false;
-      localStorage.setItem('previousPage', 'gallery');
-      this.editorService.loadImageFromServer(imageId);
+    console.log('GalleryComponent::loadImage()');
+
+    this.appService.localEditing = false;
+    localStorage.setItem('previousPage', 'gallery');
+
+    console.log('imageID :' + imageId);
+    this.editorService.loadImageFromServer(imageId);
   }
 }
