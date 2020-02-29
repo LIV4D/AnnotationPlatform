@@ -14,25 +14,30 @@ export class ManagementCreationService {
 
     constructor(private http: HttpClient) { }
 
-    public sendCreationEvent(properties, propertyValues: string[]): string {
+    /**
+     * Checks to see if the values are appropriate for they types and sends an event to the server
+     * @param properties names of the properties that are in the model
+     * @param propertyValues values of the properties that have already been determined
+     */
+    public sendCreationEvent(properties: string[], propertyValues: string[]): string {
         this.properties = properties;
         this.propertyValues = propertyValues;
 
         if (this.checkPropertyValues()) {
-            console.log('It worked?');
-            console.log(this.instantiatedModel);
-            this.createModelFromManagement().subscribe();
+            this.eventModelFromManagement('create').subscribe();
         }
 
         return '';
     }
 
+    /**
+     * Assigns the different property values to the instantiatedModel if they are appropriate.
+     * @returns true if all values were properperly assigned, false otherwise.
+     */
     private checkPropertyValues(): boolean {
         let propertyValue: any;
-        console.log('test');
 
         for (let index = 0; index < this.propertyValues.length; index++) {
-            // const testValue: typeof tempType = this.propertyValues[index] as typeof tempType;
             propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
             if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
                 return false;
@@ -53,9 +58,11 @@ export class ManagementCreationService {
         return (type.constructor) (toBeConverted);
     }
 
-    public createModelFromManagement(): Observable<any> {
-        console.log(`/api/${this.modelName}s/create`);
-        return this.http.post<any>(`/api/${this.modelName}s/create`, this.instantiatedModel);
+    /**
+     * Creates the appropriate model.
+     */
+    public eventModelFromManagement(event: string): Observable<any> {
+        return this.http.post<any>(`/api/${this.modelName}s/${event}`, this.instantiatedModel);
     }
 
     public setInstantiatedModel(instantiatedModel: object): void {
