@@ -1,3 +1,3 @@
-export class ITaskPriority {
+export class TaskPriority {
 
 }

@@ -1,4 +1,5 @@
 import { TaskType } from './taskType.model';
+import { TaskPriority } from './taskPriority.model';
 
 export class Task {
     public id = 0;

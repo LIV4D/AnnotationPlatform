@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,6 +19,7 @@ export class ModelFinderService {
         try {
             // const modelImport = await import(`../../../../../common/interfaces/${modelPath}`);
             const modelImport = await import(`../models/${modelPath}`);
+            // const priority =  new TaskPriority();
 
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
             returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
