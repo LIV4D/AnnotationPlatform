@@ -34,7 +34,8 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     console.log('EditorContent::ngOnInit()');
 
     this.editorFacadeService.init(this.svgLoaded);
-    this.editorFacadeService.load();
+    // this.editorFacadeService.load(imageId); // I don't know why this is here
+
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }

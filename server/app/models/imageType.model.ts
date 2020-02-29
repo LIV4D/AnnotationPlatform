@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 // import { BiomarkerType } from './biomarkerType.model';
 import { Image } from './image.model';
 
