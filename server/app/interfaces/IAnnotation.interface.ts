@@ -1,4 +1,4 @@
-import { AnnotationData } from '../../server/app/models/annotation.model';
+import { AnnotationData } from '../models/annotation.model';
 export interface IAnnotation {
     id?: number;
     imageId?: number;

@@ -4,7 +4,7 @@ import { isNullOrUndefined } from 'util';
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
 import { IProtoSubmissionEvent } from '../prototype interfaces/IProtoSubmissionEvent.interface';
-import { ISubmissionEvent } from '../../../common/interfaces/ISubmissionEvent.interface';
+import { ISubmissionEvent } from '../interfaces/ISubmissionEvent.interface';
 
 @Entity()
 export class SubmissionEvent {

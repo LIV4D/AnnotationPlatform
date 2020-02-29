@@ -4,7 +4,7 @@ import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
-import { ITaskGallery } from '../../../common/interfaces/gallery.interface';
+import { ITaskGallery } from '../interfaces/gallery.interface';
 import { ImageService } from '../services/image.service';
 import { DeleteResult } from 'typeorm';
 

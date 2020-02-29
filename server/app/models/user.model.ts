@@ -7,7 +7,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne, OneToOne 
 import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
-import { IUser } from '../../../common/interfaces/IUser.interface';
+import { IUser } from '../interfaces/IUser.interface';
 import { IProtoUser } from '../prototype interfaces/IProtoUser.interface';
 import { TaskPriority } from './taskPriority.model';
 
