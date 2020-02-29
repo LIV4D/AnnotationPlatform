@@ -7,7 +7,6 @@ import { isNullOrUndefined } from 'util';
   providedIn: 'root'
 })
 export class ManagementCreationService {
-    private propertyTypes: any[];
     private modelName: string;
     private propertyValues: string[];
     private properties: string[];
@@ -57,10 +56,6 @@ export class ManagementCreationService {
     public createModelFromManagement(): Observable<any> {
         console.log(`/api/${this.modelName}s/create`);
         return this.http.post<any>(`/api/${this.modelName}s/create`, this.instantiatedModel);
-    }
-
-    public setPropertyTypes(propertyTypes: any[]): void {
-        this.propertyTypes = propertyTypes;
     }
 
     public setInstantiatedModel(instantiatedModel: object): void {

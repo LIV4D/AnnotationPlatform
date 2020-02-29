@@ -27,9 +27,6 @@ export class ManagementComponent implements OnInit {
     }
 
     public createModel(): void {
-
-        console.log(this.attributeValues);
         this.facadeService.sendCreationEvent(this.attributesForCreation, this.attributeValues);
     }
-    // need a function to send the text fields chosen to the database so it can be created.
 }
