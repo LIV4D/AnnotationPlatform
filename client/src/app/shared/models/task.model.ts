@@ -1,8 +1,8 @@
 import { TaskType } from './taskType.model';
 import { TaskPriority } from './taskPriority.model';
+import { User } from './user.model';
 
 export class Task {
-    public id = 0;
     public taskTypeId = 0;
     public annotationId = 0;
     public isComplete = false;

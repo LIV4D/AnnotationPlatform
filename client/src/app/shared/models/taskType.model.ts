@@ -1,5 +1,5 @@
 export class TaskType {
-    id?: number;
-    title?: string;
-    description?: string;
+    public id = 0;
+    public title = '';
+    public description = '';
 }
