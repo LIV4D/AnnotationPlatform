@@ -1,15 +1,10 @@
 import { ITaskPriority } from './../interfaces/ITaskPriority.interface';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
-import { isNullOrUndefined } from 'util';
-
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskPriorityService } from '../services/taskPriority.service';
-import { Task } from '../models/task.model';
-import { ITask } from '../interfaces/ITask.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { ISubmission } from '../../../common/interfaces';
 
 @injectable()
 export class TaskPriorityController implements IController {

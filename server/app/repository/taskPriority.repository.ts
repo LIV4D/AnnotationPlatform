@@ -1,14 +1,13 @@
 import { TaskPriority } from './../models/taskPriority.model';
-import * as path from 'path';
-import * as fs from 'fs';
+// import * as path from 'path';
+// import * as fs from 'fs';
 import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
-import { Task } from '../models/task.model';
-import { ITaskGallery } from '../interfaces/gallery.interface';
-import { ImageService } from '../services/image.service';
-import { DeleteResult } from 'typeorm';
-import { TaskPriority } from '../models/taskPriority.model';
+// import { Task } from '../models/task.model';
+// import { ITaskGallery } from '../interfaces/gallery.interface';
+// import { ImageService } from '../services/image.service';
+// import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskPriorityRepository {

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn, OneToOne } from 'typeorm';
+import { Column, Entity, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
@@ -22,9 +22,11 @@ export class TaskPriority {
     // Relationships
 
     @OneToOne(type => User, user => user.id, { eager: true })
+    @JoinColumn()
     public user: User;
 
     @OneToOne(type => Task, task => task.id, { eager: true })
+    @JoinColumn()
     public task: Task;
 
     public static fromInterface(itaskPriority: ITaskPriority): TaskPriority {
