@@ -7,60 +7,62 @@ import { TOOL_NAMES } from './../shared/constants/tools';
 @Injectable()
 export class EditorFacadeService {
 
-    constructor(private editorService: EditorService, private toolboxService: ToolboxService) { }
+  constructor(private editorService: EditorService, private toolboxService: ToolboxService) { }
 
-    init(svgLoaded: EventEmitter<any>): void {
-        this.editorService.init(svgLoaded);
-    }
+  init(svgLoaded: EventEmitter<any>): void {
+    console.log('EditorFacadeService::init(svgLoaded()) with svgLoaded: ' + svgLoaded);
 
-    zoom(delta: number, position: Point = null): void {
-        this.editorService.zoom(delta, position);
-    }
+    this.editorService.init(svgLoaded);
+  }
 
-    get firstPoint() {
-        return this.editorService.layersService.firstPoint;
-    }
+  zoom(delta: number, position: Point = null): void {
+      this.editorService.zoom(delta, position);
+  }
 
-    get backgroundCanvas() {
-        return this.editorService.backgroundCanvas;
-    }
+  get firstPoint() {
+      return this.editorService.layersService.firstPoint;
+  }
 
-    get scaleX() {
-        return this.editorService.scaleX;
-    }
+  get backgroundCanvas() {
+      return this.editorService.backgroundCanvas;
+  }
 
-    get panTool() {
-        return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
-    }
+  get scaleX() {
+      return this.editorService.scaleX;
+  }
 
-    get menuState() {
-        return this.editorService.menuState;
-    }
+  get panTool() {
+      return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+  }
 
-    public onCursorMoveToolbox(point: Point): void {
-        this.toolboxService.onCursorMove(point);
-    }
+  get menuState() {
+      return this.editorService.menuState;
+  }
 
-    public onCursorDownToolbox(point: Point): void {
-        this.toolboxService.onCursorDown(point);
-    }
+  public onCursorMoveToolbox(point: Point): void {
+      this.toolboxService.onCursorMove(point);
+  }
 
-    public onCursorUpToolbox(): void {
-        this.toolboxService.onCursorUp();
-    }
+  public onCursorDownToolbox(point: Point): void {
+      this.toolboxService.onCursorDown(point);
+  }
 
-    public onCursorOutToolbox(point: Point): void {
-        this.toolboxService.onCursorOut(point);
-    }
+  public onCursorUpToolbox(): void {
+      this.toolboxService.onCursorUp();
+  }
 
-    public resize() {
-      this.editorService.resize();
-    }
+  public onCursorOutToolbox(point: Point): void {
+      this.toolboxService.onCursorOut(point);
+  }
 
-    public load() {
-      console.log('load()');
+  public resize() {
+    this.editorService.resize();
+  }
 
-      this.editorService.loadMetadata();
-    }
+  public load(imageId: string) {
+    console.log('load()');
+
+    this.editorService.loadMetadata(imageId);
+  }
 
 }

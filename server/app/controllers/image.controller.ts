@@ -210,8 +210,12 @@ export class ImageController implements IController {
     }
 
     private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        console.log('\nImageController::getImageFile() with id : ' + req.params.imageId + '\n');
+
         this.imageService.getImagePath(req.params.imageId)
             .then(imgPath => {
+                // console.log('imgPath : ' + imgPath.metadata);
+
                 res.sendFile(path.resolve(imgPath));
             })
             .catch(next);
