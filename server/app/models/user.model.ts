@@ -48,7 +48,7 @@ export class User {
     @ManyToOne(type => Task, task => task.preferredUsers)
     public preferredTask: Task;
 
-    @OneToOne(type => TaskPriority, taskPriority => taskPriority.userId, { eager: true })
+    @OneToOne(type => TaskPriority, taskPriority => taskPriority.userId, { eager: false })
     public taskPriority: TaskPriority;
 
     public static hashPassword(password: string, salt?: Buffer) {
