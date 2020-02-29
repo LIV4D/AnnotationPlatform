@@ -3,7 +3,7 @@ import { isNullOrUndefined } from 'util';
 
 import { Task } from './task.model';
 import { IProtoTaskType } from '../prototype interfaces/IProtoTaskType.interface';
-import { ITaskType } from '../interfaces/ITaskType.interface';
+import { ITaskType } from '../../../common/interfaces/ITaskType.interface';
 
 @Entity()
 export class TaskType {

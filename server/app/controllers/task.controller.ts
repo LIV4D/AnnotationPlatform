@@ -6,7 +6,7 @@ import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskService } from '../services/task.service';
 import { Task } from '../models/task.model';
-import { ITask } from '../interfaces/ITask.interface';
+import { ITask } from '../../../common/interfaces/ITask.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
 

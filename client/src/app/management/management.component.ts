@@ -22,17 +22,14 @@ export class ManagementComponent implements OnInit {
     }
 
     public async generateTextFields(): Promise<void> {
-        // Maybe send the object back and get the properties here instead.
         this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
         this.modelName = '';
     }
 
     public createModel(): void {
-        // TODO: Checks to make sure the fields are all filled.
-        console.log(this.attributeValues);
-        // for (let i = 0; i < this.attributesForCreation.length; i++) {
 
-        // }
+        console.log(this.attributeValues);
+        this.facadeService.sendCreationEvent(this.attributesForCreation, this.attributeValues);
     }
     // need a function to send the text fields chosen to the database so it can be created.
 }

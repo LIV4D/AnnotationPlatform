@@ -3,7 +3,7 @@ import TYPES from '../types';
 import * as crypto from 'crypto';
 import { inject, injectable } from 'inversify';
 import { User } from '../models/user.model';
-import { IUser } from '../interfaces/IUser.interface';
+import { IUser } from '../../../common/interfaces/IUser.interface';
 import { UserRepository } from '../repository/user.repository';
 import { VerifiedCallback } from 'passport-jwt';
 import { createError } from '../utils/error';
