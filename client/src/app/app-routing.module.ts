@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'editor', component: EditorComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'tasks', component: TasksComponent },
+  { path: '**', redirectTo: '/editor' },
   { path: 'management', component: ManagementComponent }
 ];
 

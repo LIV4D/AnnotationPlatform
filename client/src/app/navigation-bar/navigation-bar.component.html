@@ -1,43 +1,10 @@
-<!-- This code is here for comparison purposes -->
-
-<!-- <nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
-                <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
-            </button>
-            <a href="/" class="navbar-brand">LIV4D</a>
-        </div>
-
-        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
-            <ul class="nav navbar-nav" >
-                <li routerLinkActive="active"><a routerLink="/editor" >Editor</a></li>
-                <li routerLinkActive="active"><a routerLink="/gallery" >Gallery</a></li>
-                <li routerLinkActive="active"><a routerLink="/tasks" >Tasks</a></li>
-                <li routerLinkActive="active"><a routerLink="/dashboard" >Dashboard</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown" appDropdown>
-                <a style="cursor: pointer;" class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a style="cursor: pointer;">Full screen</a></li>
-                    <li><a style="cursor: pointer;">Report Bug</a></li>
-                    <li><a style="cursor: pointer;">Logout</a></li>
-                </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav> -->
-
-
-<!-- This code is for the Angular-Material (taken from the old project) -->
 <mat-toolbar color="primary" *ngIf="router.url != '/'">
-    <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Editor</span>
-    <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" >Gallery</span>
-    <span routerLinkActive="active" routerLink="/tasks" style="margin-right: 10px" >Tasks</span>
-    <span routerLinkActive="active" routerLink="/dashboard" style="margin-right: 10px" >Dashboard</span>
-    <span routerLinkActive="active" routerLink="/management" style="margin-right: 10px" >Management</span>
+  <span routerLinkActive="active" routerLink="/tasks" style="margin-right: 10px" >Tasks</span>
+  <span routerLinkActive="active" routerLink="/dashboard" style="margin-right: 10px" >Dashboard</span>
+  <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" >Gallery</span>
+  <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Management</span>
+  <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Editor</span>
+  <span routerLinkActive="active" routerLink="/management" style="margin-right: 10px" >Management</span>
 
     <div id="loadingDiv" *ngIf='showLoading'>
         <span id="loadingLabel"> <mat-icon id="loadingIcon">{{loadingDownload?"cloud_download":"cloud_upload"}}</mat-icon> {{loadingLabel}}</span>
@@ -46,5 +13,6 @@
 
     <span style="right: 70px; position: absolute;" (click)="logout()" > Logout</span>
     <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" src="../../assets/icons/bug.svg"/>
-    <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" >fullscreen</mat-icon>
+    <!-- <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" >fullscreen</mat-icon> -->
+    <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" (click)="toggleFullScreen()" >fullscreen</mat-icon>
 </mat-toolbar>

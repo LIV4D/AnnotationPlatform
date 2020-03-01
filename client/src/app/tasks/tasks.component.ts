@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -14,34 +14,40 @@ import { ITasks } from '../shared/interfaces/ITasks.interface';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
-export class TasksComponent implements OnInit {
+export class TasksComponent implements AfterViewInit {
     displayedColumns = ['imageSrc', 'image', 'complete', 'incomplete', 'time'];
     dataSource = new MatTableDataSource();
     showPagination: boolean;
-    length: number;
+    length: number = 0 ;
     pageSize: number;
     data: any = [];
-    completedTasksData: any = [];
-    noData: boolean;
+    noData = false;
     showCompleted: boolean;
 
-
-    @ViewChild(MatSort, {static: true}) sort: MatSort;
-    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
 
    constructor( private router: Router, private facadeService: TaskFacadeService) {
      this.showPagination = false;
-     this.length = 0;
+     this.length = length;
      this.pageSize = 25;
      this.noData = false;
 
-     this.dataSource.paginator = this.paginator;
-     this.dataSource.sort = this.sort;
    }
 
-    ngOnInit(): void {
-        this.LoadData();
-    }
+   ngOnInit(){
+    this.dataSource = new MatTableDataSource(this.data);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+   }
+
+   ngAfterViewInit() {
+      // If the user changes the sort order, reset back to the first page.
+      this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+      this.LoadData();
+
+
+  }
 
 
     /**

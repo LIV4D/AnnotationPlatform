@@ -21,6 +21,9 @@ import { ManagementComponent } from './management/management.component';
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
+import { EditorFacadeService } from './editor/editor.facade.service';
+import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
+// import { LayoutModule } from '@angular/cdk/layout';
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
@@ -37,6 +40,19 @@ import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 import { MaterialModule } from '../material/material.module';
 import { AppService } from './shared/services/app.service';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { ToolboxComponent } from './editor/toolbox/toolbox.component';
+import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
+import { RightMenuComponent } from './editor/right-menu/right-menu.component';
+import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
+import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
+import { TimerComponent } from './editor/right-menu/timer/timer.component';
+import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
+import { EditorContentComponent } from './editor/editor-content/editor-content.component';
+import { LayersComponent } from './editor/editor-content/layers/layers.component';
+import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
+
+// Directives
+import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -51,8 +67,19 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       DashboardComponent,
       LoginComponent,
       NavigationBarComponent,
+      ToolboxComponent,
+      ToolElementComponent,
+      RightMenuComponent,
+      BiomarkersComponent,
+      TaskSubmissionComponent,
+      TimerComponent,
+      VisualizationComponent,
+      EditorContentComponent,
+      LayersComponent,
       SafeImagePipe,
       ManagementComponent,
+      ZoomComponent,
+      MousewheelDirective
    ],
    imports: [
       BrowserModule,
@@ -76,6 +103,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       TasksCompletedFacadeService,
       ManagementCreationService,
       HeaderService,
+      EditorFacadeService,
+      LayersFacadeService,
        {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
