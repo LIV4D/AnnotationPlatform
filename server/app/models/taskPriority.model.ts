@@ -11,9 +11,6 @@ export class TaskPriority {
 
     // Columns
 
-    // @PrimaryGeneratedColumn()
-    // public id: number;
-
     @PrimaryColumn()
     public taskId: number;
 
@@ -41,7 +38,6 @@ export class TaskPriority {
 
     public interface(): ITaskPriority {
         return {
-            // id: this.id,
             userId: this.userId,
             taskId: this.taskId,
             priority: this.priority,
@@ -49,7 +45,6 @@ export class TaskPriority {
     }
 
     public update(itaskPriority: ITaskPriority): void {
-        // if (!isNullOrUndefined(itaskPriority.id)) { this.id = itaskPriority.id; }
         if (!isNullOrUndefined(itaskPriority.taskId)) { this.taskId = itaskPriority.taskId; }
         if (!isNullOrUndefined(itaskPriority.userId))  { this.userId = itaskPriority.userId; }
         if (!isNullOrUndefined(itaskPriority.priority)) { this.priority = itaskPriority.priority; }

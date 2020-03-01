@@ -34,7 +34,6 @@ export class TaskPriorityController implements IController {
     private createTaskPriority = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newTaskPriority: ITaskPriority = {
-           // id: req.body.id,
             taskId: req.body.taskId,
             userId: req.body.userId,
             priority: req.body.priority,
