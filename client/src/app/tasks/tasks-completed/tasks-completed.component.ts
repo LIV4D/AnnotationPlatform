@@ -84,6 +84,8 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
               // .data = this.data.tasks.filter (
               // filteredData => filteredData.completed === false);
               this.length = this.data.length;
+              this.dataSource = new MatTableDataSource(this.data);
+
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false));
           });
