@@ -63,7 +63,7 @@ export class Task {
     @OneToMany(type => User, user => user.preferredTask, { eager: true })
     public preferredUsers: Map<number, User>;
 
-    @OneToOne(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
+    @OneToMany(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
     public taskPriority: TaskPriority;
 
     public static fromInterface(itask: ITask): Task {

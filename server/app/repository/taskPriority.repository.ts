@@ -1,7 +1,7 @@
 import { TaskPriority } from './../models/taskPriority.model';
 // import * as path from 'path';
 // import * as fs from 'fs';
-import TYPES from '../types';
+// import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 // import { Task } from '../models/task.model';
@@ -41,31 +41,27 @@ export class TaskPriorityRepository {
     //     return await repository.findByIds(ids);
     // }
 
-    // public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
-    //     let whereConditions = [];
-    //     if (filter.imageId !== undefined) {
-    //         whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
-    //     }
-    //     if (filter.userId !== undefined) {
-    //         whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
-    //     }
-    //     if (filter.isComplete !== undefined) {
-    //         whereConditions.push('task.isComplete.value = ' + filter.isComplete.toString());
-    //     }
+    public async findByFilter(filter: {userId?: number, taskId?: number, priority?: number}): Promise<TaskPriority[]> {
+        const whereConditions = [];
+        if (filter.taskId !== undefined) {
+            whereConditions.push('taskPriority.taskId = ' + filter.taskId.toString());
+        }
+        if (filter.userId !== undefined) {
+            whereConditions.push('taskPriority.userId = ' + filter.userId.toString());
+        }
+        if (filter.priority !== undefined) {
+            whereConditions.push('taskPriority.priority = ' + filter.priority.toString());
+        }
 
-    //     const repository =  (await this.connectionProvider()).getRepository(Task);
-    //     return await repository
-    //                  .createQueryBuilder('task')
-    //                  .leftJoinAndSelect('task.taskType', 'taskType')
-    //                  .leftJoinAndSelect('task.annotation', 'annotation')
-    //                     .leftJoinAndSelect('annotation.image', 'image')
-    //                     .leftJoinAndSelect('annotation.submitEvent', 'submitEvent')
-    //                         .leftJoinAndSelect('submitEvent.user', 'lastSubmittedBy')
-    //                  .leftJoinAndSelect('task.assignedUser', 'assignedUser')
-    //                  .leftJoinAndSelect('task.creator', 'creator')
-    //                  .where(whereConditions.join(' AND '))
-    //                  .getMany();
-    // }
+        const repository =  (await this.connectionProvider()).getRepository(TaskPriority);
+        return await repository
+                     .createQueryBuilder('taskPriority')
+                     .leftJoinAndSelect('taskPriority.userId', 'userId')
+                     .leftJoinAndSelect('taskPriority.taskId', 'taskId')
+                     .leftJoinAndSelect('taskPriority.priority', 'priority')
+                     .where(whereConditions.join(' AND '))
+                     .getMany();
+    }
 
     // public async findTaskListByUser(userId: string, page: number = 0,
     //                                 pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
@@ -81,6 +77,7 @@ export class TaskPriorityRepository {
     //     taskList = tasks.map(task => {
     //         let dataUrl = '';
     //         try {
+    // tslint:disable-next-line:max-line-length
     //             const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(task.annotation.image.id)), 'base64');
     //             dataUrl = 'data:image/png;base64, ' + base64Image;
     //         } catch (error) {
