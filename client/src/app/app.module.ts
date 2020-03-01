@@ -25,13 +25,15 @@ import { LoginFacadeService } from './login/login.facade.service';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { EditorFacadeService } from './editor/editor.facade.service';
 import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
-import { ImageBorderService } from './shared/services/Editor/image-border.service';
-// import { LayoutModule } from '@angular/cdk/layout';
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
+import { GalleryFacadeService } from './gallery/gallery.facade.service';
+// import { LayoutModule } from '@angular/cdk/layout';
+import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
+import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -53,7 +55,6 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
-import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -103,6 +104,7 @@ import { ToolPropertiesService } from './shared/services/Editor/tool-properties.
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,
+      GalleryFacadeService,
       ToolPropertiesService,
       ImageBorderService,
       CamelCaseToTextPipe, {

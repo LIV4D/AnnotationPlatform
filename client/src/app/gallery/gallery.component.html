@@ -7,7 +7,7 @@
   </button>
 
   <span>Image Type: </span>
-  <select [(ngModel)]="galleryService.selected">
+  <select [(ngModel)]="galleryFacadeService.selected">
     <option *ngFor="let type of imageTypes" [ngValue]="type">
       {{type.name}}
     </option>
