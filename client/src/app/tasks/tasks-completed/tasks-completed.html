@@ -1,5 +1,5 @@
 <!--Table-->
-<div class="example-container" >
+<section class="example-container" >
   <mat-table #table [dataSource]="dataTable" matSort matSortActive="id" matSortDisableClear>
 
     <ng-container matColumnDef="imageSrc"  >
@@ -33,4 +33,4 @@
 
       <!-- p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
 <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
-</div>
+</section>
