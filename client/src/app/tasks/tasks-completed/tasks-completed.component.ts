@@ -20,30 +20,28 @@ import { DataSource } from '@angular/cdk/table';
 })
 export class TasksCompletedComponent implements OnInit, AfterViewInit {
   displayedColumns = ['imageSrc', 'imageId', 'complete', 'incomplete', 'time'];
-  showPagination: boolean;
   length: number;
   pageSize: number;
-  data: any = [];
+  dataTable: any = [];
   noData: boolean;
   showCompleted: boolean;
-  dataSource = new MatTableDataSource();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
-    this.showPagination = true;
-    //this.length = 0;
-    this.pageSize = 25;
+    this.pageSize = 15;
     this.noData = false;
   }
 
   ngOnInit() {
-    this.data = new MatTableDataSource();
+    this.dataTable = new MatTableDataSource();
   }
 
   ngAfterViewInit() {
     this.loadData();
+    this.dataTable.paginator = this.paginator;
+    this.dataTable.sort = this.sort;
   }
 
   loadData() {
@@ -79,12 +77,11 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           ).subscribe((data: ITaskGroup) => {
 
               this.pageSize = 15;
-              this.data = data;
-              console.log(this.data);
+              this.dataTable.data = data;
               // .data = this.data.tasks.filter (
               // filteredData => filteredData.completed === false);
-              this.length = this.data.length;
-              this.dataSource = new MatTableDataSource(this.data);
+              this.length = this.dataTable.length;
+              //this.dataSource = new MatTableDataSource(this.data);
 
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false));
