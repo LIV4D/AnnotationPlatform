@@ -11,7 +11,7 @@ import { injectable, inject } from 'inversify';
 
 @injectable()
 export class TaskPriorityRepository {
-    @inject(TYPES.ImageService)
+    // @inject(TYPES.ImageService)
     // private imageService: ImageService;
     private connectionProvider: ConnectionProvider;
     constructor(

@@ -13,7 +13,7 @@ import { ITaskPriority } from '../interfaces/ITaskPriority.interface';
 
 @injectable()
 export class TaskPriorityService {
-    @inject(TYPES.TaskRepository)
+    @inject(TYPES.TaskPriorityRepository)
     private taskPriorityRepository: TaskPriorityRepository;
 
     public static throwIfNotAuthorized(task: Task, user: User) {

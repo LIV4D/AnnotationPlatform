@@ -45,8 +45,8 @@ export class TaskPriority {
         };
     }
 
-    public update(itask: ITaskPriority): void {
-        if (!isNullOrUndefined(itask.priority)) { this.priority = itask.priority; }
+    public update(itaskPriority: ITaskPriority): void {
+        if (!isNullOrUndefined(itaskPriority.priority)) { this.priority = itaskPriority.priority; }
     }
 
 }

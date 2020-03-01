@@ -12,7 +12,7 @@ export class TaskPriorityController implements IController {
     private taskPriorityService: TaskPriorityService;
 
     public setRoutes(app: express.Application): void {
-        app.post('/api/tasks/create', this.createTaskPriority);
+        app.post('/api/taskPrioritys/create', this.createTaskPriority);
         // app.put('/api/tasks/update/:taskId', this.updateTask);
         // app.delete('/api/tasks/delete/:taskId', this.deleteTask);
         // app.post('api/tasks/submit/:taskId', this.submitTask);
