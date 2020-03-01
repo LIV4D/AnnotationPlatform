@@ -42,9 +42,9 @@ export class RightMenuComponent implements OnInit {
 
   public svgLoaded(arbre: SVGGElement[]): void {
       this.loaded = true;
-      // setTimeout(() => {
-      //     this.biomarkers.init(arbre);
-      // }, 0);
+      setTimeout(() => {
+          this.biomarkers.init(arbre);
+      }, 0);
   }
 
   public flipHorizontal(): void {

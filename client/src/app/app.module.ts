@@ -6,6 +6,9 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Pipes
+import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
+
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
@@ -22,6 +25,7 @@ import { LoginFacadeService } from './login/login.facade.service';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { EditorFacadeService } from './editor/editor.facade.service';
 import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
+import { ImageBorderService } from './shared/services/Editor/image-border.service';
 // import { LayoutModule } from '@angular/cdk/layout';
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
@@ -49,6 +53,7 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -74,7 +79,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       LayersComponent,
       SafeImagePipe,
       ZoomComponent,
-      MousewheelDirective
+      MousewheelDirective,
+      CamelCaseToTextPipe
    ],
    imports: [
       BrowserModule,
@@ -97,7 +103,9 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,
-       {
+      ToolPropertiesService,
+      ImageBorderService,
+      CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,

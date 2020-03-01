@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { BackgroundCanvas } from './../../../shared/models/background-canvas.model';
 
 @Component({
   selector: 'app-visualization',
@@ -18,6 +19,9 @@ export class VisualizationComponent implements OnInit {
 
   localEditing = false;
   preprocessingChecked = false;
+
+  @Input() canvas: BackgroundCanvas;
+  @Output() flip: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 

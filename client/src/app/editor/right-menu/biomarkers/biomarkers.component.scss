@@ -1,0 +1,249 @@
+@import './../../../../variables.scss';
+
+#biomarkersDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+}
+
+#biomarkersHeaderDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    min-height: 25px;
+}
+
+#biomarkers-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex-grow: 1;
+    margin-top: 2px;
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 2px $shadow-color;
+    background-color: $gray;
+}
+
+mat-tree {
+    color: $font-color-gray;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: transparent;
+    box-shadow: 0px 0px 0px !important;
+}
+
+li.mat-tree-node {
+    margin-left: -11px;
+    color:$font-color-light;
+
+}
+
+.disabledBiomarker.mat-tree-node {
+    color: $icon-color !important;
+}
+
+ul{
+    padding-left: 10px !important;
+    margin: 0px !important;
+}
+
+li > div {
+    min-height: 0px !important;
+    height: 24px;
+}
+
+.mat-tree-node {
+    font-size: 14px !important;
+    height: 24px !important;
+    min-height: 0px !important;
+    color: $font-color-gray;
+
+}
+
+.color-circle {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+mat-icon {
+    color: $icon-color;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.slider-icon {
+    font-size: 20px;
+}
+
+.name {
+    padding-right: 8px;
+}
+
+.button {
+    cursor: pointer;
+}
+
+.mat-expansion-panel-spacing {
+    margin: 0 !important;
+}
+
+mat-expansion-panel {
+    background-color: transparent;
+}
+
+.mat-expansion-panel-header-title {
+    color: $font-color-light;
+}
+
+.mat-expansion-panel {
+    color: $font-color-gray;
+}
+
+.mat-expansion-panel-body {
+    padding: 0px 5px 5px 16px !important;
+    background-color: $shadow-color !important;
+}
+
+// // Tree
+.example-tree-invisible {
+    display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+    list-style-type: none;
+}
+
+#circle {
+    margin-right: 5px;
+}
+
+.button {
+    margin-right: 0px;
+}
+
+.left {
+    margin-left: 3px;
+}
+
+li > button {
+    width: 15px;
+    height: 0px;
+}
+
+ul {
+    //background-color: #585858;
+    background-color: $gray-medium;
+    z-index: -1;
+}
+
+.selected {
+    background-color: $gray-light;
+    border-radius: 3px;
+}
+
+mat-tree .selected{
+    margin-right: 3px;
+}
+
+.cursorPointer {
+    cursor: pointer;
+}
+
+// List
+#simpleBiomarkerView .mat-list-item{
+    padding: 0 0 0 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    height: 23px;
+}
+
+// :host /deep/ .mat-list-item-content {
+//     padding: 0!important;
+// }
+
+#simpleBiomarkerView span{
+    max-width: 137px;
+    font-size: 14px;
+    color: $font-color-gray;
+}
+
+// Others
+
+.align-right {
+    //position: absolute;
+    margin-left:auto;
+    margin-right: 4px;
+}
+
+mat-slider {
+    flex-grow: 1;
+}
+
+input {
+    margin-left: 4px;
+    width: 25px;
+    border-radius: 5px;
+    text-align: right;
+    background-color: $gray;
+    box-shadow:  0px 0px 0px !important;
+    color: $font-color-gray;
+    padding: 4px 4px 4px 0px;
+}
+
+span {
+    margin-left: 4px;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100px;
+}
+
+#opacity {
+    height: 50px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#shadows{
+    height: 50px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.unit {
+    font-weight: bold;
+    font-size: 14px;
+    color: $font-color-gray;
+}
+
+.mat-button {
+    background-color: $gray;
+}
+
+#button-biomarkers{
+    margin-left: 10px;
+} 
+
+#button-biomarkers button{
+    line-height: 0px !important;
+    min-width: 0px !important;
+    padding: 0px !important;
+    box-shadow: 2px 2px 2px $shadow-color !important;
+    margin-left: 4px;
+}
+
+#button-showAll {
+    margin-left: 0px;
+}
