@@ -182,6 +182,8 @@ export class ImageController implements IController {
     }
 
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        console.log('ImageController::getTask() -- Which should be named getImage()...');
+
         this.imageService.getImage(req.params.imageId)
             .then(image => {
                 switch (req.params.attr) {
@@ -189,7 +191,7 @@ export class ImageController implements IController {
                     case 'proto': res.send(image.proto()); break;
                     case 'metata': res.send(image.metadata); break;
                 }
-
+                console.log('image ' + image);
             }).catch(next);
     }
 
@@ -208,8 +210,12 @@ export class ImageController implements IController {
     }
 
     private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        console.log('\nImageController::getImageFile() with id : ' + req.params.imageId + '\n');
+
         this.imageService.getImagePath(req.params.imageId)
             .then(imgPath => {
+                // console.log('imgPath : ' + imgPath.metadata);
+
                 res.sendFile(path.resolve(imgPath));
             })
             .catch(next);
