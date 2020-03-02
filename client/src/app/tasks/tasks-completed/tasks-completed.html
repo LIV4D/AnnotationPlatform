@@ -4,16 +4,16 @@
 
     <ng-container matColumnDef="imageSrc"  >
         <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task" > <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
+        <mat-cell *matCellDef="let task" > <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="imageId">
-        <mat-header-cell *matHeaderCellDef disableClear>Id</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Id</mat-header-cell>
         <mat-cell *matCellDef="let task"> {{task}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="complete">
-        <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Project</mat-header-cell>
         <mat-cell *matCellDef="let task"> {{task.comment}} </mat-cell>
     </ng-container>
 

@@ -81,7 +81,7 @@ export class TaskRepository {
             // Todo: add imageId in arguments
             let dataUrl = '';
              try {
-                 const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(1)), 'base64');
+                 const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(4)), 'base64');
                  dataUrl = 'data:image/png;base64, ' + base64Image;
              } catch (error) {
                  throw(error);
@@ -96,7 +96,7 @@ export class TaskRepository {
                 taskTypeTitle: 'Todo',
                 annotationId: task.annotationId,
                 // imageId: task.annotation.image.id,
-                imageId: 2,
+                imageId: 4,
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,

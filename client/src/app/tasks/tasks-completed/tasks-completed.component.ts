@@ -77,6 +77,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
 
               this.pageSize = 15;
               this.dataTable.data = data;
+              console.log(this.dataTable.data);
               // .data = this.data.tasks.filter (
               // filteredData => filteredData.completed === false);
               this.length = this.dataTable.length;
