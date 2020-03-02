@@ -10,8 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
-
-// import { MatToolbarMixinBase } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
 import { MatTreeModule } from '@angular/material/tree';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
@@ -28,7 +27,8 @@ import { MatTreeModule } from '@angular/material/tree';
         MatTabsModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatCardModule
     ],
     exports: [
         // AppComponent,
@@ -41,7 +41,8 @@ import { MatTreeModule } from '@angular/material/tree';
         MatTabsModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatCardModule
     ]
 })
 

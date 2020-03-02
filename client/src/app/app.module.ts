@@ -17,6 +17,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { ManagementComponent } from './management/management.component';
+import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -29,14 +30,18 @@ import { HeaderService } from './shared/services/header.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
+import { AppService } from './shared/services/app.service';
+import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { TasksBundlesService } from './shared/services/tasksBundles.service';
+import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
-import { AppService } from './shared/services/app.service';
-import { AuthInterceptor } from './shared/services/authentification.intercept';
+
+
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -53,6 +58,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       NavigationBarComponent,
       SafeImagePipe,
       ManagementComponent,
+      TasksBundlesComponent,
    ],
    imports: [
       BrowserModule,
@@ -74,6 +80,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       TaskFacadeService,
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
+      TasksBundlesFacadeService,
+      TasksBundlesService,
       ManagementCreationService,
       HeaderService,
        {
