@@ -30,6 +30,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
+    this.showCompleted = true;
     this.pageSize = 15;
     this.noData = false;
   }

@@ -79,7 +79,7 @@ export class TaskController implements IController {
         const userId = req.params.userId as string;
         const page = req.query.page as number;
         const pageSize = req.query.pageSize as number;
-        const isComplete = req.query.isComplete;
+        const isComplete = req.query.isCompleted;
 
         this.taskService
             .getUserGallery(userId, page, pageSize, isComplete)

@@ -127,20 +127,20 @@ export class TasksService {
    * @param isCompleted: a task can be complited or uncompleted
    * @returns Observable<ITaskGroup>
    */
-  getTasks(sort: string, order: string, page: number, pageSize: number, isCompleted: boolean): Observable<ITaskGroup> {
+  getTasks(page: number, pageSize: number, isCompleted: boolean): Observable<ITaskGroup> {
     const params = new HttpParams()
-                        .set('sort', sort ? 'tasks.' + sort : 'tasks.id')
-                        .set('order', order ? order.toUpperCase() : 'ASC')
                         .set('page', page ? page.toString() : '0')
                         .set('pageSize', pageSize ? pageSize.toString() : '25')
-                        .set('completed', isCompleted ? 'true' : 'false');
+                        .set('isCompleted', isCompleted ? 'true' : 'false');
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+
     // const req = this.http.get<ITaskList>(`//api/tasks/list/${userId}`, {params: params, observe: 'events', reportProgress: true});
-    const req = this.http.get<ITaskGroup>(`/api/tasks/list/`, {params, observe: 'events', reportProgress: true});
+    const req = this.http.get<ITaskGroup>('/api/tasks/gallery/1', {params, observe: 'events', reportProgress: true});
 
     // this.http.get<ITasks[]>(`/api/tasks/list`).subscribe((response: ITasks[]) => {
     //    console.log(response);
     // });
+    console.log(req);
     return this.headerService.display_progress(req, 'Downloading: Tasks List');
   }
 

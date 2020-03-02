@@ -71,10 +71,12 @@ export class TaskRepository {
         const repository =  (await this.connectionProvider()).getRepository(Task);
         const qb = await repository
                          .createQueryBuilder('task')
-                         .where('task.user.id = :id', { id: userId })
+                         .where('task.assignedUserId = :id', { id: userId })
                          .andWhere('task.isVisible = :visible', { visible: true });
 
         const tasks =  await qb.getMany();
+        console.log(tasks);
+        console.log(await tasks);
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
         taskList = tasks.map(task => {
@@ -103,6 +105,8 @@ export class TaskRepository {
         if (page !== 0 && pageSize !== 0) {
             taskList = taskList.splice(pageSize * page, pageSize);
         }
+        console.log("voice mes taches");
+        console.log(await taskList);
         return await taskList;
     }
 
