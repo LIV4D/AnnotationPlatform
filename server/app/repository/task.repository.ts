@@ -75,12 +75,13 @@ export class TaskRepository {
                          .andWhere('task.isVisible = :visible', { visible: true });
 
         const tasks =  await qb.getMany();
+        console.log(tasks);
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
         taskList = tasks.map(task => {
             // Todo: add imageId in arguments
             let dataUrl = '';
-             try {
+            try {
                  const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(4)), 'base64');
                  dataUrl = 'data:image/png;base64, ' + base64Image;
              } catch (error) {

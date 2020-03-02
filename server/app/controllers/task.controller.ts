@@ -83,6 +83,7 @@ export class TaskController implements IController {
 
         this.taskService
             .getUserGallery(userId, page, pageSize, isComplete)
+            .then(taskGallery => this.taskService.getGalleryWithTaskTypeTitle(taskGallery))
             .then(taskGallery => res.send(taskGallery))
             .catch(next);
     }

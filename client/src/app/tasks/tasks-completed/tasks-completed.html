@@ -12,9 +12,9 @@
         <mat-cell *matCellDef="let task"> {{task.imageId}} </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="complete">
-        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Project</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task.comment}} </mat-cell>
+    <ng-container matColumnDef="taskTypeTitle">
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Type</mat-header-cell>
+        <mat-cell *matCellDef="let task"> {{task.taskTypeTitle}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="incomplete">
