@@ -61,8 +61,6 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
         setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = true)); // Enable loading bar
         // getTasks from the server
         return this.tasksCompletedFacadeService.getTasks(
-                             this.sort.active,
-                             this.sort.direction,
                              this.paginator.pageIndex,
                              this.paginator.pageSize,
                              this.showCompleted);

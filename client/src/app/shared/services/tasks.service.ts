@@ -35,7 +35,7 @@ export class TasksService {
    * Load data
    * Load the Tasks from the server by getting
    */
-  loadData(tasksComponent: TasksComponent| TasksCompletedComponent | TasksToCompleteComponent): void {
+  loadData(tasksComponent: TasksComponent| TasksToCompleteComponent): void {
       tasksComponent.noData = false;
 
       // PageIndex set to zero when the user change the sorting
@@ -51,8 +51,7 @@ export class TasksService {
           switchMap(() => {
               this.appService.loading = true; // Enable loading bar
               // getTasks from the server
-              return this.getTasks(tasksComponent.sort.active,
-                                   tasksComponent.sort.direction,
+              return this.getTasks(
                                    tasksComponent.paginator.pageIndex,
                                    tasksComponent.pageSize,
                                    tasksComponent.showCompleted);
@@ -92,8 +91,6 @@ export class TasksService {
               this.appService.loading = true; // Enable loading bar
               // getTasks from the server
               return this.getTasks(
-                                  tasksCompletedComponent.sort.active,
-                                  tasksCompletedComponent.sort.direction,
                                   tasksCompletedComponent.paginator.pageIndex,
                                   tasksCompletedComponent.pageSize,
                                   tasksCompletedComponent.showCompleted);
@@ -106,7 +103,7 @@ export class TasksService {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
               //tasksCompletedComponent.data = data;
-              tasksCompletedComponent.length = tasksCompletedComponent.data.length;
+              tasksCompletedComponent.length = tasksCompletedComponent.dataTable.length;
               if (tasksCompletedComponent.length === 0) { tasksCompletedComponent.noData = true; }
               this.appService.loading = false;
           });

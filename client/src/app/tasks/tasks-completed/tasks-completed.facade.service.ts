@@ -8,7 +8,7 @@ export class TasksCompletedFacadeService {
 
   constructor(private taskService: TasksService, public appService: AppService) {  }
 
-  getTasks(sort: string, order: string, page: number, pageSize: number, isCompleted: boolean) {
-    return this.taskService.getTasks(sort, order, page, pageSize, isCompleted);
+  getTasks(page: number, pageSize: number, isCompleted: boolean) {
+    return this.taskService.getTasks(page, pageSize, isCompleted);
   }
 }
