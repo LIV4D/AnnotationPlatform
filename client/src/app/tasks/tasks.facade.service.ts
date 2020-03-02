@@ -13,7 +13,8 @@ export class TaskFacadeService {
 
   // tslint:disable-next-line:max-line-length
   loadData(tasksComponent: TasksComponent): void {
-    this.taskService.loadData(tasksComponent);
+    //this.taskService.loadData(tasksComponent);
+
   }
 
   loadImage(imageId: string): void {

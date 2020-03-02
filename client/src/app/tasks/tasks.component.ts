@@ -14,11 +14,11 @@ import { ITasks } from '../shared/interfaces/ITasks.interface';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
-export class TasksComponent implements AfterViewInit {
+export class TasksComponent implements OnInit, AfterViewInit {
     displayedColumns = ['imageSrc', 'image', 'complete', 'incomplete', 'time'];
     dataSource = new MatTableDataSource();
     showPagination: boolean;
-    length: number = 0 ;
+    length = 0 ;
     pageSize: number;
     data: any = [];
     noData = false;
@@ -32,10 +32,9 @@ export class TasksComponent implements AfterViewInit {
      this.length = length;
      this.pageSize = 25;
      this.noData = false;
-
    }
 
-   ngOnInit(){
+   ngOnInit() {
     this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -45,8 +44,6 @@ export class TasksComponent implements AfterViewInit {
       // If the user changes the sort order, reset back to the first page.
       this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
       this.LoadData();
-
-
   }
 
 
@@ -60,6 +57,7 @@ export class TasksComponent implements AfterViewInit {
     LoadData() {
       this.facadeService.loadData(this);
     }
+
     loadImage(imageId: string): void {
       this.facadeService.loadImage(imageId);
     }
