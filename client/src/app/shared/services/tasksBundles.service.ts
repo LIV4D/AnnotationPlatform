@@ -14,5 +14,8 @@ import { Injectable } from '@angular/core';
 export class TasksBundlesService {
   constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
 
+  loadData(): void {
+      
+  }
 
 }

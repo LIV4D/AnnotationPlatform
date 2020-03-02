@@ -1,8 +1,12 @@
 import { Injectable, Injector } from '@angular/core';
-import { TasksService } from '../../shared/services/tasks.service';
+import { TasksBundlesService } from 'src/app/shared/services/tasksBundles.service';
 
 @Injectable()
 export class TasksBundlesFacadeService {
 
-  constructor(private taskService: TasksService) {  }
+  constructor(private tasksBundlesService: TasksBundlesService) {  }
+
+  loadData(): void {
+    this.tasksBundlesService.loadData();
+  }
 }
