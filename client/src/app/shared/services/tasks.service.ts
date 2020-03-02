@@ -134,13 +134,11 @@ export class TasksService {
                         .set('isCompleted', isCompleted ? 'true' : 'false');
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
 
-    // const req = this.http.get<ITaskList>(`//api/tasks/list/${userId}`, {params: params, observe: 'events', reportProgress: true});
-    const req = this.http.get<ITaskGroup>('/api/tasks/gallery/1', {params, observe: 'events', reportProgress: true});
+    const req = this.http.get<ITaskGroup>(`/api/tasks/gallery/${userId}`, {params, observe: 'events', reportProgress: true});
 
     // this.http.get<ITasks[]>(`/api/tasks/list`).subscribe((response: ITasks[]) => {
     //    console.log(response);
     // });
-    console.log(req);
     return this.headerService.display_progress(req, 'Downloading: Tasks List');
   }
 

@@ -75,24 +75,34 @@ export class TaskRepository {
                          .andWhere('task.isVisible = :visible', { visible: true });
 
         const tasks =  await qb.getMany();
-        console.log(tasks);
-        console.log(await tasks);
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
         taskList = tasks.map(task => {
+            // Todo: add imageId in arguments
             let dataUrl = '';
-            try {
-                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(task.annotation.image.id)), 'base64');
-                dataUrl = 'data:image/png;base64, ' + base64Image;
-            } catch (error) {
-                throw(error);
-            }
+             try {
+                 const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(1)), 'base64');
+                 dataUrl = 'data:image/png;base64, ' + base64Image;
+             } catch (error) {
+                 throw(error);
+             }
             const taskGallery: ITaskGallery = {
                 taskId: task.id,
+                taskTypeId: task.taskTypeId,
                 isComplete: task.isComplete,
+                isVisible: task.isVisible,
                 thumbnail: dataUrl,
-                taskTypeTitle: task.taskType.title,
-                imageId: task.annotation.image.id,
+                // taskTypeTitle: task.taskType.title,
+                taskTypeTitle: 'Todo',
+                annotationId: task.annotationId,
+                // imageId: task.annotation.image.id,
+                imageId: 2,
+                comment: task.comment,
+                assignedUserId: task.assignedUserId,
+                creatorId: task.creatorId,
+                // projectId: task.projectId,
+                projectId: 420,
+                lastModifiedTime: task.lastModifiedTime,
             };
             return taskGallery;
         });
@@ -102,11 +112,9 @@ export class TaskRepository {
             taskList = taskList.filter(taskGallery => !taskGallery.isComplete);
         }
         // Select a subsection of our taskGroups, according to pageSize and page number
-        if (page !== 0 && pageSize !== 0) {
-            taskList = taskList.splice(pageSize * page, pageSize);
-        }
-        console.log("voice mes taches");
-        console.log(await taskList);
+        // if (page !== 0 && pageSize !== 0) {
+        //     taskList = taskList.splice(pageSize * page, pageSize);
+        // }
         return await taskList;
     }
 
