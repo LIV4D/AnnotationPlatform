@@ -18,6 +18,7 @@ export class ManagementCreationService {
      * Checks to see if the values are appropriate for they types and sends an event to the server
      * @param properties names of the properties that are in the model
      * @param propertyValues values of the properties that have already been determined
+     * @returns string of whether the event was succesful or not
      */
     public sendCreationEvent(properties: string[], propertyValues: string[]): string {
         this.properties = properties;
@@ -25,9 +26,11 @@ export class ManagementCreationService {
 
         if (this.checkPropertyValues()) {
             this.eventModelFromManagement('create').subscribe();
+
+            return 'Event Success!';
         }
 
-        return '';
+        return 'Event Failure!';
     }
 
     /**

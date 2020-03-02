@@ -7,6 +7,10 @@
   <label>{{attribute}}: </label>
   <input cdkTextareaAutosize [(ngModel)]="attributeValues[i]" placeholder="Input values">
 </div>
-<button (click) = "createModel()" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
-Create
-</button>
+<div>
+  <button (click) = "createModel()" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+    Create
+  </button>
+  <p></p>
+</div>
+

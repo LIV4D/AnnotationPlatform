@@ -13,6 +13,7 @@ export class ManagementComponent implements OnInit {
     public attributesForCreation: string[];
     public attributeValues: Array<string>;
     public modelName = '';
+    public successText = '';
 
     constructor(private facadeService: ManagementFacadeService, private router: Router) {
         this.attributeValues = new Array<string>();
@@ -27,6 +28,7 @@ export class ManagementComponent implements OnInit {
     }
 
     public createModel(): void {
-        this.facadeService.sendCreationEvent(this.attributesForCreation, this.attributeValues);
+        this.successText = 'Event loading...';
+        this.successText = this.facadeService.sendCreationEvent(this.attributesForCreation, this.attributeValues);
     }
 }
