@@ -20,21 +20,31 @@
         <mat-cell *matCellDef="let task"> {{task.taskTypeTitle}} </mat-cell>
     </ng-container>
 
+    <!-- Project Title-->
     <!-- TODO: Create the Project Table to find the ProjectTitle with a ProjectId -->
     <ng-container matColumnDef="project">
       <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
       <mat-cell *matCellDef="let task"> N/A </mat-cell>
     </ng-container>
 
+    <!-- Cumulated Time -->
+    <!-- TODO: Get cumulated in Editor when it'll be operationnal -->
     <ng-container matColumnDef="time">
-      <mat-header-cell *matHeaderCellDef disableClear>Time</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef disableClear>Cumulated Time</mat-header-cell>
       <mat-cell *matCellDef="let task"> N/A </mat-cell>
+    </ng-container>
+
+    <!-- Last Modified Time -->
+    <!-- TODO: Update the time at each modification -->
+    <ng-container matColumnDef="lastModified">
+      <mat-header-cell *matHeaderCellDef mat-sort-header="date">Last Modified</mat-header-cell>
+      <mat-cell *matCellDef="let task"> {{task.lastModifiedTime}} </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())" ng-hide="row.incompleteCount > 0"></mat-row>
   </mat-table>
 
-      <!-- p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
+      <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
 <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
 </section>
