@@ -1,6 +1,6 @@
 @import '../../../colorVariables.scss';
 
-.example-container {
+.completedTasksDataTable {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -152,7 +152,7 @@ input {
 .field {
     display: flex;
 }
-  #completeButtons {
+  #hideTasksButtons {
     margin-top: 20px;
     text-align: center;
   }
