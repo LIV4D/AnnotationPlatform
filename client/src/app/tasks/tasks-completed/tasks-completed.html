@@ -1,25 +1,29 @@
-<!--Table-->
+<!-- Table -->
 <section class="example-container" >
   <mat-table #table [dataSource]="dataTable" matSort matSortActive="id" matSortDisableClear>
 
+    <!--Image Preview -->
     <ng-container matColumnDef="imageSrc"  >
-        <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef disableClear disableClear>Preview</mat-header-cell>
         <mat-cell *matCellDef="let task" > <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
+    <!-- Image Id -->
     <ng-container matColumnDef="imageId">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Id</mat-header-cell>
         <mat-cell *matCellDef="let task"> {{task.imageId}} </mat-cell>
     </ng-container>
 
+    <!-- Task Type Title-->
     <ng-container matColumnDef="taskTypeTitle">
         <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Type</mat-header-cell>
         <mat-cell *matCellDef="let task"> {{task.taskTypeTitle}} </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="incomplete">
-      <mat-header-cell *matHeaderCellDef disableClear>Creator</mat-header-cell>
-      <mat-cell *matCellDef="let task"> {{task.creatorId}} </mat-cell>
+    <!-- TODO: Create the Project Table to find the ProjectTitle with a ProjectId -->
+    <ng-container matColumnDef="project">
+      <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
+      <mat-cell *matCellDef="let task"> N/A </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="time">
