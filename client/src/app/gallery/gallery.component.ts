@@ -35,7 +35,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   @ViewChild('visitField') visitField: ElementRef;
   @ViewChild('codeField') codeField: ElementRef;
 
-  // public galleryService: GalleryService,
   constructor(public appService: AppService, public router: Router, public galleryFacadeService: GalleryFacadeService,
               public editorFacadeService: EditorFacadeService) {
     this.showPagination = true;
@@ -47,14 +46,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.data = new MatTableDataSource();
-    // this.editorService.imageServer = null;
-    // this.editorService.imageLocal = null;
-    // this.getImageTypes();
-    // this.sort.sortChange.subscribe(
-    //   () => {
-    //     this.paginator.pageIndex = 0;
-    //   });
-    // this.getImages();
   }
 
   ngAfterViewInit(): void {
@@ -87,15 +78,17 @@ export class GalleryComponent implements OnInit, AfterViewInit {
       startWith({}),
       switchMap(
         () => {
+          console.log('%c here? ', 'color: red; background: yellow;');
+
           setTimeout(() => this.appService.loading = true);
 
-          console.log(
-            'this.sort.active : ' + this.sort.active
-            + '\nthis.sort.direction : ' +  this.sort.direction
-            + '\nthis.paginator.pageIndex : ' + this.paginator.pageIndex
-            + '\nthis.pageSize : ' + this.pageSize
-            + '\nfilters : ' + filters
-          );
+          // console.log(
+          //   'this.sort.active : ' + this.sort.active
+          //   + '\nthis.sort.direction : ' +  this.sort.direction
+          //   + '\nthis.paginator.pageIndex : ' + this.paginator.pageIndex
+          //   + '\nthis.pageSize : ' + this.pageSize
+          //   + '\nfilters : ' + filters
+          // );
 
           // tslint:disable-next-line: max-line-length
           // return this.galleryService.getImages(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.pageSize, filters);
@@ -113,13 +106,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
       this.length = data.objectCount;
       this.data = data.objects;
 
-      // console.log('this.paginator.pageSize : ' + this.paginator.pageSize);
-      // console.log('data.objects.length : ' + data.objects.length);
-      // console.log('data.objectCount : ' + data.objectCount);
-      // console.log('data : ' + data.objects[2].metadata.filename);
-      // console.log('data : ' + data.objects[2].type);
-
-      setTimeout(() => this.appService.loading = false);
+      setTimeout(() => this.appService.loading = false, 50000);
     });
   }
 
@@ -130,11 +117,11 @@ export class GalleryComponent implements OnInit, AfterViewInit {
     reader.onload = () => {
       const image = new Image();
       image.onload = () => {
-          this.appService.localEditing = true;
-          this.editorFacadeService.imageLocal = image;
-          this.editorFacadeService.imageId = 'local';
-          LocalStorage.clear();
-          this.router.navigate(['/' + 'editor']);
+        this.appService.localEditing = true;
+        this.editorFacadeService.imageLocal = image;
+        this.editorFacadeService.imageId = 'local';
+        LocalStorage.clear();
+        this.router.navigate(['/' + 'editor']);
       };
       image.src = reader.result as string;
     };

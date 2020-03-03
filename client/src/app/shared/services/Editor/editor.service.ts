@@ -84,7 +84,7 @@ export class EditorService {
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
   updateCanvasDisplayRatio(): void {
     const ratio = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width /
-        this.backgroundCanvas.displayCanvas.width;
+      this.backgroundCanvas.displayCanvas.width;
     this.canvasDisplayRatio.next(ratio);
   }
 

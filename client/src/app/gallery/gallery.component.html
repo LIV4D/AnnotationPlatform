@@ -147,7 +147,6 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;" (mouseup)="loadImage(row.id.toString())"></mat-row>
   </mat-table>
-  <!-- <mat-paginator [length]="70" [pageSize]="10" *ngIf="showPagination"></mat-paginator> -->
   <mat-paginator [length]="length" [pageSize]="pageSize" *ngIf="showPagination"></mat-paginator>
 </div>
 <!-- [pageSizeOptions]="[5, 10, 20]" -->
