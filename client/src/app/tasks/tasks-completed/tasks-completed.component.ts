@@ -19,7 +19,7 @@ import { DataSource } from '@angular/cdk/table';
   styleUrls: ['./tasks-completed.component.scss']
 })
 export class TasksCompletedComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['imageSrc', 'imageId', 'taskTypeTitle', 'project', 'time', 'lastModified'];
+  displayedColumns = ['selectTasks', 'imageSrc', 'imageId', 'taskTypeTitle', 'project', 'time', 'lastModified'];
   length: number;
   pageSize: number;
   dataTable: any = [];
