@@ -7,10 +7,14 @@ export class AppService {
   public localEditing: boolean;
   public pointerDetected: boolean;
 
-  constructor() {
-    this.loading = false;
-    this.keyEventsEnabled = true;
-    this.localEditing = false;
-    this.pointerDetected = false;
-  }
+    constructor() {
+        this.loading = false;
+        this.keyEventsEnabled = true;
+        this.localEditing = false;
+        this.pointerDetected = false;
+    }
+
+    setLoading(isLoading: boolean) {
+      this.loading = isLoading;
+    }
 }

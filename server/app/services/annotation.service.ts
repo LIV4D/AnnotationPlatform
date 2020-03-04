@@ -5,7 +5,7 @@ import { isNullOrUndefined } from 'util';
 import { DeleteResult } from 'typeorm';
 
 import { Annotation } from '../models/annotation.model';
-import { IAnnotation } from "../interfaces/IAnnotation.interface";
+import { IAnnotation } from '../interfaces/IAnnotation.interface';
 import { AnnotationRepository } from '../repository/annotation.repository';
 import { createError } from '../utils/error';
 import { SubmissionEvent } from '../models/submissionEvent.model';
