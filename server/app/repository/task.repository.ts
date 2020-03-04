@@ -75,7 +75,6 @@ export class TaskRepository {
                          .andWhere('task.isVisible = :visible', { visible: true });
 
         const tasks =  await qb.getMany();
-        console.log(tasks);
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
         taskList = tasks.map(task => {

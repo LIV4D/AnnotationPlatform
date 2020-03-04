@@ -103,7 +103,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
     this.selection.selected.forEach(item => {
       const index: number = this.dataTable.data.findIndex(d => d === item);
       this.dataTable.data.splice(index, 1);
-      this.tasksCompletedFacadeService.hideTask(item.taskId);
+      this.tasksCompletedFacadeService.hideTaskApp(item.taskId);
 
       this.dataTable = new MatTableDataSource<Element>(this.dataTable.data);
       setTimeout(() => {

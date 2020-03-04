@@ -11,7 +11,7 @@ export class TasksCompletedFacadeService {
     return this.taskService.getTasks(page, pageSize, isCompleted);
   }
 
-  hideTask(taskId: number): void {
+  hideTaskApp(taskId: number): void {
     this.taskService.hideTaskApp(taskId);
   }
 }
