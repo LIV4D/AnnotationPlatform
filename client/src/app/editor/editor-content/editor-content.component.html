@@ -23,6 +23,7 @@
 
 <div id="editor-box" appMousewheel #editorBox
     (wheel)="onMouseWheel($event)"
+    (window:resize)="onResize()"
     (mousemove)="onMouseMove($event)"
     (mousedown)="onMouseDown($event)"
     (mouseup)="onMouseUp($event)"

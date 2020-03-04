@@ -28,11 +28,14 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   delayEventTimer: any;
   delayedEventHandler: Function;
 
-
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
+    console.log('EditorContent::ngOnInit()');
+
     this.editorFacadeService.init(this.svgLoaded);
+    // this.editorFacadeService.load(imageId); // I don't know why this is here
+
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
@@ -279,9 +282,9 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   //     this.editorService.scaleX *= -1;
   // }
 
-  // onResize(): void {
-  //     // this.editorService.resize();
-  // }
+  onResize(): void {
+      this.editorFacadeService.resize();
+  }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
     if (!this.editorFacadeService.backgroundCanvas) { return undefined; }

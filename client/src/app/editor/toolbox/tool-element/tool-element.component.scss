@@ -1,4 +1,4 @@
-@import "../../../../colorConstants.scss";
+@import './../../../../../src/colorVariables.scss';
 
 .isSelected {
   background-color: $input-background-color;

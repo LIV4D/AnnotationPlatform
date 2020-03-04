@@ -23,7 +23,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 @Injectable({
   providedIn: 'root'
 })
-@Injectable()
+// @Injectable()
 export class EditorService {
   imageLocal: HTMLImageElement;
   imageServer: ImageServer;
@@ -71,10 +71,12 @@ export class EditorService {
     this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
     this.svgLoaded = svgLoaded;
     if (this.imageLocal) {
-      this.setImageId('local');
-      this.loadAllLocal(this.svgLoaded);
+        this.setImageId('local');
+        this.loadAllLocal(this.svgLoaded);
     } else {
-      // this.loadAll();
+      console.log('load from server');
+
+      this.loadAll();
     }
     this.resize();
   }
@@ -256,70 +258,80 @@ export class EditorService {
   // }
 
   // Load the main image in the background canvas.
-  // public loadMainImage(image: HTMLImageElement): void {
-  //     this.backgroundCanvas = new BackgroundCanvas(
-  //         document.getElementById('main-canvas') as HTMLCanvasElement,
-  //         image
-  //     );
-  //     // Load the main canvas.
-  //     const viewportRatio = this.viewportRatio();
-  //     const imageRatio = this.originalImageRatio();
-  //     if (imageRatio > viewportRatio) {
-  //         this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
-  //         this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
-  //     } else {
-  //         this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
-  //         this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
-  //     }
-  //     this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
-  //     this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
-  //     const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
-  //     let x = 0, y = 0;
-  //     if (imageRatio > viewportRatio) {
-  //         y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) / 2;
-  //     } else {
-  //         x = (this.backgroundCanvas.displayCanvas.width - this.backgroundCanvas.originalCanvas.width) / 2;
-  //     }
-  //     context.drawImage(
-  //         this.backgroundCanvas.originalCanvas,
-  //         x,
-  //         y,
-  //         this.backgroundCanvas.originalCanvas.width,
-  //         this.backgroundCanvas.originalCanvas.height
-  //     );
-  //     // Load the zoom canvas.
-  //     // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
-  //     // Without this zoomCanvas is still undefined because of ngIf in template
-  //     this.imageLoaded = true;
-  //     setTimeout(() => {
-  //         // We use setTimeout
-  //         const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
-  //         zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
-  //         zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
-  //         const zoomContext = zoomCanvas.getContext('2d');
-  //         zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
-  //         this.resize();
-  //     }, 0);
-  //     this.updateCanvasDisplayRatio();
-  // }
+  public loadMainImage(image: HTMLImageElement): void {
+    console.log('EditorService::loadMainImage()');
 
-  // getMainImage(): void {
-  //     const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events',
-  //                                                                        reportProgress: true });
-  //     this.headerService.display_progress(req, 'Downloading: Image').subscribe(
-  //         res => {
-  //             const reader: FileReader = new FileReader();
-  //             reader.onload = () => {
-  //                 const image = new Image();
-  //                 image.onload = () => {
-  //                     this.loadMainImage(image);
-  //                     this.loadPretreatmentImage();
-  //                 };
-  //                 image.src = reader.result as string;
-  //             };
-  //             reader.readAsDataURL(res);
-  //         });
-  // }
+    this.backgroundCanvas = new BackgroundCanvas(
+        document.getElementById('main-canvas') as HTMLCanvasElement,
+        image
+    );
+    // Load the main canvas.
+    const viewportRatio = this.viewportRatio();
+    const imageRatio = this.originalImageRatio();
+    if (imageRatio > viewportRatio) {
+        this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
+        this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
+    } else {
+        this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
+        this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
+    }
+    this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
+    this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
+    const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
+    let x = 0, y = 0;
+    if (imageRatio > viewportRatio) {
+        y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) / 2;
+    } else {
+        x = (this.backgroundCanvas.displayCanvas.width - this.backgroundCanvas.originalCanvas.width) / 2;
+    }
+    context.drawImage(
+        this.backgroundCanvas.originalCanvas,
+        x,
+        y,
+        this.backgroundCanvas.originalCanvas.width,
+        this.backgroundCanvas.originalCanvas.height
+    );
+    // Load the zoom canvas.
+    // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
+    // Without this zoomCanvas is still undefined because of ngIf in template
+    this.imageLoaded = true;
+    setTimeout(() => {
+        // We use setTimeout
+        const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
+        zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
+        zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
+        const zoomContext = zoomCanvas.getContext('2d');
+        zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+        this.resize();
+    }, 0);
+    this.updateCanvasDisplayRatio();
+  }
+
+  getMainImage(): void {
+    console.log('EditorService::getMainImage()');
+
+    // '/api/images/download/:imageId/raw'
+    // const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events', reportProgress: true });
+
+    const req = this.http.get(`/api/images/download/${this.imageId}/raw`,
+      { responseType: 'blob', observe: 'events', reportProgress: true });
+
+    this.headerService.display_progress(req, 'Downloading: Image').subscribe(
+        res => {
+            const reader: FileReader = new FileReader();
+            reader.onload = () => {
+                const image = new Image();
+                image.onload = () => {
+                  console.log('image.onload()' + image);
+
+                  this.loadMainImage(image);
+                  // this.loadPretreatmentImage();
+                };
+                image.src = reader.result as string;
+            };
+            reader.readAsDataURL(res);
+    });
+  }
 
   // Check if the browser's local storage contains a usable revision
   // that should be loaded.
@@ -336,24 +348,28 @@ export class EditorService {
   }
 
   // Load everything in the editor.
-  // public loadAll(): void {
-  //     // Check if a an image is saved in localStorage
-  //     const lastImageId = LocalStorage.lastSavedImageId();
-  //     if (this.shouldLoadLocalStorage(lastImageId)) {
-  //         this.imageId = lastImageId;
-  //         this.getMainImage();
-  //         LocalStorage.load(this, this.layersService);
-  //         this.loadRevision(false);
-  //         this.loadMetadata(this.imageId);
-  //         return;
-  //     }
-  //     // Check if imageId is set
-  //     if (!this.imageId) {
-  //         return;
-  //     }
-  //     this.getMainImage();
-  //     this.loadRevision(true);
-  // }
+  public loadAll(): void {
+      // Check if a an image is saved in localStorage
+      const lastImageId = LocalStorage.lastSavedImageId();
+
+      if (this.shouldLoadLocalStorage(lastImageId)) {
+        console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
+
+        this.imageId = lastImageId;
+        this.getMainImage();
+        LocalStorage.load(this, this.layersService);
+        // this.loadRevision(false);
+        this.loadMetadata(this.imageId);
+        return;
+      }
+      // Check if imageId is set
+      if (!this.imageId) {
+        return;
+      }
+
+      this.getMainImage();
+      // this.loadRevision(true);
+  }
 
   // public loadPretreatmentImage(): void {
   //     const req = this.http.get(`/api/preprocessings/${this.imageId}/${PREPROCESSING_TYPE}`, { responseType: 'blob',
@@ -621,23 +637,28 @@ export class EditorService {
 
   // TODO: Make this work
   // Function called from gallery/tasks to load a new image and redirect to editor
-  // loadImageFromServer(imageId: string): void {
-  //     const req = this.http.get<ImageServer>(`/api/images/${imageId}/`, {observe: 'events', reportProgress: true});
-  //     this.headerService.display_progress(req, 'Downloading: Image').subscribe(
-  //         res => {
-  //             this.imageLocal = null;
-  //             this.imageServer = res;
-  //             this.setImageId(imageId);
-  //             this.router.navigate(['/' + 'editor']);
-  //         }
-  //     );
-  // }
+  loadImageFromServer(imageId: string): void {
+    console.log('EditorService::loadImageFromServer()');
 
-  // loadMetadata(imageId: string): void {
-  //     this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
-  //         this.imageServer = res;
-  //     });
-  // }
+    // TODO: change to above
+    // const req = this.http.get<ImageServer>('/api/images/1/', {observe: 'events', reportProgress: true});
+    const req = this.http.get<ImageServer>(`/api/images/get/${imageId}/`, {observe: 'events', reportProgress: true});
+    this.headerService.display_progress(req, 'Downloading: Image').subscribe(
+        res => {
+          this.imageLocal = null;
+          this.imageServer = res;
+
+          this.setImageId(imageId);
+          this.router.navigate(['/' + 'editor']);
+        }
+    );
+  }
+
+  loadMetadata(imageId: string): void {
+    this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+        this.imageServer = res;
+    });
+  }
 
   // saveSVGFile(): void {
   //     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
@@ -680,6 +701,8 @@ export class EditorService {
   // }
 
   setImageId(id: string): void {
+    console.log('EditorService::setImageId()');
+
     this.imageId = id;
   }
 

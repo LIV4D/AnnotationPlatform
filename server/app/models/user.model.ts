@@ -2,11 +2,13 @@ import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail, validateSync } from 'class-validator';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
+import { IUser } from '../interfaces/IUser.interface';
+import { IProtoUser } from '../prototype interfaces/IProtoUser.interface';
 
 @Entity()
 export class User {
@@ -41,6 +43,9 @@ export class User {
 
     @OneToMany(type => SubmissionEvent, evenement => evenement.user)
     public submissions: SubmissionEvent[];
+
+    @ManyToOne(type => Task, task => task.preferredUsers)
+    public preferredTask: Task;
 
     public static hashPassword(password: string, salt?: Buffer) {
         const size = 64;
@@ -95,7 +100,7 @@ export class User {
         validateSync(this);
     }
 
-    public proto(): ProtoUser {
+    public proto(): IProtoUser {
         return {
             id: this.id,
             firstName: this.firstName,
@@ -104,21 +109,4 @@ export class User {
             isAdmin: this.isAdmin,
         };
     }
-}
-
-export interface IUser {
-    id?: number;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    isAdmin?: boolean;
-    password?: string;
-}
-
-export interface ProtoUser {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    isAdmin: boolean;
 }

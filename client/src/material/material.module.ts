@@ -1,10 +1,8 @@
-// import { MaterialModule } from '@angular/material.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
-import { AppComponent } from './../app/app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -13,6 +11,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatTabsModule } from '@angular/material/tabs';
 // import { MatToolbarMixinBase } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
@@ -21,7 +20,6 @@ import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
     imports: [
-        // AppComponent,
         BrowserModule,
         MatDialogModule,
         MatTreeModule,
@@ -35,10 +33,10 @@ import {MatSortModule} from '@angular/material/sort';
         MatPaginatorModule,
         MatSortModule,
         MatSidenavModule,
-        MatSliderModule
+        MatSliderModule,
+        MatTabsModule
     ],
     exports: [
-        // AppComponent,
         BrowserModule,
         MatDialogModule,
         MatTreeModule,
@@ -52,7 +50,9 @@ import {MatSortModule} from '@angular/material/sort';
         MatPaginatorModule,
         MatSortModule,
         MatSidenavModule,
-        MatSliderModule
+        MatSliderModule,
+        MatToolbarModule,
+        MatTabsModule
     ]
 })
 

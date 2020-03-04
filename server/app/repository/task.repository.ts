@@ -40,13 +40,16 @@ export class TaskRepository {
         return await repository.findByIds(ids);
     }
 
-    public async findByFilter(filter: {userId?: number, imageId?: number}): Promise<Task[]> {
+    public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
         let whereConditions = [];
         if (filter.imageId !== undefined) {
             whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
         }
         if (filter.userId !== undefined) {
             whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
+        }
+        if (filter.isComplete !== undefined) {
+            whereConditions.push('task.isComplete.value = ' + filter.isComplete.toString());
         }
 
         const repository =  (await this.connectionProvider()).getRepository(Task);

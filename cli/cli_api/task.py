@@ -22,6 +22,8 @@ class Task(Entity):
         return tasks
 
 
+# Get the tasks in the CLI
+# Add field to define the entity
 class TaskTable(EntityTable):
     __entity__ = Task
 
@@ -51,12 +53,14 @@ class TaskTable(EntityTable):
     def list(self):
         return server.get('/api/tasks/list/proto')
 
+# request from the server to the controller
+    # update the entity
     def _update(self, entity):
         return server.put('/api/tasks/update/%i' % entity.id, payload=entity.to_json(to_str=False))
-
+    # request: send to the server which then send a list of protos
     def _getById(self, indexes):
         return server.get("/api/tasks/get/proto", payload={'ids': indexes})
-
+    # delete the entity
     def _delete(self, id):
         return server.delete('/api/tasks/delete/%i' % id)
 
