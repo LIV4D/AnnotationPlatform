@@ -147,4 +147,14 @@ export class TasksService {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
       return this.http.get(`/api/tasks/${userId}/next`);
   }
+
+  /**
+   * Hide a task setting it to not visible
+   * @param taskId:
+   */
+  hideTask(taskId: number) {
+    const params = new HttpParams()
+                        .set('taskId', taskId ? taskId.toString() : '');
+    const req = this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`, {params, observe: 'events', reportProgress: true});
+  }
 }

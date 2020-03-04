@@ -1,18 +1,22 @@
+// From Angular
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SelectionModel } from '@angular/cdk/collections';
+
+// Facade Service
 import { TasksCompletedFacadeService } from './tasks-completed.facade.service';
 
+// Ng Material
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
+// Interface
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 
+// Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { DataSource } from '@angular/cdk/table';
-import { SelectionModel } from '@angular/cdk/collections';
-
 
 @Component({
   selector: 'app-tasks-completed',
@@ -43,6 +47,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.loadData();
+
     this.dataTable.paginator = this.paginator;
     this.dataTable.sort = this.sort;
   }
@@ -60,7 +65,6 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
       startWith({}),
       // Observable: Switch to a new observable each time the request change
       switchMap(() => {
-
         setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = true)); // Enable loading bar
         // getTasks from the server
         return this.tasksCompletedFacadeService.getTasks(
@@ -76,19 +80,13 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           })
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
-
-              this.pageSize = 15;
               this.dataTable.data = data;
               console.log(this.dataTable.data);
-              // .data = this.data.tasks.filter (
-              // filteredData => filteredData.completed === false);
               this.length = this.dataTable.length;
-              //this.dataSource = new MatTableDataSource(this.data);
-
               if (this.length === 0) { this.noData = true; }
-              setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false));
+              setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
           });
-  }
+    }
 
   loadImage(imageId: string): void {
     console.log('loading image');
@@ -96,31 +94,33 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataTable.data.length;
-    return numSelected === numRows;
+    const selectionLength = this.selection.selected.length;
+    const dataLength = this.dataTable.data.length;
+    return selectionLength === dataLength;
   }
 
   removeSelectedRows() {
     this.selection.selected.forEach(item => {
-     const index: number = this.dataTable.data.findIndex(d => d === item);
-     console.log(this.dataTable.data.findIndex(d => d === item));
-     this.dataTable.data.splice(index, 1);
+      const index: number = this.dataTable.data.findIndex(d => d === item);
+      this.dataTable.data.splice(index, 1);
 
-     this.dataTable = new MatTableDataSource<Element>(this.dataTable.data);
-     setTimeout(() => {
-       this.dataTable.paginator = this.paginator;
-     });
-   });
+      //Todo: Update task list
+      //this.tasksCompletedFacadeService.hideTask(item.id);
+
+      this.dataTable = new MatTableDataSource<Element>(this.dataTable.data);
+      setTimeout(() => {
+      this.dataTable.paginator = this.paginator;
+      });
+    });
     this.selection = new SelectionModel<Element>(true, []);
- }
+  }
 
- /** Selects all rows if they are not all selected; otherwise clear selection. */
- masterToggle() {
-  this.isAllSelected() ?
-    this.selection.clear() :
-    this.dataTable.data.forEach(row => this.selection.select(row));
-}
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataTable.data.forEach(row => this.selection.select(row));
+  }
 }
 
 

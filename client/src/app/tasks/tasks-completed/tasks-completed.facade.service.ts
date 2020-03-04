@@ -1,5 +1,4 @@
 import { Injectable, Injector } from '@angular/core';
-import { TasksCompletedComponent } from './tasks-completed.component';
 import { TasksService } from '../../shared/services/tasks.service';
 import { AppService} from '../../shared/services/app.service';
 
@@ -10,5 +9,9 @@ export class TasksCompletedFacadeService {
 
   getTasks(page: number, pageSize: number, isCompleted: boolean) {
     return this.taskService.getTasks(page, pageSize, isCompleted);
+  }
+
+  hideTask(taskId: number): void {
+    this.taskService.hideTask(taskId);
   }
 }
