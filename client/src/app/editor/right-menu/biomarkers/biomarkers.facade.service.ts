@@ -81,4 +81,12 @@ export class BiomarkersFacadeService {
         return this.biomarkerService.flatEnabledBiomarkers;
     }
 
+    get currentElement(){
+        return this.biomarkerService.currentElement;
+    }
+
+    get lastBiomarkers(){
+        return this.biomarkerService.lastBiomarkers;
+    }
+
 }

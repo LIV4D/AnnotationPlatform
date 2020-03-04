@@ -17,6 +17,7 @@ import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
+import { BiomarkerService } from './biomarker.service';
 
 
 @Injectable({
@@ -28,7 +29,7 @@ export class ToolboxService {
     listOfTools: Tool[];
 
     constructor(private layersService: LayersService, private editorService: EditorService,
-                private toolPropertiesService: ToolPropertiesService) {
+                private toolPropertiesService: ToolPropertiesService, private biomarkerService: BiomarkerService) {
 
         this.listOfTools = [
             new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
@@ -44,7 +45,7 @@ export class ToolboxService {
             new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)',
                 editorService, layersService),
             new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)',
-                editorService, layersService),
+                editorService, layersService, biomarkerService),
             new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
                 navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)',
                 editorService, layersService),

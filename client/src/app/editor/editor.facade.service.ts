@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { EditorService } from './../shared/services/Editor/editor.service';
+import{ EditorService } from './../shared/services/Editor/editor.service';
+import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
 import { Point } from './../shared/models/point.model';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
@@ -8,7 +9,7 @@ import { Image } from '../shared/models/image.model';
 @Injectable()
 export class EditorFacadeService {
 
-  constructor(private editorService: EditorService, private toolboxService: ToolboxService) { }
+  constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService) { }
 
   init(svgLoaded: EventEmitter<any>): void {
     console.log('EditorFacadeService::init(svgLoaded()) with svgLoaded: ' + svgLoaded);
@@ -38,6 +39,10 @@ export class EditorFacadeService {
 
   get menuState() {
     return this.editorService.menuState;
+  }
+
+  set menuState(menuState) {
+    this.editorService.menuState = menuState;
   }
 
   public onCursorMoveToolbox(point: Point): void {
@@ -91,4 +96,17 @@ export class EditorFacadeService {
 
     this.editorService.loadImageFromServer(imageId);
   }
+
+  getMousePositionInCanvasSpace(clientPosition: Point): Point {
+    return this.editorService.getMousePositionInCanvasSpace(clientPosition);
+  }
+
+  loadSVGLocal(event: any){
+    this.editorService.loadSVGLocal(event);
+  }
+
+  setFocusBiomarker(item: any) {
+    this.biomarkerService.setFocusBiomarker(item);
+  }
+
 }

@@ -11,6 +11,7 @@ import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
+import { BiomarkerService } from './biomarker.service';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -46,7 +47,8 @@ export class EditorService {
   // public biomarkersService: BiomarkersService,
   constructor(private http: HttpClient, public layersService: LayersService,
               public galleryService: GalleryService, public router: Router,
-              private appService: AppService, private headerService: HeaderService) {
+              private appService: AppService, private headerService: HeaderService,
+              private biomarkerService: BiomarkerService) {
     this.scaleX = 1;
     this.imageLoaded = false;
     this.canvasDisplayRatio = new BehaviorSubject<number>(1);
@@ -62,7 +64,7 @@ export class EditorService {
   init(svgLoaded: EventEmitter<any>): void {
     console.log('EditorService::init(svgLoaded: EventEmitter<any>)');
 
-    // this.biomarkersService.dataSource = null;
+    this.biomarkerService.dataSource = null;
     this.zoomFactor = 1.0;
     this.offsetX = 0;
     this.offsetY = 0;
@@ -160,11 +162,11 @@ export class EditorService {
     // Without this zoomCanvas is still undefined because of ngIf in template
     setTimeout(() => {
       // We use setTimeout
-      const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
-      zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
-      zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
-      const zoomContext = zoomCanvas.getContext('2d');
-      zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+      // const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
+      // zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
+      // zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
+      // const zoomContext = zoomCanvas.getContext('2d');
+      // zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
     }, 0);
     this.updateCanvasDisplayRatio();
 
@@ -393,30 +395,30 @@ export class EditorService {
   //     );
   // }
 
-  // public loadSVGLocal(event: any): void {
-  //     const reader: FileReader = new FileReader();
-  //     reader.onload = () => {
-  //         this.layersService.biomarkerCanvas = [];
-  //         this.svgBox.innerHTML = reader.result as string;
-  //         const parser = new DOMParser();
-  //         const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
-  //         const arbre: SVGGElement[] = [];
-  //         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //             const elems = e.getElementsByTagName('g');
-  //             for (let j = 0; j < elems.length; j++) {
-  //                 if (elems[j].parentElement.tagName !== 'g') {
-  //                     arbre.push(elems[j]);
-  //                 }
-  //             }
-  //         });
-  //         this.layersService.biomarkerCanvas = [];
-  //         arbre.forEach((e: SVGGElement) => {
-  //             this.layersService.createFlatCanvasRecursive(e);
-  //         });
-  //     };
-  //     reader.readAsBinaryString(event.target.files[0]);
-  //     this.localSVGName = event.target.files[0].name;
-  // }
+  public loadSVGLocal(event: any): void {
+      const reader: FileReader = new FileReader();
+      reader.onload = () => {
+          this.layersService.biomarkerCanvas = [];
+          this.svgBox.innerHTML = reader.result as string;
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
+          const arbre: SVGGElement[] = [];
+          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+              const elems = e.getElementsByTagName('g');
+              for (let j = 0; j < elems.length; j++) {
+                  if (elems[j].parentElement.tagName !== 'g') {
+                      arbre.push(elems[j]);
+                  }
+              }
+          });
+          this.layersService.biomarkerCanvas = [];
+          arbre.forEach((e: SVGGElement) => {
+              this.layersService.createFlatCanvasRecursive(e);
+          });
+      };
+      reader.readAsBinaryString(event.target.files[0]);
+      this.localSVGName = event.target.files[0].name;
+  }
 
   // Function to update the zoom rectangle.
   // TODO: Move this to zoom.service.ts if it gets enough logic, otherwise keep here.
@@ -602,27 +604,27 @@ export class EditorService {
     return this.backgroundCanvas.originalCanvas.width / this.backgroundCanvas.originalCanvas.height;
   }
 
-  // getMousePositionInCanvasSpace(clientPosition: Point): Point {
-  //     let clientX: number;
-  //     let clientY: number;
-  //     clientX = this.scaleX === 1 ?
-  //         clientPosition.x - this.viewPort.getBoundingClientRect().left :
-  //         this.viewPort.clientWidth - clientPosition.x + this.viewPort.getBoundingClientRect().left;
+  getMousePositionInCanvasSpace(clientPosition: Point): Point {
+      let clientX: number;
+      let clientY: number;
+      clientX = this.scaleX === 1 ?
+          clientPosition.x - this.viewPort.getBoundingClientRect().left :
+          this.viewPort.clientWidth - clientPosition.x + this.viewPort.getBoundingClientRect().left;
 
-  //     clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
-  //     const canvasX = clientX * this.backgroundCanvas.displayCanvas.width /
-  //         this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-  //     const canvasY = clientY * this.backgroundCanvas.displayCanvas.height /
-  //         this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
-  //     return new Point(canvasX, canvasY);
-  // }
+      clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+      const canvasX = clientX * this.backgroundCanvas.displayCanvas.width /
+          this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+      const canvasY = clientY * this.backgroundCanvas.displayCanvas.height /
+          this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+      return new Point(canvasX, canvasY);
+  }
 
-  // getMousePositionInDisplaySpace(clientPosition: Point): Point {
-  //     const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
-  //     const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+  getMousePositionInDisplaySpace(clientPosition: Point): Point {
+      const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
+      const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
 
-  //     return new Point(x, y);
-  // }
+      return new Point(x, y);
+  }
 
   // getTasks(display_progress= false): Observable<Task[]> {
   //     if (display_progress) {
