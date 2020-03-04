@@ -114,6 +114,7 @@ export class EditorService {
     this.backgroundCanvas.displayCanvas.height = h;
 
     // Resize layers.
+    console.log(w);
     this.layersService.resize(w, h);
 
     // Adjust the offsets so the image is in place.

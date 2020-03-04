@@ -16,7 +16,7 @@ import { Point } from './../shared/models/point.model';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements OnInit, AfterViewChecked {
+export class EditorComponent implements OnInit {
 
   @ViewChild('toolsNav') toolsNav: MatSidenav;
   @ViewChild('rightMenuNav') rightMenuNav: MatSidenav;
@@ -45,6 +45,10 @@ export class EditorComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
+    console.log(this.rightMenu)
+    console.log(`THIS IS THE MOST ABSOLUTE TEST AND IS VERY LONG SO IT CAN SHOW`)
+    // this.rightMenu.svgLoaded(null);
+
   }
 
   ngAfterViewChecked(): void {
@@ -54,6 +58,7 @@ export class EditorComponent implements OnInit, AfterViewChecked {
 
   public onSvgLoaded(arbre: SVGGElement[]): void {
     console.log('EditorComponent::onSvgLoaded()');
+    console.log(this.rightMenu)
     this.rightMenu.svgLoaded(arbre);
   }
 
