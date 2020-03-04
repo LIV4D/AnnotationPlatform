@@ -11,6 +11,7 @@ import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/table';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   dataTable: any = [];
   noData: boolean;
   showCompleted: boolean;
+  selection = new SelectionModel(true, []);
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -92,6 +94,33 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
     console.log('loading image');
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataTable.data.length;
+    return numSelected === numRows;
+  }
+
+  removeSelectedRows() {
+    this.selection.selected.forEach(item => {
+     const index: number = this.dataTable.data.findIndex(d => d === item);
+     console.log(this.dataTable.data.findIndex(d => d === item));
+     this.dataTable.data.splice(index, 1);
+
+     this.dataTable = new MatTableDataSource<Element>(this.dataTable.data);
+     setTimeout(() => {
+       this.dataTable.paginator = this.paginator;
+     });
+   });
+    this.selection = new SelectionModel<Element>(true, []);
+ }
+
+ /** Selects all rows if they are not all selected; otherwise clear selection. */
+ masterToggle() {
+  this.isAllSelected() ?
+    this.selection.clear() :
+    this.dataTable.data.forEach(row => this.selection.select(row));
+}
 }
 
 

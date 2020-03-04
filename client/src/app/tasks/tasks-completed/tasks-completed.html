@@ -1,6 +1,6 @@
 <!-- Hide Task Button -->
 <div id="hideTasksButtons">
-        <button mat-raised-button>
+        <button mat-raised-button (click)="removeSelectedRows()">
             <span>Hide Tasks</span>
         </button>
     </div>
@@ -12,11 +12,15 @@
     <!-- Hide Tasks Checkbox Column -->
     <ng-container matColumnDef="selectTasks">
       <mat-header-cell *matHeaderCellDef>
-        <mat-checkbox >
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
         </mat-checkbox>
       </mat-header-cell>
-      <mat-cell *matCellDef="let tasks">
-        <mat-checkbox >
+      <mat-cell *matCellDef="let task">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(task) : null"
+                      [checked]="selection.isSelected(task)">
         </mat-checkbox>
       </mat-cell>
     </ng-container>
@@ -61,7 +65,7 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())" ng-hide="row.incompleteCount > 0"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())" (click)="selection.toggle(row)"></mat-row>
   </mat-table>
 
       <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
