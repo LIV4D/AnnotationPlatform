@@ -1,0 +1,14 @@
+import { Injectable, Injector } from '@angular/core';
+import { TasksCompletedComponent } from './tasks-completed.component';
+import { TasksService } from '../../shared/services/tasks.service';
+import { AppService} from '../../shared/services/app.service';
+
+@Injectable()
+export class TasksCompletedFacadeService {
+
+  constructor(private taskService: TasksService, public appService: AppService) {  }
+
+  getTasks(sort: string, order: string, page: number, pageSize: number, isCompleted: boolean) {
+    return this.taskService.getTasks(sort, order, page, pageSize, isCompleted);
+  }
+}

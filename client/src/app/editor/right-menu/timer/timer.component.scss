@@ -1,0 +1,15 @@
+#timerDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: top;
+
+  height: 30px;
+  padding-right: 15px;
+}
+
+mat-icon {
+  width: 15px;
+  height: 15px;
+}
+

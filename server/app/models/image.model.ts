@@ -1,14 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Annotation } from './annotation.model';
+import { IProtoImage } from '../prototype interfaces/IProtoImage.interface';
+import { IImage } from '../interfaces/IImage.interface';
+
+import { ImageType } from './imageType.model';
 
 export class Metadata {
     [key: string]: string | number | boolean;
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Entity()
 export class Image {
+
+    @ManyToOne(type => ImageType, imageType => imageType.images)
+    public imageType: ImageType;
 
     @PrimaryGeneratedColumn()
     public id: number;
@@ -25,6 +33,13 @@ export class Image {
     @OneToMany(type => Annotation, annotation => annotation.image)
     public annotations: Annotation[];
 
+    public static fromInterface(iimage: IImage): Image {
+        const image = new Image();
+        image.update(iimage);
+        if (!isNullOrUndefined(iimage.id)) {   image.id = iimage.id; }
+        return image;
+    }
+
     public interface(): IImage {
         return {
             id: this.id,
@@ -35,28 +50,12 @@ export class Image {
     }
 
     public update(iimage: IImage): void {
-        if(!isNullOrUndefined(iimage.type))          this.type = iimage.type; 
-        if(!isNullOrUndefined(iimage.metadata))      this.metadata = iimage.metadata;
-        if(!isNullOrUndefined(iimage.preprocessing)) this.preprocessing = iimage.preprocessing;
+        if (!isNullOrUndefined(iimage.type)) {          this.type = iimage.type; }
+        if (!isNullOrUndefined(iimage.metadata)) {      this.metadata = iimage.metadata; }
+        if (!isNullOrUndefined(iimage.preprocessing)) { this.preprocessing = iimage.preprocessing; }
     }
 
-
-     /**
-     * Make an entity from the interface: image.service.create()
-     */
-    public static fromInterface(iimage: IImage): Image {
-        const image = new Image();
-        image.update(iimage);
-        if(!isNullOrUndefined(iimage.id))   image.id = iimage.id;
-        return image;
-    }
-
-     /**
-     * Entity in a proto form
-     * The proto is sent instead of the entiy to the cli
-     * for letting  a communication with the serveur and the cli
-     */
-    public proto(): ProtoImage {
+    public proto(): IProtoImage {
         return {
             id: this.id,
             type: this.type,
@@ -64,20 +63,4 @@ export class Image {
             preprocessing: this.preprocessing,
         };
     }
-}
-
-
-export interface IImage {
-    id?: number;
-    type?: string;
-    metadata?: Metadata;
-    preprocessing?: boolean;
-}
-
-
-export interface ProtoImage {
-    id: number;
-    type: string;
-    metadata: Metadata;
-    preprocessing: boolean
 }

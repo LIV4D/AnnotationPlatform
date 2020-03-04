@@ -19,7 +19,9 @@ export class ImageRepository {
     }
 
     // tslint:disable-next-line: max-line-length
-    public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<Image[]> {
+    // public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<Image[]> {
+    // tslint:disable-next-line: max-line-length
+    public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<any> {
         const repository =  (await this.connectionProvider()).getRepository(Image);
 
         const queryBuilder = repository
@@ -32,7 +34,9 @@ export class ImageRepository {
             queryBuilder.orderBy(sort, 'DESC');
         }
         const queryResult = await this.filterImages(queryBuilder, filters);
-        return queryResult[0];
+        console.log('QUERY RESULT : ' + queryResult[1]);
+
+        return queryResult;
     }
 
     private async filterImages(queryBuilder: SelectQueryBuilder<Image>, filters?: string): Promise<[Image[], number]> {

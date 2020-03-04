@@ -13,12 +13,19 @@ const seedingFiles = [
     ];
 
 export async function loadSeeds(): Promise<any> {
+
+    // database config json files are in config folder. That is where the entities to be created are defined.
+    // entities are created from the js models in the out folder, so make sure to recompile the server after changing models
     const databaseConfig: ConnectionOptions = {
         ...config.get('database'),
         name: 'seedingConnection',
-        dropSchema: false,
+        dropSchema: true,
     };
+
+    // Create the tables in the DB and allows connection
     const connection = await createConnection(databaseConfig);
+
+    // This populates the tables with the data in the json files
     for (const file of seedingFiles) {
         await loadSeed(file, connection);
     }
@@ -44,6 +51,7 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
         console.error(error);
     }
     if (!items || items.length === 0) { return; }
+
     await insertItems(connection, entityName, items);
     await insertRelations(connection, entityName, items);
 }

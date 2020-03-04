@@ -1,0 +1,36 @@
+<!--Table-->
+<div class="example-container" >
+  <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
+
+    <ng-container matColumnDef="imageSrc"  >
+        <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
+        <mat-cell *matCellDef="let task" > <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="imageId">
+        <mat-header-cell *matHeaderCellDef disableClear>Id</mat-header-cell>
+        <mat-cell *matCellDef="let task"> {{task}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="complete">
+        <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
+        <mat-cell *matCellDef="let task"> {{task.comment}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="incomplete">
+      <mat-header-cell *matHeaderCellDef disableClear>Creator</mat-header-cell>
+      <mat-cell *matCellDef="let task"> {{task.creatorId}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="time">
+      <mat-header-cell *matHeaderCellDef disableClear>Time</mat-header-cell>
+      <mat-cell *matCellDef="let task"> N/A </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())" ng-hide="row.incompleteCount > 0"></mat-row>
+  </mat-table>
+
+      <!-- p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
+<mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
+</div>

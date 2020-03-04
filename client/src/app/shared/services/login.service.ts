@@ -5,7 +5,7 @@ import { HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http
 import { AppService } from './app.service';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, isDevMode } from '@angular/core';
 
 @Injectable()
 export class LoginService {
@@ -52,18 +52,22 @@ export class LoginService {
   }
 
   loginAppService(email: string, password: string) {
-    this.appService.loading = true;
-    this.login(email, password)
-      .subscribe(
-        data => {
-          this.appService.loading = false;
-          // Todo: Bring to tasks page only for clinician user
-          this.router.navigate(['/tasks']);
-        },
-        error => {
-          this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
-          this.appService.loading = false;
-        });
+    // Bypass credentials for the time being (using dev-prod mode) until a fix for the server has been found
+    // if (isDevMode()) {
+      // this.router.navigate(['/dashboard']);
+    // } else {
+      this.appService.loading = true;
+      this.login(email, password)
+        .subscribe(
+          data => {
+            this.appService.loading = false;
+            this.router.navigate(['/dashboard']);
+          },
+          error => {
+            this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
+            this.appService.loading = false;
+          });
+    // }
   }
 
   isAuthenticated(): boolean {

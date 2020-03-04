@@ -1,0 +1,38 @@
+<!-- <div id="editor-box" #editorBox appMouseWheel
+    (wheel)="onMouseWheel($event)"
+    (mousemove)="onMouseMove($event)"
+    (mousedown)="onMouseDown($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="onMouseLeave($event)"
+    (window:resize)="onResize()"
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd($event)"
+    (touchcancel)="onTouchCancel($event)"
+    (pointerdown)="onPointerDown($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointercancel)="onPointerLeave($event)"
+    (pointerleave)="onPointerLeave($event)"
+
+    [ngStyle]="{'transform': 'scaleX(' + editorService.scaleX + ')'}">
+    <canvas id="main-canvas"></canvas>
+    <app-layers id="app-layers"></app-layers>
+    <span id="svg-box"></span>
+</div> -->
+
+<div id="editor-box" appMousewheel #editorBox
+    (wheel)="onMouseWheel($event)"
+    (window:resize)="onResize()"
+    (mousemove)="onMouseMove($event)"
+    (mousedown)="onMouseDown($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="onMouseLeave($event)"
+
+    [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
+
+    <canvas id="main-canvas"></canvas>
+    <app-layers id="app-layers"></app-layers>
+    <span id="svg-box"></span>
+
+</div>
