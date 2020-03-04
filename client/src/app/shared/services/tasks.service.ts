@@ -155,6 +155,10 @@ export class TasksService {
   hideTask(taskId: number) {
     const params = new HttpParams()
                         .set('taskId', taskId ? taskId.toString() : '');
-    const req = this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`, {params, observe: 'events', reportProgress: true});
+    return this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`,  { isVisible: false, isComplete: true, params});
+  }
+
+  hideTaskApp(taskId: number){
+    this.hideTask(taskId).subscribe();
   }
 }
