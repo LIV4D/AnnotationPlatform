@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import {map, filter} from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 
+import * as chalk_ from 'chalk';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +34,9 @@ export class HeaderService {
    * @param Progress: progression number of the bar
    */
   cbProgress(Progress: number) {
+    console.log('HeaderService::cbProgress()');
+    console.log('%c this is colored', 'color: red; background: yellow;');
+
     this.progress = Progress;
   }
 
@@ -46,21 +51,32 @@ export class HeaderService {
     console.log('headerService::display_progress()');
 
     this.cbShowProgress(true, name, isDownloading);
+
     return request.pipe(filter(res => {
         if (res.type === HttpEventType.DownloadProgress) {
-            if (this.cbProgress) {
-                this.cbProgress(res.loaded / res.total);
-            }
+          console.log('HeaderService::display_progress() (1)');
+
+          if (this.cbProgress) {
+            console.log('%c if (this.cbProgress) (1)', 'color: red; background: yellow;');
+
+            console.log('%c res: ' + res.loaded
+              + ' / ' + res.total, 'color: red; background: yellow;');
+
+            this.cbProgress(res.loaded / res.total);
+          }
         } else if (res.type === HttpEventType.UploadProgress) {
-            if (this.cbProgress) {
-                this.cbProgress(res.loaded / res.total);
-            }
+          console.log('HeaderService::display_progress() (2)');
+
+          if (this.cbProgress) {
+              this.cbProgress(res.loaded / res.total);
+          }
         } else if (res.type === HttpEventType.Response) {
-            this.cbShowProgress(false);
-            return true;
+          console.log('HeaderService::display_progress() (3)');
+
+          this.cbShowProgress(false);
+          return true;
         }
         return false;
     }), map(res => (res as HttpResponse<any>).body));
   }
-
 }

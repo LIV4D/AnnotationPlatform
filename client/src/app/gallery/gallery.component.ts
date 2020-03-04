@@ -3,14 +3,14 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AppService } from '../shared/services/app.service';
 import { Router } from '@angular/router';
-import { GalleryService } from '../shared/services/Gallery/gallery.service';
-import { EditorService } from '../shared/services/Editor/editor.service';
 import { merge } from 'rxjs';
 import { of as observableOf } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { IGallery } from '../shared/services/Gallery/gallery.interface';
 import { LocalStorage } from '../shared/models/local-storage.model';
 import { MatTableDataSource } from '@angular/material/table';
+import { GalleryFacadeService } from './gallery.facade.service';
+import { EditorFacadeService } from '../editor/editor.facade.service';
 
 @Component({
   selector: 'app-gallery',
@@ -35,29 +35,22 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   @ViewChild('visitField') visitField: ElementRef;
   @ViewChild('codeField') codeField: ElementRef;
 
-  constructor(public appService: AppService, public router: Router, public galleryService: GalleryService,
-              public editorService: EditorService) {
+  constructor(public appService: AppService, public router: Router, public galleryFacadeService: GalleryFacadeService,
+              public editorFacadeService: EditorFacadeService) {
     this.showPagination = true;
     // this.length = 0;
     this.pageSize = 15;
-    this.editorService.imageLoaded = false;
+
+    this.editorFacadeService.imageLoaded = false;
   }
 
   ngOnInit(): void {
     this.data = new MatTableDataSource();
-    // this.editorService.imageServer = null;
-    // this.editorService.imageLocal = null;
-    // this.getImageTypes();
-    // this.sort.sortChange.subscribe(
-    //   () => {
-    //     this.paginator.pageIndex = 0;
-    //   });
-    // this.getImages();
   }
 
   ngAfterViewInit(): void {
-    this.editorService.imageServer = null;
-    this.editorService.imageLocal = null;
+    this.editorFacadeService.imageServer = null;
+    this.editorFacadeService.imageLocal = null;
     // this.getImageTypes();  // commented for now
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
@@ -81,41 +74,40 @@ export class GalleryComponent implements OnInit, AfterViewInit {
     const filters = JSON.stringify(filtersObj);
 
     merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(
-          () => {
-            setTimeout(() => this.appService.loading = true);
+    .pipe(
+      startWith({}),
+      switchMap(
+        () => {
+          console.log('%c here? ', 'color: red; background: yellow;');
 
-            console.log(
-              'this.sort.active : ' + this.sort.active
-              + '\nthis.sort.direction : ' +  this.sort.direction
-              + '\nthis.paginator.pageIndex : ' + this.paginator.pageIndex
-              + '\nthis.pageSize : ' + this.pageSize
-              + '\nfilters : ' + filters
-            );
+          setTimeout(() => this.appService.loading = true);
 
-            return this.galleryService.getImages(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.pageSize, filters);
-        }),
-        catchError(() => {
-          console.log('there is an Error');
-          setTimeout(() => this.appService.loading = false);
-          return observableOf([]);
-        })
-      ).subscribe((data: IGallery) => {
+          // console.log(
+          //   'this.sort.active : ' + this.sort.active
+          //   + '\nthis.sort.direction : ' +  this.sort.direction
+          //   + '\nthis.paginator.pageIndex : ' + this.paginator.pageIndex
+          //   + '\nthis.pageSize : ' + this.pageSize
+          //   + '\nfilters : ' + filters
+          // );
 
-        this.pageSize = 15;
-        this.length = data.objectCount;
-        this.data = data.objects;
-
-        // console.log('this.paginator.pageSize : ' + this.paginator.pageSize);
-        // console.log('data.objects.length : ' + data.objects.length);
-        // console.log('data.objectCount : ' + data.objectCount);
-        // console.log('data : ' + data.objects[2].metadata.filename);
-        // console.log('data : ' + data.objects[2].type);
-
+          // tslint:disable-next-line: max-line-length
+          // return this.galleryService.getImages(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.pageSize, filters);
+          // tslint:disable-next-line: max-line-length
+          return this.galleryFacadeService.getImages(this.sort, this.paginator, this.pageSize, filters);
+      }),
+      catchError(() => {
+        console.log('there is an Error');
         setTimeout(() => this.appService.loading = false);
-      });
+        return observableOf([]);
+      })
+    ).subscribe((data: IGallery) => {
+
+      this.pageSize = 15;
+      this.length = data.objectCount;
+      this.data = data.objects;
+
+      setTimeout(() => this.appService.loading = false, 50000);
+    });
   }
 
   onLocalImageLoaded(event: any): void {
@@ -123,15 +115,15 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
     const reader: FileReader = new FileReader();
     reader.onload = () => {
-        const image = new Image();
-        image.onload = () => {
-            this.appService.localEditing = true;
-            this.editorService.imageLocal = image;
-            this.editorService.imageId = 'local';
-            LocalStorage.clear();
-            this.router.navigate(['/' + 'editor']);
-        };
-        image.src = reader.result as string;
+      const image = new Image();
+      image.onload = () => {
+        this.appService.localEditing = true;
+        this.editorFacadeService.imageLocal = image;
+        this.editorFacadeService.imageId = 'local';
+        LocalStorage.clear();
+        this.router.navigate(['/' + 'editor']);
+      };
+      image.src = reader.result as string;
     };
 
     reader.readAsDataURL(event.target.files[0]);
@@ -139,10 +131,11 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
   // Retrieves the image types from the server
   getImageTypes(): void {
-    this.galleryService.getImageTypes().subscribe(res => {
-    // this.galleryService.getTweakedImageTypes().subscribe(res => {
-        this.galleryService.selected = res[0];
-        this.imageTypes = res;
+    // this.galleryService.getImageTypes().subscribe(res => {
+    this.galleryFacadeService.getImageTypes().subscribe(res => {
+
+      this.galleryFacadeService.selected = res[0];
+      this.imageTypes = res;
     });
   }
 
@@ -153,6 +146,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
     localStorage.setItem('previousPage', 'gallery');
 
     console.log('imageID :' + imageId);
-    this.editorService.loadImageFromServer(imageId);
+    this.editorFacadeService.loadImageFromServer(imageId);
   }
 }

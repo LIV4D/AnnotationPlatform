@@ -6,6 +6,9 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Pipes
+import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
+
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
@@ -23,15 +26,18 @@ import { LoginFacadeService } from './login/login.facade.service';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { EditorFacadeService } from './editor/editor.facade.service';
 import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
-// import { LayoutModule } from '@angular/cdk/layout';
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
+import { GalleryFacadeService } from './gallery/gallery.facade.service';
+// import { LayoutModule } from '@angular/cdk/layout';
+import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
+import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -79,7 +85,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       SafeImagePipe,
       ManagementComponent,
       ZoomComponent,
-      MousewheelDirective
+      MousewheelDirective,
+      CamelCaseToTextPipe
    ],
    imports: [
       BrowserModule,
@@ -105,7 +112,10 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,
-       {
+      GalleryFacadeService,
+      ToolPropertiesService,
+      ImageBorderService,
+      CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,
