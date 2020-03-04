@@ -62,7 +62,7 @@
         </mat-tree>
 
         <!-- SIMPLIFIED BIOMARKERS VIEW-->
-        <!-- <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
+        <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
             <mat-list-item *ngFor="let node of biomarkersFacadeService.flatEnabledBiomarkers" [ngClass]="getCssClass(node)">
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.getAttribute('color')}" />
@@ -80,6 +80,6 @@
                     </mat-icon>
                 </div>
             </mat-list-item>
-        </mat-list> -->
+        </mat-list>
     </div>
 </div>
