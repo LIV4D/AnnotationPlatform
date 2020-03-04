@@ -240,10 +240,10 @@ export class LayersService {
       biomarker.displayCanvas.width = width;
       biomarker.displayCanvas.height = height;
     });
-    console.log('width');
-    console.log(this.biomarkerOverlayCanvas.width);
-    console.log('height');
-    console.log(this.biomarkerOverlayCanvas.height);
+    // console.log('width');
+    // console.log(this.biomarkerOverlayCanvas.width);
+    // console.log('height');
+    // console.log(this.biomarkerOverlayCanvas.height);
     this.biomarkerOverlayCanvas.width = width;
     this.biomarkerOverlayCanvas.height = height;
 
