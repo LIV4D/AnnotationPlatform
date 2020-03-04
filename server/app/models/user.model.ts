@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail, validateSync } from 'class-validator';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';

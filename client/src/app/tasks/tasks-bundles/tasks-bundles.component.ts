@@ -11,18 +11,18 @@ import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
 export class TasksBundlesComponent implements OnInit {
 
   displayedColumns = ['quantity', 'images', 'Task type', 'Description', 'Estimated time'];
-  Bundle1: Task[];
-  Bundle2: Task[];
-  Bundle3: Task[];
+  bundles: any = [];
+  noData: boolean;
 
-  constructor(private facadeService: TasksBundlesFacadeService) { }
+  constructor(private facadeService: TasksBundlesFacadeService) {
+  }
 
   ngOnInit(): void {
-    this.loadBundles();
+    // this.loadBundles();
   }
 
   loadBundles() {
-    this.facadeService.loadBundles();
+    this.facadeService.loadBundles(this);
   }
 
 }

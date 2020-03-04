@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
   }
 
   onValueChanged(data?: any): void {
-    console.log('test');
   }
 
   ngOnInit() {

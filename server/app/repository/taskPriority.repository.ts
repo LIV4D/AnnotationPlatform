@@ -1,18 +1,13 @@
+import { Task } from './../models/task.model';
+import { ITaskPriority } from './../interfaces/ITaskPriority.interface';
 import { TaskPriority } from './../models/taskPriority.model';
-// import * as path from 'path';
-// import * as fs from 'fs';
-// import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
-// import { Task } from '../models/task.model';
-// import { ITaskGallery } from '../interfaces/gallery.interface';
-// import { ImageService } from '../services/image.service';
 // import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskPriorityRepository {
-    // @inject(TYPES.ImageService)
-    // private imageService: ImageService;
+
     private connectionProvider: ConnectionProvider;
     constructor(
         @inject('ConnectionProvider') connectionProvider: ConnectionProvider,
@@ -63,46 +58,22 @@ export class TaskPriorityRepository {
                      .getMany();
     }
 
-    // public async findTaskListByUser(userId: string, page: number = 0,
-    //                                 pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
-    //     const repository =  (await this.connectionProvider()).getRepository(Task);
-    //     const qb = await repository
-    //                      .createQueryBuilder('task')
-    //                      .where('task.user.id = :id', { id: userId })
-    //                      .andWhere('task.isVisible = :visible', { visible: true });
+    public async findPrioritizedTasksByUser(userId: number): Promise<ITaskPriority[]> {
+        const taskPriorityRepo =  (await this.connectionProvider()).getRepository(TaskPriority);
 
-    //     const tasks =  await qb.getMany();
-    //     let taskList: ITaskGallery[];
-    //     // Regroup tasks in taskGroups by image
-    //     taskList = tasks.map(task => {
-    //         let dataUrl = '';
-    //         try {
-    // tslint:disable-next-line:max-line-length
-    //             const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(task.annotation.image.id)), 'base64');
-    //             dataUrl = 'data:image/png;base64, ' + base64Image;
-    //         } catch (error) {
-    //             throw(error);
-    //         }
-    //         const taskGallery: ITaskGallery = {
-    //             taskId: task.id,
-    //             isComplete: task.isComplete,
-    //             thumbnail: dataUrl,
-    //             taskTypeTitle: task.taskType.title,
-    //             imageId: task.annotation.image.id,
-    //         };
-    //         return taskGallery;
-    //     });
-    //     if (completed) {
-    //         taskList = taskList.filter(taskGallery => taskGallery.isComplete);
-    //     } else {
-    //         taskList = taskList.filter(taskGallery => !taskGallery.isComplete);
-    //     }
-    //     // Select a subsection of our taskGroups, according to pageSize and page number
-    //     if (page !== 0 && pageSize !== 0) {
-    //         taskList = taskList.splice(pageSize * page, pageSize);
-    //     }
-    //     return await taskList;
-    // }
+        const qb = await taskPriorityRepo
+                         .createQueryBuilder('taskPriority')
+                         .where(`taskPriority.userId = ${userId}` );
+
+        const taskPrioritys =  await qb.getMany();
+        const taskRepo =  (await this.connectionProvider()).getRepository(Task);
+        taskPrioritys.forEach(async priority => {
+            priority.task = await taskRepo.findOne(priority.taskId);
+        });
+
+        console.log(taskPrioritys);
+        return taskPrioritys;
+    }
 
     // public async delete(task: Task): Promise<DeleteResult> {
     //     const repository =  (await this.connectionProvider()).getRepository(Task);
