@@ -1,6 +1,6 @@
 @import '../../../colorVariables.scss';
 
-.example-container {
+.TasksToCompleteDataTable {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -168,7 +168,6 @@ input {
   .selected {
     opacity: 1.0;
   }
-
 
   #tasksFinishedText {
     margin: 50px;

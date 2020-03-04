@@ -1,14 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { TasksToCompleteComponent } from './tasks-to-complete.component';
 import { TasksService } from '../../shared/services/tasks.service';
+import { AppService} from '../../shared/services/app.service';
 
 @Injectable()
 export class TasksToCompleteFacadeService {
 
-  constructor(private taskService: TasksService) {  }
+  constructor(private taskService: TasksService, public appService: AppService) {  }
 
-  // tslint:disable-next-line:max-line-length
-  loadCompletedTasksData(tasksToCompleteComponent: TasksToCompleteComponent): void {
-    this.taskService.loadData(tasksToCompleteComponent);
+  getTasks(page: number, pageSize: number, isCompleted: boolean) {
+    return this.taskService.getTasks(page, pageSize, isCompleted);
   }
 }
