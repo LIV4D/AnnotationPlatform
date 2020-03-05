@@ -61,6 +61,8 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // import { MatIconModule } from '@angular/material/icon';
+import { NgxImageZoomModule } from 'ngx-image-zoom';
+import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 
 @NgModule({
    declarations: [
@@ -86,7 +88,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       ManagementComponent,
       ZoomComponent,
       MousewheelDirective,
-      CamelCaseToTextPipe
+      CamelCaseToTextPipe,
+      ZoomngxComponent
    ],
    imports: [
       BrowserModule,
@@ -95,7 +98,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       HttpClientModule,
       BrowserAnimationsModule,
       FormsModule,
-      ReactiveFormsModule
+      ReactiveFormsModule,
+      NgxImageZoomModule
    ],
    providers: [
       LoginFacadeService,

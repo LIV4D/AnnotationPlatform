@@ -7,6 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditorComponent } from './editor/editor.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ManagementComponent } from './management/management.component';
+import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 
 const routes: Routes = [
   // TODO: empty route redirect to tasks clinician if is login
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'tasks', component: TasksComponent },
   { path: 'management', component: ManagementComponent },
+  { path: 'zoomtest', component: ZoomngxComponent },
   { path: '**', redirectTo: '/editor' },
 ];
 

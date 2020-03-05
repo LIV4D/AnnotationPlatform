@@ -22,17 +22,16 @@
 </div> -->
 
 <div id="editor-box" appMousewheel #editorBox
-    (wheel)="onMouseWheel($event)"
-    (window:resize)="onResize()"
-    (mousemove)="onMouseMove($event)"
-    (mousedown)="onMouseDown($event)"
-    (mouseup)="onMouseUp($event)"
-    (mouseleave)="onMouseLeave($event)"
+  (wheel)="onMouseWheel($event)"
+  (window:resize)="onResize()"
+  (mousemove)="onMouseMove($event)"
+  (mousedown)="onMouseDown($event)"
+  (mouseup)="onMouseUp($event)"
+  (mouseleave)="onMouseLeave($event)"
 
-    [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
+  [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
 
-    <canvas id="main-canvas"></canvas>
-    <app-layers id="app-layers"></app-layers>
-    <span id="svg-box"></span>
-
+  <canvas id="main-canvas"></canvas>
+  <app-layers id="app-layers"></app-layers>
+  <span id="svg-box"></span>
 </div>

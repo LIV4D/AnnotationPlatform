@@ -15,7 +15,7 @@ import { GalleryService } from '../Gallery/gallery.service';
 // Min and max values for zooming
 const ZOOM = {
   MIN: 1.0,
-  MAX: 16.0
+  MAX: 10.0
 };
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
@@ -83,8 +83,7 @@ export class EditorService {
 
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
   updateCanvasDisplayRatio(): void {
-    const ratio = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width /
-      this.backgroundCanvas.displayCanvas.width;
+    const ratio = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width / this.backgroundCanvas.displayCanvas.width;
     this.canvasDisplayRatio.next(ratio);
   }
 
@@ -500,21 +499,27 @@ export class EditorService {
     // Adjust canvas sizes.
     const oldWidth = this.backgroundCanvas.displayCanvas.width;
     const oldHeight = this.backgroundCanvas.displayCanvas.height;
+
     const newWidth = this.fullCanvasWidth / zoomFactor;
     const newHeight = this.fullCanvasHeight / zoomFactor;
+
     this.backgroundCanvas.displayCanvas.width = newWidth;
     this.backgroundCanvas.displayCanvas.height = newHeight;
+
     this.layersService.resize(newWidth, newHeight);
 
     if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
       this.zoomFactor = zoomFactor;
+
       // Adjust offsets to keep them coherent with the previous zoom.
       let positionXPercentage = 0.5;
       let positionYPercentage = 0.5;
+
       if (position !== null) {
         positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
         positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
       }
+
       const deltaX = (oldWidth - newWidth) * positionXPercentage;
       const deltaY = (oldHeight - newHeight) * positionYPercentage;
       this.offsetX += deltaX;

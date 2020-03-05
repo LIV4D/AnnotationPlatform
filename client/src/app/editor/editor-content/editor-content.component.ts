@@ -56,7 +56,6 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
     } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
       console.log('inside else-if');
 
       // let brushWidth =  this.toolPropertiesService.brushWidth;
@@ -70,6 +69,7 @@ export class EditorContentComponent implements OnInit, OnDestroy {
       // this.toolPropertiesService.setBrushWidth(brushWidth);
     }
   }
+
   onMouseDown(event: MouseEvent): void {
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
