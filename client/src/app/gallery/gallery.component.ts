@@ -131,9 +131,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
   // Retrieves the image types from the server
   getImageTypes(): void {
-    // this.galleryService.getImageTypes().subscribe(res => {
     this.galleryFacadeService.getImageTypes().subscribe(res => {
-
       this.galleryFacadeService.selected = res[0];
       this.imageTypes = res;
     });

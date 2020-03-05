@@ -10,7 +10,7 @@ import { Image as ImageServer } from '../../models/image.model';
 import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
-import { GalleryService } from '../Gallery/gallery.service';
+import { GalleryService } from './../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 
 // Min and max values for zooming
@@ -126,6 +126,7 @@ export class EditorService {
 
   // Load canvases and local variables when opening a local image.
   public loadAllLocal(svgLoaded: EventEmitter<any>): void {
+    console.log("Load all local");
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
@@ -163,13 +164,25 @@ export class EditorService {
     // Without this zoomCanvas is still undefined because of ngIf in template
     setTimeout(() => {
       // We use setTimeout
-      // const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
-      // zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
-      // zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
-      // const zoomContext = zoomCanvas.getContext('2d');
-      // zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+      const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
+      zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
+      zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
+      const zoomContext = zoomCanvas.getContext('2d');
+      zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
     }, 0);
     this.updateCanvasDisplayRatio();
+
+    const name = 'test'; 
+    const data1 =  { 
+      files: { 
+        image: [name, this.imageLocal]
+      },
+      type: 'test'
+    };
+
+    this.http.post<any>('/api/images/create/', data1).subscribe(res => {
+      console.log(res);
+    });
 
     // TODO: Gotta understand how to make this work with the server.
     // this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
