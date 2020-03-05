@@ -5,6 +5,8 @@ import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskBundleService } from '../services/taskBundle.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { ITask } from '../interfaces/ITask.interface';
+import { isNullOrUndefined } from 'util';
 
 @injectable()
 export class TaskPriorityController implements IController {
@@ -13,6 +15,7 @@ export class TaskPriorityController implements IController {
 
     public setRoutes(app: express.Application): void {
         app.post('/api/taskPrioritys/create', this.createTaskPriority);
+        app.put('/api/taskPrioritys/assign/:taskId', this.assignTaskPriority);
 
         app.get('/api/taskPrioritys/get/tasksBundles', this.getTasksBundles);
 
@@ -36,6 +39,23 @@ export class TaskPriorityController implements IController {
             .getTasksBundles(userId)
             .then(tasksBundles => res.send(tasksBundles))
             .catch(next);
+    }
+
+    private assignTaskPriority = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const updatedTask: ITask = {
+            id: req.params.taskId,
+            assignedUserId: req.user,
+            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
+        };
+
+        const task = this.taskBundleService.updateTask(updatedTask, req.user);
+        if (!isNullOrUndefined(task)) {
+            this.taskBundleService.deleteTaskPriority(req.params.taskId)
+            .then(() => res.sendStatus(204))
+            .catch(next);
+        } else {
+            res.sendStatus(404);
+        }
     }
 
 }

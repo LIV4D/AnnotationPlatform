@@ -8,6 +8,11 @@ import { TaskPriority } from '../models/taskPriority.model';
 import { ITaskPriority } from '../interfaces/ITaskPriority.interface';
 import { ITasksBundles } from '../interfaces/ITasksBundles.interface';
 import { TaskTypeRepository } from '../repository/taskType.repository';
+import { createError } from '../utils/error';
+import { isNullOrUndefined } from 'util';
+import { ITask } from '../interfaces/ITask.interface';
+import { DeleteResult } from 'typeorm';
+import { TaskService } from './task.service';
 
 @injectable()
 export class TaskBundleService {
@@ -16,6 +21,9 @@ export class TaskBundleService {
 
     @inject(TYPES.TaskTypeRepository)
     private taskTypeRepository: TaskTypeRepository;
+
+    @inject(TYPES.TaskService)
+    private taskService: TaskService;
 
     public static throwIfNotAuthorized(task: Task, user: User) {
         if (task.assignedUserId !== user.id && task.creatorId !== user.id) {
@@ -85,6 +93,19 @@ export class TaskBundleService {
         };
 
         return bundles;
+    }
+
+    public async deleteTaskPriority(taskId: number): Promise<DeleteResult[]> {
+        const taskPriority = await this.taskPriorityRepository.findByFilter({ taskId });
+        if (isNullOrUndefined(taskPriority) || taskPriority.length <= 0) {
+            throw createError('This task priority with the given task id does not exist.', 404);
+        }
+
+        return await this.taskPriorityRepository.deletePriorities(taskPriority);
+    }
+
+    public async updateTask(updatedTask: ITask, user: User): Promise<Task> {
+        return await this.taskService.updateTask(updatedTask, user);
     }
 
 }
