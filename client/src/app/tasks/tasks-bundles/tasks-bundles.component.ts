@@ -36,4 +36,9 @@ export class TasksBundlesComponent implements OnInit {
     this.facadeService.loadBundles(this);
   }
 
+  areBundlesEmpty() {
+    return this.bundles.primaryBundle.length === 0 && this.bundles.secondaryBundle.length === 0
+    && this.bundles.tertiaryBundle.length === 0;
+  }
+
 }
