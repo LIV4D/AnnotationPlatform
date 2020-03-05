@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/models/point.model';
@@ -9,7 +9,7 @@ import { Point } from 'src/app/shared/models/point.model';
   styleUrls: ['./editor-content.component.scss']
 })
 
-export class EditorContentComponent implements OnInit, OnDestroy {
+export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(public editorFacadeService: EditorFacadeService, public appService: AppService, ) {
     this.delayEventTimer = null;
@@ -19,7 +19,6 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   zoomFactor: number;
   offsetX: number;
   offsetY: number;
-  @ViewChild('editorBox') viewPort: any;
   cursorDown = false;
   middleMouseDown = false;
   touchFreeze = false;
@@ -28,14 +27,22 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   delayEventTimer: any;
   delayedEventHandler: Function;
 
+  @ViewChild('editorBox') viewPort: ElementRef;
+  @ViewChild('svgBox') svgBox: ElementRef;
+  // @ViewChild('appLayer') appLayer: ElementRef;
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit() {
     console.log('EditorContent::ngOnInit()');
+    console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
+    console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
 
-    this.editorFacadeService.init(this.svgLoaded);
+    this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
+
     // this.editorFacadeService.load(imageId); // I don't know why this is here
-
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }

@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject, throwError, Observable } from 'rxjs';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { GalleryService } from '../Gallery/gallery.service';
 // Min and max values for zooming
 const ZOOM = {
   MIN: 1.0,
-  MAX: 10.0
+  MAX: 16.0
 };
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
@@ -44,6 +44,7 @@ export class EditorService {
   localSVGName: string;
   menuState: boolean;
   // public biomarkersService: BiomarkersService,
+
   constructor(private http: HttpClient, public layersService: LayersService,
               public galleryService: GalleryService, public router: Router,
               private appService: AppService, private headerService: HeaderService) {
@@ -59,16 +60,20 @@ export class EditorService {
     }, 30000);
   }
 
-  init(svgLoaded: EventEmitter<any>): void {
-    console.log('EditorService::init(svgLoaded: EventEmitter<any>)');
+  init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
+    console.log('EditorService::init(svgLoaded: EventEmitter<any>, viewPort: ElementRef)');
 
     // this.biomarkersService.dataSource = null;
     this.zoomFactor = 1.0;
     this.offsetX = 0;
     this.offsetY = 0;
     this.imageLoaded = false;
-    this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
-    this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
+
+    // this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
+    this.viewPort = viewPort.nativeElement;
+    // this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
+    this.svgBox = svgBox.nativeElement;
+
     this.svgLoaded = svgLoaded;
     if (this.imageLocal) {
         this.setImageId('local');
@@ -78,7 +83,7 @@ export class EditorService {
 
       this.loadAll();
     }
-    this.resize();
+    // this.resize();
   }
 
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
@@ -122,14 +127,17 @@ export class EditorService {
 
   // Load canvases and local variables when opening a local image.
   public loadAllLocal(svgLoaded: EventEmitter<any>): void {
+
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
       this.imageLocal
     );
+
     // Load the main canvas.
     const viewportRatio = this.viewportRatio();
     const imageRatio = this.originalImageRatio();
+
     if (imageRatio > viewportRatio) {
       this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
       this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
@@ -137,16 +145,19 @@ export class EditorService {
       this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
       this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
     }
+
     this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
     this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
     const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
     let x = 0;
     let y = 0;
+
     if (imageRatio > viewportRatio) {
       y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) / 2;
     } else {
       x = (this.backgroundCanvas.displayCanvas.width - this.backgroundCanvas.originalCanvas.width) / 2;
     }
+
     context.drawImage(
       this.backgroundCanvas.originalCanvas,
       x,
@@ -154,6 +165,7 @@ export class EditorService {
       this.backgroundCanvas.originalCanvas.width,
       this.backgroundCanvas.originalCanvas.height
     );
+
     // Load the zoom canvas.
     // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
     // Without this zoomCanvas is still undefined because of ngIf in template
@@ -260,10 +272,7 @@ export class EditorService {
   public loadMainImage(image: HTMLImageElement): void {
     console.log('EditorService::loadMainImage()');
 
-    this.backgroundCanvas = new BackgroundCanvas(
-        document.getElementById('main-canvas') as HTMLCanvasElement,
-        image
-    );
+    this.backgroundCanvas = new BackgroundCanvas(document.getElementById('main-canvas') as HTMLCanvasElement, image);
     // Load the main canvas.
     const viewportRatio = this.viewportRatio();
     const imageRatio = this.originalImageRatio();
@@ -316,19 +325,19 @@ export class EditorService {
       { responseType: 'blob', observe: 'events', reportProgress: true });
 
     this.headerService.display_progress(req, 'Downloading: Image').subscribe(
-        res => {
-            const reader: FileReader = new FileReader();
-            reader.onload = () => {
-                const image = new Image();
-                image.onload = () => {
-                  console.log('image.onload()' + image);
+      res => {
+        const reader: FileReader = new FileReader();
+        reader.onload = () => {
+          const image = new Image();
+          image.onload = () => {
+            console.log('image.onload()' + image);
 
-                  this.loadMainImage(image);
-                  // this.loadPretreatmentImage();
-                };
-                image.src = reader.result as string;
-            };
-            reader.readAsDataURL(res);
+            this.loadMainImage(image);
+            // this.loadPretreatmentImage();
+          };
+          image.src = reader.result as string;
+        };
+        reader.readAsDataURL(res);
     });
   }
 
@@ -348,26 +357,26 @@ export class EditorService {
 
   // Load everything in the editor.
   public loadAll(): void {
-      // Check if a an image is saved in localStorage
-      const lastImageId = LocalStorage.lastSavedImageId();
+    // Check if a an image is saved in localStorage
+    const lastImageId = LocalStorage.lastSavedImageId();
 
-      if (this.shouldLoadLocalStorage(lastImageId)) {
-        console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
+    if (this.shouldLoadLocalStorage(lastImageId)) {
+      console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
 
-        this.imageId = lastImageId;
-        this.getMainImage();
-        LocalStorage.load(this, this.layersService);
-        // this.loadRevision(false);
-        this.loadMetadata(this.imageId);
-        return;
-      }
-      // Check if imageId is set
-      if (!this.imageId) {
-        return;
-      }
-
+      this.imageId = lastImageId;
       this.getMainImage();
-      // this.loadRevision(true);
+      LocalStorage.load(this, this.layersService);
+      // this.loadRevision(false);
+      this.loadMetadata(this.imageId);
+      return;
+    }
+    // Check if imageId is set
+    if (!this.imageId) {
+      return;
+    }
+
+    this.getMainImage();
+    // this.loadRevision(true);
   }
 
   // public loadPretreatmentImage(): void {
@@ -498,15 +507,18 @@ export class EditorService {
 
     // Adjust canvas sizes.
     const oldWidth = this.backgroundCanvas.displayCanvas.width;
+    console.log('%c oldWidth : ' + oldWidth , 'color: black; background:yellow;');
     const oldHeight = this.backgroundCanvas.displayCanvas.height;
 
     const newWidth = this.fullCanvasWidth / zoomFactor;
+    console.log('%c newWidth : ' + newWidth , 'color: black; background:yellow;');
+    console.log('%c this.fullCanvasWidth : ' + this.fullCanvasWidth , 'color: black; background:yellow;');
     const newHeight = this.fullCanvasHeight / zoomFactor;
 
     this.backgroundCanvas.displayCanvas.width = newWidth;
     this.backgroundCanvas.displayCanvas.height = newHeight;
 
-    this.layersService.resize(newWidth, newHeight);
+    // this.layersService.resize(newWidth, newHeight);
 
     if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
       this.zoomFactor = zoomFactor;
