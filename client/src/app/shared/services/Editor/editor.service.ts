@@ -277,7 +277,7 @@ export class EditorService {
                           });
                           // this.commentService.comment = (res as any).diagnostic;
                           if (draw) {
-                              
+                              this.biomarkerService.init(arbre);
                               this.layersService.biomarkerCanvas = [];
                               arbre.forEach((e: SVGGElement) => {
                                   this.layersService.createFlatCanvasRecursive(e);
@@ -392,7 +392,10 @@ export class EditorService {
         this.getMainImage();
         LocalStorage.load(this, this.layersService);
         this.loadRevision(true);
+        LocalStorage.load(this, this.layersService);
         this.loadMetadata(this.imageId);
+        // this.biomarkerService.init(this.layersService.)
+        console.log('BIO!!!   ' + this.biomarkerService.lastBiomarkers)
         return;
       }
       // Check if imageId is set
