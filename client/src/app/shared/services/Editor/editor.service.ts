@@ -224,8 +224,13 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   loadRevision(draw: boolean): void {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
-                                                                                 reportProgress: true, observe: 'events' });
+      console.log('userid '+userId)
+      // const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
+      //                                                                            reportProgress: true, observe: 'events' });
+
+      const req = this.http.get('/api/annotations/get/1', { headers: new HttpHeaders(),
+        reportProgress: true, observe: 'events' });
+
       this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
           res => {
               this.svgBox.innerHTML = res.svg;
@@ -253,8 +258,9 @@ export class EditorService {
               }
               this.svgLoaded.emit(arbre);
           }, error => {
-              if (error.status === 404) {
-                  const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
+              if (error.status === 404 || error.status === 500) {
+                  console.log('HELLO THERE!!!!!!!!!!!!!')
+                  const reqBase = this.http.get(`/api/annotations/getBase/`,
                                                 { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
                           this.svgBox.innerHTML = (res as any).svg;
@@ -271,6 +277,7 @@ export class EditorService {
                           });
                           // this.commentService.comment = (res as any).diagnostic;
                           if (draw) {
+                              
                               this.layersService.biomarkerCanvas = [];
                               arbre.forEach((e: SVGGElement) => {
                                   this.layersService.createFlatCanvasRecursive(e);
@@ -281,6 +288,7 @@ export class EditorService {
                       });
               }
           });
+          console.log('Load over. Draw : ' + draw)
   }
 
   // Load the main image in the background canvas.
@@ -380,11 +388,10 @@ export class EditorService {
 
       if (this.shouldLoadLocalStorage(lastImageId)) {
         console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
-
         this.imageId = lastImageId;
         this.getMainImage();
         LocalStorage.load(this, this.layersService);
-        // this.loadRevision(false);
+        this.loadRevision(true);
         this.loadMetadata(this.imageId);
         return;
       }
@@ -392,9 +399,8 @@ export class EditorService {
       if (!this.imageId) {
         return;
       }
-
       this.getMainImage();
-      // this.loadRevision(true);
+      this.loadRevision(true);
   }
 
   // public loadPretreatmentImage(): void {
@@ -681,9 +687,9 @@ export class EditorService {
   }
 
   loadMetadata(imageId: string): void {
-    this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
-        this.imageServer = res;
-    });
+    // this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+    //     this.imageServer = res;
+    // });
   }
 
   // saveSVGFile(): void {
