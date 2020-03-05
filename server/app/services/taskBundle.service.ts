@@ -113,7 +113,7 @@ export class TaskBundleService {
     }
 
     public async deleteTaskPriority(taskId: number): Promise<DeleteResult[]> {
-        const taskPriority = await this.taskPriorityRepository.findByFilter({ taskId });
+        const taskPriority = await this.taskPriorityRepository.findAll(taskId);
         if (isNullOrUndefined(taskPriority) || taskPriority.length <= 0) {
             throw createError('This task priority with the given task id does not exist.', 404);
         }
