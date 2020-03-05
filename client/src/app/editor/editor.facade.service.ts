@@ -76,6 +76,10 @@ export class EditorFacadeService {
     this.editorService.imageLoaded = boolValue;
   }
 
+  get imageLoaded(){
+    return this.editorService.imageLoaded;
+  }
+
   // TODO: Verify the path of this and its type
   set imageServer(image: Image) {
 
