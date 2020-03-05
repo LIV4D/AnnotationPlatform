@@ -145,7 +145,7 @@ def completion_check(user, tasks_id=False):
     
 def hide_completed(user):
     tasks = list_task(user)
-    disable_tasks = [t['id'] for t in tasks if t['completed']]
+    disable_tasks = [t['id'] for t in tasks if t['completed'] and t['active']]
     if update_visibility(disable_tasks, False):
         print('%s tasks were disabled.' % len(disable_tasks))
 
