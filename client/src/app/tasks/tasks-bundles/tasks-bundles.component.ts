@@ -29,7 +29,7 @@ export class TasksBundlesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.loadBundles();
+    this.loadBundles();
   }
 
   loadBundles() {

@@ -1,13 +1,17 @@
+@import '../../../colorVariables.scss';
+
 .cards {
-    display: flex;
+    display: block;
     align-items: center;
-    justify-content: center
+    justify-content: center;
 }
 
 .card {
-    max-width: 400px;
-    margin: 10px;
-    margin-top: 30px;
+    float: center;
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
 
 }
   
@@ -16,3 +20,20 @@
     background-size: cover;
 }
   
+button {
+    display: block;
+    margin-left: auto;
+    margin-right: 2%;
+    font-size: small;
+    font-weight: bold;
+    background-color: $gray-very-light;
+    color: $font-color-light;
+    border-radius: 5px;  
+    padding: 3px;
+}
+
+#refresh {
+    margin-top: 20px;
+    margin-right: 19%;
+    background-color: $gray-light;
+}

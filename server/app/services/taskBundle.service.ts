@@ -29,23 +29,43 @@ export class TaskBundleService {
     }
 
     public async getTasksBundles(userId: number): Promise<ITasksBundles> {
-        // Get all tasks assigned to user with priorities
+        // Get all tasks assigned to specifiec user from the taskPriority table
         const tasks = await this.taskPriorityRepository.findPrioritizedTasksByUser(userId);
         return this.createTasksBundles(tasks);
     }
 
     public async createTasksBundles(tasks: ITaskPriority[]): Promise<ITasksBundles> {
         // Initialize tempory arrays that will contain the tasks in each bundle
-        let B1: Task[] = [];
-        let B2: Task[] = [];
-        let B3: Task[] = [];
+        const B1: Task[] = [];
+        const B2: Task[] = [];
+        const B3: Task[] = [];
 
-        // Add desired tasks in the temp arrays of tasks
-        B1.push(tasks[0].task);
-        B2.push(tasks[0].task);
-        B3.push(tasks[0].task);
+        // TODO algo to create bundles
 
-        // Get task type details
+        // Get 3 different tasks randomly
+        const ArrayIndexNumbers = [];
+        if (tasks.length === 0) {
+            return null;
+        } else if (tasks.length < 3) {
+            ArrayIndexNumbers.push(0);
+            ArrayIndexNumbers.push(0);
+            ArrayIndexNumbers.push(0);
+        } else {
+            let randomNumber;
+            while (ArrayIndexNumbers.length < 3) {
+                randomNumber = Math.floor(Math.random() * (tasks.length));
+                if (ArrayIndexNumbers.indexOf(randomNumber) === -1) {
+                    ArrayIndexNumbers.push( randomNumber );
+                }
+            }
+        }
+
+        // Add 1 rndom task to temp arrays of tasks
+        B1.push(tasks[ArrayIndexNumbers[0]].task);
+        B2.push(tasks[ArrayIndexNumbers[1]].task);
+        B3.push(tasks[ArrayIndexNumbers[2]].task);
+
+        // Get task type details from first task of eahc bundle
         const taskType1 = await this.taskTypeRepository.findByIds([B1[0].taskTypeId]);
         const taskType2 = await this.taskTypeRepository.findByIds([B2[0].taskTypeId]);
         const taskType3 = await this.taskTypeRepository.findByIds([B3[0].taskTypeId]);
