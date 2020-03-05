@@ -1,25 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-zoomngx',
   templateUrl: './zoomngx.component.html',
   styleUrls: ['./zoomngx.component.scss']
 })
-export class ZoomngxComponent implements OnInit {
+export class ZoomngxComponent implements AfterViewInit {
 
-  myThumbnail = '/Users/v44ti/Documents/Projet4/db114-06.jpg';
-  myFullresImage = '/Users/v44ti/Documents/Projet4/db114-06.jpg';
+  // myThumbnail = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
+  // myFullresImage = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
 
-  constructor() { }
+  @ViewChild('myCanvas') myCanvas: ElementRef;
+  image = new Image();
 
-  ngOnInit(): void {
-    this.myThumbnail =
-    // tslint:disable-next-line: max-line-length
-    'https://st4.depositphotos.com/17400922/21926/i/1600/depositphotos_219268188-stock-photo-chefchaouen-medina-morocco-africa-chefchaouen.jpg';
+  constructor() { this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg'; }
 
-    this.myFullresImage =
-    // tslint:disable-next-line: max-line-length
-    'https://st4.depositphotos.com/17400922/21926/i/1600/depositphotos_219268188-stock-photo-chefchaouen-medina-morocco-africa-chefchaouen.jpg';
+  ngAfterViewInit(): void {
+    this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
+    const context: CanvasRenderingContext2D = this.myCanvas.nativeElement.getContext('2d');
+
+    // showing
+    // context.fillRect(0, 0, 1000, 1000);
+
+    // Not showing
+    this.image.onload = () => {
+      console.log('image has loaded!');
+      this.scaleToFit(this.image, context, this.myCanvas.nativeElement);
+    };
   }
 
+  scaleToFit(img, ctx, canvas) {
+    // get the scale
+    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+    // get the top left position of the image
+    const x = (canvas.width / 2) - (img.width / 2) * scale;
+    const y = (canvas.height / 2) - (img.height / 2) * scale;
+    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+  }
 }

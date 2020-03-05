@@ -528,7 +528,7 @@ export class EditorService {
 
     this.adjustOffsets();
     this.transform();
-    this.updateCanvasDisplayRatio();
+    // this.updateCanvasDisplayRatio();
   }
 
   // this only works for zoom slider (when using mobile device)
