@@ -15,7 +15,7 @@ export class TaskPriorityController implements IController {
 
     public setRoutes(app: express.Application): void {
         app.post('/api/taskPrioritys/create', this.createTaskPriority);
-        app.put('/api/taskPrioritys/assign/:taskId', this.assignTaskPriority);
+        app.put('/api/taskPrioritys/assign', this.assignTaskPriority);
 
         app.get('/api/taskPrioritys/get/tasksBundles', this.getTasksBundles);
 
@@ -42,20 +42,9 @@ export class TaskPriorityController implements IController {
     }
 
     private assignTaskPriority = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const updatedTask: ITask = {
-            id: req.params.taskId,
-            assignedUserId: req.user,
-            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
-        };
-
-        const task = this.taskBundleService.updateTask(updatedTask, req.user);
-        if (!isNullOrUndefined(task)) {
-            this.taskBundleService.deleteTaskPriority(req.params.taskId)
-            .then(() => res.sendStatus(204))
-            .catch(next);
-        } else {
-            res.sendStatus(404);
-        }
+        const ids = req.body.ids;
+        this.taskBundleService.assignTasks(ids, req.user)
+            .then(() => res.sendStatus(204));
     }
 
 }

@@ -95,6 +95,23 @@ export class TaskBundleService {
         return bundles;
     }
 
+    public async assignTasks(ids: number[], user: User) {
+        return Promise.all(ids.map( async (id) => {
+            const updatedTask: ITask = {
+                id,
+                assignedUserId: user.id,
+                lastModifiedTime: new Date(),
+            };
+
+            const task = await this.updateTask(updatedTask, user);
+            if (!isNullOrUndefined(task)) {
+                const result =  await this.deleteTaskPriority(id);
+                return result;
+            }
+            throw createError('This task does not exist with the given id.', 404);
+        }));
+    }
+
     public async deleteTaskPriority(taskId: number): Promise<DeleteResult[]> {
         const taskPriority = await this.taskPriorityRepository.findByFilter({ taskId });
         if (isNullOrUndefined(taskPriority) || taskPriority.length <= 0) {
