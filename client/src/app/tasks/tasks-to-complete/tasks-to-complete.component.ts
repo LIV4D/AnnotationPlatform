@@ -83,7 +83,6 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
               this.dataTable.data = data;
-              console.log(this.dataTable.data);
               this.length = this.dataTable.length;
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar

@@ -13,9 +13,9 @@
   <mat-table #table [dataSource]="dataTable" matSort matSortActive="id" matSortDisableClear>
 
     <!--Image Preview -->
-    <ng-container matColumnDef="imageSrc"  >
+    <ng-container matColumnDef="imageSrc">
         <mat-header-cell *matHeaderCellDef disableClear disableClear>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task" > <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
+        <mat-cell *matCellDef="let task"> <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
     <!-- Image Id -->

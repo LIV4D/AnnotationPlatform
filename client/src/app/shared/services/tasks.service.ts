@@ -64,7 +64,7 @@ export class TasksService {
           })
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITasks[]) => {
-              //tasksComponent.data = data;
+              // tasksComponent.data = data;
               length = data.length;
               if (length === 0) { tasksComponent.noData = true; }
               this.appService.loading = false;
@@ -81,9 +81,8 @@ export class TasksService {
       // this.editorService.loadImageFromServer(imageId);
   }
 
-
   /**
-   * Gets tasks
+   * Gets the list of tasks attributed for the current logged user
    * @param page: page index of a page
    * @param pageSize: number of page index in one page
    * @param isCompleted: a task can be complited or uncompleted
@@ -106,8 +105,8 @@ export class TasksService {
 
   // tslint:disable-next-line: ban-types
   getNextTask(): Observable<Object> {
-      const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      return this.http.get(`/api/tasks/${userId}/next`);
+    const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+    return this.http.get(`/api/tasks/${userId}/next`);
   }
 
   getTaskTypes(taskTypes: TaskType[]) {
@@ -126,7 +125,7 @@ export class TasksService {
     return this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`,  { isVisible: false, isComplete: true, params});
   }
 
-  hideTaskApp(taskId: number){
+  hideTaskApp(taskId: number) {
     this.hideTask(taskId).subscribe();
   }
 }

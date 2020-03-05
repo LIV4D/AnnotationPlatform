@@ -109,17 +109,16 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   }
 
   removeSelectedRows() {
-    this.selection.selected.forEach(item => {
-      const index: number = this.dataTable.data.findIndex(d => d === item);
-      this.dataTable.data.splice(index, 1);
-      this.tasksCompletedFacadeService.hideTaskApp(item.taskId);
-
+    this.selection.selected.forEach(task => {
+      const index: number = this.dataTable.data.findIndex(d => d === task);   // get the index of the selected task
+      this.dataTable.data.splice(index, 1);                                   // remove the task from the dataTable
+      this.tasksCompletedFacadeService.hideTaskApp(task.taskId);              // set the task to hidden in the serve to archive it
       this.dataTable = new MatTableDataSource<Element>(this.dataTable.data);
       setTimeout(() => {
-      this.dataTable.paginator = this.paginator;
+      this.dataTable.paginator = this.paginator;                              // reorganise the pagination
       });
     });
-    this.selection = new SelectionModel<Element>(true, []);
+    this.selection = new SelectionModel<Element>(true, []);                   // empty the selection
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
