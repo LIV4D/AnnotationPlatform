@@ -11,7 +11,6 @@ import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
 })
 export class TasksBundlesComponent implements OnInit {
 
-  displayedColumns = ['quantity', 'images', 'Task type', 'Description', 'Estimated time'];
   bundles: ITasksBundles = {
     primaryBundle: [],
     primaryTaskType: 'Task type',
@@ -23,6 +22,7 @@ export class TasksBundlesComponent implements OnInit {
     tertiaryTaskType: 'Task type',
     tertiaryTaskTypeDescription: 'Description',
   } ;
+
   noData: boolean;
 
   constructor(private facadeService: TasksBundlesFacadeService) {

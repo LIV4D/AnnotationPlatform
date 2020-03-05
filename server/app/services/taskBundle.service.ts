@@ -10,7 +10,7 @@ import { ITasksBundles } from '../interfaces/ITasksBundles.interface';
 import { TaskTypeRepository } from '../repository/taskType.repository';
 
 @injectable()
-export class TaskPriorityService {
+export class TaskBundleService {
     @inject(TYPES.TaskPriorityRepository)
     private taskPriorityRepository: TaskPriorityRepository;
 

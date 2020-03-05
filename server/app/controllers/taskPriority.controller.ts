@@ -3,13 +3,13 @@ import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
-import { TaskPriorityService } from '../services/taskPriority.service';
+import { TaskBundleService } from '../services/taskBundle.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 
 @injectable()
 export class TaskPriorityController implements IController {
     @inject(TYPES.TaskPriorityService)
-    private taskPriorityService: TaskPriorityService;
+    private taskBundleService: TaskBundleService;
 
     public setRoutes(app: express.Application): void {
         app.post('/api/taskPrioritys/create', this.createTaskPriority);
@@ -25,14 +25,14 @@ export class TaskPriorityController implements IController {
             userId: req.body.userId,
             priority: req.body.priority,
         };
-        this.taskPriorityService.createTask(newTaskPriority)
+        this.taskBundleService.createTask(newTaskPriority)
             .then(taskPriority => res.send(taskPriority.interface()))
             .catch(next);
     }
 
     private getTasksBundles = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const userId = req.query.userId as number;
-        this.taskPriorityService
+        this.taskBundleService
             .getTasksBundles(userId)
             .then(tasksBundles => res.send(tasksBundles))
             .catch(next);

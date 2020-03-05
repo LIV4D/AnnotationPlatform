@@ -3,6 +3,7 @@ import { ITaskPriority } from './../interfaces/ITaskPriority.interface';
 import { TaskPriority } from './../models/taskPriority.model';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
+import { DeleteResult } from 'typeorm';
 // import { DeleteResult } from 'typeorm';
 
 @injectable()
@@ -15,26 +16,11 @@ export class TaskPriorityRepository {
         this.connectionProvider = connectionProvider;
     }
 
-    // public async findAll(): Promise<Task[]> {
-    //     const repository =  (await this.connectionProvider()).getRepository(Task);
-    //     return await repository.find();
-    // }
-
     public async create(taskPriority: TaskPriority): Promise<TaskPriority> {
         const repository =  (await this.connectionProvider()).getRepository(TaskPriority);
         taskPriority = await repository.save(taskPriority);
         return repository.findOne({ userId: taskPriority.userId, taskId: taskPriority.taskId }); // Reload task
     }
-
-    // public async find(id: number): Promise<Task> {
-    //     const repository =  (await this.connectionProvider()).getRepository(Task);
-    //     return await repository.findOne(id);
-    // }
-
-    // public async findByIds(ids: number[]): Promise<Task[]> {
-    //     const repository =  (await this.connectionProvider()).getRepository(Task);
-    //     return await repository.findByIds(ids);
-    // }
 
     public async findByFilter(filter: {userId?: number, taskId?: number, priority?: number}): Promise<TaskPriority[]> {
         const whereConditions = [];
@@ -59,15 +45,16 @@ export class TaskPriorityRepository {
     }
 
     public async findPrioritizedTasksByUser(userId: number): Promise<ITaskPriority[]> {
-        const taskPriorityRepo =  (await this.connectionProvider()).getRepository(TaskPriority);
 
+        // Get all priorities with specified user
+        const taskPriorityRepo =  (await this.connectionProvider()).getRepository(TaskPriority);
         const qb = await taskPriorityRepo
                          .createQueryBuilder('taskPriority')
                          .where(`taskPriority.userId = ${userId}` );
-
         const taskPrioritys =  await qb.getMany();
-        const taskRepo =  (await this.connectionProvider()).getRepository(Task);
 
+        // Get tasks and map them in interface
+        const taskRepo =  (await this.connectionProvider()).getRepository(Task);
         const iTaskPrioritys = Promise.all(taskPrioritys.map(async taskPriority => {
             const taskValue = await taskRepo.findOne(taskPriority.taskId);
             const taskPriorityInterface: ITaskPriority = {
@@ -78,22 +65,12 @@ export class TaskPriorityRepository {
             };
             return taskPriorityInterface;
         }));
-        // const taskRepo =  (await this.connectionProvider()).getRepository(Task);
-        // taskPrioritys.forEach(async priority => {
-        //     priority.task = await taskRepo.findOne(priority.taskId);
-        //     iTaskPrioritys.push({
-        //         taskId : priority.taskId,
-        //         userId : priority.userId,
-        //         priority : priority.priority,
-        //         task: priority.task,
-        //     });
-        // });
 
         return iTaskPrioritys;
     }
 
-    // public async delete(task: Task): Promise<DeleteResult> {
-    //     const repository =  (await this.connectionProvider()).getRepository(Task);
-    //     return await repository.delete(task);
-    // }
+    public async delete(taskPriority: TaskPriority): Promise<DeleteResult> {
+        const repository =  (await this.connectionProvider()).getRepository(TaskPriority);
+        return await repository.delete(taskPriority);
+    }
 }
