@@ -14,6 +14,9 @@ import { MatPaginator } from '@angular/material/paginator';
 // Interface
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 
+// Model
+import { TaskType } from 'src/app/shared/models/taskType.model';
+
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
@@ -28,6 +31,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   length: number;
   pageSize: number;
   dataTable: any = [];
+  taskTypeList: TaskType[] = [];
   noData: boolean;
   showCompleted: boolean;
   selection = new SelectionModel(true, []);
@@ -43,6 +47,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataTable = new MatTableDataSource();
+    this.loadTaskTypes();
   }
 
   ngAfterViewInit() {
@@ -86,7 +91,11 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
           });
-    }
+  }
+
+  loadTaskTypes() {
+    this.tasksCompletedFacadeService.getTaskTypes(this.taskTypeList);
+  }
 
   loadImage(imageId: string): void {
     console.log('loading image');

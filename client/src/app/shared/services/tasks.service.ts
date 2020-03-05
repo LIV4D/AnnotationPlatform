@@ -23,6 +23,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { $ } from 'protractor';
 import { ITaskGroup } from '../interfaces/taskGroup.interface';
+import { TaskType } from '../models/taskType.model';
 
 @Injectable({
     providedIn: 'root'
@@ -107,6 +108,12 @@ export class TasksService {
   getNextTask(): Observable<Object> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
       return this.http.get(`/api/tasks/${userId}/next`);
+  }
+
+  getTaskTypes(taskTypes: TaskType[]) {
+    const req = this.http.get<TaskType[]>(`/api/taskTypes/list`, {observe: 'events', reportProgress: true});
+    this.headerService.display_progress(req, 'Downloading: Task Types List')
+      .subscribe((data: TaskType[]) => taskTypes = data);
   }
 
   /**
