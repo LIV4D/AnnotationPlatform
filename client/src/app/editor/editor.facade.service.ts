@@ -109,8 +109,14 @@ export class EditorFacadeService {
     this.editorService.loadSVGLocal(event);
   }
 
+  // Biomarkers
+
   setFocusBiomarker(item: any) {
     this.biomarkerService.setFocusBiomarker(item);
+  }
+
+  get biomarkersCurrentElement(){
+    return this.biomarkerService.currentElement;
   }
 
 }
