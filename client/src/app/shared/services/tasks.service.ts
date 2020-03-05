@@ -109,12 +109,11 @@ export class TasksService {
     return this.http.get(`/api/tasks/${userId}/next`);
   }
 
-  getTaskTypes(taskTypes: TaskType[]) {
+  getTaskTypes(taskTypes: TaskType[]): Observable<Object> {
     const req = this.http.get<TaskType[]>(`/api/taskTypes/list`, {observe: 'events', reportProgress: true});
-    this.headerService.display_progress(req, 'Downloading: Task Types List')
-      .subscribe((data: TaskType[]) => taskTypes = data);
+    return this.headerService.display_progress(req, 'Downloading: Task Types List');
   }
-
+  
   /**
    * Hide a task setting it to not visible
    * @param taskId:

@@ -1,6 +1,11 @@
 import { Injectable, Injector } from '@angular/core';
+
+// Service
 import { TasksService } from '../../shared/services/tasks.service';
 import { AppService} from '../../shared/services/app.service';
+
+/// Model
+import { TaskType } from 'src/app/shared/models/taskType.model';
 
 @Injectable()
 export class TasksToCompleteFacadeService {
@@ -9,5 +14,9 @@ export class TasksToCompleteFacadeService {
 
   getTasks(page: number, pageSize: number, isCompleted: boolean) {
     return this.taskService.getTasks(page, pageSize, isCompleted);
+  }
+
+  getTaskTypes(taskTypes: TaskType[]) {
+    return this.taskService.getTaskTypes(taskTypes);
   }
 }

@@ -19,6 +19,7 @@ import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
+import { TaskType } from 'src/app/shared/models/taskType.model';
 
 @Component({
   selector: 'app-tasks-to-complete',
@@ -26,11 +27,11 @@ import { catchError, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./tasks-to-complete.scss']
 })
 export class TasksToCompleteComponent implements OnInit, AfterViewInit {
-  versions=["1.0","2.0"]
   displayedColumns = ['imageSrc', 'imageId', 'project', 'creatorName', 'time'];
   length: number;
   pageSize: number;
   dataTable: any = [];
+  taskTypes: TaskType[] = [];
   noData: boolean;
   showCompleted: boolean;
 
@@ -48,10 +49,16 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.loadTaskTypes();
     this.loadData();
 
     this.dataTable.paginator = this.paginator;
     this.dataTable.sort = this.sort;
+  }
+
+  loadTaskTypes() {
+    this.taskToCompleteFacadeService.getTaskTypes(this.taskTypes)
+    .subscribe((data: TaskType[]) => {this.taskTypes = data; });
   }
 
   loadData() {
