@@ -10,6 +10,8 @@ import { TasksToCompleteFacadeService } from './tasks-to-Complete.facade.service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 // Interface
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
@@ -24,6 +26,7 @@ import { catchError, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./tasks-to-complete.scss']
 })
 export class TasksToCompleteComponent implements OnInit, AfterViewInit {
+  versions=["1.0","2.0"]
   displayedColumns = ['imageSrc', 'imageId', 'project', 'creatorName', 'time'];
   length: number;
   pageSize: number;
@@ -85,6 +88,14 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar
           });
+    }
+
+    applyFilter(filterValue: string) {
+      console.log(filterValue);
+      this.dataTable.filter = filterValue.trim().toLowerCase();
+      if (this.dataTable.paginator) {
+        this.dataTable.paginator.firstPage();
+      }
     }
 
   loadImage(imageId: string): void {

@@ -17,6 +17,10 @@ import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @NgModule({
     imports: [
@@ -34,7 +38,10 @@ import {MatSortModule} from '@angular/material/sort';
         MatSortModule,
         MatSidenavModule,
         MatSliderModule,
-        MatTabsModule
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
     ],
     exports: [
         BrowserModule,
@@ -52,7 +59,10 @@ import {MatSortModule} from '@angular/material/sort';
         MatSidenavModule,
         MatSliderModule,
         MatToolbarModule,
-        MatTabsModule
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule
     ]
 })
 

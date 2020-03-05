@@ -1,3 +1,13 @@
+<div class="col-sm-4 col-md-4" class="parent">
+<mat-form-field id="taskTypeFilter">
+    <mat-select #select placeholder="Version" (selectionChange)="applyFilter($event.value)"id="taskTypeFilter" >
+      <mat-option *ngFor="let version of versions" [value]="version">
+        {{version}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 <!-- Table -->
 <section class="TasksToCompleteDataTable" >
   <mat-table #table [dataSource]="dataTable" matSort matSortActive="id" matSortDisableClear>

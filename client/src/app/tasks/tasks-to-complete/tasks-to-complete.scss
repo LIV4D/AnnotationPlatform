@@ -1,5 +1,15 @@
 @import '../../../colorVariables.scss';
 
+.mat-form-field {
+  font-size: 14px;
+}
+.parent{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .TasksToCompleteDataTable {
     margin-top: 20px;
     display: flex;
@@ -152,27 +162,31 @@ input {
 .field {
     display: flex;
 }
-  #completeButtons {
-    margin-top: 20px;
-    text-align: center;
-  }
 
-  button {
-      border-radius: 8px;
-      background-color: $gray-dark;
-      box-shadow: 2px 2px 2px 2px $shadow-color;
-      margin-right:20px;
-      opacity: 0.5;
-  }
+#taskTypeFilter {
+  background-color: #cccccc;
+  border-radius: 4px;
+  // text-align: center;
+  margin-top: 10px !important;
+  width: 500px;
+}
 
-  .selected {
-    opacity: 1.0;
-  }
+button {
+    border-radius: 8px;
+    background-color: $gray-dark;
+    box-shadow: 2px 2px 2px 2px $shadow-color;
+    margin-right:20px;
+    opacity: 0.5;
+}
 
-  #tasksFinishedText {
-    margin: 50px;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 500;
-    line-height: 30px;
-  }
+.selected {
+  opacity: 1.0;
+}
+
+#tasksFinishedText {
+  margin: 50px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 30px;
+}
