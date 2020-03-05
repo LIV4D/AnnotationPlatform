@@ -67,12 +67,29 @@ export class TaskPriorityRepository {
 
         const taskPrioritys =  await qb.getMany();
         const taskRepo =  (await this.connectionProvider()).getRepository(Task);
-        taskPrioritys.forEach(async priority => {
-            priority.task = await taskRepo.findOne(priority.taskId);
-        });
 
-        console.log(taskPrioritys);
-        return taskPrioritys;
+        const iTaskPrioritys = Promise.all(taskPrioritys.map(async taskPriority => {
+            const taskValue = await taskRepo.findOne(taskPriority.taskId);
+            const taskPriorityInterface: ITaskPriority = {
+                taskId : taskPriority.taskId,
+                userId : taskPriority.userId,
+                priority : taskPriority.priority,
+                task: taskValue,
+            };
+            return taskPriorityInterface;
+        }));
+        // const taskRepo =  (await this.connectionProvider()).getRepository(Task);
+        // taskPrioritys.forEach(async priority => {
+        //     priority.task = await taskRepo.findOne(priority.taskId);
+        //     iTaskPrioritys.push({
+        //         taskId : priority.taskId,
+        //         userId : priority.userId,
+        //         priority : priority.priority,
+        //         task: priority.task,
+        //     });
+        // });
+
+        return iTaskPrioritys;
     }
 
     // public async delete(task: Task): Promise<DeleteResult> {

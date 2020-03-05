@@ -31,7 +31,6 @@ export class TaskPriorityService {
     public async getTasksBundles(userId: number): Promise<ITasksBundles> {
         // Get all tasks assigned to user with priorities
         const tasks = await this.taskPriorityRepository.findPrioritizedTasksByUser(userId);
-        console.log(tasks);
         return this.createTasksBundles(tasks);
     }
 
@@ -40,25 +39,27 @@ export class TaskPriorityService {
         let B1: Task[] = [];
         let B2: Task[] = [];
         let B3: Task[] = [];
-        console.log(tasks);
+
         // Add desired tasks in the temp arrays of tasks
         B1.push(tasks[0].task);
         B2.push(tasks[0].task);
         B3.push(tasks[0].task);
-        
+
         // Get task type details
-        const taskTypes = await this.taskTypeRepository.findByIds([B1[0].taskTypeId, B2[0].taskTypeId, B3[0].taskTypeId]);
+        const taskType1 = await this.taskTypeRepository.findByIds([B1[0].taskTypeId]);
+        const taskType2 = await this.taskTypeRepository.findByIds([B2[0].taskTypeId]);
+        const taskType3 = await this.taskTypeRepository.findByIds([B3[0].taskTypeId]);
 
         // assign values to interface and return
         const  bundles: ITasksBundles = {
-            primaryTaskType: taskTypes[0].title,
-            primaryTaskTypeDescription: taskTypes[0].description,
+            primaryTaskType: taskType1[0].title,
+            primaryTaskTypeDescription: taskType1[0].description,
             primaryBundle: B1,
-            secondaryTaskType: taskTypes[1].title,
-            secondaryTaskTypeDescription: taskTypes[1].description,
+            secondaryTaskType: taskType2[0].title,
+            secondaryTaskTypeDescription: taskType2[0].description,
             secondaryBundle: B2,
-            tertiaryTaskType: taskTypes[2].title,
-            tertiaryTaskTypeDescription: taskTypes[2].description,
+            tertiaryTaskType: taskType3[0].title,
+            tertiaryTaskTypeDescription: taskType3[0].description,
             tertiaryBundle: B3,
 
         };
