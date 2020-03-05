@@ -14,17 +14,27 @@ export class TasksBundlesService {
   constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
 
   loadBundles(tasksBundlesComponent: TasksBundlesComponent) {
-    this.getBundles().subscribe((data: ITasksBundles) => {
+    this.getBundlesObservable().subscribe((data: ITasksBundles) => {
       tasksBundlesComponent.bundles = data;
       if (length === 0) { tasksBundlesComponent.noData = true; }
     });
 
   }
 
-  getBundles(): Observable<ITasksBundles> {
+  getBundlesObservable(): Observable<ITasksBundles> {
     const params = new HttpParams()
                         .set('userId', JSON.parse(localStorage.getItem('currentUser')).user.id);
     return this.http.get<ITasksBundles>('/api/taskPrioritys/get/tasksBundles', { params });
+  }
+
+  assignBundleTasks(taskIds: number[]) {
+    console.log("deleted tasks: ");
+    console.log(taskIds);
+    this.getAssignObservable(taskIds).subscribe();
+  }
+
+  getAssignObservable(taskIds: number[]): Observable<any> {
+    return this.http.put('/api/taskPrioritys/assign', { ids : taskIds });
   }
 
 }

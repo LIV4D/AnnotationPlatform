@@ -10,4 +10,8 @@ export class TasksBundlesFacadeService {
   loadBundles(tasksBundlesComponent: TasksBundlesComponent): void {
     this.tasksBundlesService.loadBundles(tasksBundlesComponent);
   }
+
+  assignBundleTasks(taskIds: number[]) {
+    this.tasksBundlesService.assignBundleTasks(taskIds);
+  }
 }

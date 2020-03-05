@@ -47,7 +47,7 @@ export class TasksBundlesComponent implements OnInit {
     tasks.forEach(task => {
       taskIds.push(task.id);
     });
-    console.log(taskIds);
+    this.facadeService.assignBundleTasks(taskIds);
   }
 
 }
