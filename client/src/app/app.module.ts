@@ -27,6 +27,7 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { EditLayoutComponent } from './edit-layout/edit-layout.component';
 import { BugtrackerComponent } from './bugtracker/bugtracker.component';
 import { TimerComponent } from './edit-layout/right-menu/timer/timer.component';
+import { SelectorComponent } from './edit-layout/right-menu/selector/selector.component';
 
 // Services
 import { AppService } from './app.service';
@@ -37,6 +38,7 @@ import { CommentsService} from './edit-layout/right-menu/comments/comments.servi
 import { BiomarkersService } from './edit-layout/right-menu/biomarkers/biomarkers.service';
 import { VisualizationService } from './edit-layout/right-menu/visualization/visualization.service';
 import { TimerService } from './edit-layout/right-menu/timer/timer.service';
+import { SelectorService } from './edit-layout/right-menu/selector/selector.service';
 import { ImageBorderService } from './edit-layout/right-menu/biomarkers/image-border.service';
 import { BugtrackerService } from './bugtracker/bugtracker.service';
 import { EditorService } from './edit-layout/editor/editor.service';
@@ -91,6 +93,7 @@ import { HeaderService } from './header/header.service';
         TaskDialogComponent,
         BugtrackerComponent,
         TimerComponent,
+        SelectorComponent,
     ],
     imports: [
         BrowserModule,
@@ -111,7 +114,7 @@ import { HeaderService } from './header/header.service';
         multi: true,
         deps: [LoginService]
     }, LoginGuard, NoImageGuard, VisualizationService,  GalleryService, BugtrackerService, CamelCaseToTextPipe,
-    CommentsService, TimerService, BiomarkersService, ImageBorderService, LayersService, HeaderService],
+    CommentsService, TimerService, SelectorService, BiomarkersService, ImageBorderService, LayersService, HeaderService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

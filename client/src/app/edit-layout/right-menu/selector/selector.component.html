@@ -1,0 +1,14 @@
+<div id="selectorDiv">
+    <span>Diagnostic</span>
+    <button mat-button [className]="selectorService.diagnostic==0 ? 'pressed' : 'released'" (click)="diagnosticClicked(0)" class>Healthy</button>
+    <button mat-button [className]="selectorService.diagnostic==1 ? 'pressed' : 'released'" (click)="diagnosticClicked(1)" >Mild</button>
+    <button mat-button [className]="selectorService.diagnostic==2 ? 'pressed' : 'released'" (click)="diagnosticClicked(2)" >Severe</button>
+    <button mat-button [className]="selectorService.diagnostic==3 ? 'pressed' : 'released'" (click)="diagnosticClicked(3)" >Degenerative</button>
+    <button mat-button [className]="selectorService.diagnostic==4 ? 'pressed' : 'released'" (click)="diagnosticClicked(4)" >Proliferative</button>
+
+    <div class='flexRow'>
+        <mat-checkbox [disableRipple]="true" (change)="toggleEdema()" [checked]="selectorService.edema"></mat-checkbox> <span> Macular Edema</span>
+    </div>
+
+
+</div>

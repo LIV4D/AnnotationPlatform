@@ -1,5 +1,6 @@
 <div id="biomarkersDiv" (window:keydown)="onKeyDown($event)">
-    <app-biomarkers *ngIf="loaded" app-biomarkers #biomarkers></app-biomarkers>
+    <app-biomarkers *ngIf="!selectorService.enabled" app-biomarkers #biomarkers></app-biomarkers>
+    <app-selector *ngIf="selectorService.enabled" app-selector #selector></app-selector>
     <app-visualization (flip)="flipHorizontal()" [canvas]="canvas"></app-visualization>
     <div class="spacer"></div>
     <app-timer *ngIf="!appService.localEditing"></app-timer>

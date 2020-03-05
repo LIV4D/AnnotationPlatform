@@ -1,4 +1,4 @@
-import click
+                                                                                                                                                                                                       import click
 from . import utils
 from collections import OrderedDict
 
@@ -16,7 +16,7 @@ def task():
 def _create(image_id, task_type_id, user_id, limit_biomarkers, active, completed):
     create(image_id, task_type_id, user_id, limit_biomarkers, utils.to_boolean(active), utils.to_boolean(completed), True)
 
-def create(image_id, user_id, limit_biomarkers=None, active=True, completed=False, display=True, comment="", force=False, merge=True, task_type_id=1):
+def create(image_id, user_id, limit_biomarkers=None, diagnostic=False, active=True, completed=False, display=True, comment="", force=False, merge=True, task_type_id=1):
     if isinstance(image_id, (list,tuple,set)):
         for i in image_id:
             if not create(i, user_id=user_id, limit_biomarkers=limit_biomarkers, active=active, completed=completed, display=display, 
@@ -24,6 +24,10 @@ def create(image_id, user_id, limit_biomarkers=None, active=True, completed=Fals
                 return False
         return True
     
+    if diagnostic:
+        limit_biomarkers = ''
+        if not isinstance(diagnostic, str):
+            diagnostic = '0'
     if limit_biomarkers is None:
         limit_biomarkers = ''
         
@@ -50,6 +54,8 @@ def create(image_id, user_id, limit_biomarkers=None, active=True, completed=Fals
             
         if limit_biomarkers:
             c += '[onlyEnable='+limit_biomarkers+',Others]'
+        if diagnostic:
+            c += '[diagnostic='+diagnostic+']'
         if comment:
             c += comment
         revision.update_diagnostic(c, user_id=user_id, image_id=image_id)

@@ -14,6 +14,7 @@ import { CommentsService } from './comments/comments.service';
 import { Task } from './../../model/common/task.model';
 import { ITaskList } from '../../model/common/interfaces/taskList.interface';
 import { TasksService } from '../../tasks/tasks.service';
+import { SelectorService } from './selector/selector.service';
 
 @Component({
     selector: 'app-right-menu',
@@ -29,6 +30,7 @@ export class RightMenuComponent implements OnInit {
     @ViewChild('biomarkers') biomarkers: BiomarkersComponent;
     @ViewChild(CommentsComponent) comments: CommentsComponent;
     constructor(public appService: AppService, public editorService: EditorService, public commentService: CommentsService,
+        public selectorService: SelectorService,
         public router: Router, public dialog: MatDialog, private taskService: TasksService) {
         this.loaded = false;
         this.saveText = navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';

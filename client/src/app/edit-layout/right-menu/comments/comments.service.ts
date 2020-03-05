@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { TimerService } from '../timer/timer.service';
 import { BehaviorSubject } from 'rxjs';
 import { BiomarkersService } from '../biomarkers/biomarkers.service';
+import { SelectorService } from '../selector/selector.service';
+import { TouchSequence } from 'selenium-webdriver';
 
 @Injectable()
 export class CommentsService {
@@ -9,7 +11,7 @@ export class CommentsService {
     public visibleComment = '';
     private onlyEnable = '';
 
-    constructor (private timerService: TimerService, private biomarkersService: BiomarkersService) {}
+    constructor (private timerService: TimerService, private biomarkersService: BiomarkersService, private diagnosticService: SelectorService) {}
 
     set comment(comment: string) {
         if (comment === null || comment === undefined) {
@@ -19,6 +21,7 @@ export class CommentsService {
         let visibleComment = '';
         let timeStr = '';
         let onlyEnable = new Array<string>();
+        let diagnosticStr = '';
 
         comment.split(']').forEach( (c) => {
             const trimmed_c = c.trim();
@@ -33,7 +36,9 @@ export class CommentsService {
                         onlyEnable.push(b.trim());
                     }
                 });
-            } else {
+            }  else if (trimmed_c.startsWith('[diagnostic=')) {
+                diagnosticStr = trimmed_c.substr(12);
+            }else {
                 visibleComment += c + ']';
             }
         });
@@ -54,6 +59,15 @@ export class CommentsService {
             this.onlyEnable = '';
         }
 
+        // Set diagnostic selector
+        if (diagnosticStr.length > 0){
+            this.diagnosticService.setState(diagnosticStr);
+            this.diagnosticService.enabled = true;
+            this.biomarkersService.toggleAllBiomarkers('hidden');
+        } else {
+            this.diagnosticService.enabled = false;
+        }
+
         // Apply new comment
         this.visibleComment = visibleComment;
         this.commentChanged.next(visibleComment);
@@ -66,6 +80,9 @@ export class CommentsService {
         }
         if (this.onlyEnable.length > 0) {
             c += '[onlyEnable=' + this.onlyEnable + '] ';
+        }
+        if (this.diagnosticService.enabled) {
+            c += '[diagnostic=' + this.diagnosticService.getState() + '] ';
         }
         c += this.visibleComment;
         return c;
