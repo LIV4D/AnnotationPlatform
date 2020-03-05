@@ -74,7 +74,7 @@ export class EditorService {
     this.svgLoaded = svgLoaded;
     if (this.imageLocal) {
         this.setImageId('local');
-        this.loadAllLocal(this.svgLoaded);
+        this.loadAllLocal(this.imageLocal, this.svgLoaded);
     } else {
       console.log('load from server');
 
@@ -125,7 +125,7 @@ export class EditorService {
   }
 
   // Load canvases and local variables when opening a local image.
-  public loadAllLocal(svgLoaded: EventEmitter<any>): void {
+  public loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): void {
     console.log("Load all local");
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
@@ -172,17 +172,27 @@ export class EditorService {
     }, 0);
     this.updateCanvasDisplayRatio();
 
-    const name = 'test'; 
+    const name = 'test';
     const data1 =  { 
       files: { 
-        image: [name, this.imageLocal]
+        image: [name, image, image]
       },
-      type: 'test'
+      type: 'default',
+      metadata: {"filename": "yoda.jpeg"}
     };
 
-    this.http.post<any>('/api/images/create/', data1).subscribe(res => {
+    this.http.post<any>('/api/images/createNew/', data1).subscribe(res => {
       console.log(res);
     });
+
+    const data = {'data': null, 'imageId': 1, 'comment': null};
+
+    this.http.post<any>('/api/annotations/create/', data).subscribe(res => {
+      console.log(res);
+    });
+
+
+    // this.http.post('/api/annotation/create')
 
     // TODO: Gotta understand how to make this work with the server.
     // this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
@@ -212,66 +222,66 @@ export class EditorService {
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
-  // loadRevision(draw: boolean): void {
-  //     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  //     const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
-  //                                                                                reportProgress: true, observe: 'events' });
-  //     this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
-  //         res => {
-  //             this.svgBox.innerHTML = res.svg;
-  //             const parser = new DOMParser();
-  //             const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
-  //             const arbre: SVGGElement[] = [];
-  //             Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //                 const elems = e.getElementsByTagName('g');
-  //                 for (let j = 0; j < elems.length; j++) {
-  //                     if (elems[j].parentElement.tagName !== 'g') {
-  //                         arbre.push(elems[j]);
-  //                     }
-  //                 }
-  //             });
+  loadRevision(draw: boolean): void {
+      const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+      const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
+                                                                                 reportProgress: true, observe: 'events' });
+      this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
+          res => {
+              this.svgBox.innerHTML = res.svg;
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
+              const arbre: SVGGElement[] = [];
+              Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                  const elems = e.getElementsByTagName('g');
+                  for (let j = 0; j < elems.length; j++) {
+                      if (elems[j].parentElement.tagName !== 'g') {
+                          arbre.push(elems[j]);
+                      }
+                  }
+              });
 
-  //             // this.commentService.comment = res.diagnostic;
+              // this.commentService.comment = res.diagnostic;
 
-  //             if (draw) {
-  //                 this.layersService.biomarkerCanvas = [];
-  //                 arbre.forEach((e: SVGGElement) => {
-  //                     this.layersService.createFlatCanvasRecursive(e);
-  //                 });
-  //                 // this.layersService.toggleBorders(true);
-  //                 setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-  //             }
-  //             this.svgLoaded.emit(arbre);
-  //         }, error => {
-  //             if (error.status === 404) {
-  //                 const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
-  //                                               { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
-  //                 this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
-  //                         this.svgBox.innerHTML = (res as any).svg;
-  //                         const parser = new DOMParser();
-  //                         const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-  //                         const arbre: SVGGElement[] = [];
-  //                         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //                             const elems = e.getElementsByTagName('g');
-  //                             for (let j = 0; j < elems.length; j++) {
-  //                                 if (elems[j].parentElement.tagName !== 'g') {
-  //                                     arbre.push(elems[j]);
-  //                                 }
-  //                             }
-  //                         });
-  //                         // this.commentService.comment = (res as any).diagnostic;
-  //                         if (draw) {
-  //                             this.layersService.biomarkerCanvas = [];
-  //                             arbre.forEach((e: SVGGElement) => {
-  //                                 this.layersService.createFlatCanvasRecursive(e);
-  //                             });
-  //                             setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-  //                         }
-  //                         this.svgLoaded.emit(arbre);
-  //                     });
-  //             }
-  //         });
-  // }
+              if (draw) {
+                  this.layersService.biomarkerCanvas = [];
+                  arbre.forEach((e: SVGGElement) => {
+                      this.layersService.createFlatCanvasRecursive(e);
+                  });
+                  // this.layersService.toggleBorders(true);
+                  setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+              }
+              this.svgLoaded.emit(arbre);
+          }, error => {
+              if (error.status === 404) {
+                  const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
+                                                { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
+                  this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
+                          this.svgBox.innerHTML = (res as any).svg;
+                          const parser = new DOMParser();
+                          const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+                          const arbre: SVGGElement[] = [];
+                          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                              const elems = e.getElementsByTagName('g');
+                              for (let j = 0; j < elems.length; j++) {
+                                  if (elems[j].parentElement.tagName !== 'g') {
+                                      arbre.push(elems[j]);
+                                  }
+                              }
+                          });
+                          // this.commentService.comment = (res as any).diagnostic;
+                          if (draw) {
+                              this.layersService.biomarkerCanvas = [];
+                              arbre.forEach((e: SVGGElement) => {
+                                  this.layersService.createFlatCanvasRecursive(e);
+                              });
+                              setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+                          }
+                          this.svgLoaded.emit(arbre);
+                      });
+              }
+          });
+  }
 
   // Load the main image in the background canvas.
   public loadMainImage(image: HTMLImageElement): void {
