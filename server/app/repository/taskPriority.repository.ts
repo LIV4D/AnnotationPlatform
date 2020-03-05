@@ -69,6 +69,11 @@ export class TaskPriorityRepository {
         return iTaskPrioritys;
     }
 
+    public async findAll(id: number): Promise<TaskPriority[]> {
+        const repository =  (await this.connectionProvider()).getRepository(TaskPriority);
+        return await repository.find({ taskId : id });
+    }
+
     public async deletePriorities(taskPriorities: TaskPriority[]): Promise<DeleteResult[]> {
         return Promise.all(taskPriorities.map(async taskPriority => {
             return await this.delete(taskPriority);
