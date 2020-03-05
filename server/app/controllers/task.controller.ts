@@ -146,8 +146,6 @@ export class TaskController implements IController {
             isComplete: isNullOrUndefined(req.body.isComplete) ? false : req.body.isComplete,
             lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
         };
-        console.log("heres my tasks");
-        console.log(updatedTask);
 
         this.taskService.updateTask(updatedTask, req.user)
             .then(task => res.send(task))

@@ -67,12 +67,14 @@ export class TaskRepository {
     }
 
     public async findTaskListByUser(userId: string, page: number = 0,
-                                    pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
+                                    pageSize: number = 0, completed: boolean): Promise<ITaskGallery[]> {
+
         const repository =  (await this.connectionProvider()).getRepository(Task);
         const qb = await repository
                          .createQueryBuilder('task')
                          .where('task.assignedUserId = :id', { id: userId })
-                         .andWhere('task.isVisible = :visible', { visible: true });
+                         .andWhere('task.isVisible = :visible', { visible: true })
+                         .andWhere('task.isComplete = :isCompleted', { isCompleted: completed });
 
         const tasks =  await qb.getMany();
         let taskList: ITaskGallery[];
@@ -106,9 +108,9 @@ export class TaskRepository {
             };
             return taskGallery;
         });
-        if (completed) {
+        if (completed === true) {
             taskList = taskList.filter(taskGallery => taskGallery.isComplete);
-        } else {
+        } else if (completed === false) {
             taskList = taskList.filter(taskGallery => !taskGallery.isComplete);
         }
         // Select a subsection of our taskGroups, according to pageSize and page number
