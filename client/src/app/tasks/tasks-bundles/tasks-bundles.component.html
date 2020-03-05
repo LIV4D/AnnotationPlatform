@@ -1,5 +1,5 @@
 <h1 *ngIf="areBundlesEmpty()">You have no tasks ready to be assigned</h1>
-<button mat-button *ngIf="!areBundlesEmpty()"type="button" (click)="loadBundles()" id="refresh">Refresh</button>
+<button mat-button *ngIf="!areBundlesEmpty()" (click)="loadBundles()" id="refresh">Refresh</button>
 <div class = "cards">
     <mat-card class="card" *ngIf="bundles.primaryBundle.length !== 0">
         <mat-card-header>
@@ -12,7 +12,7 @@
         <p>{{bundles.primaryTaskTypeDescription}}</p>
         </mat-card-content>
         <mat-card-actions>
-        <button mat-button type="button">Select</button>
+        <button mat-button (click) = "assignBundleTasks(bundles.primaryBundle)">Select</button>
         </mat-card-actions>
     </mat-card>
 
@@ -27,7 +27,7 @@
         <p>{{bundles.secondaryTaskTypeDescription}}</p>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-button>Select</button>
+            <button mat-button (click) = "assignBundleTasks(bundles.secondaryBundle)">Select</button>
         </mat-card-actions>
     </mat-card>
 
@@ -42,7 +42,7 @@
         <p>{{bundles.tertiaryTaskTypeDescription}}</p>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-button>Select</button>
+            <button mat-button (click) = "assignBundleTasks(bundles.tertiaryBundle)">Select</button>
         </mat-card-actions>
     </mat-card>
 </div>

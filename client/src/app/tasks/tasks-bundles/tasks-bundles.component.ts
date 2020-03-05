@@ -3,6 +3,7 @@ import { Task } from './../../shared/models/task.model';
 import { MatCard } from '@angular/material/card';
 import { Component, OnInit } from '@angular/core';
 import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
+import { ITasks } from 'src/app/shared/interfaces/ITasks.interface';
 
 @Component({
   selector: 'app-tasks-bundles',
@@ -39,6 +40,14 @@ export class TasksBundlesComponent implements OnInit {
   areBundlesEmpty() {
     return this.bundles.primaryBundle.length === 0 && this.bundles.secondaryBundle.length === 0
     && this.bundles.tertiaryBundle.length === 0;
+  }
+
+  assignBundleTasks(tasks: ITasks[]) {
+    const taskIds = [];
+    tasks.forEach(task => {
+      taskIds.push(task.id);
+    });
+    console.log(taskIds);
   }
 
 }

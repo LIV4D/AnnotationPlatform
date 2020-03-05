@@ -24,18 +24,24 @@ button {
     display: block;
     margin-left: auto;
     margin-right: 2%;
-    font-size: small;
+    font-size: medium;
     font-weight: bold;
-    background-color: $gray-very-light;
-    color: $font-color-light;
+    background-color: $gray-ultra-light;
+    color: black;
     border-radius: 5px;  
-    padding: 3px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 0;
+    box-shadow: none;
 }
 
 #refresh {
+    font-size: small;
     margin-top: 20px;
     margin-right: 19%;
-    background-color: $gray-light;
+    background-color: white;
+    color: black;
 }
 
 h1 {
