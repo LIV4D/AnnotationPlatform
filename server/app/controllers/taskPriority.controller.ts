@@ -44,7 +44,8 @@ export class TaskPriorityController implements IController {
     private assignTaskPriority = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const ids = req.body.ids;
         this.taskBundleService.assignTasks(ids, req.user)
-            .then(() => res.sendStatus(204));
+            .then(() => res.sendStatus(204))
+            .catch(next);
     }
 
 }
