@@ -111,7 +111,9 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
  }
 
   loadImage(imageId: string): void {
-    console.log('loading image');
+    this.taskToCompleteFacadeService.appService.localEditing = false;
+    localStorage.setItem('previousPage', 'tasks');
+    this.taskToCompleteFacadeService.loadImageFromServer(imageId);
   }
 }
 
