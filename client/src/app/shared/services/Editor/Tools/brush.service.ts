@@ -4,7 +4,7 @@ import { EditorService } from '../editor.service';
 import { LayersService } from '../layers.service';
 import { ToolPropertiesService } from '../tool-properties.service';
 
-export class PixelCrayon extends Tool {
+export class Brush extends Tool {
     isMouseDown = false;
     lastPoint: Point;
 

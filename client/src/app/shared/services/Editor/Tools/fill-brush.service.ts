@@ -1,5 +1,5 @@
 import { Tool } from './tool.service';
 
-export class PixelBucket extends Tool {
+export class FillBrush extends Tool {
 
 }

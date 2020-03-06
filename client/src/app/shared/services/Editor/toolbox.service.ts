@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { Tool } from './Tools/tool.service';
 import { Point } from './Tools/point.service';
-import { PixelBucket } from './Tools/pixel-bucket.service';
-import { PixelCrayon } from './Tools/pixel-crayon.service';
+import { FillBrush } from './Tools/fill-brush.service';
+import { Brush } from './Tools/brush.service';
 import { Eraser } from './Tools/eraser.service';
 import { Hand } from './Tools/hand.service';
 import { LassoEraser } from './Tools/lasso-eraser.service';
@@ -33,10 +33,10 @@ export class ToolboxService {
         this.listOfTools = [
             new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
                 editorService, layersService),
-            new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)',
+            new Brush(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)',
                 editorService, layersService, toolPropertiesService),
             // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
-            new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)',
+            new FillBrush(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)',
                 editorService, layersService),
             // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
             new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)',
