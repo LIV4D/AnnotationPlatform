@@ -18,8 +18,8 @@ const routes: Routes = [
   { path: 'editor', component: EditorComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'tasks', component: TasksComponent },
+  { path: 'management', component: ManagementComponent },
   { path: '**', redirectTo: '/editor' },
-  { path: 'management', component: ManagementComponent }
 ];
 
 @NgModule({

@@ -20,6 +20,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
+import { ManagementComponent } from './management/management.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -34,6 +35,9 @@ import { GalleryFacadeService } from './gallery/gallery.facade.service';
 import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
+import { ManagementCreationService } from './shared/services/management-creation.service';
+import { ManagementFacadeService } from './management/management.facade.service';
+import { ModelFinderService } from './shared/services/modelfinder.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // Pipes
@@ -79,6 +83,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       EditorContentComponent,
       LayersComponent,
       SafeImagePipe,
+      ManagementComponent,
       ZoomComponent,
       MousewheelDirective,
       CamelCaseToTextPipe
@@ -95,12 +100,15 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
    providers: [
       LoginFacadeService,
       LoginService,
+      ManagementFacadeService,
+      ModelFinderService,
       NavigationBarFacadeService,
       HttpClient,
       AppService,
       TaskFacadeService,
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
+      ManagementCreationService,
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,
