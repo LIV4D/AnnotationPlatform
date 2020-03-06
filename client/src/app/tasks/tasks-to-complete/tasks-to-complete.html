@@ -44,6 +44,14 @@
       <mat-cell *matCellDef="let task"> N/A </mat-cell>
     </ng-container>
 
+    <!-- TaskType Selected Header -->
+    <ng-container [(ngModel)]="selectedTaskType" ngDefaultControl matColumnDef="selectedTaskType">
+      <mat-header-cell *matHeaderCellDef> 
+        {{selectedTaskType}}
+      </mat-header-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['selectedTaskType']"></mat-header-row>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())"></mat-row>
   </mat-table>

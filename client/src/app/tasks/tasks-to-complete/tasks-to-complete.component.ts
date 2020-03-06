@@ -32,6 +32,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   pageSize: number;
   dataTable: any = [];
   taskTypes: TaskType[] = [];
+  selectedTaskType: string;
   noData: boolean;
   showCompleted: boolean;
 
@@ -102,7 +103,9 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
 
   applyFilter(filterTaskType: TaskType) {
     const filterTaskTypeId = filterTaskType.id.toString();
+    this.selectedTaskType = filterTaskType.title;
     this.dataTable.filter = filterTaskTypeId.trim().toLowerCase();
+
     if (this.dataTable.paginator) {
       this.dataTable.paginator.firstPage();
     }
