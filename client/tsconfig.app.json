@@ -9,7 +9,7 @@
     "src/polyfills.ts"
   ],
   "include": [
-  //  "src/**/*.ts"
+    "../common/interfaces/"
   ],
   "exclude": [
     "src/test.ts",

@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
 import { BiomarkerCanvas } from '../../models/biomarker-canvas.model';
 import { Point } from '../../models/point.model';
+import { ImageBorderService } from './image-border.service';
 export const ANNOTATION_PREFIX = 'annotation-';
 
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class LayersService {
   MAX_CAPACITY: number;
@@ -29,7 +30,7 @@ export class LayersService {
   unsavedChange = false;
 
   // private deviceService: DeviceDetectorService, , private borderService: ImageBorderService
-  constructor(private appService: AppService) { }
+  constructor(private appService: AppService, private imageBorderService: ImageBorderService) { }
 
   init(): void {
     this.appLayers = document.getElementById('app-layers') as HTMLElement;
@@ -114,26 +115,26 @@ export class LayersService {
     const canvasRatio = viewport.getBoundingClientRect().width / viewport.getBoundingClientRect().height;
     const imageRatio = image.width / image.height;
     if (imageRatio > canvasRatio) {
-        canvas.width = image.width;
-        canvas.height = canvas.width / (1 / canvasRatio);
+      canvas.width = image.width;
+      canvas.height = canvas.width / (1 / canvasRatio);
     } else {
-        canvas.height = image.height;
-        canvas.width = canvas.height * canvasRatio;
+      canvas.height = image.height;
+      canvas.width = canvas.height * canvasRatio;
     }
     this.setCanvasStyle(canvas);
     // Remove some of this...
     let x = 0;
     let y = 0;
     if (imageRatio > canvasRatio) {
-        y = (canvas.height - image.height) / 2;
+      y = (canvas.height - image.height) / 2;
     } else {
-        x = (canvas.width - image.width) / 2;
+      x = (canvas.width - image.width) / 2;
     }
     context.drawImage(image, x, y, image.width, image.height);
     canvas.id = ANNOTATION_PREFIX + id;
     this.appLayers.appendChild(canvas);
     this.biomarkerCanvas.push(
-        new BiomarkerCanvas( canvas, image, ANNOTATION_PREFIX + id, color, this.biomarkerCanvas.length) // , this.borderService
+      new BiomarkerCanvas(canvas, image, ANNOTATION_PREFIX + id, color, this.biomarkerCanvas.length, this.imageBorderService)
     );
   }
 
@@ -146,7 +147,7 @@ export class LayersService {
         image.height = height;
       }
       image.onload = () => {
-          this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
+        this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
       };
       if (!node.hasAttribute('xlink:href')) {
         // Add a transparent pixel to have a valid xlink:href
@@ -180,63 +181,63 @@ export class LayersService {
     ctx.imageSmoothingEnabled = false;
   }
 
-  // public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
-  //     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
-  //     if (currentBiomarkerCanvas == null) {
-  //         console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
-  //     }
-  //     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
-  // }
+  public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
+    const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
+    if (currentBiomarkerCanvas == null) {
+      console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+    }
+    return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
+  }
 
-  // public getBiomarkerCanvas(): BiomarkerCanvas[] {
-  //     return this.biomarkerCanvas.filter(element => element.isVisible());
-  // }
+  public getBiomarkerCanvas(): BiomarkerCanvas[] {
+    return this.biomarkerCanvas.filter(element => element.isVisible());
+  }
 
-  // public resetBiomarkerCanvas(ids: Array<string>): void {
-  //     // this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
-  //     ids.forEach(id => {
-  //         const biomarker = this.getBiomarkerCanvasById(id);
-  //         biomarker.reset();
-  //         biomarker.draw();
-  //     });
-  // }
+  public resetBiomarkerCanvas(ids: Array<string>): void {
+      // this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
+      ids.forEach(id => {
+          const biomarker = this.getBiomarkerCanvasById(id);
+          biomarker.reset();
+          biomarker.draw();
+      });
+  }
 
-  // public getBiomarkerCanvasById(id: string): BiomarkerCanvas {
-  //     const result = this.biomarkerCanvas.find((b) => {
-  //         return (b.id === ANNOTATION_PREFIX + id);
-  //     });
-  //     return result;
-  // }
+  public getBiomarkerCanvasById(id: string): BiomarkerCanvas {
+    const result = this.biomarkerCanvas.find((b) => {
+      return (b.id === ANNOTATION_PREFIX + id);
+    });
+    return result;
+  }
 
-  // get biomarkerOverlayContext(): CanvasRenderingContext2D {
-  //     return this.biomarkerOverlayCanvas.getContext('2d');
-  // }
+  get biomarkerOverlayContext(): CanvasRenderingContext2D {
+      return this.biomarkerOverlayCanvas.getContext('2d');
+  }
 
-  // toggleBorders(showBorders: boolean): void {
-  //     this.appService.loading = true;
-  //     this.biomarkerCanvas.forEach((b) => {
-  //         if (showBorders) {
-  //             // this.borderService.erode(b.borderCanvas, b.currentCanvas);
-  //         }
-  //         b.drawBorders = showBorders;
-  //         b.draw();
-  //     });
-  //     this.appService.loading = false;
-  // }
+  toggleBorders(showBorders: boolean): void {
+      this.appService.loading = true;
+      this.biomarkerCanvas.forEach((b) => {
+          if (showBorders) {
+              this.imageBorderService.erode(b.borderCanvas, b.currentCanvas);
+          }
+          b.drawBorders = showBorders;
+          b.draw();
+      });
+      this.appService.loading = false;
+  }
 
-  // toggleShadows(showShadows: boolean): void {
-  //     this.appService.loading = true;
-  //     this.biomarkerCanvas.forEach((b) => {
-  //         b.drawShadows = showShadows;
-  //         b.draw();
-  //     });
-  //     this.appService.loading = false;
-  // }
+  toggleShadows(showShadows: boolean): void {
+      this.appService.loading = true;
+      this.biomarkerCanvas.forEach((b) => {
+          b.drawShadows = showShadows;
+          b.draw();
+      });
+      this.appService.loading = false;
+  }
 
   public resize(width: number, height: number): void {
     this.biomarkerCanvas.forEach(biomarker => {
-        biomarker.displayCanvas.width = width;
-        biomarker.displayCanvas.height = height;
+      biomarker.displayCanvas.width = width;
+      biomarker.displayCanvas.height = height;
     });
     this.biomarkerOverlayCanvas.width = width;
     this.biomarkerOverlayCanvas.height = height;
