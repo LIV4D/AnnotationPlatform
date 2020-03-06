@@ -46,6 +46,9 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataTable = new MatTableDataSource();
+    this.dataTable.filterPredicate = (data, filter: string): boolean => {
+      return data.taskTypeId.toString().toLowerCase().includes(filter);
+    };
 
     this.loadTaskTypes();
   }
