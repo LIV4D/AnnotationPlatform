@@ -10,7 +10,7 @@ export class ManagementController implements IController {
     private managementService: ManagementService;
 
     public setRoutes(app: express.Application): void {
-        app.get('/api/management/list', this.listAllModels);
+        app.get('/api/management/listNames', this.listAllModels);
         // app.put('/api/tasks/update/:taskId', this.updateTask);
         // app.delete('/api/tasks/delete/:taskId', this.deleteTask);
         // app.post('api/tasks/submit/:taskId', this.submitTask);

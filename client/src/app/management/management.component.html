@@ -1,5 +1,7 @@
 <p>management works!</p>
+<select name="Model Name" [(ngModel)]="availableModels" placeholder="Input Model Name Here"></select>
 <div>
+  
   <input cdkTextareaAutosize [(ngModel)]="modelName" placeholder="Input Model Name Here (non-capitalized)">
   <button (click) = "generateTextFields()">Generate Fields</button>
 </div>

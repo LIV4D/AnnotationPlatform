@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModelFinderService {
 
-    constructor() { }
+    constructor(private http: HttpClient) { }
     /**
      * Gets the attributes and instantiates the stated model.
      * @param model a name of a model/interface within the common folder
@@ -33,5 +35,13 @@ export class ModelFinderService {
             returnValue.set('instantiatedModel', null);
         }
         return returnValue;
+    }
+
+    public async getModelNames(): Promise<string[]> {
+        return await this.getModelNamesCall().toPromise();
+    }
+
+    private getModelNamesCall(): Observable<string[]> {
+        return this.http.get<string[]>('/api/management/listNames');
     }
 }
