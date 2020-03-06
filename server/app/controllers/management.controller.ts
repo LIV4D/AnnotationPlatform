@@ -6,7 +6,7 @@ import { ManagementService } from '../services/management.service';
 
 @injectable()
 export class ManagementController implements IController {
-    @inject(TYPES.TaskPriorityService)
+    @inject(TYPES.ManagementService)
     private managementService: ManagementService;
 
     public setRoutes(app: express.Application): void {
