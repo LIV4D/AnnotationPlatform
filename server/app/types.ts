@@ -23,6 +23,7 @@ const TYPES = {
     TaskPriorityService: Symbol.for('TaskPriorityService'),
     SubmissionEventService: Symbol.for('SubmissionEventService'),
     ImageTypeService: Symbol.for('ImageTypeService'),
+    ManagementService: Symbol.for('ManagementService'),
 };
 
 export default TYPES;

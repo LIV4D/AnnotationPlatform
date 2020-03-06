@@ -12,6 +12,8 @@ import { AnnotationController } from './controllers/annotation.controller';
 import { ImageRepository } from './repository/image.repository';
 import { ImageService } from './services/image.service';
 import { ImageController } from './controllers/image.controller';
+import { ManagementService } from './services/management.service';
+import { ManagementController } from './controllers/management.controller';
 import { SubmissionEventService } from './services/submissionEvent.service';
 import { SubmissionEventRepository } from './repository/submissionEvent.repository';
 import { SubmissionEventController } from './controllers/submissionEvent.controller ';
@@ -28,6 +30,7 @@ import { UserController } from './controllers/user.controller';
 import { IController } from './controllers/abstractController.controller';
 import { TaskPriorityService } from './services/taskPriority.service';
 import { TaskPriorityRepository } from './repository/taskPriority.repository';
+
 const container: Container = new Container();
 
 container.bind(TYPES.Server).to(Server);
@@ -41,6 +44,7 @@ container.bind<IController>(TYPES.Controller).to(TaskTypeController);
 container.bind<IController>(TYPES.Controller).to(SubmissionEventController);
 container.bind<IController>(TYPES.Controller).to(AnnotationController);
 container.bind<IController>(TYPES.Controller).to(TaskPriorityController);
+container.bind<IController>(TYPES.Controller).to(ManagementController);
 // Services
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TaskService>(TYPES.TaskService).to(TaskService);
@@ -49,6 +53,7 @@ container.bind<SubmissionEventService>(TYPES.SubmissionEventService).to(Submissi
 container.bind<AnnotationService>(TYPES.AnnotationService).to(AnnotationService);
 container.bind<ImageService>(TYPES.ImageService).to(ImageService);
 container.bind<TaskPriorityService>(TYPES.TaskPriorityService).to(TaskPriorityService);
+container.bind<ManagementService>(TYPES.ManagementService).to(ManagementService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
