@@ -114,7 +114,6 @@ export class EditorService {
     this.backgroundCanvas.displayCanvas.height = h;
 
     // Resize layers.
-    console.log(w);
     this.layersService.resize(w, h);
 
     // Adjust the offsets so the image is in place.
@@ -224,7 +223,7 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   loadRevision(draw: boolean): void {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      console.log('userid '+userId)
+      // console.log('userid '+userId)
       // const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
       //                                                                            reportProgress: true, observe: 'events' });
 
@@ -259,7 +258,6 @@ export class EditorService {
               this.svgLoaded.emit(arbre);
           }, error => {
               if (error.status === 404 || error.status === 500) {
-                  console.log('HELLO THERE!!!!!!!!!!!!!')
                   const reqBase = this.http.get(`/api/annotations/getBase/`,
                                                 { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
@@ -288,7 +286,6 @@ export class EditorService {
                       });
               }
           });
-          console.log('Load over. Draw : ' + draw)
   }
 
   // Load the main image in the background canvas.
@@ -356,8 +353,6 @@ export class EditorService {
             reader.onload = () => {
                 const image = new Image();
                 image.onload = () => {
-                  console.log('image.onload()' + image);
-
                   this.loadMainImage(image);
                   // this.loadPretreatmentImage();
                 };
@@ -395,7 +390,6 @@ export class EditorService {
         LocalStorage.load(this, this.layersService);
         this.loadMetadata(this.imageId);
         // this.biomarkerService.init(this.layersService.)
-        console.log('BIO!!!   ' + this.biomarkerService.lastBiomarkers)
         return;
       }
       // Check if imageId is set
