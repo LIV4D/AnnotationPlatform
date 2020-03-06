@@ -98,7 +98,9 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   }
 
   loadImage(imageId: string): void {
-    console.log('loading image');
+    this.tasksCompletedFacadeService.appService.localEditing = false;
+    localStorage.setItem('previousPage', 'tasks');
+    this.tasksCompletedFacadeService.loadImageFromServer(imageId);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

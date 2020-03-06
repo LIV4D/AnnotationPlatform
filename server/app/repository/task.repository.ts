@@ -99,7 +99,7 @@ export class TaskRepository {
                 taskTypeTitle: 'Todo',
                 annotationId: task.annotationId,
                 // imageId: task.annotation.image.id,
-                imageId: 4,
+                imageId: 2,
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,
