@@ -2,7 +2,7 @@ import { TasksBundlesComponent } from './../../tasks/tasks-bundles/tasks-bundles
 import { ITaskGallery } from './../../../../../server/app/interfaces/gallery.interface';
 import { HeaderService } from './header.service';
 import { AppService } from './app.service';
-import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpEvent, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ITasksBundles } from '../interfaces/ITasksBundles.interface';
@@ -10,6 +10,7 @@ import { ITasksBundles } from '../interfaces/ITasksBundles.interface';
 
 @Injectable()
 export class TasksBundlesService {
+  private status = 0;
 
   constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
 
@@ -27,14 +28,14 @@ export class TasksBundlesService {
     return this.http.get<ITasksBundles>('/api/taskPrioritys/get/tasksBundles', { params });
   }
 
-  assignBundleTasks(taskIds: number[]) {
-    console.log("deleted tasks: ");
-    console.log(taskIds);
-    this.getAssignObservable(taskIds).subscribe();
+  async assignBundleTasks(taskIds: number[]): Promise<number> {
+    const response = await this.getAssignObservable(taskIds).toPromise();
+
+    return response.status;
   }
 
-  getAssignObservable(taskIds: number[]): Observable<any> {
-    return this.http.put('/api/taskPrioritys/assign', { ids : taskIds });
+  getAssignObservable(taskIds: number[]): Observable<HttpResponse<object>> {
+    return this.http.put('/api/taskPrioritys/assign', { ids : taskIds }, {observe : 'response'});
   }
 
 }

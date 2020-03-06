@@ -11,7 +11,7 @@ export class TasksBundlesFacadeService {
     this.tasksBundlesService.loadBundles(tasksBundlesComponent);
   }
 
-  assignBundleTasks(taskIds: number[]) {
-    this.tasksBundlesService.assignBundleTasks(taskIds);
+  async assignBundleTasks(taskIds: number[]): Promise<number> {
+    return await this.tasksBundlesService.assignBundleTasks(taskIds);
   }
 }

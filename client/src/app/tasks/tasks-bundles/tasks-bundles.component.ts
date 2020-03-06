@@ -4,6 +4,7 @@ import { MatCard } from '@angular/material/card';
 import { Component, OnInit } from '@angular/core';
 import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
 import { ITasks } from 'src/app/shared/interfaces/ITasks.interface';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-tasks-bundles',
@@ -38,16 +39,19 @@ export class TasksBundlesComponent implements OnInit {
   }
 
   areBundlesEmpty() {
-    return this.bundles.primaryBundle.length === 0 && this.bundles.secondaryBundle.length === 0
-    && this.bundles.tertiaryBundle.length === 0;
+    return isNullOrUndefined(this.bundles) || (
+          isNullOrUndefined(this.bundles.primaryBundle) || this.bundles.primaryBundle.length === 0 &&
+          isNullOrUndefined(this.bundles.secondaryBundle) || this.bundles.secondaryBundle.length === 0 &&
+          isNullOrUndefined(this.bundles.tertiaryBundle) || this.bundles.tertiaryBundle.length === 0);
   }
 
-  assignBundleTasks(tasks: ITasks[]) {
+  async assignBundleTasks(tasks: ITasks[]) {
     const taskIds = [];
     tasks.forEach(task => {
       taskIds.push(task.id);
     });
-    this.facadeService.assignBundleTasks(taskIds);
+    const res = await this.facadeService.assignBundleTasks(taskIds);
+    console.log(res);
   }
 
 }
