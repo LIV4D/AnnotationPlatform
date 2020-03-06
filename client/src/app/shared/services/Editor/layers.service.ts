@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
-import { BiomarkerCanvas } from '../../models/biomarker-canvas.model';
-import { Point } from '../../models/point.model';
+import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
+import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
 export const ANNOTATION_PREFIX = 'annotation-';
 

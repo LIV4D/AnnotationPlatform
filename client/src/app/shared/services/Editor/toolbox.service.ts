@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Tool } from './../../models/tool.model';
-import { Point } from './../../models/point.model';
-import { PixelBucket } from './../../models/pixel-bucket.model';
-import { PixelCrayon } from './../../models/pixel-crayon.model';
-import { Eraser } from './../../models/eraser.model';
-import { Hand } from './../../models/hand.model';
-import { LassoEraser } from './../../models/lasso-eraser.model';
-import { BioPicker } from './../../models/biopicker.model';
-import { ToolServices } from './../../models/tool-services.model';
+import { Tool } from './Tools/tool.service';
+import { Point } from './Tools/point.service';
+import { PixelBucket } from './Tools/pixel-bucket.service';
+import { PixelCrayon } from './Tools/pixel-crayon.service';
+import { Eraser } from './Tools/eraser.service';
+import { Hand } from './Tools/hand.service';
+import { LassoEraser } from './Tools/lasso-eraser.service';
+import { BioPicker } from './Tools/biopicker.service';
 
 import { TOOL_NAMES } from './../../constants/tools';
 

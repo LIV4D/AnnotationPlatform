@@ -8,8 +8,8 @@ import { BiomarkersFacadeService } from './right-menu/biomarkers/biomarkers.faca
 import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
 // import { DeviceDetectorService } from 'ngx-device-detector';
 import { TOOL_NAMES } from './../shared/constants/tools';
-import { BioPicker } from './../shared/models/biopicker.model';
-import { Point } from './../shared/models/point.model';
+import { BioPicker } from './../shared/services/Editor/Tools/biopicker.service';
+import { Point } from './../shared/services/Editor/Tools/point.service';
 
 @Component({
   selector: 'app-editor',

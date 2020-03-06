@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolboxService } from './../../shared/services/Editor/toolbox.service';
-import { Tool } from './../../shared/models/tool.model';
+import { Tool } from './../../shared/services/Editor/Tools/tool.service';
 
 @Injectable({
     providedIn: 'root'

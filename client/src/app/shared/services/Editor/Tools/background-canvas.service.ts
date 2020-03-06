@@ -1,4 +1,4 @@
-import { Canvas } from './canvas.model';
+import { Canvas } from './canvas.service';
 
 
 export class BackgroundCanvas extends Canvas {

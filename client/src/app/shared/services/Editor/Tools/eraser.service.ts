@@ -1,10 +1,10 @@
-import { Tool } from './tool.model';
-import { Point } from './point.model';
-import { BiomarkerCanvas } from './biomarker-canvas.model';
+import { Tool } from './tool.service';
+import { Point } from './point.service';
+import { BiomarkerCanvas } from './biomarker-canvas.service';
 
-import { EditorService } from './../services/Editor/editor.service';
-import { LayersService } from './../services/Editor/layers.service';
-import { ToolPropertiesService } from './../services/Editor/tool-properties.service';
+import { EditorService } from './../editor.service';
+import { LayersService } from './../layers.service';
+import { ToolPropertiesService } from './../tool-properties.service';
 
 export class Eraser extends Tool {
     constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService, layersService: LayersService,
@@ -98,7 +98,10 @@ export class Eraser extends Tool {
 
 
     getBiomarkerCanvas(): BiomarkerCanvas[] {
+        let currentBiomarkerArray = [];
+        currentBiomarkerArray.push(this.layersService.getCurrentBiomarkerCanvas());
+
         return this.toolPropertiesService.eraseAll ? this.layersService.getBiomarkerCanvas()
-        : new Array<BiomarkerCanvas>(this.layersService.getCurrentBiomarkerCanvas());
+        : currentBiomarkerArray;
     }
 }

@@ -1,8 +1,8 @@
-import { Tool } from './tool.model';
-import { Point } from './point.model';
-import { EditorService } from './../services/Editor/editor.service';
-import { LayersService } from './../services/Editor/layers.service';
-import { BiomarkerService } from '../services/Editor/biomarker.service';
+import { Tool } from './tool.service';
+import { Point } from './point.service';
+import { EditorService } from './../editor.service';
+import { LayersService } from './../layers.service';
+import { BiomarkerService } from './../biomarker.service';
 
 export class BioPicker extends Tool {
     constructor(name: string, imagePath: string, tooltip: string, editorService: EditorService, layersService: LayersService, private biomarkerService: BiomarkerService) {

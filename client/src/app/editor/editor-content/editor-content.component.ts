@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
-import { Point } from 'src/app/shared/models/point.model';
+import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 
 @Component({
   selector: 'app-editor-content',

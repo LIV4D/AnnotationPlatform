@@ -1,5 +1,5 @@
-import { EditorService } from '../services/Editor/editor.service';
-import { LayersService } from '../services/Editor/layers.service';
+import { EditorService } from './editor.service';
+import { LayersService } from './layers.service';
 
 enum LocalStorageKeys {
   ImageId = 'imageId',

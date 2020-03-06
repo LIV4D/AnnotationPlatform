@@ -1,8 +1,8 @@
-import { Tool } from './tool.model';
-import { Point } from './point.model';
-import { EditorService } from '../services/Editor/editor.service';
-import { LayersService } from '../services/Editor/layers.service';
-import { ToolPropertiesService } from '../services/Editor/tool-properties.service';
+import { Tool } from './tool.service';
+import { Point } from './point.service';
+import { EditorService } from '../editor.service';
+import { LayersService } from '../layers.service';
+import { ToolPropertiesService } from '../tool-properties.service';
 
 export class PixelCrayon extends Tool {
     isMouseDown = false;

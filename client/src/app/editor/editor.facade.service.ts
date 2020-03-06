@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import{ EditorService } from './../shared/services/Editor/editor.service';
 import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
-import { Point } from './../shared/models/point.model';
+import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/image.model';

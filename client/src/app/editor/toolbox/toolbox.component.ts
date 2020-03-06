@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Tool } from 'src/app/shared/models/tool.model';
+// import { Tool } from 'src/app/shared/services/Editor/Tools/tool.service';
 import { AppService } from './../../shared/services/app.service';
 import { HOTKEYS } from './../../shared/constants/hotkeys';
 import { TOOL_NAMES } from './../../shared/constants/tools';

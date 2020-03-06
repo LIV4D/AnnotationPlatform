@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { BackgroundCanvas } from './../../../shared/models/background-canvas.model';
+import { BackgroundCanvas } from './../../../shared/services/Editor/Tools/background-canvas.service';
 
 @Component({
   selector: 'app-visualization',
