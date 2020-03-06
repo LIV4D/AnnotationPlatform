@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { mouseWheelZoom } from 'mouse-wheel-zoom';
 
 @Component({
   selector: 'app-zoomngx',
@@ -13,10 +14,14 @@ export class ZoomngxComponent implements AfterViewInit {
   @ViewChild('myCanvas') myCanvas: ElementRef;
   image = new Image();
 
-  constructor() { this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg'; }
+
+  constructor() {
+    // this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
+    this.image.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
+  }
 
   ngAfterViewInit(): void {
-    this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
+    this.image.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
     const context: CanvasRenderingContext2D = this.myCanvas.nativeElement.getContext('2d');
 
     // showing
@@ -27,6 +32,11 @@ export class ZoomngxComponent implements AfterViewInit {
       console.log('image has loaded!');
       this.scaleToFit(this.image, context, this.myCanvas.nativeElement);
     };
+
+    const wz = mouseWheelZoom({
+      element: document.querySelector('[data-wheel-zoom]'),
+      zoomStep: 0.25
+    });
   }
 
   scaleToFit(img, ctx, canvas) {
