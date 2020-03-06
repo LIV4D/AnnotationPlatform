@@ -251,8 +251,6 @@ export class LayersService {
   // Add a point on the canvas to indicate the first point
   public addFirstPoint(): void {
       this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
-      console.log('firstpoint ' + this.firstPoint)
-      console.log(this.mousePositionInDisplayCoordinates)
       this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
       this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
       this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());

@@ -66,8 +66,6 @@ export class EditorFacadeService {
   }
 
   public load(imageId: string) {
-    console.log('load()');
-
     this.editorService.loadMetadata(imageId);
   }
 

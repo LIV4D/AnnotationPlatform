@@ -45,8 +45,6 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.rightMenu)
-    console.log(`THIS IS THE MOST ABSOLUTE TEST AND IS VERY LONG SO IT CAN SHOW`)
     // this.rightMenu.svgLoaded(null);
 
   }
@@ -58,7 +56,6 @@ export class EditorComponent implements OnInit {
 
   public onSvgLoaded(arbre: SVGGElement[]): void {
     console.log('EditorComponent::onSvgLoaded()');
-    console.log(this.rightMenu)
     this.rightMenu.svgLoaded(arbre);
   }
 
