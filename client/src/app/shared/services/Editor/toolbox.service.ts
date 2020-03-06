@@ -42,7 +42,7 @@ export class ToolboxService {
             new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)',
                 editorService, layersService, toolPropertiesService),
             new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)',
-                editorService, layersService),
+                editorService, layersService, toolPropertiesService),
             new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)',
                 editorService, layersService, biomarkerService),
             new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
