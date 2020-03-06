@@ -253,27 +253,35 @@ export class EditorService {
                   arbre.forEach((e: SVGGElement) => {
                       this.layersService.createFlatCanvasRecursive(e);
                   });
-                  // this.layersService.toggleBorders(true);
+                  this.layersService.toggleBorders(true);
                   setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
               }
               this.svgLoaded.emit(arbre);
           }, error => {
               if (error.status === 404 || error.status === 500) {
-                  const reqBase = this.http.get(`/api/annotations/getMock/`,
+                  const reqBase = this.http.get(`/api/annotations/getEmpty/`,
                                                 { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
                           this.svgBox.innerHTML = (res as any).svg;
+                          console.log(this.svgBox.innerHTML);
+                          console.log('ALLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
+                          
                           const parser = new DOMParser();
                           const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+                          console.log(xmlDoc)
                           const arbre: SVGGElement[] = [];
+                          console.log(xmlDoc.children)
                           Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
                               const elems = e.getElementsByTagName('g');
+                              console.log(elems)
                               for (let j = 0; j < elems.length; j++) {
                                   if (elems[j].parentElement.tagName !== 'g') {
                                       arbre.push(elems[j]);
+                                      console.log(elems[j]);
                                   }
                               }
                           });
+                          // this.biomarkerService.init(arbre);
                           // this.commentService.comment = (res as any).diagnostic;
                           if (draw) {
                               this.biomarkerService.init(arbre);
@@ -286,6 +294,9 @@ export class EditorService {
                           this.svgLoaded.emit(arbre);
                       });
               }
+              console.log('Loaded : ')
+              console.log(this.biomarkerService.lastBiomarkers)
+              console.log(this.layersService.biomarkerCanvas)
           });
   }
 
