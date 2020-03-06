@@ -2,6 +2,6 @@ import { Task } from './task.model';
 export class TaskType {
     public id: number;
     public tasks: Task[];
-    public name: string;
+    public title: string;
     public description: string;
 }
