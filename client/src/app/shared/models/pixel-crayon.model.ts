@@ -42,7 +42,7 @@ export class PixelCrayon extends Tool {
                 ctx = drawCtx;
             }
 
-            // this.setStrokeProperties(ctx);
+            this.setStrokeProperties(ctx);
             ctx.beginPath();
             ctx.moveTo(point.x, point.y);
             ctx.lineTo(point.x, point.y);
@@ -81,67 +81,67 @@ export class PixelCrayon extends Tool {
         }
     }
 
-    // onCursorUp(): void {
-    //     if (this.isMouseDown) {
-    //         const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
-    //         const overlay = this.layersService.biomarkerOverlayCanvas;
-    //         const overlayCtx = overlay.getContext('2d');
+    onCursorUp(): void {
+        if (this.isMouseDown) {
+            const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            const overlayCtx = overlay.getContext('2d');
 
-    //         if (this.toolPropertiesService.smartMask) {
-    //             this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
-    //             this.layersService.tempDrawCanvas.getContext('2d').closePath();
-    //         } else {
-    //             this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
-    //             overlayCtx.closePath();
-    //         }
+            if (this.toolPropertiesService.smartMask) {
+                // this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
+                this.layersService.tempDrawCanvas.getContext('2d').closePath();
+            } else {
+                // this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
+                overlayCtx.closePath();
+            }
 
-    //         // Add the drawn shape to the current biomarker
-    //         const ctx = currentBiomarker.getCurrentContext();
-    //         ctx.globalCompositeOperation = 'destination-over';
-    //         currentBiomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
+            // Add the drawn shape to the current biomarker
+            const ctx = currentBiomarker.getCurrentContext();
+            ctx.globalCompositeOperation = 'destination-over';
+            currentBiomarker.drawToCurrentCanvas(overlay, this.changeBoundedBox);
 
-    //         if (this.toolPropertiesService.smartMask) {
-    //             const maskCanvas = this.layersService.tempMaskCanvas;
-    //             const drawCanvas = this.layersService.tempDrawCanvas;
-    //             const maskCtx = maskCanvas.getContext('2d');
-    //             const drawCtx = drawCanvas.getContext('2d');
+            if (this.toolPropertiesService.smartMask) {
+                const maskCanvas = this.layersService.tempMaskCanvas;
+                const drawCanvas = this.layersService.tempDrawCanvas;
+                const maskCtx = maskCanvas.getContext('2d');
+                const drawCtx = drawCanvas.getContext('2d');
 
-    //             // Remove the drawn shape from every other visible biomarker
-    //             this.layersService.getBiomarkerCanvas().forEach(biomarker => {
-    //                 if (biomarker.index !== currentBiomarker.index) {
-    //                     const bioCtx = biomarker.getCurrentContext();
-    //                     bioCtx.save();
-    //                     bioCtx.globalCompositeOperation = 'destination-out';
-    //                     biomarker.drawToCurrentCanvas(drawCanvas, this.changeBoundedBox);
-    //                     bioCtx.restore();
-    //                 }
-    //             });
-    //         }
+                // Remove the drawn shape from every other visible biomarker
+                this.layersService.getBiomarkerCanvas().forEach(biomarker => {
+                    if (biomarker.index !== currentBiomarker.index) {
+                        const bioCtx = biomarker.getCurrentContext();
+                        bioCtx.save();
+                        bioCtx.globalCompositeOperation = 'destination-out';
+                        biomarker.drawToCurrentCanvas(drawCanvas, this.changeBoundedBox);
+                        bioCtx.restore();
+                    }
+                });
+            }
 
-    //         // Clear overlays and mask
-    //         this.onCancel();
-    //     }
-    // }
+            // Clear overlays and mask
+            this.onCancel();
+        }
+    }
 
-    // onCancel(): void {
-    //     if (this.isMouseDown) {
-    //         this.isMouseDown = false;
-    //         this.resetChangeBoundedBox();
+    onCancel(): void {
+        if (this.isMouseDown) {
+            this.isMouseDown = false;
+            this.resetChangeBoundedBox();
 
-    //         const overlay = this.layersService.biomarkerOverlayCanvas;
-    //         const overlayCtx = overlay.getContext('2d');
-    //         overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            const overlayCtx = overlay.getContext('2d');
+            overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
 
-    //         if (this.toolPropertiesService.smartMask) {
-    //             const maskCanvas = this.layersService.tempMaskCanvas;
-    //             const drawCanvas = this.layersService.tempDrawCanvas;
-    //             this.maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
-    //             this.drawContext.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    //         }
-    //     }
-    // }
+            if (this.toolPropertiesService.smartMask) {
+                const maskCanvas = this.layersService.tempMaskCanvas;
+                const drawCanvas = this.layersService.tempDrawCanvas;
+                this.maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+                this.drawContext.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            }
+        }
+    }
 
-    // onCursorOut(point: Point): void {
-    //     this.onCursorUp();
-    // }
+    onCursorOut(point: Point): void {
+        this.onCursorUp();
+    }
 }
