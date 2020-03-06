@@ -1,0 +1,48 @@
+<h1 *ngIf="areBundlesEmpty()">You have no tasks ready to be assigned</h1>
+<button mat-button *ngIf="!areBundlesEmpty()" (click)="loadBundles()" id="refresh">Refresh</button>
+<div class = "cards">
+    <mat-card class="card" *ngIf="bundles.primaryBundle.length !== 0">
+        <mat-card-header>
+        <mat-card-title>{{bundles.primaryTaskType}}</mat-card-title>
+        <mat-card-subtitle>{{bundles.primaryBundle.length}}</mat-card-subtitle>
+        <mat-card-subtitle>Time</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+        <p>{{bundles.primaryTaskTypeDescription}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+        <button mat-button (click) = "assignBundleTasks(bundles.primaryBundle)">Select</button>
+        </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="card" *ngIf="bundles.secondaryBundle.length !== 0">
+        <mat-card-header>
+        <mat-card-title>{{bundles.secondaryTaskType}}</mat-card-title>
+        <mat-card-subtitle>{{bundles.secondaryBundle.length}}</mat-card-subtitle>
+        <mat-card-subtitle>Time</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+        <p>{{bundles.secondaryTaskTypeDescription}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click) = "assignBundleTasks(bundles.secondaryBundle)">Select</button>
+        </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="card" *ngIf="bundles.tertiaryBundle.length !== 0">
+        <mat-card-header>
+        <mat-card-title>{{bundles.tertiaryTaskType}}</mat-card-title>
+        <mat-card-subtitle>{{bundles.secondaryBundle.length}}</mat-card-subtitle>
+        <mat-card-subtitle>Time</mat-card-subtitle>
+        </mat-card-header>
+      
+        <mat-card-content>
+        <p>{{bundles.tertiaryTaskTypeDescription}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click) = "assignBundleTasks(bundles.tertiaryBundle)">Select</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

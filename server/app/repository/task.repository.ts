@@ -41,7 +41,7 @@ export class TaskRepository {
     }
 
     public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
-        let whereConditions = [];
+        const whereConditions = [];
         if (filter.imageId !== undefined) {
             whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
         }
@@ -83,11 +83,12 @@ export class TaskRepository {
             // Todo: add imageId in arguments
             let dataUrl = '';
             try {
-                 const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(4)), 'base64');
-                 dataUrl = 'data:image/png;base64, ' + base64Image;
-             } catch (error) {
-                 throw(error);
-             }
+                // tslint:disable-next-line:max-line-length
+                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(2)), 'base64');
+                dataUrl = 'data:image/png;base64, ' + base64Image;
+            } catch (error) {
+                throw(error);
+            }
             const taskGallery: ITaskGallery = {
                 taskId: task.id,
                 taskTypeId: task.taskTypeId,

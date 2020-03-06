@@ -1,0 +1,50 @@
+@import '../../../colorVariables.scss';
+
+.cards {
+    display: block;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    float: center;
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+
+}
+  
+.header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+}
+  
+button {
+    display: block;
+    margin-left: auto;
+    margin-right: 2%;
+    font-size: medium;
+    font-weight: bold;
+    background-color: $gray-ultra-light;
+    color: black;
+    border-radius: 5px;  
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 0;
+    box-shadow: none;
+}
+
+#refresh {
+    font-size: small;
+    margin-top: 20px;
+    margin-right: 19%;
+    background-color: white;
+    color: black;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+}

@@ -20,6 +20,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { ManagementComponent } from './management/management.component';
+import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -37,6 +38,9 @@ import { HeaderService } from './shared/services/header.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
+import { AppService } from './shared/services/app.service';
+import { TasksBundlesService } from './shared/services/tasksBundles.service';
+import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // Pipes
@@ -44,8 +48,6 @@ import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
-import { AppService } from './shared/services/app.service';
-import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 import { RightMenuComponent } from './editor/right-menu/right-menu.component';
@@ -59,6 +61,9 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+
+// Interceptor
+import { AuthInterceptor } from './shared/services/authentification.intercept';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -86,7 +91,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       ManagementComponent,
       ZoomComponent,
       MousewheelDirective,
-      CamelCaseToTextPipe
+      CamelCaseToTextPipe,
+      TasksBundlesComponent,
    ],
    imports: [
       BrowserModule,
@@ -108,6 +114,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       TaskFacadeService,
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
+      TasksBundlesFacadeService,
+      TasksBundlesService,
       ManagementCreationService,
       HeaderService,
       EditorFacadeService,

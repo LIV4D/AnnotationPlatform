@@ -12,7 +12,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
-// import { MatToolbarMixinBase } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
 import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
@@ -36,6 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
         MatCheckboxModule,
         MatPaginatorModule,
         MatSortModule,
+        MatCardModule,
         MatSidenavModule,
         MatSliderModule,
         MatTabsModule,
@@ -56,6 +57,7 @@ import { MatSelectModule } from '@angular/material/select';
         MatCheckboxModule,
         MatPaginatorModule,
         MatSortModule,
+        MatCardModule,
         MatSidenavModule,
         MatSliderModule,
         MatToolbarModule,
