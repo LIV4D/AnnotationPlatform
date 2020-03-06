@@ -194,30 +194,31 @@ export class EditorService {
     // this.http.post('/api/annotation/create')
 
     // TODO: Gotta understand how to make this work with the server.
-    // this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
-    //     { headers: new HttpHeaders(), responseType: 'json' }).pipe(
-    //     ).subscribe(
-    //     res => {
-    // this.layersService.biomarkerCanvas = [];
-    //         this.svgBox.innerHTML = (res as any).svg;
-    //         const parser = new DOMParser();
-    //         const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-    //         const arbre: SVGGElement[] = [];
-    //         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-    //             const elems = e.getElementsByTagName('g');
-    //             for (let j = 0; j < elems.length; j++) {
-    //                 if (elems[j].parentElement.tagName !== 'g') {
-    //                     arbre.push(elems[j]);
-    //                 }
-    //             }
-    //         });
-    //         arbre.forEach((e: SVGGElement) => {
-    //             this.layersService.createFlatCanvasRecursive(e,
-    //                 this.backgroundCanvas.originalCanvas.width,
-    //                 this.backgroundCanvas.originalCanvas.height);
-    //         });
-    //         this.svgLoaded.emit(arbre);
-    //     });
+    console.log('EMPTY');
+    this.http.get(`/api/annotations/getEmpty/`,
+        { headers: new HttpHeaders(), responseType: 'json' }).pipe(
+        ).subscribe(
+        res => {
+    this.layersService.biomarkerCanvas = [];
+            this.svgBox.innerHTML = (res as any).svg;
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+            const arbre: SVGGElement[] = [];
+            Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                const elems = e.getElementsByTagName('g');
+                for (let j = 0; j < elems.length; j++) {
+                    if (elems[j].parentElement.tagName !== 'g') {
+                        arbre.push(elems[j]);
+                    }
+                }
+            });
+            arbre.forEach((e: SVGGElement) => {
+                this.layersService.createFlatCanvasRecursive(e,
+                    this.backgroundCanvas.originalCanvas.width,
+                    this.backgroundCanvas.originalCanvas.height);
+            });
+            this.svgLoaded.emit(arbre);
+        });
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
@@ -258,7 +259,7 @@ export class EditorService {
               this.svgLoaded.emit(arbre);
           }, error => {
               if (error.status === 404 || error.status === 500) {
-                  const reqBase = this.http.get(`/api/annotations/getBase/`,
+                  const reqBase = this.http.get(`/api/annotations/getMock/`,
                                                 { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
                           this.svgBox.innerHTML = (res as any).svg;
