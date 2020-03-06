@@ -46,10 +46,11 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataTable = new MatTableDataSource();
+
+    this.loadTaskTypes();
   }
 
   ngAfterViewInit() {
-    this.loadTaskTypes();
     this.loadData();
 
     this.dataTable.paginator = this.paginator;
@@ -96,13 +97,13 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
           });
     }
 
-    applyFilter(filterValue: string) {
-      console.log(filterValue);
-      this.dataTable.filter = filterValue.trim().toLowerCase();
-      if (this.dataTable.paginator) {
-        this.dataTable.paginator.firstPage();
-      }
+  applyFilter(filterTaskType: TaskType) {
+    const filterTaskTypeId = filterTaskType.id.toString();
+    this.dataTable.filter = filterTaskTypeId.trim().toLowerCase();
+    if (this.dataTable.paginator) {
+      this.dataTable.paginator.firstPage();
     }
+ }
 
   loadImage(imageId: string): void {
     console.log('loading image');

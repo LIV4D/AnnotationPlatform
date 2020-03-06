@@ -1,7 +1,7 @@
 <div class="col-sm-4 col-md-4" class="parent">
 <mat-form-field id="taskTypeFilter">
     <mat-select #select placeholder="Task Type" (selectionChange)="applyFilter($event.value)"id="taskTypeFilter" >
-      <mat-option *ngFor="let taskType of taskTypes" [value]="taskTypes">
+      <mat-option *ngFor="let taskType of taskTypes" [value]="taskType">
         {{taskType.title}}
       </mat-option>
     </mat-select>
