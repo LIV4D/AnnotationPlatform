@@ -37,7 +37,7 @@ export class ToolboxService {
                 editorService, layersService, toolPropertiesService),
             // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
             new FillBrush(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)',
-                editorService, layersService),
+                editorService, layersService, toolPropertiesService),
             // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
             new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)',
                 editorService, layersService, toolPropertiesService),
