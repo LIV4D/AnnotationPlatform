@@ -13,6 +13,8 @@ export class Tool {
   public imagePath: string;
   public tooltip: string;
 
+  protected changeBoundedBox: DOMRect;
+
   constructor(name: string, imagePath: string, tooltip: string, editorService: EditorService, layersService: LayersService) {
     this.name = name;
     this.imagePath = imagePath;

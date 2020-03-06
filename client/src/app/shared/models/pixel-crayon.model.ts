@@ -14,12 +14,12 @@ export class PixelCrayon extends Tool {
         super(name, iconPath, tooltip, editorService, layersService);
     }
 
-    // setStrokeProperties(ctx): void {
-    //     ctx.globalCompositeOperation = 'source-over';
-    //     ctx.lineWidth = this.toolPropertiesService.brushWidth;
-    //     ctx.strokeStyle = this.layersService.getCurrentBiomarkerCanvas().color;
-    //     ctx.lineCap = 'round';
-    // }
+    setStrokeProperties(ctx): void {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.lineWidth = this.toolPropertiesService.brushWidth;
+        ctx.strokeStyle = this.layersService.getCurrentBiomarkerCanvas().color;
+        ctx.lineCap = 'round';
+    }
 
     onCursorDown(point: Point): void {
         const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
