@@ -52,6 +52,11 @@ export class TasksBundlesComponent implements OnInit {
     });
     const res = await this.facadeService.assignBundleTasks(taskIds);
     console.log(res);
+    if (res === 204) {
+      this.loadBundles();
+    } else {
+      console.log("There was error while assigning the task bundle");
+    }
   }
 
 }
