@@ -61,9 +61,8 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     this.dataTable.sort = this.sort;
   }
 
-  loadTaskTypes() {
-    this.taskToCompleteFacadeService.getTaskTypes(this.taskTypes)
-    .subscribe((data: TaskType[]) => {this.taskTypes = data; });
+  async loadTaskTypes() {
+    this.taskTypes = await this.taskToCompleteFacadeService.getTaskTypes();
   }
 
   loadData() {

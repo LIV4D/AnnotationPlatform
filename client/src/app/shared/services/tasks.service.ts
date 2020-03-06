@@ -109,9 +109,15 @@ export class TasksService {
     return this.http.get(`/api/tasks/${userId}/next`);
   }
 
-  getTaskTypes(taskTypes: TaskType[]): Observable<Object> {
+  getTaskTypes(): Observable<object> {
     const req = this.http.get<TaskType[]>(`/api/taskTypes/list`, {observe: 'events', reportProgress: true});
     return this.headerService.display_progress(req, 'Downloading: Task Types List');
+  }
+
+  async getTaskTypesApp() {
+    const data = await this.getTaskTypes().toPromise();
+    console.log(data);
+    return data as TaskType[];
   }
   
   /**

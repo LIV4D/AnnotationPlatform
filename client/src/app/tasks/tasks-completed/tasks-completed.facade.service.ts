@@ -14,7 +14,7 @@ export class TasksCompletedFacadeService {
   }
 
   getTaskTypes(taskTypes: TaskType[]) {
-    this.taskService.getTaskTypes(taskTypes);
+    this.taskService.getTaskTypes();
   }
 
   hideTaskApp(taskId: number): void {
