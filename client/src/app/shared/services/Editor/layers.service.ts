@@ -182,8 +182,6 @@ export class LayersService {
   }
 
   public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
-    console.log('Selected biomarker id');
-    console.log(this.selectedBiomarkerId);
     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
     if (currentBiomarkerCanvas == null) {
       console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
