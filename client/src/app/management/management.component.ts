@@ -27,7 +27,6 @@ export class ManagementComponent implements OnInit {
 
     public async generateTextFields(): Promise<void> {
         this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
-        this.modelName = '';
     }
 
     public createModel(): void {
