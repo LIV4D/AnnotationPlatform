@@ -33,7 +33,11 @@
     <!-- Creator Name -->
     <ng-container matColumnDef="creatorName">
         <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Submiter</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task.creatorId}} </mat-cell>
+        <mat-cell *matCellDef="let task">
+          <ng-container *ngFor="let user of users">
+            <p *ngIf="user.id === task.creatorId">{{user.firstName | uppercase | slice:0:1}}. {{user.lastName | titlecase }} </p>
+          </ng-container>
+        </mat-cell>
     </ng-container>
 
     <!-- Cumulated Time -->
