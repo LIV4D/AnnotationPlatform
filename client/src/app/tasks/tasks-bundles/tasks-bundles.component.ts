@@ -17,12 +17,15 @@ export class TasksBundlesComponent implements OnInit {
     primaryBundle: [],
     primaryTaskType: 'Task type',
     primaryTaskTypeDescription: 'Description',
+    primaryBundleThumbnails: [''],
     secondaryBundle: [],
     secondaryTaskType: 'Task type',
     secondaryTaskTypeDescription: 'Description',
+    secondaryBundleThumbnails: [''],
     tertiaryBundle: [],
     tertiaryTaskType: 'Task type',
     tertiaryTaskTypeDescription: 'Description',
+    tertiaryBundleThumbnails: [''],
   } ;
 
   assignedBundle: number;
@@ -36,8 +39,10 @@ export class TasksBundlesComponent implements OnInit {
     this.loadBundles();
   }
 
-  loadBundles() {
-    this.facadeService.loadBundles(this);
+  async loadBundles() {
+    this.bundles = await this.facadeService.loadBundles();
+    console.log("TEST");
+    console.log(this.bundles.primaryBundleThumbnails[0]);
   }
 
   areBundlesEmpty() {

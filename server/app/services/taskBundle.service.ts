@@ -13,6 +13,9 @@ import { isNullOrUndefined } from 'util';
 import { ITask } from '../interfaces/ITask.interface';
 import { DeleteResult } from 'typeorm';
 import { TaskService } from './task.service';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as config from 'config';
 
 @injectable()
 export class TaskBundleService {
@@ -39,6 +42,7 @@ export class TaskBundleService {
     public async getTasksBundles(userId: number): Promise<ITasksBundles> {
         // Get all tasks assigned to specifiec user from the taskPriority table
         const tasks = await this.taskPriorityRepository.findPrioritizedTasksByUser(userId);
+
         return this.createTasksBundles(tasks);
     }
 
@@ -68,31 +72,70 @@ export class TaskBundleService {
             }
         }
 
-        // Add 1 rndom task to temp arrays of tasks
+        // Add 1 random task to temp arrays of tasks
         B1.push(tasks[ArrayIndexNumbers[0]].task);
         B2.push(tasks[ArrayIndexNumbers[1]].task);
         B3.push(tasks[ArrayIndexNumbers[2]].task);
 
-        // Get task type details from first task of eahc bundle
+        // Get task type details from first task of each bundle
         const taskType1 = await this.taskTypeRepository.findByIds([B1[0].taskTypeId]);
         const taskType2 = await this.taskTypeRepository.findByIds([B2[0].taskTypeId]);
         const taskType3 = await this.taskTypeRepository.findByIds([B3[0].taskTypeId]);
+
+        const bundleThumbnails1: string[] = [];
+        const bundleThumbnails2: string[] = [];
+        const bundleThumbnails3: string[] = [];
+
+        // // Get thumbnails
+        if (!isNullOrUndefined(B1) && B1.length > 0 ) {
+            B1.forEach(task => {
+                console.log(task.annotation.imageId);
+                bundleThumbnails1.push(this.getThumbnails(task.annotation.imageId));
+            });
+        }
+        if (!isNullOrUndefined(B2) && B2.length > 0 ) {
+            B2.forEach(task => {
+                bundleThumbnails2.push(this.getThumbnails(task.annotation.imageId));
+            });
+        }
+        if (!isNullOrUndefined(B3) && B3.length > 0 ) {
+            B3.forEach(task => {
+                bundleThumbnails3.push(this.getThumbnails(task.annotation.imageId));
+            });
+        }
 
         // assign values to interface and return
         const  bundles: ITasksBundles = {
             primaryTaskType: taskType1[0].title,
             primaryTaskTypeDescription: taskType1[0].description,
             primaryBundle: B1,
+            primaryBundleThumbnails: bundleThumbnails1,
             secondaryTaskType: taskType2[0].title,
             secondaryTaskTypeDescription: taskType2[0].description,
             secondaryBundle: B2,
+            secondaryBundleThumbnails: bundleThumbnails2,
             tertiaryTaskType: taskType3[0].title,
             tertiaryTaskTypeDescription: taskType3[0].description,
             tertiaryBundle: B3,
-
+            tertiaryBundleThumbnails: bundleThumbnails3,
         };
 
         return bundles;
+    }
+
+    public getThumbnails(imageId: number): string {
+        try {
+            const thumbPath = path.resolve(this.getThumbnailPathSync(imageId));
+            return 'data:image/jpg;base64, ' + fs.readFileSync(thumbPath, 'base64');
+        } catch {
+            console.error(`Thumbnail for image ${imageId} not found.`);
+        }
+        return '';
+    }
+
+    public getThumbnailPathSync(imageId: number) {
+        const prePath = config.get('storageFolders.thumbnail') as string;
+        return path.join(prePath, imageId.toString() + '.jpg');
     }
 
     public async assignTasks(ids: number[], user: User) {

@@ -5,11 +5,12 @@
 <div class = "cards">
     <mat-card class="card" *ngIf="bundles.primaryBundle.length !== 0">
         <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
         <mat-card-title>{{bundles.primaryTaskType}}</mat-card-title>
         <mat-card-subtitle>{{bundles.primaryBundle.length}}</mat-card-subtitle>
         <mat-card-subtitle>Time</mat-card-subtitle>
         </mat-card-header>
-        
+        <img type="image" src="data:image/jpg;base64,bundles.primaryBundleThumbnails[0]" alt="Embedded Image">
         <mat-card-content>
         <p>{{bundles.primaryTaskTypeDescription}}</p>
         </mat-card-content>
