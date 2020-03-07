@@ -31,7 +31,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   length: number;
   pageSize: number;
   dataTable: any = [];
-  taskTypeList: TaskType[] = [];
+  taskTypes: TaskType[] = [];
   noData: boolean;
   showCompleted: boolean;
   selection = new SelectionModel(true, []);
@@ -93,8 +93,8 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           });
   }
 
-  loadTaskTypes() {
-    this.tasksCompletedFacadeService.getTaskTypes(this.taskTypeList);
+  async loadTaskTypes() {
+    this.taskTypes = await this.tasksCompletedFacadeService.getTaskTypes();
   }
 
   loadImage(imageId: string): void {

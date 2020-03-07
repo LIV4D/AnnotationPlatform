@@ -14,8 +14,8 @@ export class TasksCompletedFacadeService {
     return this.taskService.getTasks(page, pageSize, isCompleted);
   }
 
-  getTaskTypes(taskTypes: TaskType[]) {
-    this.taskService.getTaskTypes();
+  async getTaskTypes() {
+    return await this.taskService.getTaskTypesApp();
   }
 
   hideTaskApp(taskId: number): void {

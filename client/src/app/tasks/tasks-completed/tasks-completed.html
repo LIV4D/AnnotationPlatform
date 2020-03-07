@@ -38,9 +38,13 @@
     </ng-container>
 
     <!-- Task Type Title-->
-    <ng-container matColumnDef="taskTypeTitle">
+    <ng-container matColumnDef="taskTypeTitle" >
         <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Type</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task.taskTypeTitle}} </mat-cell>
+        <mat-cell *matCellDef="let task">
+          <ng-container *ngFor="let taskType of taskTypes">
+            <p *ngIf="taskType.id === task.taskTypeId">{{taskType.title}} </p>
+          </ng-container>
+         </mat-cell>
     </ng-container>
 
     <!-- Project Title-->

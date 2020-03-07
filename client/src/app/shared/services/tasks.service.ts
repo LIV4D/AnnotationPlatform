@@ -116,10 +116,9 @@ export class TasksService {
 
   async getTaskTypesApp() {
     const data = await this.getTaskTypes().toPromise();
-    console.log(data);
     return data as TaskType[];
   }
-  
+
   /**
    * Hide a task setting it to not visible
    * @param taskId:
