@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 // Interface and Model
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 import { TaskType } from 'src/app/shared/models/taskType.model';
+import { User } from 'src/app/shared/models/user.model';
 
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
@@ -32,6 +33,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   pageSize: number;
   dataTable: any = [];
   taskTypes: TaskType[] = [];
+  users: User[] = [];
   selectedTaskType: string;
   noData: boolean;
   showCompleted: boolean;
@@ -52,6 +54,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     };
 
     this.loadTaskTypes();
+    this.loadUsers();
   }
 
   ngAfterViewInit() {
@@ -68,6 +71,16 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
    */
   async loadTaskTypes() {
     this.taskTypes = await this.taskToCompleteFacadeService.getTaskTypes();
+  }
+
+
+  /**
+   * Loads the list of users. This will be used for finding then displaying the name
+   * of a user having created a task by matching the userIds
+   * with the creatorUserId of a task.
+   */
+  async loadUsers() {
+    this.users = await this.taskToCompleteFacadeService.getUsers();
   }
 
   loadData() {
@@ -99,6 +112,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
               this.dataTable.data = data;
+              console.log(data);
               this.length = this.dataTable.length;
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar
