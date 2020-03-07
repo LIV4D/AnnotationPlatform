@@ -65,14 +65,6 @@ export class ManagementCreationService {
      * Creates the appropriate model.
      */
     public eventModelFromManagement(event: string): Observable<any> {
-        if (this.properties.includes('files')) {
-            console.log('test');
-            return this.http.post<any>(`/api/${this.modelName}s/${event}`,
-                { files : this.instantiatedModel['files'] },
-                this.instantiatedModel);
-        }
-        console.log('OtherTest');
-        console.log(`/api/${this.modelName}s/${event}`);
         return this.http.post<any>(`/api/${this.modelName}s/${event}`, this.instantiatedModel);
     }
 

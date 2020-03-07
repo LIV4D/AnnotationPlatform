@@ -23,7 +23,6 @@ export class ModelFinderService {
 
         try {
             // Dynamic import. If the models folder gets too large, consider moving this.
-            console.log('test');
             const modelImport = await import(`../models/serverModels/${modelPath}`);
 
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
