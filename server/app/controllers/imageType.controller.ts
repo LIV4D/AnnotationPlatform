@@ -13,7 +13,7 @@ export class ImageTypeController implements IRegistrableController {
     public register(app: express.Application): void {
         // Collection
         app.get('/api/imageTypes', this.getImageTypes);
-        app.post('/api/imageTypes', this.createImageType);
+        app.post('/api/imageTypes/create', this.createImageType);
         // Element
         app.get('/api/imageTypes/:imageTypeId', this.getImageType);
         app.put('/api/imageTypes/:imageTypeId', this.updateImageType);
