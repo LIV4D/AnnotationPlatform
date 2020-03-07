@@ -6,12 +6,15 @@ import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
 import { ITaskGallery } from '../interfaces/gallery.interface';
 import { ImageService } from '../services/image.service';
+import {AnnotationService } from '../services/annotation.service';
 import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskRepository {
     @inject(TYPES.ImageService)
     private imageService: ImageService;
+    @inject(TYPES.AnnotationService)
+    private annotationService: AnnotationService;
     private connectionProvider: ConnectionProvider;
     constructor(
         @inject('ConnectionProvider') connectionProvider: ConnectionProvider,
@@ -79,13 +82,13 @@ export class TaskRepository {
         const tasks =  await qb.getMany();
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
-        taskList = tasks.map(task => {
+        taskList = await Promise.all(tasks.map(async task => {
             // Todo: add imageId in arguments
-            console.log(task);
+            let annotation = await this.annotationService.getAnnotation(task.annotationId);
             let dataUrl = '';
             try {
                 // tslint:disable-next-line:max-line-length
-                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(2)), 'base64');
+                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(annotation.imageId)), 'base64');
                 dataUrl = 'data:image/png;base64, ' + base64Image;
             } catch (error) {
                 throw(error);
@@ -100,7 +103,7 @@ export class TaskRepository {
                 taskTypeTitle: 'Todo',
                 annotationId: task.annotationId,
                 // imageId: task.annotation.image.id,
-                imageId: 2,
+                imageId: annotation.imageId,
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,
@@ -108,7 +111,7 @@ export class TaskRepository {
                 lastModifiedTime: task.lastModifiedTime,
             };
             return taskGallery;
-        });
+        }));
         if (completed === true) {
             taskList = taskList.filter(taskGallery => taskGallery.isComplete);
         } else if (completed === false) {
