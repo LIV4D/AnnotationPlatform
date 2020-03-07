@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { Annotation } from './annotation.model';
 import { IProtoImage } from '../prototype interfaces/IProtoImage.interface';
 import { IImage } from '../interfaces/IImage.interface';
-
-import { ImageType } from './imageType.model';
 
 export class Metadata {
     [key: string]: string | number | boolean;
@@ -14,9 +12,6 @@ export class Metadata {
 // tslint:disable-next-line:max-classes-per-file
 @Entity()
 export class Image {
-
-    @ManyToOne(type => ImageType, imageType => imageType.images)
-    public imageType: ImageType;
 
     @PrimaryGeneratedColumn()
     public id: number;
