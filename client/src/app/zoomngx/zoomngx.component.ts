@@ -16,12 +16,13 @@ export class ZoomngxComponent implements AfterViewInit {
 
 
   constructor() {
-    // this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
-    this.image.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
+    this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
+    // this.image.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
   }
 
   ngAfterViewInit(): void {
-    this.image.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
+    // this.image.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
+    this.image.src = '../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg';
     const context: CanvasRenderingContext2D = this.myCanvas.nativeElement.getContext('2d');
 
     // showing
@@ -33,10 +34,10 @@ export class ZoomngxComponent implements AfterViewInit {
       this.scaleToFit(this.image, context, this.myCanvas.nativeElement);
     };
 
-    const wz = mouseWheelZoom({
-      element: document.querySelector('[data-wheel-zoom]'),
-      zoomStep: 0.25
-    });
+    // const wz = mouseWheelZoom({
+    //   element: document.querySelector('[data-wheel-zoom]'),
+    //   zoomStep: 0.25
+    // });
   }
 
   scaleToFit(img, ctx, canvas) {
@@ -47,4 +48,14 @@ export class ZoomngxComponent implements AfterViewInit {
     const y = (canvas.height / 2) - (img.height / 2) * scale;
     ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
   }
+
+  onMouseWheel(event: WheelEvent): void {
+    console.log('%c ZoomngxComponent::onMouseWheel()', 'color:black; background:yellow;');
+    console.log('%c width ' + this.myCanvas.nativeElement.getContext('2d') , 'color:black; background:yellow;');
+  }
+
+  onMouseOver(event: Event) {
+    console.log('%c ZoomngxComponent::onMouseOver()', 'color:black; background:yellow;');
+  }
+
 }

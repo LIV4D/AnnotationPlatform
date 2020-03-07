@@ -5,7 +5,9 @@
   [enableScrollZoom]='true'
 ></lib-ngx-image-zoom> -->
 
-<div class="size-image">
+<div class="size-image"
+  (wheel)="onMouseWheel($event)"
+  (mouseover)="onMouseOver($event)">
   <!-- <img class="size-image" src="../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg" alt=""> -->
-  <canvas data-wheel-zoom #myCanvas height="750" width="1200"> </canvas>
+  <canvas data-wheel-zoom #myCanvas height="750" width="1200"></canvas>
 </div>

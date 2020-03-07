@@ -55,10 +55,11 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onMouseWheel(event: WheelEvent): void {
-    console.log('EditorContent::onMouseWheel()');
+    // console.log('EditorContent::onMouseWheel()');
 
     const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-    const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 300;
+    // delta is used to lower the zooming speed
+    const delta = - event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 500;
 
     if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);

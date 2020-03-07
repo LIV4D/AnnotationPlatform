@@ -11,6 +11,8 @@ import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
+import { resolve } from 'dns';
+import { worker } from 'cluster';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -43,6 +45,8 @@ export class EditorService {
   svgLoaded: EventEmitter<any>;
   localSVGName: string;
   menuState: boolean;
+
+  canRedraw = true;
   // public biomarkersService: BiomarkersService,
 
   constructor(private http: HttpClient, public layersService: LayersService,
@@ -268,6 +272,7 @@ export class EditorService {
   //         });
   // }
 
+
   // Load the main image in the background canvas.
   public loadMainImage(image: HTMLImageElement): void {
     console.log('EditorService::loadMainImage()');
@@ -479,6 +484,7 @@ export class EditorService {
     } else {
       this.offsetX = 0;
     }
+
     if (this.backgroundCanvas.originalCanvas.height > this.backgroundCanvas.displayCanvas.height) {
       this.offsetY = Math.min(this.backgroundCanvas.originalCanvas.height - this.backgroundCanvas.displayCanvas.height, this.offsetY);
     } else {
@@ -492,11 +498,67 @@ export class EditorService {
     return oldXOffset !== this.offsetX || oldYOffset !== this.offsetY;
   }
 
+  testRedraw(position: Point) {
+      console.log('%c testRedraw() ', 'color: black; background:red;');
+      const zoomFactor = this.zoomFactor;
+
+      // Adjust canvas sizes.
+      const oldWidth = this.backgroundCanvas.displayCanvas.width;
+      // console.log('%c oldWidth : ' + oldWidth , 'color: black; background:yellow;');
+      // console.log('%c this.fullCanvasWidth : ' + this.fullCanvasWidth , 'color: black; background:red;');
+      // console.log('%c zoomFactor : ' + zoomFactor , 'color: black; background:yellow;');
+      // divide by the zoom factor in order to get the new selection's width to zoom at
+      const newWidth = this.fullCanvasWidth / zoomFactor;
+      // console.log('%c newWidth : ' + newWidth , 'color: black; background:yellow;');
+      this.backgroundCanvas.displayCanvas.width = newWidth;
+
+      const newHeight = this.fullCanvasHeight / zoomFactor;
+      const oldHeight = this.backgroundCanvas.displayCanvas.height;
+      this.backgroundCanvas.displayCanvas.height = newHeight;
+
+      // this.layersService.resize(newWidth, newHeight);
+
+      if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
+        // this.zoomFactor = zoomFactor;
+
+        // Adjust offsets to keep them coherent with the previous zoom.
+        let positionXPercentage = 0.5;
+        let positionYPercentage = 0.5;
+
+        if (position !== null) {
+          console.log('%c position.x : ' + position.x , 'color: black; background:red;');
+          console.log('%c oldWidth : ' + oldWidth , 'color: black; background:red;');
+
+          // This is just to get a value 0 <= X <= 1 and 0 <= Y <= 1
+          positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
+          positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
+          console.log('%c positionXPercentage : ' + positionXPercentage , 'color: black; background:yellow;');
+        }
+
+        const deltaX = (oldWidth - newWidth) * positionXPercentage;
+        console.log('%c deltaX : ' + deltaX , 'color: black; background:red;');
+        const deltaY = (oldHeight - newHeight) * positionYPercentage;
+        console.log('%c deltaY : ' + deltaY , 'color: black; background:red;');
+        this.offsetX += deltaX;
+        this.offsetY += deltaY;
+      }
+
+      this.adjustOffsets();
+      this.transform();
+      // this.updateCanvasDisplayRatio();
+  }
+
   // Function to zoom on a part of the image.
   // Currently only centered with specific ratios.
   zoom(delta: number, position: Point = null): void {
+    console.log('%c delta:  ' + delta , 'color: black; background:yellow;');
+
     // Keep zoom in range [100%, 600%]
+    // exp is used for acceleration
     let zoomFactor = this.zoomFactor * Math.exp(delta);
+    // let zoomFactor = this.zoomFactor * (2 / (1 + Math.exp(delta)));
+    console.log('%c zoomFactor:  ' + zoomFactor , 'color: white; background:black;');
+
 
     // Cap the values.
     if (zoomFactor > ZOOM.MAX) {
@@ -505,42 +567,20 @@ export class EditorService {
       zoomFactor = ZOOM.MIN;
     }
 
-    // Adjust canvas sizes.
-    const oldWidth = this.backgroundCanvas.displayCanvas.width;
-    console.log('%c oldWidth : ' + oldWidth , 'color: black; background:yellow;');
-    const oldHeight = this.backgroundCanvas.displayCanvas.height;
+    this.zoomFactor = zoomFactor;
 
-    const newWidth = this.fullCanvasWidth / zoomFactor;
-    console.log('%c newWidth : ' + newWidth , 'color: black; background:yellow;');
-    console.log('%c this.fullCanvasWidth : ' + this.fullCanvasWidth , 'color: black; background:yellow;');
-    const newHeight = this.fullCanvasHeight / zoomFactor;
+    if (this.canRedraw) {
+      this.canRedraw = false;
+      this.testRedraw(position);
+      // do CSS translation here
 
-    this.backgroundCanvas.displayCanvas.width = newWidth;
-    this.backgroundCanvas.displayCanvas.height = newHeight;
 
-    // this.layersService.resize(newWidth, newHeight);
-
-    if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-      this.zoomFactor = zoomFactor;
-
-      // Adjust offsets to keep them coherent with the previous zoom.
-      let positionXPercentage = 0.5;
-      let positionYPercentage = 0.5;
-
-      if (position !== null) {
-        positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
-        positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
-      }
-
-      const deltaX = (oldWidth - newWidth) * positionXPercentage;
-      const deltaY = (oldHeight - newHeight) * positionYPercentage;
-      this.offsetX += deltaX;
-      this.offsetY += deltaY;
+      setTimeout(() => {
+        this.canRedraw = true;
+      }, 100);
     }
+    console.log('%c else ', 'color: black; background:blue;');
 
-    this.adjustOffsets();
-    this.transform();
-    // this.updateCanvasDisplayRatio();
   }
 
   // this only works for zoom slider (when using mobile device)
@@ -600,10 +640,10 @@ export class EditorService {
 
     this.backgroundCanvas.draw();
 
-    this.layersService.biomarkerCanvas.forEach(layer => {
-      layer.setOffset(this.offsetX, this.offsetY);
-      layer.draw();
-    });
+    // this.layersService.biomarkerCanvas.forEach(layer => {
+    //   layer.setOffset(this.offsetX, this.offsetY);
+    //   layer.draw();
+    // });
 
     // Redraw the zoom rectangle.
     this.updateZoomRect();
