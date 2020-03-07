@@ -6,7 +6,7 @@ import { BackgroundCanvas } from '../../models/background-canvas.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalStorage } from '../../models/local-storage.model';
 import { Point } from '../../models/point.model';
-import { Image as ImageServer } from '../../models/image.model';
+import { Image as ImageServer } from '../../models/serverModels/image.model';
 import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
