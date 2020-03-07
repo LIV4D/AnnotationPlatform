@@ -9,6 +9,7 @@ export interface IProtoTask {
     isComplete: boolean;
     isVisible: boolean;
     comment: string;
+    projectTitle: string;
     assignedUser: IProtoUser;
     creator: IProtoUser;
 }

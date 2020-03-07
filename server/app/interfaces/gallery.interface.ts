@@ -24,6 +24,7 @@ export interface ITaskGallery {
     comment?: string;
     assignedUserId?: number;
     creatorId?: number;
-    projectId?: number;
     lastModifiedTime?: Date;
+
+    projectTitle?: string;
 }

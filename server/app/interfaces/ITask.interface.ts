@@ -8,6 +8,6 @@ export interface ITask {
     assignedUserId?: number;
     creatorId?: number;
     imageId?: number;
-    projectId?: number;
+    projectTitle?: string;
     lastModifiedTime?: Date;
 }

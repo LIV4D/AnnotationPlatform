@@ -81,6 +81,7 @@ export class TaskRepository {
         // Regroup tasks in taskGroups by image
         taskList = tasks.map(task => {
             // Todo: add imageId in arguments
+            console.log(task);
             let dataUrl = '';
             try {
                 // tslint:disable-next-line:max-line-length
@@ -103,8 +104,7 @@ export class TaskRepository {
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,
-                // projectId: task.projectId,
-                projectId: 420,
+                projectTitle: task.projectTitle,
                 lastModifiedTime: task.lastModifiedTime,
             };
             return taskGallery;

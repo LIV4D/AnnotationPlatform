@@ -25,10 +25,9 @@
     </ng-container>
 
     <!-- Project Title-->
-    <!-- TODO: Create the Project Table to find the ProjectTitle with a ProjectId -->
     <ng-container matColumnDef="project">
       <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
-      <mat-cell *matCellDef="let task"> N/A </mat-cell>
+      <mat-cell *matCellDef="let task"> {{task.projectTitle}} </mat-cell>
     </ng-container>
 
     <!-- Creator Name -->

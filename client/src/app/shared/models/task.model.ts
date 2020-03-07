@@ -7,6 +7,7 @@ export class Task {
     public annotationId = 0;
     public isComplete = false;
     public isVisible = true;
+    public projectTitle = '';
     public comment = '';
     public assignedUserId = 0;
 }
