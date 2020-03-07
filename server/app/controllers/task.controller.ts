@@ -43,6 +43,7 @@ export class TaskController implements IController {
             isComplete: req.body.isComplete,
             isVisible: req.body.isVisible,
             comment: req.body.comment,
+            projectTitle: req.body.projectTitle,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id,
             lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
