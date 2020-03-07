@@ -13,13 +13,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-// Interface
+// Interface and Model
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
+import { TaskType } from 'src/app/shared/models/taskType.model';
 
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { TaskType } from 'src/app/shared/models/taskType.model';
 
 @Component({
   selector: 'app-tasks-to-complete',
@@ -61,6 +61,11 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     this.dataTable.sort = this.sort;
   }
 
+  /**
+   * Loads the list of taskTypes. This will be used for finding then displaying the taksTypeTitle
+   * of the taskType of a task by matching the taskTypeIds of the list
+   * with the taskTypeId of a task.
+   */
   async loadTaskTypes() {
     this.taskTypes = await this.taskToCompleteFacadeService.getTaskTypes();
   }

@@ -93,6 +93,11 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           });
   }
 
+  /**
+   * Loads the list of taskTypes. This will be used for finding then displaying the taksTypeTitle
+   * of the taskType of a task by matching the taskTypeIds of the list
+   * with the taskTypeId of a task.
+   */
   async loadTaskTypes() {
     this.taskTypes = await this.tasksCompletedFacadeService.getTaskTypes();
   }

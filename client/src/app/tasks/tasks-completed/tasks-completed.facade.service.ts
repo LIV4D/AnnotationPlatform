@@ -1,21 +1,23 @@
 import { Injectable, Injector } from '@angular/core';
 import { TasksService } from '../../shared/services/tasks.service';
+import { TaskTypeService } from '../../shared/services/Tasks/taskType.service';
 import { AppService} from '../../shared/services/app.service';
 import { EditorService } from '../../shared/services/Editor/editor.service';
-
-import { TaskType } from 'src/app/shared/models/taskType.model';
 
 @Injectable()
 export class TasksCompletedFacadeService {
 
-  constructor(private taskService: TasksService, private editorService: EditorService, public appService: AppService) {}
+  constructor(private taskService: TasksService,
+              private taskTypeService: TaskTypeService,
+              private editorService: EditorService,
+              public appService: AppService) {}
 
   getTasks(page: number, pageSize: number, isCompleted: boolean) {
     return this.taskService.getTasks(page, pageSize, isCompleted);
   }
 
   async getTaskTypes() {
-    return await this.taskService.getTaskTypesApp();
+    return await this.taskTypeService.getTaskTypesApp();
   }
 
   hideTaskApp(taskId: number): void {
