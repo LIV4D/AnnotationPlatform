@@ -9,8 +9,9 @@
         <mat-card-title>{{bundles.primaryTaskType}}</mat-card-title>
         <mat-card-subtitle>{{bundles.primaryBundle.length}}</mat-card-subtitle>
         <mat-card-subtitle>Time</mat-card-subtitle>
+        <img mat-card-image [src]="bundles.primaryBundleThumbnails[0] | safeImage" alt="">
         </mat-card-header>
-        <img type="image" src="data:image/jpg;base64,bundles.primaryBundleThumbnails[0]" alt="Embedded Image">
+        
         <mat-card-content>
         <p>{{bundles.primaryTaskTypeDescription}}</p>
         </mat-card-content>
@@ -24,6 +25,7 @@
         <mat-card-title>{{bundles.secondaryTaskType}}</mat-card-title>
         <mat-card-subtitle>{{bundles.secondaryBundle.length}}</mat-card-subtitle>
         <mat-card-subtitle>Time</mat-card-subtitle>
+        <img mat-card-image [src]="bundles.secondaryBundleThumbnails[0] | safeImage" alt="">
         </mat-card-header>
         
         <mat-card-content>
@@ -39,6 +41,7 @@
         <mat-card-title>{{bundles.tertiaryTaskType}}</mat-card-title>
         <mat-card-subtitle>{{bundles.secondaryBundle.length}}</mat-card-subtitle>
         <mat-card-subtitle>Time</mat-card-subtitle>
+        <img mat-card-image [src]="bundles.tertiaryBundleThumbnails[0] | safeImage" alt="">
         </mat-card-header>
       
         <mat-card-content>
