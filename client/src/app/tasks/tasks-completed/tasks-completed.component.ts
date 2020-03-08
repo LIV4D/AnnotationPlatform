@@ -27,7 +27,7 @@ import { catchError, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./tasks-completed.component.scss']
 })
 export class TasksCompletedComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['selectTasks', 'imageSrc', 'imageId', 'taskTypeTitle', 'project', 'time', 'lastModified'];
+  displayedColumns: string[] = ['selectTasks', 'imageSrc', 'imageId', 'taskTypeTitle', 'projectTitle', 'time', 'lastModifiedTime'];
   length: number;
   pageSize: number;
   dataTable: any = [];
@@ -36,8 +36,8 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   showCompleted: boolean;
   selection = new SelectionModel(true, []);
 
-  @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort , {static: true}) sort: MatSort;
 
   constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
     this.showCompleted = true;

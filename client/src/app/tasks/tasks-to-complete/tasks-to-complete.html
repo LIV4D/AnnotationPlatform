@@ -25,13 +25,13 @@
     </ng-container>
 
     <!-- Project Title-->
-    <ng-container matColumnDef="project">
-      <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
+    <ng-container matColumnDef="projectTitle">
+      <mat-header-cell *matHeaderCellDef  mat-sort-header disableClear>Project</mat-header-cell>
       <mat-cell *matCellDef="let task"> {{task.projectTitle}} </mat-cell>
     </ng-container>
 
     <!-- Creator Name -->
-    <ng-container matColumnDef="creatorName">
+    <ng-container matColumnDef="creatorId">
         <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Submiter</mat-header-cell>
         <mat-cell *matCellDef="let task">
           <ng-container *ngFor="let user of users">
@@ -43,7 +43,7 @@
     <!-- Cumulated Time -->
     <!-- TODO: Get cumulated in Editor when it'll be operationnal -->
     <ng-container matColumnDef="time">
-      <mat-header-cell *matHeaderCellDef disableClear>Cumulated Time</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Cumulated Time</mat-header-cell>
       <mat-cell *matCellDef="let task"> N/A </mat-cell>
     </ng-container>
 

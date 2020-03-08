@@ -28,7 +28,7 @@ import { catchError, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./tasks-to-complete.scss']
 })
 export class TasksToCompleteComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['imageSrc', 'imageId', 'project', 'creatorName', 'time'];
+  displayedColumns = ['imageSrc', 'imageId', 'projectTitle', 'creatorId', 'time'];
   length: number;
   pageSize: number;
   dataTable: any = [];
