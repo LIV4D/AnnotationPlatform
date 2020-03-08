@@ -61,7 +61,6 @@
     </ng-container>
 
     <!-- Last Modified Time -->
-    <!-- TODO: Update the time at each modification -->
     <ng-container matColumnDef="lastModifiedTime">
       <mat-header-cell *matHeaderCellDef  mat-sort-header disableClear>Last Modified</mat-header-cell>
       <mat-cell *matCellDef="let task"> {{task.lastModifiedTime | date:'medium'}} </mat-cell>

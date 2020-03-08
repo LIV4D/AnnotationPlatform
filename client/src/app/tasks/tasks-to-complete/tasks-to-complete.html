@@ -32,7 +32,7 @@
 
     <!-- Creator Name -->
     <ng-container matColumnDef="creatorId">
-        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Submiter</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Creator</mat-header-cell>
         <mat-cell *matCellDef="let task">
           <ng-container *ngFor="let user of users">
             <p *ngIf="user.id === task.creatorId">{{user.firstName | uppercase | slice:0:1}}. {{user.lastName | titlecase }} </p>
