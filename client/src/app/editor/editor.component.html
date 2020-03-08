@@ -7,6 +7,8 @@
       <div id="edit-viewport" class="center">
           <div id="overlay">
 
+              <app-comment-box *ngIf="this.editorFacadeService.commentBoxVisible"></app-comment-box>
+
               <!--TOOLPROPS-->
               <!-- <app-tool-properties></app-tool-properties> -->
 
@@ -69,8 +71,6 @@
           </div>
           <div id="bodyblack"></div>
       </div>
-
-      <app-comment-box *ngIf="this.editorFacadeService.commentBoxVisible"></app-comment-box>
 
       <!--RIGHT MENU-->
       <app-right-menu #rightMenu [canvas]="this.editorFacadeService.backgroundCanvas"></app-right-menu>

@@ -18,6 +18,7 @@ import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { MatListModule } from '@angular/material/list';
         MatSidenavModule,
         MatSliderModule,
         MatTabsModule,
-        MatListModule
+        MatListModule,
+        MatCardModule
     ],
     exports: [
         BrowserModule,
@@ -55,7 +57,8 @@ import { MatListModule } from '@angular/material/list';
         MatSliderModule,
         MatToolbarModule,
         MatTabsModule,
-        MatListModule
+        MatListModule,
+        MatCardModule
     ]
 })
 
