@@ -44,6 +44,7 @@ export class EditorService {
   svgLoaded: EventEmitter<any>;
   localSVGName: string;
   menuState: boolean;
+  commentBoxVisible: boolean = false;
   // public biomarkersService: BiomarkersService,
   constructor(private http: HttpClient, public layersService: LayersService,
               public galleryService: GalleryService, public router: Router,

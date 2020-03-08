@@ -90,6 +90,10 @@ export class ToolboxService {
         //     // this.imageBorderService.showBorders = false;
         //     // this.layersService.toggleBorders(false);
         // }
+        if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
+            this.editorService.commentBoxVisible = true;
+            console.log('SHOW')
+        }
         this.selectedTool.getValue().onCursorDown(point);
         this.setUndoRedoState();
     }
