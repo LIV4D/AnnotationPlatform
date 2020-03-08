@@ -127,11 +127,16 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     return this.taskToCompleteFacadeService.configureFilterPredicate();
   }
 
+  /**
+   * Event: Filters the tasks List
+   * depending on the taskType chosen by the user
+   * @param filterTaskTypes: taskType selected for the filtering
+   */
   applyFilter(filterTaskType: TaskType) {
-    const filterTaskTypeId = filterTaskType.id.toString();
-    this.selectedTaskType = filterTaskType.title;
-    this.dataSource.filter = filterTaskTypeId.trim().toLowerCase();
+    this.selectedTaskType = filterTaskType.title; // Displays the title of the taskType selected
+    this.dataSource.filter = filterTaskType.id.toString().trim().toLowerCase(); // taskTypeId converted for matching the filtering
 
+    // Pagination updated
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -143,21 +148,5 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     this.taskToCompleteFacadeService.loadImageFromServer(imageId);
   }
 }
-
-/// REFERENCE FOR LATER
-// Mat-Table API: See HTML example
-// https://material.angular.io/components/table/overview
-// https://material.angular.io/components/table/examples
-//
-//
-// How to make filters (usefull for making Task-To-Complete: Mock Up version)
-// https://stackblitz.com/edit/angular-7w9ajc-pidehb?file=app%2Ftable-overview-example.ts
-//
-// How to make subSection (usefull for making Task-To-Complete: Gaby version)
-// https://stackblitz.com/edit/angular-mattable-with-groupheader?file=app%2Ftable-basic-example.html
-//
-// Gallery from old project: Very well made compared with old Tasks, might be usefull for filters
-//
-
 
 
