@@ -14,11 +14,13 @@ export class TasksBundlesService {
 
   constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
 
-  loadBundles(tasksBundlesComponent: TasksBundlesComponent) {
-    this.getBundlesObservable().subscribe((data: ITasksBundles) => {
-      tasksBundlesComponent.bundles = data;
-      if (length === 0) { tasksBundlesComponent.noData = true; }
-    });
+  async loadBundles(): Promise<ITasksBundles> {
+    const data = await this.getBundlesObservable().toPromise();
+    return data;
+    // await this.getBundlesObservable().subscribe((data: ITasksBundles) => {
+    //   tasksBundlesComponent.bundles = data;
+    //   if (length === 0) { tasksBundlesComponent.noData = true; }
+    // });
 
   }
 

@@ -17,14 +17,19 @@ export class TasksBundlesComponent implements OnInit {
     primaryBundle: [],
     primaryTaskType: 'Task type',
     primaryTaskTypeDescription: 'Description',
+    primaryBundleThumbnails: [''],
     secondaryBundle: [],
     secondaryTaskType: 'Task type',
     secondaryTaskTypeDescription: 'Description',
+    secondaryBundleThumbnails: [''],
     tertiaryBundle: [],
     tertiaryTaskType: 'Task type',
     tertiaryTaskTypeDescription: 'Description',
+    tertiaryBundleThumbnails: [''],
   } ;
 
+  assignedBundle: number;
+  isBundleAssigned = false;
   noData: boolean;
 
   constructor(private facadeService: TasksBundlesFacadeService) {
@@ -34,8 +39,10 @@ export class TasksBundlesComponent implements OnInit {
     this.loadBundles();
   }
 
-  loadBundles() {
-    this.facadeService.loadBundles(this);
+  async loadBundles() {
+    this.bundles = await this.facadeService.loadBundles();
+    console.log("TEST");
+    console.log(this.bundles.primaryBundleThumbnails[0]);
   }
 
   areBundlesEmpty() {
@@ -45,17 +52,20 @@ export class TasksBundlesComponent implements OnInit {
           isNullOrUndefined(this.bundles.tertiaryBundle) || this.bundles.tertiaryBundle.length === 0);
   }
 
-  async assignBundleTasks(tasks: ITasks[]) {
+  async assignBundleTasks(tasks: ITasks[], bundleNumber: number) {
     const taskIds = [];
     tasks.forEach(task => {
       taskIds.push(task.id);
     });
     const res = await this.facadeService.assignBundleTasks(taskIds);
-    console.log(res);
+
+    // check server response
     if (res === 204) {
+      this.assignedBundle = bundleNumber;
+      this.isBundleAssigned = true;
       this.loadBundles();
     } else {
-      console.log("There was error while assigning the task bundle");
+      console.log('There was error while assigning the task bundle');
     }
   }
 
