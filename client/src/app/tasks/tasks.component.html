@@ -1,22 +1,39 @@
 <mat-tab-group class="Taskgroup" color=: (selectedTabChange)="log($event)"
  (focusChange)="log($event)" dynamicHeight mat-align-tabs="center">
 
-  <mat-tab label="Tasks To Complete">
+  <!-- Task to Complete -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>check_box_outline_blank</mat-icon>
+         Task To Complete
+    </ng-template>
     <ng-template matTabContent>
       <app-tasks-to-complete></app-tasks-to-complete>
     </ng-template>
   </mat-tab>
 
-  <mat-tab label="Tasks Completed">
+  <!-- Task Completed -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>check_box</mat-icon>
+         Task Completed
+    </ng-template>
     <ng-template matTabContent>
       <app-tasks-completed></app-tasks-completed>
     </ng-template>
   </mat-tab>
 
-  <mat-tab label="Tasks Choices">
+  <!-- Bundles -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>storage</mat-icon>
+         Bundles
+    </ng-template>
     <ng-template matTabContent>
       <app-tasks-bundles></app-tasks-bundles>
     </ng-template>
   </mat-tab>
 
 <mat-tab-group>
+
+<!-- In case you want to add links on each tables https://stackoverflow.com/questions/50313246/angular-6-material-mat-tab-link-be-selected-by-underlining-bar -->

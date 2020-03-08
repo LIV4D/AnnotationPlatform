@@ -13,7 +13,7 @@ export class TasksComponent {
    }
     /**
      * Logs tasks component: Executed each time a tab is changed
-     * May be usefull
+     * May be usefull (or not)
      * @param val: event
      */
     log(val) { }
