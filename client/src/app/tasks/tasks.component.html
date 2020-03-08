@@ -2,15 +2,21 @@
  (focusChange)="log($event)" dynamicHeight mat-align-tabs="center">
 
   <mat-tab label="Tasks To Complete">
-    <app-tasks-to-complete></app-tasks-to-complete>
+    <ng-template matTabContent>
+      <app-tasks-to-complete></app-tasks-to-complete>
+    </ng-template>
   </mat-tab>
 
-  <mat-tab label="Tasks Completed" >
-    <app-tasks-completed></app-tasks-completed>
+  <mat-tab label="Tasks Completed">
+    <ng-template matTabContent>
+      <app-tasks-completed></app-tasks-completed>
+    </ng-template>
   </mat-tab>
 
   <mat-tab label="Tasks Choices">
-    <app-tasks-bundles></app-tasks-bundles>
+    <ng-template matTabContent>
+      <app-tasks-bundles></app-tasks-bundles>
+    </ng-template>
   </mat-tab>
 
 <mat-tab-group>
