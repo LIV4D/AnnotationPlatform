@@ -49,10 +49,11 @@ export class TasksBundlesComponent implements OnInit {
     // check server response
     if (res === 204) {
       this.isBundleAssigned = true;
-      this.loadBundles();
     } else {
       console.log('There was error while assigning the task bundle');
     }
+    this.loadBundles();
   }
+
 
 }
