@@ -6,7 +6,7 @@ import { User } from '../models/user.model';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { TaskPriority } from '../models/taskPriority.model';
 import { ITaskPriority } from '../interfaces/ITaskPriority.interface';
-import { ITasksBundles } from '../interfaces/ITasksBundles.interface';
+import { ITaskBundle } from '../interfaces/ITaskBundle.interface';
 import { TaskTypeRepository } from '../repository/taskType.repository';
 import { createError } from '../utils/error';
 import { isNullOrUndefined } from 'util';
@@ -39,20 +39,19 @@ export class TaskBundleService {
         return await this.taskPriorityRepository.create(taskPriority);
     }
 
-    public async getTasksBundles(userId: number): Promise<ITasksBundles> {
-        // Get all tasks assigned to specifiec user from the taskPriority table
+    public async getTasksBundles(userId: number): Promise<ITaskBundle[]> {
+        // Get all tasks assigned to specified user from the taskPriority table
         const tasks = await this.taskPriorityRepository.findPrioritizedTasksByUser(userId);
 
         return this.createTasksBundles(tasks);
     }
 
-    public async createTasksBundles(tasks: ITaskPriority[]): Promise<ITasksBundles> {
+    public async createTasksBundles(tasks: ITaskPriority[]): Promise<ITaskBundle[]> {
         // Initialize tempory arrays that will contain the tasks in each bundle
-        const B1: Task[] = [];
-        const B2: Task[] = [];
-        const B3: Task[] = [];
-
-        // TODO algo to create bundles
+        const bundleTasks: Task[] = [];
+        const bundles: ITaskBundle[] = [];
+        let taskTypes = [];
+        const thumbnails: string[] = [];
 
         // Get 3 different tasks randomly
         const ArrayIndexNumbers = [];
@@ -72,54 +71,34 @@ export class TaskBundleService {
             }
         }
 
-        // Add 1 random task to temp arrays of tasks
-        B1.push(tasks[ArrayIndexNumbers[0]].task);
-        B2.push(tasks[ArrayIndexNumbers[1]].task);
-        B3.push(tasks[ArrayIndexNumbers[2]].task);
+        // create 3 bundles
+        for (let i = 0; i < 3; i++) {
+            // TODO algo to create bundles
 
-        // Get task type details from first task of each bundle
-        const taskType1 = await this.taskTypeRepository.findByIds([B1[0].taskTypeId]);
-        const taskType2 = await this.taskTypeRepository.findByIds([B2[0].taskTypeId]);
-        const taskType3 = await this.taskTypeRepository.findByIds([B3[0].taskTypeId]);
+            // add 1 random task to temp array
+            bundleTasks.push(tasks[ArrayIndexNumbers[i]].task);
 
-        const bundleThumbnails1: string[] = [];
-        const bundleThumbnails2: string[] = [];
-        const bundleThumbnails3: string[] = [];
+            // Get task type details from first task of each bundle
+            taskTypes = await this.taskTypeRepository.findByIds([bundleTasks[0].taskTypeId]);
 
-        // // Get thumbnails
-        if (!isNullOrUndefined(B1) && B1.length > 0 ) {
-            B1.forEach(task => {
-                console.log(task.annotation.imageId);
-                bundleThumbnails1.push(this.getThumbnails(task.annotation.imageId));
-            });
+            // Get thumbnails
+            if (!isNullOrUndefined(bundleTasks) && bundleTasks.length > 0 ) {
+                bundleTasks.forEach(task => {
+                    console.log(task.annotation.imageId);
+                    thumbnails.push(this.getThumbnails(task.annotation.imageId));
+                });
+            }
+
+             // assign values to interface and return
+            const  bundle: ITaskBundle = {
+                taskType: taskTypes[0].title,
+                taskTypeDescription: taskTypes[0].description,
+                bundle: bundleTasks,
+                bundleThumbnails: thumbnails,
+            };
+
+            bundles.push(bundle);
         }
-        if (!isNullOrUndefined(B2) && B2.length > 0 ) {
-            B2.forEach(task => {
-                bundleThumbnails2.push(this.getThumbnails(task.annotation.imageId));
-            });
-        }
-        if (!isNullOrUndefined(B3) && B3.length > 0 ) {
-            B3.forEach(task => {
-                bundleThumbnails3.push(this.getThumbnails(task.annotation.imageId));
-            });
-        }
-
-        // assign values to interface and return
-        const  bundles: ITasksBundles = {
-            primaryTaskType: taskType1[0].title,
-            primaryTaskTypeDescription: taskType1[0].description,
-            primaryBundle: B1,
-            primaryBundleThumbnails: bundleThumbnails1,
-            secondaryTaskType: taskType2[0].title,
-            secondaryTaskTypeDescription: taskType2[0].description,
-            secondaryBundle: B2,
-            secondaryBundleThumbnails: bundleThumbnails2,
-            tertiaryTaskType: taskType3[0].title,
-            tertiaryTaskTypeDescription: taskType3[0].description,
-            tertiaryBundle: B3,
-            tertiaryBundleThumbnails: bundleThumbnails3,
-        };
-
         return bundles;
     }
 
@@ -137,7 +116,6 @@ export class TaskBundleService {
         const prePath = config.get('storageFolders.thumbnail') as string;
         return path.join(prePath, imageId.toString() + '.jpg');
     }
-
     public async assignTasks(ids: number[], user: User) {
         return Promise.all(ids.map( async (id) => {
             const updatedTask: ITask = {
@@ -155,9 +133,9 @@ export class TaskBundleService {
         }));
     }
 
-    public async deleteTaskPriority(taskId: number): Promise<DeleteResult[]> {
+    public async deleteTaskPriority(taskId: number): Promise < DeleteResult[] > {
         const taskPriority = await this.taskPriorityRepository.findAll(taskId);
-        if (isNullOrUndefined(taskPriority) || taskPriority.length <= 0) {
+        if (isNullOrUndefined(taskPriority) || taskPriority.length <= 0 ) {
             throw createError('This task priority with the given task id does not exist.', 404);
         }
 

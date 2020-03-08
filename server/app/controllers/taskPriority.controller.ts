@@ -5,8 +5,6 @@ import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskBundleService } from '../services/taskBundle.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { ITask } from '../interfaces/ITask.interface';
-import { isNullOrUndefined } from 'util';
 
 @injectable()
 export class TaskPriorityController implements IController {

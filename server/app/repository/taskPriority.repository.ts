@@ -53,7 +53,7 @@ export class TaskPriorityRepository {
                          .where(`taskPriority.userId = ${userId}` );
         const taskPrioritys =  await qb.getMany();
 
-        // Get tasks and map them in interface
+        // Get tasks and map them in ITaskPriority interface
         const taskRepo =  (await this.connectionProvider()).getRepository(Task);
         const iTaskPrioritys = Promise.all(taskPrioritys.map(async taskPriority => {
             const taskValue = await taskRepo.findOne(taskPriority.taskId);
