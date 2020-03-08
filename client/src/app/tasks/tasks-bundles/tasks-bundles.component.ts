@@ -1,4 +1,3 @@
-import { Task } from './../../shared/models/task.model';
 import { MatCard } from '@angular/material/card';
 import { Component, OnInit } from '@angular/core';
 import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
@@ -19,7 +18,6 @@ export class TasksBundlesComponent implements OnInit {
     { bundle: [], taskType: 'Task type', taskTypeDescription: 'Description', bundleThumbnails: [''], }
   ];
 
-  assignedBundle: number;
   isBundleAssigned = false;
   noData: boolean;
 
@@ -32,8 +30,6 @@ export class TasksBundlesComponent implements OnInit {
 
   async loadBundles() {
     this.bundles = await this.facadeService.loadBundles();
-    console.log("TEST");
-    console.log(this.bundles[0].bundleThumbnails[0]);
   }
 
   areBundlesEmpty() {
@@ -43,7 +39,7 @@ export class TasksBundlesComponent implements OnInit {
           isNullOrUndefined(this.bundles[2].bundle) || this.bundles[2].bundle.length === 0);
   }
 
-  async assignBundleTasks(tasks: ITasks[], bundleNumber: number) {
+  async assignBundleTasks(tasks: ITasks[]) {
     const taskIds = [];
     tasks.forEach(task => {
       taskIds.push(task.id);
@@ -52,7 +48,6 @@ export class TasksBundlesComponent implements OnInit {
 
     // check server response
     if (res === 204) {
-      this.assignedBundle = bundleNumber;
       this.isBundleAssigned = true;
       this.loadBundles();
     } else {

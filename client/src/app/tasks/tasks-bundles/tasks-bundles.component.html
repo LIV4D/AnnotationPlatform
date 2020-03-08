@@ -1,5 +1,5 @@
 <h1 *ngIf="areBundlesEmpty()">You have no tasks ready to be assigned</h1>
-<h3 *ngIf="isBundleAssigned">Bundle {{assignedBundle}} has been assigned</h3>
+<h3 *ngIf="isBundleAssigned">Bundle has been assigned</h3>
 
 <button mat-button *ngIf="!areBundlesEmpty()" (click)="loadBundles()" id="refresh">Refresh</button>
 <div class = "cards"  *ngFor="let bundle of bundles">
@@ -16,7 +16,7 @@
             <mat-card-subtitle>{{bundle.taskTypeDescription}} </mat-card-subtitle>
         </mat-card-header>
 
-        <button mat-button (click) = "assignBundleTasks(bundle.bundle, 1)">Select</button>
+        <button mat-button (click) = "assignBundleTasks(bundle.bundle)">Select</button>
         
     </mat-card>
 
