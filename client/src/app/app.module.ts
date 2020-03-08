@@ -19,6 +19,7 @@ import { TasksToCompleteComponent } from './tasks/tasks-to-complete/tasks-to-com
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
 import { ManagementComponent } from './management/management.component';
 
 // Services
@@ -49,7 +50,6 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 import { RightMenuComponent } from './editor/right-menu/right-menu.component';
-import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
 import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
 import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';

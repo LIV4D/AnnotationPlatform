@@ -62,7 +62,7 @@
         </mat-tree>
 
         <!-- SIMPLIFIED BIOMARKERS VIEW-->
-        <!-- <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
+        <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
             <mat-list-item *ngFor="let node of biomarkersFacadeService.flatEnabledBiomarkers" [ngClass]="getCssClass(node)">
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.getAttribute('color')}" />
@@ -80,6 +80,19 @@
                     </mat-icon>
                 </div>
             </mat-list-item>
-        </mat-list> -->
+        </mat-list>
+    </div>
+
+    <!--OPACITY SLIDER-->
+    <div id="opacity" *ngIf="!biomarkersFacadeService.showBorders">
+        <mat-icon matTooltip="Opacity" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetOpacity()" class="slider-icon">opacity</mat-icon>
+        <mat-slider min="0" max="100" step="1" [(ngModel)]="opacity" (input)="changeOpacity($event)" id="slider"></mat-slider>
+        <input [(ngModel)]="opacity" (input)="changeOpacity($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" maxlength="4"/>
+    </div>
+    <!--SHADOWS-->
+    <div id="shadows" *ngIf="biomarkersFacadeService.showBorders">
+        <span>Shadows</span>
+        <mat-checkbox [disableRipple]="true" (change)="toggleShadows()" [checked]="shadowsChecked" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
+            matTooltipPosition="right"></mat-checkbox>
     </div>
 </div>

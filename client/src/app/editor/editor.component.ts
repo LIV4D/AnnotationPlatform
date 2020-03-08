@@ -1,17 +1,22 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { RightMenuComponent } from './right-menu/right-menu.component';
 import { LayersService } from '../shared/services/Editor/layers.service';
-import { EditorService } from '../shared/services/Editor/editor.service';
+import { EditorFacadeService } from './editor.facade.service';
 import { AppService } from '../shared/services/app.service';
 import { MatSidenav } from '@angular/material/sidenav';
+import { BiomarkersFacadeService } from './right-menu/biomarkers/biomarkers.facade.service';
+import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
 // import { DeviceDetectorService } from 'ngx-device-detector';
+import { TOOL_NAMES } from './../shared/constants/tools';
+import { BioPicker } from './../shared/services/Editor/Tools/biopicker.service';
+import { Point } from './../shared/services/Editor/Tools/point.service';
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements OnInit, AfterViewChecked {
+export class EditorComponent implements OnInit {
 
   @ViewChild('toolsNav') toolsNav: MatSidenav;
   @ViewChild('rightMenuNav') rightMenuNav: MatSidenav;
@@ -34,11 +39,14 @@ export class EditorComponent implements OnInit, AfterViewChecked {
 
   constructor(private cdRef: ChangeDetectorRef,
               public layersService: LayersService, public appService: AppService,
-              public editorService: EditorService) {
+              public editorFacadeService: EditorFacadeService, public biomarkersFacadeService: BiomarkersFacadeService,
+              public toolboxFacadeService: ToolboxFacadeService) {
     this.sliderZoom = 0;
   }
 
   ngOnInit(): void {
+    // this.rightMenu.svgLoaded(null);
+
   }
 
   ngAfterViewChecked(): void {
@@ -46,27 +54,27 @@ export class EditorComponent implements OnInit, AfterViewChecked {
     this.cdRef.detectChanges();
   }
 
-  // public onSvgLoaded(arbre: SVGGElement[]): void {
-  //   console.log('EditorComponent::onSvgLoaded()');
-  //   this.rightMenu.svgLoaded(arbre);
-  // }
+  public onSvgLoaded(arbre: SVGGElement[]): void {
+    console.log('EditorComponent::onSvgLoaded()');
+    this.rightMenu.svgLoaded(arbre);
+  }
 
   // public flip(): void {
   //     this.editorComponent.flip();
   // }
 
-  // public openBiomarkers(event: MouseEvent): void {
-  //     // if (! this.deviceService.isDesktop()) {
-  //     //     return;
-  //     // }
-  //     // event.stopPropagation();
-  //     // const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
-  //     // if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
-  //     //     document.getElementById('bodyblack').style.opacity = '0.6';
-  //     //     this.editorService.menuState = true;
-  //     //     this.positionMenu(event);
-  //     // }
-  // }
+  public openBiomarkers(event: MouseEvent): void {
+      // if (! this.deviceService.isDesktop()) {
+      //     return;
+      // }
+      event.stopPropagation();
+      const pickTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
+      if (! pickTool.selectUnder(this.editorFacadeService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
+          document.getElementById('bodyblack').style.opacity = '0.6';
+          this.editorFacadeService.menuState = true;
+          this.positionMenu(event);
+      }
+  }
 
   // public getPosition(event: MouseEvent): any {
   //     let posx = 0;
@@ -83,41 +91,41 @@ export class EditorComponent implements OnInit, AfterViewChecked {
   //     return { x: posx, y: posy };
   // }
 
-  // public positionMenu(clientPos): void {
-  //     const appEditor = document.getElementById('edit-viewport');
-  //     this.menuPosition = clientPos;
-  //     this.menuPositionX = this.menuPosition.x;
-  //     this.menuPositionY = this.menuPosition.y;
+  public positionMenu(clientPos): void {
+      const appEditor = document.getElementById('edit-viewport');
+      this.menuPosition = clientPos;
+      this.menuPositionX = this.menuPosition.x;
+      this.menuPositionY = this.menuPosition.y;
 
-  //     this.menuWidth = this.contextMenu.nativeElement.offsetWidth;
-  //     this.menuHeight = this.contextMenu.nativeElement.offsetHeight;
-  //     this.windowWidth = appEditor.offsetWidth;
-  //     this.windowHeight = appEditor.offsetHeight;
+      this.menuWidth = this.contextMenu.nativeElement.offsetWidth;
+      this.menuHeight = this.contextMenu.nativeElement.offsetHeight;
+      this.windowWidth = appEditor.offsetWidth;
+      this.windowHeight = appEditor.offsetHeight;
 
-  //     if ((this.windowWidth - (Number(this.menuPositionX) - appEditor.getBoundingClientRect().left)) < this.menuWidth) {
-  //         this.menuPositionX = Number(this.windowWidth - this.menuWidth) + 'px';
-  //     } else {
-  //         this.menuPositionX = Number(this.menuPositionX) - appEditor.getBoundingClientRect().left + 'px';
-  //     }
-  //     if ((this.windowHeight - (Number(this.menuPositionY) - appEditor.getBoundingClientRect().top)) < this.menuHeight) {
-  //         this.menuPositionY = this.windowHeight - this.menuHeight + 'px';
-  //     } else {
-  //         this.menuPositionY = Number(this.menuPositionY) - appEditor.getBoundingClientRect().top + 'px';
-  //     }
-  // }
+      if ((this.windowWidth - (Number(this.menuPositionX) - appEditor.getBoundingClientRect().left)) < this.menuWidth) {
+          this.menuPositionX = Number(this.windowWidth - this.menuWidth) + 'px';
+      } else {
+          this.menuPositionX = Number(this.menuPositionX) - appEditor.getBoundingClientRect().left + 'px';
+      }
+      if ((this.windowHeight - (Number(this.menuPositionY) - appEditor.getBoundingClientRect().top)) < this.menuHeight) {
+          this.menuPositionY = this.windowHeight - this.menuHeight + 'px';
+      } else {
+          this.menuPositionY = Number(this.menuPositionY) - appEditor.getBoundingClientRect().top + 'px';
+      }
+  }
 
-  // selectBiomarker(item: HTMLElement): void {
-  //     // this.biomarkersService.setFocusBiomarker(item);
-  // }
+  selectBiomarker(item: HTMLElement): void {
+      this.editorFacadeService.setFocusBiomarker(item);
+  }
 
   // closeMenu(): void {
   //     this.editorService.menuState = false;
   //     document.getElementById('bodyblack').style.opacity = '0';
   // }
 
-  // loadSVG(event: any): void {
-  //     this.editorService.loadSVGLocal(event);
-  // }
+  loadSVG(event: any): void {
+      this.editorFacadeService.loadSVGLocal(event);
+  }
 
   // onMouseUp(event: MouseEvent): void {
   //     this.toolboxService.setUndoRedoState();

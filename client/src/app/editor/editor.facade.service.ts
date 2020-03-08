@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { EditorService } from './../shared/services/Editor/editor.service';
-import { Point } from './../shared/models/point.model';
+import{ EditorService } from './../shared/services/Editor/editor.service';
+import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
+import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/image.model';
@@ -8,7 +9,7 @@ import { Image } from '../shared/models/image.model';
 @Injectable()
 export class EditorFacadeService {
 
-  constructor(private editorService: EditorService, private toolboxService: ToolboxService) { }
+  constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService) { }
 
   init(svgLoaded: EventEmitter<any>): void {
     console.log('EditorFacadeService::init(svgLoaded()) with svgLoaded: ' + svgLoaded);
@@ -40,6 +41,10 @@ export class EditorFacadeService {
     return this.editorService.menuState;
   }
 
+  set menuState(menuState) {
+    this.editorService.menuState = menuState;
+  }
+
   public onCursorMoveToolbox(point: Point): void {
     this.toolboxService.onCursorMove(point);
   }
@@ -61,14 +66,16 @@ export class EditorFacadeService {
   }
 
   public load(imageId: string) {
-    console.log('load()');
-
     this.editorService.loadMetadata(imageId);
   }
 
   set imageLoaded(boolValue: boolean) {
 
     this.editorService.imageLoaded = boolValue;
+  }
+
+  get imageLoaded(){
+    return this.editorService.imageLoaded;
   }
 
   // TODO: Verify the path of this and its type
@@ -91,4 +98,23 @@ export class EditorFacadeService {
 
     this.editorService.loadImageFromServer(imageId);
   }
+
+  getMousePositionInCanvasSpace(clientPosition: Point): Point {
+    return this.editorService.getMousePositionInCanvasSpace(clientPosition);
+  }
+
+  loadSVGLocal(event: any){
+    this.editorService.loadSVGLocal(event);
+  }
+
+  // Biomarkers
+
+  setFocusBiomarker(item: any) {
+    this.biomarkerService.setFocusBiomarker(item);
+  }
+
+  get biomarkersCurrentElement(){
+    return this.biomarkerService.currentElement;
+  }
+
 }

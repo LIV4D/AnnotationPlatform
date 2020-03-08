@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
-import { Point } from 'src/app/shared/models/point.model';
+import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -34,6 +34,7 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     console.log('EditorContent::ngOnInit()');
 
     this.editorFacadeService.init(this.svgLoaded);
+    this.svgLoaded.emit();
     // this.editorFacadeService.load(imageId); // I don't know why this is here
 
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;

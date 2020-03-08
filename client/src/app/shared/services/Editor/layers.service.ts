@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
-import { BiomarkerCanvas } from '../../models/biomarker-canvas.model';
-import { Point } from '../../models/point.model';
+import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
+import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
 export const ANNOTATION_PREFIX = 'annotation-';
 
@@ -249,40 +249,40 @@ export class LayersService {
   }
 
   // Add a point on the canvas to indicate the first point
-  // public addFirstPoint(): void {
-  //     this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
-  //     this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
-  //     this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
-  //     this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
-  // }
+  public addFirstPoint(): void {
+      this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
+      this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
+      this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
+      this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
+  }
 
-  // public updateDashStroke(): void {
-  //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+  public updateDashStroke(): void {
+      const dashStroke = document.getElementById('dashStroke') as HTMLElement;
 
-  //     dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
-  //     dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
-  //     dashStroke.setAttribute('x2', this.lastPoint.x.toString());
-  //     dashStroke.setAttribute('y2', this.lastPoint.y.toString());
-  // }
+      dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
+      dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
+      dashStroke.setAttribute('x2', this.lastPoint.x.toString());
+      dashStroke.setAttribute('y2', this.lastPoint.y.toString());
+  }
 
-  // public removeFirstPoint(): void {
-  //     this.lastPoint = null;
-  //     this.firstPoint.setAttribute('cx', '-10');
-  //     this.firstPoint.setAttribute('cy', '-10');
-  //     this.firstPoint = null;
+  public removeFirstPoint(): void {
+      this.lastPoint = null;
+      this.firstPoint.setAttribute('cx', '-10');
+      this.firstPoint.setAttribute('cy', '-10');
+      this.firstPoint = null;
 
-  //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
-  //     dashStroke.setAttribute('x1', '-10');
-  //     dashStroke.setAttribute('y1', '-10');
-  //     dashStroke.setAttribute('x2', '-10');
-  //     dashStroke.setAttribute('y2', '-10');
-  // }
+      const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+      dashStroke.setAttribute('x1', '-10');
+      dashStroke.setAttribute('y1', '-10');
+      dashStroke.setAttribute('x2', '-10');
+      dashStroke.setAttribute('y2', '-10');
+  }
 
-  // public nearFirstPoint(): void {
-  //     this.firstPoint.setAttribute('fill', 'white');
-  // }
+  public nearFirstPoint(): void {
+      this.firstPoint.setAttribute('fill', 'white');
+  }
 
-  // public farFirstPoint(): void {
-  //     this.firstPoint.setAttribute('fill', 'grey');
-  // }
+  public farFirstPoint(): void {
+      this.firstPoint.setAttribute('fill', 'grey');
+  }
 }

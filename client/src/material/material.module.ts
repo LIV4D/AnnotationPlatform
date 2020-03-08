@@ -17,6 +17,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import {MatSortModule} from '@angular/material/sort';
         MatSortModule,
         MatSidenavModule,
         MatSliderModule,
-        MatTabsModule
+        MatTabsModule,
+        MatListModule
     ],
     exports: [
         BrowserModule,
@@ -52,7 +54,8 @@ import {MatSortModule} from '@angular/material/sort';
         MatSidenavModule,
         MatSliderModule,
         MatToolbarModule,
-        MatTabsModule
+        MatTabsModule,
+        MatListModule
     ]
 })
 
