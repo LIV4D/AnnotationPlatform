@@ -10,8 +10,8 @@
 </div>
 
 <!-- Table -->
-<section class="TasksToCompleteDataTable" >
-  <mat-table #table [dataSource]="dataTable" matSort matSortActive="projectTitle" matSortDirection="asc" matSortDisableClear>
+<section class="TasksToCompleteDataSource">
+  <mat-table #table [dataSource]="dataSource" matSort matSortActive="projectTitle" matSortDirection="asc" matSortDisableClear>
 
     <!--Image Preview -->
     <ng-container matColumnDef="imageSrc">
@@ -60,6 +60,6 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
-      <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
+      <p *ngIf="!isCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
   <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
 </section>

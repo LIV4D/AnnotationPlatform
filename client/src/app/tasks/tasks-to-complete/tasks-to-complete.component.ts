@@ -1,7 +1,6 @@
 // From Angular
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SelectionModel } from '@angular/cdk/collections';
 
 // Facade Service
 import { TasksToCompleteFacadeService } from './tasks-to-Complete.facade.service';
@@ -10,8 +9,6 @@ import { TasksToCompleteFacadeService } from './tasks-to-Complete.facade.service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 
 // Interface and Model
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
@@ -31,37 +28,41 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   displayedColumns = ['imageSrc', 'imageId', 'projectTitle', 'creatorId', 'time'];
   length: number;
   pageSize: number;
-  dataTable: any = [];
-  taskTypes: TaskType[] = [];
-  users: User[] = [];
-  selectedTaskType: string;
   noData: boolean;
-  showCompleted: boolean;
+  isCompleted: boolean;
+
+  // List of tasks, taskTypes and Users
+  dataSource: any = [];         // List of tasks
+  taskTypes: TaskType[] = [];   // List of taskTypes
+  selectedTaskType: string;     // TaskType selected for the filtering
+  users: User[] = [];           // Lust of users
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private router: Router, private taskToCompleteFacadeService: TasksToCompleteFacadeService) {
-    this.showCompleted = false;
+    this.isCompleted = false;
     this.pageSize = 15;
     this.noData = false;
   }
 
   ngOnInit() {
-    this.dataTable = new MatTableDataSource();
-    this.dataTable.filterPredicate = (data, filter: string): boolean => {
-      return data.taskTypeId.toString().toLowerCase().includes(filter);
-    };
 
-    this.loadTaskTypes();
-    this.loadUsers();
+    // Declare the dataSource
+    // and sets 
+    this.dataSource = new MatTableDataSource();
+    this.dataSource.filterPredicate = this.configureFilterPredicate();
+
+
+    this.loadTaskTypes();   // Load the list of TaskTypes
+    this.loadUsers();       // Load the list of Users
   }
 
   ngAfterViewInit() {
-    this.loadData();
+    this.loadData();        // Load dataSource with tasks
 
-    this.dataTable.paginator = this.paginator;
-    this.dataTable.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   /**
@@ -72,7 +73,6 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   async loadTaskTypes() {
     this.taskTypes = await this.taskToCompleteFacadeService.getTaskTypes();
   }
-
 
   /**
    * Loads the list of users. This will be used for finding then displaying the name
@@ -101,7 +101,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
         return this.taskToCompleteFacadeService.getTasks(
                              this.paginator.pageIndex,
                              this.paginator.pageSize,
-                             this.showCompleted);
+                             this.isCompleted);
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
@@ -111,21 +111,29 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
           })
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
-              this.dataTable.data = data;
+              this.dataSource.data = data;
               console.log(data);
-              this.length = this.dataTable.length;
+              this.length = this.dataSource.length;
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar
           });
     }
 
+  /**
+   * Configures the task filter for being able to match with the taskTypeId
+   * @returns filterPredicate
+   */
+  configureFilterPredicate() {
+    return this.taskToCompleteFacadeService.configureFilterPredicate();
+  }
+
   applyFilter(filterTaskType: TaskType) {
     const filterTaskTypeId = filterTaskType.id.toString();
     this.selectedTaskType = filterTaskType.title;
-    this.dataTable.filter = filterTaskTypeId.trim().toLowerCase();
+    this.dataSource.filter = filterTaskTypeId.trim().toLowerCase();
 
-    if (this.dataTable.paginator) {
-      this.dataTable.paginator.firstPage();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
     }
  }
 

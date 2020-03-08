@@ -24,4 +24,14 @@ export class TaskTypeService {
     const data = await this.getTaskTypes().toPromise();
     return data as TaskType[];
   }
+
+  /**
+   * Configures the task filter the filter for being able to match with the taskTypeId
+   * @returns filterPredicate
+   */
+  configureFilterPredicate() {
+  return (data, filter: string): boolean => {
+    return data.taskTypeId.toString().toLowerCase().includes(filter);
+    };
+  }
 }

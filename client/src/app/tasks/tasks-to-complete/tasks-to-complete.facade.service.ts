@@ -14,7 +14,11 @@ export class TasksToCompleteFacadeService {
               private taskTypeService: TaskTypeService,
               private userService: UserService,
               private editorService: EditorService,
-              public appService: AppService) {  }
+              public appService: AppService) {}
+  
+  configureFilterPredicate() {
+    return this.taskTypeService.configureFilterPredicate();
+  }
 
   getTasks(page: number, pageSize: number, isCompleted: boolean) {
     return this.taskService.getTasks(page, pageSize, isCompleted);
