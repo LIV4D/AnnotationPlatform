@@ -264,7 +264,6 @@ export class EditorService {
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
                           this.svgBox.innerHTML = (res as any).svg;
                           console.log(this.svgBox.innerHTML);
-                          console.log('ALLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
                           
                           const parser = new DOMParser();
                           const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
