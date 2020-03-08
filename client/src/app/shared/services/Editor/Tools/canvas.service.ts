@@ -3,34 +3,34 @@ export class Canvas {
     originalCanvas: HTMLCanvasElement;
     // The current canvas contains all the modifications
     currentCanvas: HTMLCanvasElement;
-  
+
     // The offsets represent the distance from the top left corner of the originalCanvas to the top
     // left corner of the displayCanvas. Its values are a result of zooming.
     offsetX = 0;
     offsetY = 0;
-  
+
     constructor(public displayCanvas: HTMLCanvasElement, image: HTMLImageElement) {
         this.originalCanvas = document.createElement('canvas');
         this.originalCanvas.width = image.width;
         this.originalCanvas.height = image.height;
         this.originalCanvas.getContext('2d').drawImage(image, 0, 0);
-  
+
         this.currentCanvas = document.createElement('canvas');
         this.currentCanvas.width = image.width;
         this.currentCanvas.height = image.height;
         this.currentCanvas.getContext('2d').drawImage(image, 0, 0);
     }
-  
+
     // Erase the display canvas.
     clear(): void {
         this.displayCanvas.getContext('2d').clearRect(0, 0, this.displayCanvas.width, this.displayCanvas.height);
     }
-  
+
     // Update when vertical empty space exists.
     draw(): void {
         this.drawFrom(this.currentCanvas);
     }
-  
+
     // Changes the displayCanvas according to the offsets and the canvas pass as a parameter.
     drawFrom(canvas: HTMLCanvasElement): void {
         const context = this.displayCanvas.getContext('2d');
@@ -57,8 +57,8 @@ export class Canvas {
             h // Destination height
         );
     }
-  
-  
+
+
     drawCurrentTo(canvas: HTMLCanvasElement): void {
         const context = canvas.getContext('2d');
         let correctionX = 0;
@@ -82,21 +82,21 @@ export class Canvas {
             w, // Destination width
             h // Destination height
         );
-  
+
     }
-  
+
     getDisplayContext(): CanvasRenderingContext2D {
         return this.displayCanvas.getContext('2d');
     }
-  
+
     getCurrentContext(): CanvasRenderingContext2D {
         return this.currentCanvas.getContext('2d');
     }
-  
+
     getCurrentImageData(): ImageData {
         return this.currentCanvas.getContext('2d').getImageData(0, 0, this.currentCanvas.width, this.currentCanvas.height);
     }
-  
+
     getDisplayImageData(): ImageData {
         let x = 0;
         let y = 0;
@@ -110,10 +110,9 @@ export class Canvas {
         const h = Math.min(this.displayCanvas.height, this.currentCanvas.height);
         return this.displayCanvas.getContext('2d').getImageData(x, y, w, h);
     }
-  
+
     setOffset(offsetX: number, offsetY: number): void {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
     }
   }
-  

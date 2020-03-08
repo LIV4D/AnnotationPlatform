@@ -59,6 +59,7 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -86,7 +87,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       ManagementComponent,
       ZoomComponent,
       MousewheelDirective,
-      CamelCaseToTextPipe
+      CamelCaseToTextPipe,
+      CommentBoxComponent
    ],
    imports: [
       BrowserModule,
