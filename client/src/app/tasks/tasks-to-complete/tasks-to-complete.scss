@@ -3,11 +3,23 @@
 .mat-form-field {
   font-size: 14px;
 }
-.parent{
+
+.taskTypeSelector{
   display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 0px 0px 0px 200px;
   flex-direction: column;
+  width: 10em
+}
+
+#taskTypeFilterForm {
+  background-color: #cccccc;
+  border-radius: 3px;
+  margin-top: 10px !important;
+}
+
+#taskTypeFilterSelector {
+  background-color: #cccccc;
+  border-radius: 3px;
 }
 
 .TasksToCompleteDataTable {
@@ -194,14 +206,6 @@ input {
     display: flex;
 }
 
-#taskTypeFilter {
-  background-color: #cccccc;
-  border-radius: 4px;
-  // text-align: center;
-  margin-top: 10px !important;
-  width: 500px;
-}
-
 button {
     border-radius: 8px;
     background-color: $gray-dark;
@@ -220,4 +224,8 @@ button {
   font-size: 17px;
   font-weight: 500;
   line-height: 30px;
+}
+
+img {
+  border-radius: 4px;
 }
