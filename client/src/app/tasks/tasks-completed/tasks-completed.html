@@ -1,9 +1,9 @@
 <!-- Hide Task Button -->
 <div id="hideTasksButtons">
-        <button mat-raised-button (click)="removeSelectedRows()">
-            <span>Hide Tasks</span>
-        </button>
-    </div>
+  <button mat-raised-button (click)="removeSelectedRows()">
+    <span>Hide Tasks</span>
+  </button>
+</div>
 
 <!-- Table -->
 <section class="completedTasksDataTable" >
@@ -26,9 +26,9 @@
     </ng-container>
 
     <!--Image Preview -->
-    <ng-container matColumnDef="imageSrc"  >
-        <mat-header-cell *matHeaderCellDef disableClear disableClear>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task" > <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
+    <ng-container matColumnDef="imageSrc">
+        <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+        <mat-cell *matCellDef="let task" (mouseup)="loadImage(task.imageId.toString())" > <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
     <!-- Image Id -->
@@ -68,7 +68,7 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())" (click)="selection.toggle(row)"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></mat-row>
   </mat-table>
 
       <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>

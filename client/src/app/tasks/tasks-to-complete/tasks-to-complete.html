@@ -15,7 +15,7 @@
     <!--Image Preview -->
     <ng-container matColumnDef="imageSrc">
         <mat-header-cell *matHeaderCellDef disableClear disableClear>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task"> <img [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
+        <mat-cell *matCellDef="let task" (mouseup)="loadImage(task.imageId.toString())"> <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
     <!-- Image Id -->
@@ -56,7 +56,7 @@
 
     <mat-header-row *matHeaderRowDef="['selectedTaskType']"></mat-header-row>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
       <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
