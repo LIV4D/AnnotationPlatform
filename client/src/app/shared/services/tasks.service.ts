@@ -23,6 +23,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { $ } from 'protractor';
 import { ITaskGroup } from '../interfaces/taskGroup.interface';
+import { TaskType } from '../models/taskType.model';
 
 @Injectable({
     providedIn: 'root'
@@ -63,48 +64,9 @@ export class TasksService {
           })
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITasks[]) => {
-              tasksComponent.data = data;
+              // tasksComponent.data = data;
               length = data.length;
               if (length === 0) { tasksComponent.noData = true; }
-              this.appService.loading = false;
-          });
-    }
-
-  /**
-   * Load data
-   * Load the Tasks from the server by getting
-   */
-  loadCompletedTasksData(tasksCompletedComponent: TasksCompletedComponent): void {
-      tasksCompletedComponent.noData = false;
-
-      // If the user changes the sort order, reset back to the first page.
-      tasksCompletedComponent.sort.sortChange.subscribe(() => tasksCompletedComponent.paginator.pageIndex = 0);
-
-      // Observable: Converts sortChange and page Observables into a single Observable
-      // The new observable emits all of the items emitted by all of those Observables.
-      merge(tasksCompletedComponent.sort.sortChange, tasksCompletedComponent.paginator.page)
-          .pipe(
-          // BehaviorSubject: emmiting empty at the begining
-          startWith({}),
-          // Observable: Switch to a new observable each time the request change
-          switchMap(() => {
-              this.appService.loading = true; // Enable loading bar
-              // getTasks from the server
-              return this.getTasks(
-                                  tasksCompletedComponent.paginator.pageIndex,
-                                  tasksCompletedComponent.pageSize,
-                                  tasksCompletedComponent.showCompleted);
-          }),
-          // Observable: Return an empty observable in the case of an error
-          catchError(() => {
-              this.appService.loading = false; // Disable loading bar
-              return observableOf([]);
-          })
-          // Observer: Data emited from the server are added on data
-          ).subscribe((data: ITaskGroup) => {
-              //tasksCompletedComponent.data = data;
-              tasksCompletedComponent.length = tasksCompletedComponent.dataTable.length;
-              if (tasksCompletedComponent.length === 0) { tasksCompletedComponent.noData = true; }
               this.appService.loading = false;
           });
     }
@@ -119,9 +81,8 @@ export class TasksService {
       // this.editorService.loadImageFromServer(imageId);
   }
 
-
   /**
-   * Gets tasks
+   * Gets the list of tasks attributed for the current logged user
    * @param page: page index of a page
    * @param pageSize: number of page index in one page
    * @param isCompleted: a task can be complited or uncompleted
@@ -144,8 +105,18 @@ export class TasksService {
 
   // tslint:disable-next-line: ban-types
   getNextTask(): Observable<Object> {
-      const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      return this.http.get(`/api/tasks/${userId}/next`);
+    const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+    return this.http.get(`/api/tasks/${userId}/next`);
+  }
+
+  getTaskTypes(): Observable<object> {
+    const req = this.http.get<TaskType[]>(`/api/taskTypes/list`, {observe: 'events', reportProgress: true});
+    return this.headerService.display_progress(req, 'Downloading: Task Types List');
+  }
+
+  async getTaskTypesApp() {
+    const data = await this.getTaskTypes().toPromise();
+    return data as TaskType[];
   }
 
   /**
@@ -155,6 +126,10 @@ export class TasksService {
   hideTask(taskId: number) {
     const params = new HttpParams()
                         .set('taskId', taskId ? taskId.toString() : '');
-    const req = this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`, {params, observe: 'events', reportProgress: true});
+    return this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`,  { isVisible: false, isComplete: true, params});
+  }
+
+  hideTaskApp(taskId: number) {
+    this.hideTask(taskId).subscribe();
   }
 }

@@ -15,11 +15,13 @@ export class TaskTypeController implements IController {
         app.post('/api/taskTypes/create', this.createTaskType);
         app.put('/api/taskTypes/update/:taskTypeId', this.updateTaskType);
         app.delete('/api/taskTypes/delete/:taskTypeId', this.deleteTaskType);
+
         // Get
         app.get('/api/taskTypes/get/:taskTypeId([0-9]+)', this.getTaskType);
         app.get('/api/taskTypes/get/:taskTypeId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getTaskType);
         app.get('/api/taskTypes/get', this.getMultipleTaskTypes);
         app.get('/api/taskTypes/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleTaskTypes);
+
         // List
         app.get('/api/taskTypes/list', this.list);
         app.get('/api/taskTypes/list/:attr', this.list);

@@ -145,16 +145,26 @@ export class ImageService {
     }
 
     public async getImagePath(imageId: number, checkDatabase = true) {
+        // let name: string;
         if (checkDatabase) {
             const image = await this.imageRepository.find(imageId);
             if (image == null) {
                 throw createError('This image does not exist.', 404);
+            } else {
+                // return image;
             }
+            // name = await image.metadata.filename as string;
+            // console.log('image.name : ' + name);
         }
 
         const filename = this.getImagePathSync(imageId);
+        // console.log('name : ' + name);
+
+        // const filename = this.getImagePathSync(name);
+
         if (filename === null ) {
             if (checkDatabase) {
+                // console.log('checking name val: ' + name);
                 throw createError('The image file was not found.', 404);
             } else {
                 throw createError('This image does not exist.', 404);
@@ -166,7 +176,13 @@ export class ImageService {
     public getImagePathSync(imageId: number) {
         const prePath = config.get('storageFolders.image') as string;
         const filename = searchFileByName(imageId.toString(), prePath);
-        return filename! == null ? path.join(prePath, filename) : null;
+
+        console.log('\nprePath : ' + prePath + ' and filename : ' + filename + '\n');
+
+        console.log(filename! == null ? path.join(prePath, 'filename') : null);
+
+        // return filename! == null ? path.join(prePath, 'filename') : null;
+        return path.join(prePath, filename);
     }
 
     public async getPrepocessingPath(imageId: number, checkDatabase = true) {

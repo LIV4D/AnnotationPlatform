@@ -14,6 +14,9 @@ import { MatPaginator } from '@angular/material/paginator';
 // Interface
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 
+// Model
+import { TaskType } from 'src/app/shared/models/taskType.model';
+
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
@@ -24,16 +27,17 @@ import { catchError, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./tasks-completed.component.scss']
 })
 export class TasksCompletedComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['selectTasks', 'imageSrc', 'imageId', 'taskTypeTitle', 'project', 'time', 'lastModified'];
+  displayedColumns: string[] = ['selectTasks', 'imageSrc', 'imageId', 'taskTypeTitle', 'projectTitle', 'time', 'lastModifiedTime'];
   length: number;
   pageSize: number;
   dataTable: any = [];
+  taskTypes: TaskType[] = [];
   noData: boolean;
   showCompleted: boolean;
   selection = new SelectionModel(true, []);
 
-  @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort , {static: true}) sort: MatSort;
 
   constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
     this.showCompleted = true;
@@ -43,6 +47,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataTable = new MatTableDataSource();
+    this.loadTaskTypes();
   }
 
   ngAfterViewInit() {
@@ -86,10 +91,21 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
           });
-    }
+  }
+
+  /**
+   * Loads the list of taskTypes. This will be used for finding then displaying the taksTypeTitle
+   * of the taskType of a task by matching the taskTypeIds of the list
+   * with the taskTypeId of a task.
+   */
+  async loadTaskTypes() {
+    this.taskTypes = await this.tasksCompletedFacadeService.getTaskTypes();
+  }
 
   loadImage(imageId: string): void {
-    console.log('loading image');
+    this.tasksCompletedFacadeService.appService.localEditing = false;
+    localStorage.setItem('previousPage', 'tasks');
+    this.tasksCompletedFacadeService.loadImageFromServer(imageId);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -100,19 +116,16 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   }
 
   removeSelectedRows() {
-    this.selection.selected.forEach(item => {
-      const index: number = this.dataTable.data.findIndex(d => d === item);
-      this.dataTable.data.splice(index, 1);
-
-      //Todo: Update task list
-      //this.tasksCompletedFacadeService.hideTask(item.id);
-
+    this.selection.selected.forEach(task => {
+      const index: number = this.dataTable.data.findIndex(d => d === task);   // get the index of the selected task
+      this.dataTable.data.splice(index, 1);                                   // remove the task from the dataTable
+      this.tasksCompletedFacadeService.hideTaskApp(task.taskId);              // set the task to hidden in the serve to archive it
       this.dataTable = new MatTableDataSource<Element>(this.dataTable.data);
       setTimeout(() => {
-      this.dataTable.paginator = this.paginator;
+      this.dataTable.paginator = this.paginator;                              // reorganise the pagination
       });
     });
-    this.selection = new SelectionModel<Element>(true, []);
+    this.selection = new SelectionModel<Element>(true, []);                   // empty the selection
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */

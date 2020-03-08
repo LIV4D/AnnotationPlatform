@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, Afte
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatCard } from '@angular/material/card';
 import { TaskFacadeService } from './tasks.facade.service';
 import { Router } from '@angular/router';
 import { ITasks } from '../shared/interfaces/ITasks.interface';

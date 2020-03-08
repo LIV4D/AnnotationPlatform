@@ -1,0 +1,72 @@
+import { ITasksBundles } from './../../shared/interfaces/ITasksBundles.interface';
+import { Task } from './../../shared/models/task.model';
+import { MatCard } from '@angular/material/card';
+import { Component, OnInit } from '@angular/core';
+import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
+import { ITasks } from 'src/app/shared/interfaces/ITasks.interface';
+import { isNullOrUndefined } from 'util';
+
+@Component({
+  selector: 'app-tasks-bundles',
+  templateUrl: './tasks-bundles.component.html',
+  styleUrls: ['./tasks-bundles.component.scss']
+})
+export class TasksBundlesComponent implements OnInit {
+
+  bundles: ITasksBundles = {
+    primaryBundle: [],
+    primaryTaskType: 'Task type',
+    primaryTaskTypeDescription: 'Description',
+    primaryBundleThumbnails: [''],
+    secondaryBundle: [],
+    secondaryTaskType: 'Task type',
+    secondaryTaskTypeDescription: 'Description',
+    secondaryBundleThumbnails: [''],
+    tertiaryBundle: [],
+    tertiaryTaskType: 'Task type',
+    tertiaryTaskTypeDescription: 'Description',
+    tertiaryBundleThumbnails: [''],
+  } ;
+
+  assignedBundle: number;
+  isBundleAssigned = false;
+  noData: boolean;
+
+  constructor(private facadeService: TasksBundlesFacadeService) {
+  }
+
+  ngOnInit(): void {
+    this.loadBundles();
+  }
+
+  async loadBundles() {
+    this.bundles = await this.facadeService.loadBundles();
+    console.log("TEST");
+    console.log(this.bundles.primaryBundleThumbnails[0]);
+  }
+
+  areBundlesEmpty() {
+    return isNullOrUndefined(this.bundles) || (
+          isNullOrUndefined(this.bundles.primaryBundle) || this.bundles.primaryBundle.length === 0 &&
+          isNullOrUndefined(this.bundles.secondaryBundle) || this.bundles.secondaryBundle.length === 0 &&
+          isNullOrUndefined(this.bundles.tertiaryBundle) || this.bundles.tertiaryBundle.length === 0);
+  }
+
+  async assignBundleTasks(tasks: ITasks[], bundleNumber: number) {
+    const taskIds = [];
+    tasks.forEach(task => {
+      taskIds.push(task.id);
+    });
+    const res = await this.facadeService.assignBundleTasks(taskIds);
+
+    // check server response
+    if (res === 204) {
+      this.assignedBundle = bundleNumber;
+      this.isBundleAssigned = true;
+      this.loadBundles();
+    } else {
+      console.log('There was error while assigning the task bundle');
+    }
+  }
+
+}

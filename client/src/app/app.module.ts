@@ -6,6 +6,9 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Pipes
+import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
+
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
@@ -16,26 +19,35 @@ import { TasksToCompleteComponent } from './tasks/tasks-to-complete/tasks-to-com
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { ManagementComponent } from './management/management.component';
+import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
 import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
 import { EditorFacadeService } from './editor/editor.facade.service';
 import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
-// import { LayoutModule } from '@angular/cdk/layout';
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
+import { GalleryFacadeService } from './gallery/gallery.facade.service';
+// import { LayoutModule } from '@angular/cdk/layout';
+import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
+import { ManagementCreationService } from './shared/services/management-creation.service';
+import { ManagementFacadeService } from './management/management.facade.service';
+import { ModelFinderService } from './shared/services/modelfinder.service';
+import { AppService } from './shared/services/app.service';
+import { TasksBundlesService } from './shared/services/tasksBundles.service';
+import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
+import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
-import { AppService } from './shared/services/app.service';
-import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 import { RightMenuComponent } from './editor/right-menu/right-menu.component';
@@ -49,6 +61,9 @@ import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+
+// Interceptor
+import { AuthInterceptor } from './shared/services/authentification.intercept';
 
 // import { MatIconModule } from '@angular/material/icon';
 
@@ -73,8 +88,11 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       EditorContentComponent,
       LayersComponent,
       SafeImagePipe,
+      ManagementComponent,
       ZoomComponent,
-      MousewheelDirective
+      MousewheelDirective,
+      CamelCaseToTextPipe,
+      TasksBundlesComponent,
    ],
    imports: [
       BrowserModule,
@@ -88,16 +106,24 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
    providers: [
       LoginFacadeService,
       LoginService,
+      ManagementFacadeService,
+      ModelFinderService,
       NavigationBarFacadeService,
       HttpClient,
       AppService,
       TaskFacadeService,
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
+      TasksBundlesFacadeService,
+      TasksBundlesService,
+      ManagementCreationService,
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,
-       {
+      GalleryFacadeService,
+      ToolPropertiesService,
+      ImageBorderService,
+      CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
       multi: true,

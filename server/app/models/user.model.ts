@@ -9,6 +9,7 @@ import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
 import { IUser } from '../interfaces/IUser.interface';
 import { IProtoUser } from '../prototype interfaces/IProtoUser.interface';
+import { TaskPriority } from './taskPriority.model';
 
 @Entity()
 export class User {
@@ -46,6 +47,9 @@ export class User {
 
     @ManyToOne(type => Task, task => task.preferredUsers)
     public preferredTask: Task;
+
+    @OneToMany(type => TaskPriority, taskPriority => taskPriority.userId, { eager: false })
+    public taskPriority: TaskPriority;
 
     public static hashPassword(password: string, salt?: Buffer) {
         const size = 64;

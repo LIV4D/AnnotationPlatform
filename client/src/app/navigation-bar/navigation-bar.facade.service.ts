@@ -4,7 +4,7 @@ import { LoginService } from '../shared/services/login.service';
 @Injectable()
 export class NavigationBarFacadeService {
 
-  /// NavBarService wrapper -- TODO: NavBarService is not created yet
+  // NavBarService wrapper -- TODO: NavBarService is not created yet
 
   // private _navBarService: NavBarService;
   // public get navBarService(): NavBarService {
@@ -13,7 +13,7 @@ export class NavigationBarFacadeService {
   //   }
   //   return this._navBarService;
   // }
-  /// ... add the other service wrappers
+  // ... add the other service wrappers
 
   constructor(private injector: Injector, private loginService: LoginService) {  }
 
@@ -21,5 +21,5 @@ export class NavigationBarFacadeService {
     this.loginService.logout();
   }
 
-  /// ... add the other functions for the other services
+  // ... add the other functions for the other services
 }

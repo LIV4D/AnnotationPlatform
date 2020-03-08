@@ -6,12 +6,15 @@ import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
 import { ITaskGallery } from '../interfaces/gallery.interface';
 import { ImageService } from '../services/image.service';
+import {AnnotationService } from '../services/annotation.service';
 import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskRepository {
     @inject(TYPES.ImageService)
     private imageService: ImageService;
+    @inject(TYPES.AnnotationService)
+    private annotationService: AnnotationService;
     private connectionProvider: ConnectionProvider;
     constructor(
         @inject('ConnectionProvider') connectionProvider: ConnectionProvider,
@@ -41,7 +44,7 @@ export class TaskRepository {
     }
 
     public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
-        let whereConditions = [];
+        const whereConditions = [];
         if (filter.imageId !== undefined) {
             whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
         }
@@ -67,26 +70,29 @@ export class TaskRepository {
     }
 
     public async findTaskListByUser(userId: string, page: number = 0,
-                                    pageSize: number = 0, completed: boolean = false): Promise<ITaskGallery[]> {
+                                    pageSize: number = 0, completed: boolean): Promise<ITaskGallery[]> {
+
         const repository =  (await this.connectionProvider()).getRepository(Task);
         const qb = await repository
                          .createQueryBuilder('task')
                          .where('task.assignedUserId = :id', { id: userId })
-                         .andWhere('task.isVisible = :visible', { visible: true });
+                         .andWhere('task.isVisible = :visible', { visible: true })
+                         .andWhere('task.isComplete = :isCompleted', { isCompleted: completed });
 
         const tasks =  await qb.getMany();
-        console.log(tasks);
         let taskList: ITaskGallery[];
         // Regroup tasks in taskGroups by image
-        taskList = tasks.map(task => {
+        taskList = await Promise.all(tasks.map(async task => {
             // Todo: add imageId in arguments
+            let annotation = await this.annotationService.getAnnotation(task.annotationId);
             let dataUrl = '';
             try {
-                 const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(4)), 'base64');
-                 dataUrl = 'data:image/png;base64, ' + base64Image;
-             } catch (error) {
-                 throw(error);
-             }
+                // tslint:disable-next-line:max-line-length
+                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(annotation.imageId)), 'base64');
+                dataUrl = 'data:image/png;base64, ' + base64Image;
+            } catch (error) {
+                throw(error);
+            }
             const taskGallery: ITaskGallery = {
                 taskId: task.id,
                 taskTypeId: task.taskTypeId,
@@ -97,19 +103,18 @@ export class TaskRepository {
                 taskTypeTitle: 'Todo',
                 annotationId: task.annotationId,
                 // imageId: task.annotation.image.id,
-                imageId: 4,
+                imageId: annotation.imageId,
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,
-                // projectId: task.projectId,
-                projectId: 420,
+                projectTitle: task.projectTitle,
                 lastModifiedTime: task.lastModifiedTime,
             };
             return taskGallery;
-        });
-        if (completed) {
+        }));
+        if (completed === true) {
             taskList = taskList.filter(taskGallery => taskGallery.isComplete);
-        } else {
+        } else if (completed === false) {
             taskList = taskList.filter(taskGallery => !taskGallery.isComplete);
         }
         // Select a subsection of our taskGroups, according to pageSize and page number

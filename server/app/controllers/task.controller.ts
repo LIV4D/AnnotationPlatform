@@ -43,9 +43,10 @@ export class TaskController implements IController {
             isComplete: req.body.isComplete,
             isVisible: req.body.isVisible,
             comment: req.body.comment,
+            projectTitle: req.body.projectTitle,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id,
-            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date()  : req.body.lastModifiedTime,
+            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
         };
         this.taskService.createTask(newTask)
             .then(task => res.send(task.proto()))
@@ -142,18 +143,10 @@ export class TaskController implements IController {
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedTask: ITask = {
             id: req.params.taskId,
-            isVisible: false,
-            isComplete: false,
+            isVisible: isNullOrUndefined(req.body.isVisible) ? false : req.body.isVisible,
+            isComplete: isNullOrUndefined(req.body.isComplete) ? false : req.body.isComplete,
+            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
         };
-        if (!isNullOrUndefined(req.body.isVisible)) {
-            updatedTask.isVisible = req.body.isVisible;
-        }
-        if (!isNullOrUndefined(req.body.isComplete)) {
-            updatedTask.isComplete = req.body.isComplete;
-        }
-        if (!isNullOrUndefined(req.body.lastModifiedTime)) {
-            updatedTask.lastModifiedTime = req.body.lastModifiedTime;
-        }
 
         this.taskService.updateTask(updatedTask, req.user)
             .then(task => res.send(task))
