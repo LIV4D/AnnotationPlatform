@@ -8,6 +8,11 @@
 <div class="size-image"
   (wheel)="onMouseWheel($event)"
   (mouseover)="onMouseOver($event)">
-  <!-- <img class="size-image" src="../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg" alt=""> -->
-  <canvas data-wheel-zoom #myCanvas height="750" width="1200"></canvas>
+  <div #sizeImage id="slide">
+    <!-- <img class="size-image" src="../../assets/milad-alizadeh-qzEs-9oX8L8-unsplash.jpg" alt=""> -->
+    <canvas #myCanvas height="750" width="1200"></canvas>
+  </div>
 </div>
+
+
+<!-- data-wheel-zoom -->

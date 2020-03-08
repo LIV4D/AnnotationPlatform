@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, ElementRef } from '@angular/core';
+import { Injectable, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
 import { BehaviorSubject, throwError, Observable } from 'rxjs';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
@@ -573,6 +573,9 @@ export class EditorService {
       this.canRedraw = false;
       this.testRedraw(position);
       // do CSS translation here
+      // const imgg = new Image();
+      // imgg.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
+      // this.backgroundCanvas.currentCanvas.getContext('2d').drawImage(imgg, 0, 0);
 
 
       setTimeout(() => {
@@ -581,6 +584,8 @@ export class EditorService {
     }
     console.log('%c else ', 'color: black; background:blue;');
 
+    // maybe to implement
+    // return pointToTranslate;
   }
 
   // this only works for zoom slider (when using mobile device)

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/models/point.model';
@@ -11,7 +11,9 @@ import { Point } from 'src/app/shared/models/point.model';
 
 export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor(public editorFacadeService: EditorFacadeService, public appService: AppService, ) {
+  constructor(public editorFacadeService: EditorFacadeService,
+              public appService: AppService,
+              private renderer: Renderer2) {
     this.delayEventTimer = null;
   }
 
@@ -29,7 +31,8 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
-  // @ViewChild('appLayer') appLayer: ElementRef;
+  @ViewChild('mainCanvas') mainCanvas: ElementRef;
+
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
