@@ -55,7 +55,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loadData();      // Load dataSource with tasks
+    this.loadData();      // Load dataSource with uncompleted tasks
 
     this.dataSource.paginator = this.paginator; // Set pagination on tasks List
     this.dataSource.sort = this.sort;           // Set sorting on tasks List
@@ -80,7 +80,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Loads the list of uncompleted tasks.
+   * Loads the list of uncompleted assigned tasks.
    * The list is added on a DataSource adapted for the mat-table
    * of Ng-Material. The pagination and the sorting are also setted
    */
