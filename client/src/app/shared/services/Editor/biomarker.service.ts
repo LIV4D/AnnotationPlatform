@@ -195,19 +195,19 @@ export class BiomarkerService {
     // }
 
     public toggleVisibility(id: string, visibility?: string): void {
-        const elem: HTMLElement = document.getElementById(id);
-        if (visibility === undefined) {
-            visibility = elem.style.visibility === 'hidden' ? 'visible' : 'hidden';
-        } else if (visibility === elem.style.visibility) {
-            return;
-        }
-        this.toggleVisibilityRecursive(elem, visibility);
-        this.setParentVisibility(elem);
-        this.applyVisibility();
+        // const elem: HTMLElement = document.getElementById(id);
+        // if (visibility === undefined) {
+        //     visibility = elem.style.visibility === 'hidden' ? 'visible' : 'hidden';
+        // } else if (visibility === elem.style.visibility) {
+        //     return;
+        // }
+        // this.toggleVisibilityRecursive(elem, visibility);
+        // this.setParentVisibility(elem);
+        // this.applyVisibility();
     }
 
     public toggleSoloVisibility(id: string): void {
-        this.toggleAllBiomarkers('hidden');
+        // this.toggleAllBiomarkers('hidden');
         this.toggleVisibility(id);
     }
 
