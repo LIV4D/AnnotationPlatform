@@ -33,8 +33,87 @@ export class AnnotationController implements IController {
     }
 
     private getEmptyAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        let empty_revision = "<svg xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' sodipodi:docname='fullAnnotations.svg'><g id='Lesions'><image id='Others' color='#fff4ee' preserveAspectRatio='none'/><image id='Pigmented lesions' color='#5bffb7' preserveAspectRatio='none'/><g id='Bright'><image id='Cotton Wool Spots' color='#7a9d32' preserveAspectRatio='none'/><image id='Drusen' color='#3cb371' preserveAspectRatio='none'/><image id='Exudates' color='#85ffa6' preserveAspectRatio='none'/><image id='Uncertain - Bright' color='#a9ff84' preserveAspectRatio='none'/></g><g id='Red'><image id='Hemorrhages' color='#4b18ff' preserveAspectRatio='none'/><image id='Microaneurysms' color='#2a63fd' preserveAspectRatio='none'/><image id='Sub-retinal hemorrhage' color='#7a2afd' preserveAspectRatio='none'/><image id='Pre-retinal hemorrhage' color='#a12afd' preserveAspectRatio='none'/><image id='Neovascularization' color='#ba2afd' preserveAspectRatio='none'/><image id='Uncertain - Red' color='#d62afd' preserveAspectRatio='none'/></g></g><g id='Normal'><image id='Macula' color='#be3c1b' preserveAspectRatio='none'/><g id='Optic nerve'><image id='Disk' color='#ddc81c' preserveAspectRatio='none'/><image id='Cup' color='#dda61c' preserveAspectRatio='none'/></g><g id='Vasculature'><image id='Arteries' color='#dd1c1c' preserveAspectRatio='none'/><image id='Veins' color='#6d13b2' preserveAspectRatio='none'/><image id='Vessels - Uncertain' color='#770067' preserveAspectRatio='none'/></g></g></svg>";
-        res.send({svg: empty_revision});
+        // let empty_revision = "<svg xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' sodipodi:docname='fullAnnotations.svg'><g id='Lesions'><image id='Others' color='#fff4ee' preserveAspectRatio='none'/><image id='Pigmented lesions' color='#5bffb7' preserveAspectRatio='none'/><g id='Bright'><image id='Cotton Wool Spots' color='#7a9d32' preserveAspectRatio='none'/><image id='Drusen' color='#3cb371' preserveAspectRatio='none'/><image id='Exudates' color='#85ffa6' preserveAspectRatio='none'/><image id='Uncertain - Bright' color='#a9ff84' preserveAspectRatio='none'/></g><g id='Red'><image id='Hemorrhages' color='#4b18ff' preserveAspectRatio='none'/><image id='Microaneurysms' color='#2a63fd' preserveAspectRatio='none'/><image id='Sub-retinal hemorrhage' color='#7a2afd' preserveAspectRatio='none'/><image id='Pre-retinal hemorrhage' color='#a12afd' preserveAspectRatio='none'/><image id='Neovascularization' color='#ba2afd' preserveAspectRatio='none'/><image id='Uncertain - Red' color='#d62afd' preserveAspectRatio='none'/></g></g><g id='Normal'><image id='Macula' color='#be3c1b' preserveAspectRatio='none'/><g id='Optic nerve'><image id='Disk' color='#ddc81c' preserveAspectRatio='none'/><image id='Cup' color='#dda61c' preserveAspectRatio='none'/></g><g id='Vasculature'><image id='Arteries' color='#dd1c1c' preserveAspectRatio='none'/><image id='Veins' color='#6d13b2' preserveAspectRatio='none'/><image id='Vessels - Uncertain' color='#770067' preserveAspectRatio='none'/></g></g></svg>";
+
+        // empty_revision = 
+
+        //    <g id="Lesions">
+        //       <image id="Others" color="#fff4ee" preserveAspectRatio="none" />
+        //       <image id="Pigmented lesions" color="#5bffb7" preserveAspectRatio="none" />
+        //       <g id="Bright">
+        //          <image id="Cotton Wool Spots" color="#7a9d32" preserveAspectRatio="none" />
+        //          <image id="Drusen" color="#3cb371" preserveAspectRatio="none" />
+        //          <image id="Exudates" color="#85ffa6" preserveAspectRatio="none" />
+        //          <image id="Uncertain - Bright" color="#a9ff84" preserveAspectRatio="none" />
+        //       </g>
+        //       <g id="Red">
+        //          <image id="Hemorrhages" color="#4b18ff" preserveAspectRatio="none" />
+        //          <image id="Microaneurysms" color="#2a63fd" preserveAspectRatio="none" />
+        //          <image id="Sub-retinal hemorrhage" color="#7a2afd" preserveAspectRatio="none" />
+        //          <image id="Pre-retinal hemorrhage" color="#a12afd" preserveAspectRatio="none" />
+        //          <image id="Neovascularization" color="#ba2afd" preserveAspectRatio="none" />
+        //          <image id="Uncertain - Red" color="#d62afd" preserveAspectRatio="none" />
+        //       </g>
+        //    </g>
+        //    <g id="Normal">
+        //       <image id="Macula" color="#be3c1b" preserveAspectRatio="none" />
+        //       <g id="Optic nerve">
+        //          <image id="Disk" color="#ddc81c" preserveAspectRatio="none" />
+        //          <image id="Cup" color="#dda61c" preserveAspectRatio="none" />
+        //       </g>
+        //       <g id="Vasculature">
+        //          <image id="Arteries" color="#dd1c1c" preserveAspectRatio="none" />
+        //          <image id="Veins" color="#6d13b2" preserveAspectRatio="none" />
+        //          <image id="Vessels - Uncertain" color="#770067" preserveAspectRatio="none" />
+        //       </g>
+        //    </g>
+
+
+        const empty_revision = {
+            biomarkers: [
+                {type: "Lesions",
+                 biomarkers: [
+                     {type: "Others", color: "#fff4ee",},
+                     {type: "Pigmented lesions", color: "#5bffb7"},
+                     {type: "Bright",
+                      biomarkers: [
+                          {type: "Cotton Wool Spots", color: "#7a9d32"},
+                          {type: "Drusen", color: "#3cb371"},
+                          {type: "Exudates", color: "#85ffa6"},
+                          {type: "Uncertain - Bright", color: "#a9ff84"}
+                      ]},
+                     {type: "Red",
+                      biomarkers: [
+                          {type: "Hemorrhages", color: "#4b18ff"},
+                          {type: "Microaneurysms", color: "#2a63fd"},
+                          {type: "Sub-retinal hemorrhage", color: "#7a2afd"},
+                          {type: "Pre-retinal hemorrhage", color: "#a12afd"},
+                          {type: "Neovascularization", color: "#ba2afd"},
+                          {type: "Uncertain - Red", color: "#d62afd"}
+                      ]}
+                 ]
+                },
+                {type: "Normal",
+                 biomarkers: [
+                     {type: "Macula", color: "#be3c1b"},
+                     {type: "Optic Nerve",
+                      biomarkers: [
+                          {type: "Disk", color: "#ddc81c"},
+                          {type: "Cup", color: "#dda61c"}
+                      ]},
+                     {type: "Vasculature",
+                      biomarkers: [
+                          {type: "Arteries", color: "#dd1c1c"},
+                          {type: "Veins", color: "#6d13b2"},
+                          {type: "Vessels", color: "#770067"}
+                      ]},
+                 ],
+                }
+            ]
+                   
+        }
+      
+        res.send(JSON.stringify(empty_revision));
     }
 
     private getBaseAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {

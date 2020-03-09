@@ -125,7 +125,7 @@ export class EditorService {
   }
 
   // Load canvases and local variables when opening a local image.
-  public loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): void {
+  public async loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): Promise<void> {
     console.log("Load all local");
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
@@ -200,30 +200,37 @@ export class EditorService {
         { headers: new HttpHeaders(), responseType: 'json' }).pipe(
         ).subscribe(
         res => {
-    this.layersService.biomarkerCanvas = [];
-            this.svgBox.innerHTML = (res as any).svg;
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-            const arbre: SVGGElement[] = [];
-            Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                const elems = e.getElementsByTagName('g');
-                for (let j = 0; j < elems.length; j++) {
-                    if (elems[j].parentElement.tagName !== 'g') {
-                        arbre.push(elems[j]);
-                    }
-                }
-            });
-            arbre.forEach((e: SVGGElement) => {
-                this.layersService.createFlatCanvasRecursive(e,
-                    this.backgroundCanvas.originalCanvas.width,
-                    this.backgroundCanvas.originalCanvas.height);
-            });
-            this.svgLoaded.emit(arbre);
+            this.layersService.biomarkerCanvas = [];
+            this.layersService.createFlatCanvasRecursiveJson(res);
+            this.biomarkerService.initJsonRecursive(res);
+                  
+            // this.svgBox.innerHTML = (res as any).svg;
+            // const parser = new DOMParser();
+            // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+            // const arbre: SVGGElement[] = [];
+            // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+            //     const elems = e.getElementsByTagName('g');
+            //     for (let j = 0; j < elems.length; j++) {
+            //         if (elems[j].parentElement.tagName !== 'g') {
+            //             arbre.push(elems[j]);
+            //         }
+            //     }
+            // });
+            // arbre.forEach((e: SVGGElement) => {
+            //     this.layersService.createFlatCanvasRecursive(e,
+            //         this.backgroundCanvas.originalCanvas.width,
+            //         this.backgroundCanvas.originalCanvas.height);
+            // });
+            // this.svgLoaded.emit(arbre);
         });
+        const res = await this.http.get<any>(`/api/annotations/getEmpty/`,
+        { headers: new HttpHeaders(), responseType: 'json' }).pipe(
+        ).toPromise();
+        console.log(JSON.parse(res));
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
-  loadRevision(draw: boolean): void {
+  public async loadRevision(draw: boolean): Promise<void> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
       // console.log('userid '+userId)
       // const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
@@ -258,45 +265,54 @@ export class EditorService {
                   setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
               }
               this.svgLoaded.emit(arbre);
-          }, error => {
+          }, async error => {
+            // const res = await this.http.get<any>(`/api/annotations/getEmpty/`,
+            // { headers: new HttpHeaders(), responseType: 'json' }).pipe(
+            // ).toPromise();
+            // console.log(res);
               if (error.status === 404 || error.status === 500) {
-                  const reqBase = this.http.get(`/api/annotations/getEmpty/`,
+                  const reqBase = this.http.get<any>(`/api/annotations/getEmpty/`,
                                                 { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
-                          this.svgBox.innerHTML = (res as any).svg;
-                          console.log(this.svgBox.innerHTML);
+
+                          this.layersService.createFlatCanvasRecursiveJson(res);
+                          this.biomarkerService.initJsonRecursive(res);
+
+
+                          // this.svgBox.innerHTML = (res as any).svg;
+                          // console.log(this.svgBox.innerHTML);
                           
-                          const parser = new DOMParser();
-                          const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-                          console.log(xmlDoc)
-                          const arbre: SVGGElement[] = [];
-                          console.log(xmlDoc.children)
-                          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                              const elems = e.getElementsByTagName('g');
-                              console.log(elems)
-                              for (let j = 0; j < elems.length; j++) {
-                                  if (elems[j].parentElement.tagName !== 'g') {
-                                      arbre.push(elems[j]);
-                                      console.log(elems[j]);
-                                  }
-                              }
-                          });
-                          // this.biomarkerService.init(arbre);
-                          // this.commentService.comment = (res as any).diagnostic;
-                          if (draw) {
-                              this.biomarkerService.init(arbre);
-                              this.layersService.biomarkerCanvas = [];
-                              arbre.forEach((e: SVGGElement) => {
-                                  this.layersService.createFlatCanvasRecursive(e);
-                              });
-                              setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-                          }
-                          this.svgLoaded.emit(arbre);
+                          // const parser = new DOMParser();
+                          // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+                          // console.log(xmlDoc)
+                          // const arbre: SVGGElement[] = [];
+                          // console.log(xmlDoc.children)
+                          // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                          //     const elems = e.getElementsByTagName('g');
+                          //     console.log(elems)
+                          //     for (let j = 0; j < elems.length; j++) {
+                          //         if (elems[j].parentElement.tagName !== 'g') {
+                          //             arbre.push(elems[j]);
+                          //             console.log(elems[j]);
+                          //         }
+                          //     }
+                          // });
+                          // // this.biomarkerService.init(arbre);
+                          // // this.commentService.comment = (res as any).diagnostic;
+                          // if (draw) {
+                          //     this.biomarkerService.init(arbre);
+                          //     this.layersService.biomarkerCanvas = [];
+                          //     arbre.forEach((e: SVGGElement) => {
+                          //         this.layersService.createFlatCanvasRecursive(e);
+                          //     });
+                          //     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+                          // }
+                          // this.svgLoaded.emit(arbre);
                       });
               }
-              console.log('Loaded : ')
-              console.log(this.biomarkerService.lastBiomarkers)
-              console.log(this.layersService.biomarkerCanvas)
+              // console.log('Loaded : ')
+              // console.log(this.biomarkerService.lastBiomarkers)
+              // console.log(this.layersService.biomarkerCanvas)
           });
   }
 

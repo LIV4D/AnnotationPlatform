@@ -3,6 +3,7 @@ import { Point } from './point.service';
 import { EditorService } from '../editor.service';
 import { LayersService } from '../layers.service';
 import { BiomarkerService } from '../biomarker.service';
+import { Comment } from './../../../models/comment.model';
 
 export class CommentTool extends Tool {
 
@@ -22,6 +23,9 @@ export class CommentTool extends Tool {
     }
 
     onCursorUp(): void {
-
+        const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
+        let commentModel = new Comment();
+        // commentModel.
+        // currentBiomarker.commentsList.push(commentModel);
     }
 }

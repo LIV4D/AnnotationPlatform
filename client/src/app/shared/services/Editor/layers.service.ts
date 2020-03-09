@@ -162,6 +162,34 @@ export class LayersService {
     }
   }
 
+  createFlatCanvasRecursiveJson(data: object, width: number = 0, height: number = 0): void {
+    const topLevelBiomarkers = data['biomarkers'];
+    for (let [key, value] of Object.entries(topLevelBiomarkers)) {
+      const type = value['type']
+      let color = null;
+      if (value['color']) {
+        color = value['color'];
+      }
+      if (value['biomarkers']) {
+        this.createFlatCanvasRecursiveJson(value as object, width, height);
+      }
+
+      const image = new Image();
+      if (height !== 0 && width !== 0) {
+        image.width = width;
+        image.height = height;
+      }
+      image.onload = () => {
+        this.newBiomarker(image, type, color);
+      };
+
+      console.log("%c "+type, 'color: black; background: yellow;');
+
+      image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+    }
+
+  }
+
   public setCanvasStyle(canvas: HTMLCanvasElement): void {
     canvas.style.height = '100%';
     canvas.style.width = '100%';

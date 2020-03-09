@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CamelCaseToTextPipe } from './../../../shared/pipes/camel-case-to-text.pipe';
 import { MatList } from '@angular/material/list';
 import { MatListModule } from '@angular/material/list';
+import { Biomarker } from 'src/app/shared/models/biomarker.model';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -45,16 +46,16 @@ export class BiomarkersComponent implements OnInit {
   public init(arbre: SVGGElement[]): void {
     this.opacity = 65;
     this.arbre = arbre;
-    this.biomarkersFacadeService.init(arbre);
+    // this.biomarkersFacadeService.init(arbre);
     this.biomarkersFacadeService.changeOpacity(this.opacity.toString());
   }
 
-  public getCssClass(elem: HTMLElement): string {
-    return this.biomarkersFacadeService.getCssClass(elem);
-  }
+  // public getCssClass(elem: HTMLElement): string {
+  //   return this.biomarkersFacadeService.getCssClass(elem);
+  // }
 
   // Makes a biomarker the currently selected biomarker
-  public setFocusBiomarker(elem: HTMLElement): void {
+  public setFocusBiomarker(elem: Biomarker): void {
     this.biomarkersFacadeService.setFocusBiomarker(elem);
   }
 
@@ -82,9 +83,9 @@ export class BiomarkersComponent implements OnInit {
     // });
   }
 
-  public deleteElement(elem: HTMLElement): void {
-    this.biomarkersFacadeService.deleteElements(elem);
-  }
+  // public deleteElement(elem: HTMLElement): void {
+  //   this.biomarkersFacadeService.deleteElements(elem);
+  // }
 
   public toggleVisibility(id: string): void {
     this.biomarkersFacadeService.toggleVisibility(id);
@@ -122,9 +123,9 @@ export class BiomarkersComponent implements OnInit {
     }
   }
 
-  public hideOtherBiomarkers(): void {
-    this.biomarkersFacadeService.hideOtherBiomarkers();
-  }
+  // public hideOtherBiomarkers(): void {
+  //   this.biomarkersFacadeService.hideOtherBiomarkers();
+  // }
 
   public toggleAllBiomarkers(): void {
     this.visibilityAll = this.visibilityAll === 'visible' ? 'hidden' : 'visible';

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LayersService } from './../../../shared/services/Editor/layers.service';
 import { ImageBorderService } from 'src/app/shared/services/Editor/image-border.service';
 import { BiomarkerService } from 'src/app/shared/services/Editor/biomarker.service';
+import { Biomarker } from 'src/app/shared/models/biomarker.model';
 
 @Injectable({
     providedIn: 'root'
@@ -28,26 +29,26 @@ export class BiomarkersFacadeService {
     }
 
     // BiomarkerService
-    init(arbre: SVGGElement[]) {
-        this.biomarkerService.init(arbre);
-    }
+    // init(arbre: SVGGElement[]) {
+    //     this.biomarkerService.init(arbre);
+    // }
 
     changeOpacity(opacity: string) {
         this.biomarkerService.changeOpacity(opacity);
 
     }
 
-    getCssClass(elem: HTMLElement) {
-        return this.biomarkerService.getCssClass(elem);
-    }
+    // getCssClass(elem: HTMLElement) {
+    //     return this.biomarkerService.getCssClass(elem);
+    // }
 
-    setFocusBiomarker(elem: HTMLElement) {
+    setFocusBiomarker(elem: Biomarker) {
         this.biomarkerService.setFocusBiomarker(elem);
     }
 
-    deleteElements(elem) {
-        this.biomarkerService.deleteElements(elem);
-    }
+    // deleteElements(elem) {
+    //     this.biomarkerService.deleteElements(elem);
+    // }
 
     toggleVisibility(id, visibility?: string) {
         this.biomarkerService.toggleVisibility(id, visibility);
@@ -57,9 +58,9 @@ export class BiomarkersFacadeService {
         this.biomarkerService.toggleSoloVisibility(id);
     }
 
-    hideOtherBiomarkers() {
-        this.biomarkerService.hideOtherBiomarkers();
-    }
+    // hideOtherBiomarkers() {
+    //     this.biomarkerService.hideOtherBiomarkers();
+    // }
 
     toggleAllBiomarkers(visibility) {
         this.biomarkerService.toggleAllBiomarkers(visibility);
@@ -69,13 +70,17 @@ export class BiomarkersFacadeService {
         return this.biomarkerService.dataSource;
     }
 
+    get dataSourceJson() {
+        return this.biomarkerService.dataSourceJson;
+    }
+
     get nestedTreeControl() {
         return this.biomarkerService.nestedTreeControl;
     }
 
-    get hasNestedChild() {
-        return this.biomarkerService.serviceHasNestedChild;
-    }
+    // get hasNestedChild() {
+    //     return this.biomarkerService.serviceHasNestedChild;
+    // }
 
     get flatEnabledBiomarkers() {
         return this.biomarkerService.flatEnabledBiomarkers;

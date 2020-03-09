@@ -1,5 +1,6 @@
 import { Canvas } from './canvas.service';
 import { ImageBorderService } from './../image-border.service';
+import { Comment } from './../../../models/comment.model';
 
 export class BiomarkerCanvas extends Canvas {
 
@@ -8,6 +9,7 @@ export class BiomarkerCanvas extends Canvas {
     drawBorders: boolean;
     drawShadows: boolean;
     private invertedColor: string;
+    public commentsList: Array<Comment> = new Array<Comment>();
 
     constructor(
         displayCanvas: HTMLCanvasElement, image: HTMLImageElement, public id: string,
