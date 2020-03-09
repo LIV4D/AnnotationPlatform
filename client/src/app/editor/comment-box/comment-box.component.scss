@@ -47,7 +47,13 @@
 
 mat-form-field {
   // border: 2px solid black;
-  width: 100%;
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+textarea {
+  height: 400px;
 }
 
 mat-expansion-panel {

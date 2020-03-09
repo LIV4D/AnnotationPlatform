@@ -25,7 +25,7 @@ export class CommentBoxComponent implements OnInit {
 
         this.isDisabled = false;
         this.down = false;
-      }, 300);
+      }, 100);
     }
   }
 
