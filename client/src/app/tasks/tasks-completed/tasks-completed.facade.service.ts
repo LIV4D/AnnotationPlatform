@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { TasksService } from '../../shared/services/tasks.service';
+import { TasksService } from '../../shared/services/tasks/tasks.service';
 import { TaskTypeService } from '../../shared/services/Tasks/taskType.service';
 import { AppService} from '../../shared/services/app.service';
 import { EditorService } from '../../shared/services/Editor/editor.service';

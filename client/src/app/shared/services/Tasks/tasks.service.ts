@@ -1,10 +1,10 @@
 
 // Services
-import { HeaderService } from './header.service';
-import { AppService } from './app.service';
+import { HeaderService } from './../header.service';
+import { AppService } from './../app.service';
 
 // Interface
-import { ITaskGroup } from '../interfaces/taskGroup.interface';
+import { ITaskGroup } from '../../interfaces/taskGroup.interface';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
