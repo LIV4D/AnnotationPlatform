@@ -9,16 +9,27 @@
 
 
 button {
-    flex-grow: 0;
+    flex-grow: 1;
     flex-basis: 30px;
     min-height: 30px;
     margin-top: 5px;
 
-    border-radius: 5px;
     border: 0px; 
+    border-right: 1px $gray-ultra-light solid;
     color : $font-color-light;
     line-height: 0px;
     background-color: $gray-very-light;
+}
+
+button:first-of-type{
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+button:last-of-type{
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-right: 0;
 }
 
 .pressed{

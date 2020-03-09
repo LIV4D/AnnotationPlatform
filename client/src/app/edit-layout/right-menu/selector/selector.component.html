@@ -1,13 +1,21 @@
 <div id="selectorDiv">
-    <span>Diagnostic</span>
-    <button mat-button [className]="selectorService.diagnostic==0 ? 'pressed' : 'released'" (click)="diagnosticClicked(0)" class>Healthy</button>
-    <button mat-button [className]="selectorService.diagnostic==1 ? 'pressed' : 'released'" (click)="diagnosticClicked(1)" >Mild</button>
-    <button mat-button [className]="selectorService.diagnostic==2 ? 'pressed' : 'released'" (click)="diagnosticClicked(2)" >Severe</button>
-    <button mat-button [className]="selectorService.diagnostic==3 ? 'pressed' : 'released'" (click)="diagnosticClicked(3)" >Degenerative</button>
-    <button mat-button [className]="selectorService.diagnostic==4 ? 'pressed' : 'released'" (click)="diagnosticClicked(4)" >Proliferative</button>
-
+    <span>Rethinopathy Diabetic</span>
     <div class='flexRow'>
-        <mat-checkbox [disableRipple]="true" (change)="toggleEdema()" [checked]="selectorService.edema"></mat-checkbox> <span> Macular Edema</span>
+        <button mat-button [className]="selectorService.diagnostic==0 ? 'pressed' : 'released'" (click)="diagnosticClicked(0)" >R0</button>
+        <button mat-button [className]="selectorService.diagnostic==1 ? 'pressed' : 'released'" (click)="diagnosticClicked(1)" >R1</button>
+        <button mat-button [className]="selectorService.diagnostic==2 ? 'pressed' : 'released'" (click)="diagnosticClicked(2)" >R2</button>
+        <button mat-button [className]="selectorService.diagnostic==3 ? 'pressed' : 'released'" (click)="diagnosticClicked(3)" >R3</button>
+        <button mat-button [className]="selectorService.diagnostic==4 ? 'pressed' : 'released'" (click)="diagnosticClicked(4)" >R4A</button>
+        <button mat-button [className]="selectorService.diagnostic==5 ? 'pressed' : 'released'" (click)="diagnosticClicked(5)" >R4S</button>
+        <button mat-button [className]="selectorService.diagnostic==6 ? 'pressed' : 'released'" (click)="diagnosticClicked(6)" >R6</button>
+    </div>
+
+    <span> Macular Edema</span>
+    <div class='flexRow'>
+        <button mat-button [className]="selectorService.edema==0 ? 'pressed' : 'released'" (click)="edemaClicked(0)" class>M0</button>
+        <button mat-button [className]="selectorService.edema==1 ? 'pressed' : 'released'" (click)="edemaClicked(1)" class>M1</button>
+        <button mat-button [className]="selectorService.edema==2 ? 'pressed' : 'released'" (click)="edemaClicked(2)" class>M2</button>
+        <button mat-button [className]="selectorService.edema==6 ? 'pressed' : 'released'" (click)="edemaClicked(6)" class>M6</button>
     </div>
 
 

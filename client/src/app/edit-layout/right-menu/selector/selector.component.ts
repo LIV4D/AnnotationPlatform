@@ -18,7 +18,7 @@ export class SelectorComponent implements OnInit {
         this.selectorService.diagnostic = d;
     }
 
-    toggleEdema(): void{
-        this.selectorService.edema = !this.selectorService.edema;
+    edemaClicked(d: number): void{
+        this.selectorService.edema = d;
     }
 }
