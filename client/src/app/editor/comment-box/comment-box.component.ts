@@ -11,6 +11,7 @@ export class CommentBoxComponent implements OnInit {
   up = false;
   down = false;
   moving = false;
+  pointFormat = 'example-box2';
 
   constructor() { }
 
@@ -22,22 +23,21 @@ export class CommentBoxComponent implements OnInit {
     // e.preventDefault();
     if (this.moving) {
       setTimeout(() => {
-
         this.isDisabled = false;
         this.down = false;
+        this.moving = false;
       }, 100);
+      this.pointFormat = 'example-box2';
+    } else {
+      console.log('this.moving is false');
     }
   }
 
   onMouseDown(e: Event) {
     console.log('mouse down');
     this.down = true;
+    this.pointFormat = 'nothing';
     // this.isDisabled = false;
-  }
-
-  onMouseOver(e: Event) {
-    console.log('mouse over');
-    // this.isDisabled = true;
   }
 
   onMouseMove(e: Event) {
@@ -46,5 +46,10 @@ export class CommentBoxComponent implements OnInit {
       this.isDisabled = true;
       this.moving = true;
     }
+  }
+
+  onFormClick(e: Event) {
+    console.log('textarea clicked');
+    this.pointFormat = 'nothing';
   }
 }

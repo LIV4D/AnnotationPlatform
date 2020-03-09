@@ -7,26 +7,25 @@
   </div>
 </div> -->
 
-<mat-accordion>
-  <mat-expansion-panel cdkDrag [disabled]="isDisabled"
+<mat-accordion >
+  <mat-expansion-panel cdkDrag [disabled]="isDisabled" [ngClass]="pointFormat"
     (opened)="panelOpenState = true"
     (closed)="panelOpenState = false"
     (mouseup)="onMouseUp($event)"
     (mousedown)="onMouseDown($event)"
-    (mouseover)="onMouseOver($event)"
     (mousemove)="onMouseMove($event)">
+
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Self aware panel
+        Comment
       </mat-panel-title>
       <mat-panel-description>
         {{panelOpenState ? 'open' : 'closed'}}
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <mat-form-field>
-      <textarea matInput></textarea>
+    <mat-form-field (click)="onFormClick($event)">
+      <textarea cdkTextareaAutosize matInput></textarea>
     </mat-form-field>
   </mat-expansion-panel>
 </mat-accordion>
-
