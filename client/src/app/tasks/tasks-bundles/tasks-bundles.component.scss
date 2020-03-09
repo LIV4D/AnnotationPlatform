@@ -1,6 +1,7 @@
 @import '../../../colorVariables.scss';
 
 .cards {
+
     display: block;
     align-items: center;
     justify-content: center;
@@ -12,20 +13,32 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 25px;
-
+    margin-bottom: 25px;   
+    
 }
-  
-.header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-    background-size: cover;
+
+.header {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 25px;
+    margin-right: 25px;
+    
+}
+
+img {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 80%;
+    height: auto;
+    margin-left: 25px;
+    margin-right: 45px;
 }
   
 button {
     display: block;
     margin-left: auto;
     margin-right: 2%;
-    font-size: medium;
-    font-weight: bold;
+    font-size: small;
     background-color: $gray-ultra-light;
     color: black;
     border-radius: 5px;  
@@ -37,7 +50,6 @@ button {
 }
 
 #refresh {
-    font-size: small;
     margin-top: 20px;
     margin-right: 19%;
     background-color: white;
@@ -55,10 +67,3 @@ h3 {
     font-size: medium;
 }
 
-.mat-card-image {
-    float: right;
-    max-width: 20%;
-    margin-left: auto;
-    margin-right: 5%;
-    margin-top: 25px;
-}

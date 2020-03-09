@@ -1,54 +1,23 @@
-<h1 *ngIf="areBundlesEmpty()">You have no tasks ready to be assigned</h1>
-<h3 *ngIf="isBundleAssigned">Bundle {{assignedBundle}} has been assigned</h3>
+<h1 *ngIf="bundles.length === 0">You have no tasks ready to be assigned</h1>
+<h3 *ngIf="isBundleAssigned">Bundle has been assigned</h3>
 
 <button mat-button *ngIf="!areBundlesEmpty()" (click)="loadBundles()" id="refresh">Refresh</button>
-<div class = "cards">
-    <mat-card class="card" *ngIf="bundles.primaryBundle.length !== 0">
-        <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>{{bundles.primaryTaskType}}</mat-card-title>
-        <mat-card-subtitle>{{bundles.primaryBundle.length}}</mat-card-subtitle>
-        <mat-card-subtitle>Time</mat-card-subtitle>
-        <img mat-card-image [src]="bundles.primaryBundleThumbnails[0] | safeImage" alt="">
+<div class = "cards"  *ngFor="let bundle of bundles">
+    <mat-card class="card" *ngIf="bundle.bundle.length !== 0">
+       
+        <mat-card-header class="header">
+            <img mat-card-image [src]="bundle.bundleThumbnails[0] | safeImage" alt="">
         </mat-card-header>
+
+        <mat-card-header class="header">
+            <mat-card-title>{{bundle.taskType}}</mat-card-title>
+            <mat-card-subtitle>Quantity: {{bundle.bundle.length}}</mat-card-subtitle>
+            <mat-card-subtitle>Time: </mat-card-subtitle>
+            <mat-card-subtitle>{{bundle.taskTypeDescription}} </mat-card-subtitle>
+        </mat-card-header>
+
+        <button mat-button (click) = "assignBundleTasks(bundle.bundle)">Select</button>
         
-        <mat-card-content>
-        <p>{{bundles.primaryTaskTypeDescription}}</p>
-        </mat-card-content>
-        <mat-card-actions>
-        <button mat-button (click) = "assignBundleTasks(bundles.primaryBundle, 1)">Select</button>
-        </mat-card-actions>
     </mat-card>
 
-    <mat-card class="card" *ngIf="bundles.secondaryBundle.length !== 0">
-        <mat-card-header>
-        <mat-card-title>{{bundles.secondaryTaskType}}</mat-card-title>
-        <mat-card-subtitle>{{bundles.secondaryBundle.length}}</mat-card-subtitle>
-        <mat-card-subtitle>Time</mat-card-subtitle>
-        <img mat-card-image [src]="bundles.secondaryBundleThumbnails[0] | safeImage" alt="">
-        </mat-card-header>
-        
-        <mat-card-content>
-        <p>{{bundles.secondaryTaskTypeDescription}}</p>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button (click) = "assignBundleTasks(bundles.secondaryBundle, 2)">Select</button>
-        </mat-card-actions>
-    </mat-card>
-
-    <mat-card class="card" *ngIf="bundles.tertiaryBundle.length !== 0">
-        <mat-card-header>
-        <mat-card-title>{{bundles.tertiaryTaskType}}</mat-card-title>
-        <mat-card-subtitle>{{bundles.secondaryBundle.length}}</mat-card-subtitle>
-        <mat-card-subtitle>Time</mat-card-subtitle>
-        <img mat-card-image [src]="bundles.tertiaryBundleThumbnails[0] | safeImage" alt="">
-        </mat-card-header>
-      
-        <mat-card-content>
-        <p>{{bundles.tertiaryTaskTypeDescription}}</p>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button (click) = "assignBundleTasks(bundles.tertiaryBundle, 3)">Select</button>
-        </mat-card-actions>
-    </mat-card>
 </div>

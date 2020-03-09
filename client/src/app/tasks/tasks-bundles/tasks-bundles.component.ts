@@ -1,10 +1,9 @@
-import { ITasksBundles } from './../../shared/interfaces/ITasksBundles.interface';
-import { Task } from './../../shared/models/task.model';
 import { MatCard } from '@angular/material/card';
 import { Component, OnInit } from '@angular/core';
 import { TasksBundlesFacadeService } from './tasks-bundles.facade.service';
 import { ITasks } from 'src/app/shared/interfaces/ITasks.interface';
 import { isNullOrUndefined } from 'util';
+import { ITaskBundle } from 'src/app/shared/interfaces/ITaskBundle.interface';
 
 @Component({
   selector: 'app-tasks-bundles',
@@ -13,22 +12,12 @@ import { isNullOrUndefined } from 'util';
 })
 export class TasksBundlesComponent implements OnInit {
 
-  bundles: ITasksBundles = {
-    primaryBundle: [],
-    primaryTaskType: 'Task type',
-    primaryTaskTypeDescription: 'Description',
-    primaryBundleThumbnails: [''],
-    secondaryBundle: [],
-    secondaryTaskType: 'Task type',
-    secondaryTaskTypeDescription: 'Description',
-    secondaryBundleThumbnails: [''],
-    tertiaryBundle: [],
-    tertiaryTaskType: 'Task type',
-    tertiaryTaskTypeDescription: 'Description',
-    tertiaryBundleThumbnails: [''],
-  } ;
+  bundles: ITaskBundle[] = [
+    { bundle: [], taskType: 'Task type', taskTypeDescription: 'Description', bundleThumbnails: [''], },
+    { bundle: [], taskType: 'Task type', taskTypeDescription: 'Description', bundleThumbnails: [''], },
+    { bundle: [], taskType: 'Task type', taskTypeDescription: 'Description', bundleThumbnails: [''], }
+  ];
 
-  assignedBundle: number;
   isBundleAssigned = false;
   noData: boolean;
 
@@ -41,18 +30,14 @@ export class TasksBundlesComponent implements OnInit {
 
   async loadBundles() {
     this.bundles = await this.facadeService.loadBundles();
-    console.log("TEST");
-    console.log(this.bundles.primaryBundleThumbnails[0]);
+    console.log(this.bundles);
   }
 
   areBundlesEmpty() {
-    return isNullOrUndefined(this.bundles) || (
-          isNullOrUndefined(this.bundles.primaryBundle) || this.bundles.primaryBundle.length === 0 &&
-          isNullOrUndefined(this.bundles.secondaryBundle) || this.bundles.secondaryBundle.length === 0 &&
-          isNullOrUndefined(this.bundles.tertiaryBundle) || this.bundles.tertiaryBundle.length === 0);
+    return isNullOrUndefined(this.bundles.length === 0);
   }
 
-  async assignBundleTasks(tasks: ITasks[], bundleNumber: number) {
+  async assignBundleTasks(tasks: ITasks[]) {
     const taskIds = [];
     tasks.forEach(task => {
       taskIds.push(task.id);
@@ -61,12 +46,12 @@ export class TasksBundlesComponent implements OnInit {
 
     // check server response
     if (res === 204) {
-      this.assignedBundle = bundleNumber;
       this.isBundleAssigned = true;
-      this.loadBundles();
     } else {
       console.log('There was error while assigning the task bundle');
     }
+    this.loadBundles();
   }
+
 
 }
