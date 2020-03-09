@@ -16,6 +16,7 @@ export interface ITaskGallery {
     isComplete?: boolean;
     isVisible?: boolean;
     thumbnail?: string;
+    imageId?: number;
     taskTypeId?: number;
     annotationId?: number;
     comment?: string;

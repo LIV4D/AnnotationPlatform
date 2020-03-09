@@ -97,6 +97,7 @@ export class TaskRepository {
                 isVisible: task.isVisible,
                 thumbnail: dataUrl,
                 annotationId: task.annotationId,
+                imageId: annotation.imageId,
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,
