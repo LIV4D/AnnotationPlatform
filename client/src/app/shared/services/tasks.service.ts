@@ -1,29 +1,14 @@
 
-// Components
-import { TasksComponent } from './../../tasks/tasks.component';
-import { TasksCompletedComponent } from './../../tasks/tasks-completed/tasks-completed.component';
-import { TasksToCompleteComponent } from './../../tasks/tasks-to-complete/tasks-to-complete.component';
-
 // Services
 import { HeaderService } from './header.service';
 import { AppService } from './app.service';
 
-// Interfaces
-import { ITasks } from '../interfaces/ITasks.interface';
+// Interface
+import { ITaskGroup } from '../interfaces/taskGroup.interface';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { merge, of as observableOf } from 'rxjs';
-import { catchError, startWith, switchMap } from 'rxjs/operators';
-
-// To delete?
-import { ITaskList } from '../interfaces/taskList.interface';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { $ } from 'protractor';
-import { ITaskGroup } from '../interfaces/taskGroup.interface';
-import { TaskType } from '../models/taskType.model';
 
 @Injectable({
     providedIn: 'root'
@@ -39,7 +24,6 @@ export class TasksService {
   loadImage(imageId: string): void {
       this.appService.localEditing = false;
       localStorage.setItem('previousPage', 'tasks');
-      // this.editorService.loadImageFromServer(imageId);
   }
 
   /**
@@ -57,10 +41,6 @@ export class TasksService {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
 
     const req = this.http.get<ITaskGroup>(`/api/tasks/gallery/${userId}`, {params, observe: 'events', reportProgress: true});
-
-    // this.http.get<ITasks[]>(`/api/tasks/list`).subscribe((response: ITasks[]) => {
-    //    console.log(response);
-    // });
     return this.headerService.display_progress(req, 'Downloading: Tasks List');
   }
 
@@ -70,21 +50,11 @@ export class TasksService {
     return this.http.get(`/api/tasks/${userId}/next`);
   }
 
-  getTaskTypes(): Observable<object> {
-    const req = this.http.get<TaskType[]>(`/api/taskTypes/list`, {observe: 'events', reportProgress: true});
-    return this.headerService.display_progress(req, 'Downloading: Task Types List');
-  }
-
-  async getTaskTypesApp() {
-    const data = await this.getTaskTypes().toPromise();
-    return data as TaskType[];
-  }
-
   /**
-   * Hide a task setting it to not visible
-   * @param taskId:
+   * Archive a task setting it to not visible
+   * @param taskId: taskType founded with the taskId
    */
-  ArchiveTask(taskId: number) {
+  ArchiveTask(taskId: number): Observable<ITaskGroup> {
     const params = new HttpParams()
                         .set('taskId', taskId ? taskId.toString() : '');
     return this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`,  { isVisible: false, isComplete: true, params});
@@ -94,7 +64,13 @@ export class TasksService {
     this.ArchiveTask(taskId).subscribe();
   }
 
-  isAllSelected(selectionLength: number, dataLength: number){
+  /**
+   * Determines whether all selected is
+   * @param selectionLength: length of the data selection
+   * @param dataLength: length of all the datas
+   * @returns boolean
+   */
+  isAllSelected(selectionLength: number, dataLength: number) {
     return selectionLength === dataLength;
   }
 }
