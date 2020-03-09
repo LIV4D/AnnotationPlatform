@@ -30,8 +30,7 @@ import { LayersFacadeService } from './editor/editor-content/layers/layers.facad
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
-import { GalleryFacadeService } from './gallery/gallery.facade.service';
-// import { LayoutModule } from '@angular/cdk/layout';
+import { GalleryFacadeService } from './gallery/gallery.facade.service';;
 import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
@@ -39,7 +38,9 @@ import { ManagementCreationService } from './shared/services/management-creation
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
 import { AppService } from './shared/services/app.service';
-import { TasksBundlesService } from './shared/services/tasksBundles.service';
+import { TasksBundlesService } from './shared/services/tasks/tasksBundles.service';
+import { TasksService } from './shared/services/tasks/tasks.service';
+import { TaskTypeService } from './shared/services/tasks/taskType.service';
 import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 
@@ -64,8 +65,6 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
-
-// import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
    declarations: [
@@ -115,6 +114,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
       TasksBundlesFacadeService,
+      TasksService,
+      TaskTypeService,
       TasksBundlesService,
       ManagementCreationService,
       HeaderService,

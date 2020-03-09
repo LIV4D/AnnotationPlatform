@@ -1,12 +1,9 @@
-import { TasksBundlesComponent } from './../../tasks/tasks-bundles/tasks-bundles.component';
-import { ITaskGallery } from './../../../../../server/app/interfaces/gallery.interface';
-import { HeaderService } from './header.service';
-import { AppService } from './app.service';
+import { HeaderService } from './../header.service';
+import { AppService } from './../app.service';
 import { HttpClient, HttpParams, HttpEvent, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ITaskBundle } from '../interfaces/ITaskBundle.interface';
-
+import { ITaskBundle } from '../../interfaces/ITaskBundle.interface';
 
 @Injectable()
 export class TasksBundlesService {
@@ -17,11 +14,6 @@ export class TasksBundlesService {
   async loadBundles(): Promise<ITaskBundle[]> {
     const data = await this.getBundlesObservable().toPromise();
     return data;
-    // await this.getBundlesObservable().subscribe((data: ITaskBundle) => {
-    //   tasksBundlesComponent.bundles = data;
-    //   if (length === 0) { tasksBundlesComponent.noData = true; }
-    // });
-
   }
 
   getBundlesObservable(): Observable<ITaskBundle[]> {
