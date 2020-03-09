@@ -48,35 +48,43 @@ export class TaskBundleService {
 
     public async createTasksBundles(tasks: ITaskPriority[]): Promise<ITaskBundle[]> {
         // Initialize tempory arrays that will contain the tasks in each bundle
-        const bundleTasks: Task[] = [];
+        let bundleTasks: Task[] = [];
         const bundles: ITaskBundle[] = [];
         let taskTypes = [];
         const thumbnails: string[] = [];
 
         // Get 3 different tasks randomly
-        const ArrayIndexNumbers = [];
+        const arrayIndexNumbers = [];
         if (tasks.length === 0) {
-            return null;
-        } else if (tasks.length < 3) {
-            ArrayIndexNumbers.push(0);
-            ArrayIndexNumbers.push(0);
-            ArrayIndexNumbers.push(0);
+            return bundles;
+        } else if (tasks.length === 1) {
+            arrayIndexNumbers.push(0);
+        } else if (tasks.length === 2) {
+            arrayIndexNumbers.push(0);
+            arrayIndexNumbers.push(1);
         } else {
             let randomNumber;
-            while (ArrayIndexNumbers.length < 3) {
+            while (arrayIndexNumbers.length < 3) {
                 randomNumber = Math.floor(Math.random() * (tasks.length));
-                if (ArrayIndexNumbers.indexOf(randomNumber) === -1) {
-                    ArrayIndexNumbers.push( randomNumber );
+                if (arrayIndexNumbers.indexOf(randomNumber) === -1) {
+                    arrayIndexNumbers.push( randomNumber );
                 }
             }
         }
 
+
         // create 3 bundles
-        for (let i = 0; i < 3; i++) {
+        for (let n of arrayIndexNumbers) {
+
             // TODO algo to create bundles
 
+            // Reinitialize
+            bundleTasks = [];
+            taskTypes = [];
+            taskTypes = [];
+
             // add 1 random task to temp array
-            bundleTasks.push(tasks[ArrayIndexNumbers[i]].task);
+            bundleTasks.push(tasks[n].task);
 
             // Get task type details from first task of each bundle
             taskTypes = await this.taskTypeRepository.findByIds([bundleTasks[0].taskTypeId]);
@@ -84,7 +92,6 @@ export class TaskBundleService {
             // Get thumbnails
             if (!isNullOrUndefined(bundleTasks) && bundleTasks.length > 0 ) {
                 bundleTasks.forEach(task => {
-                    console.log(task.annotation.imageId);
                     thumbnails.push(this.getThumbnails(task.annotation.imageId));
                 });
             }
@@ -116,6 +123,7 @@ export class TaskBundleService {
         const prePath = config.get('storageFolders.thumbnail') as string;
         return path.join(prePath, imageId.toString() + '.jpg');
     }
+
     public async assignTasks(ids: number[], user: User) {
         return Promise.all(ids.map( async (id) => {
             const updatedTask: ITask = {
@@ -128,8 +136,9 @@ export class TaskBundleService {
             if (!isNullOrUndefined(task)) {
                 const result =  await this.deleteTaskPriority(id);
                 return result;
+            } else {
+                throw createError('This task does not exist with the given id.', 404);
             }
-            throw createError('This task does not exist with the given id.', 404);
         }));
     }
 

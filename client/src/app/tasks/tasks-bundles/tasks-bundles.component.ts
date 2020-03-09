@@ -30,13 +30,11 @@ export class TasksBundlesComponent implements OnInit {
 
   async loadBundles() {
     this.bundles = await this.facadeService.loadBundles();
+    console.log(this.bundles);
   }
 
   areBundlesEmpty() {
-    return isNullOrUndefined(this.bundles) || (
-          isNullOrUndefined(this.bundles[0].bundle) || this.bundles[0].bundle.length === 0 &&
-          isNullOrUndefined(this.bundles[1].bundle) || this.bundles[1].bundle.length === 0 &&
-          isNullOrUndefined(this.bundles[2].bundle) || this.bundles[2].bundle.length === 0);
+    return isNullOrUndefined(this.bundles.length === 0);
   }
 
   async assignBundleTasks(tasks: ITasks[]) {

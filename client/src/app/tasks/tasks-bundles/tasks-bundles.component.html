@@ -1,4 +1,4 @@
-<h1 *ngIf="areBundlesEmpty()">You have no tasks ready to be assigned</h1>
+<h1 *ngIf="bundles.length === 0">You have no tasks ready to be assigned</h1>
 <h3 *ngIf="isBundleAssigned">Bundle has been assigned</h3>
 
 <button mat-button *ngIf="!areBundlesEmpty()" (click)="loadBundles()" id="refresh">Refresh</button>
