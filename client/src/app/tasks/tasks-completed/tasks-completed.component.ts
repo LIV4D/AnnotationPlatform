@@ -132,7 +132,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
     this.taskSelection.selected.forEach(task => {
       const index: number = this.dataTable.data.findIndex(predicate => predicate === task);
       this.dataTable.data.splice(index, 1);                                   // Remove the task from the dataTable
-      this.tasksCompletedFacadeService.ArchiveTaskApp(task.taskId);           // Set the task to hidden in the serve to archive it
+      this.tasksCompletedFacadeService.archiveTaskApp(task.taskId);           // Set the task to hidden in the serve to archive it
       setTimeout(() => {this.dataTable.paginator = this.paginator; });        // Reorganise the pagination
     });
     this.taskSelection = new SelectionModel(true, []);                        // Empty the selection

@@ -1,4 +1,3 @@
-
 // Services
 import { HeaderService } from './../header.service';
 import { AppService } from './../app.service';
@@ -60,7 +59,7 @@ export class TasksService {
     return this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`,  { isVisible: false, isComplete: true, params});
   }
 
-  ArchiveTaskApp(taskId: number) {
+  archiveTaskApp(taskId: number) {
     this.ArchiveTask(taskId).subscribe();
   }
 

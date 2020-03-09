@@ -52,5 +52,4 @@ export class TasksBundlesComponent implements OnInit {
     this.loadBundles();
   }
 
-
 }

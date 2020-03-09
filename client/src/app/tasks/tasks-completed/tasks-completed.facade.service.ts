@@ -20,8 +20,8 @@ export class TasksCompletedFacadeService {
     return await this.taskTypeService.getTaskTypesApp();
   }
 
-  ArchiveTaskApp(taskId: number): void {
-    this.taskService.ArchiveTaskApp(taskId);
+  archiveTaskApp(taskId: number): void {
+    this.taskService.archiveTaskApp(taskId);
   }
 
   isAllSelected(selectionLength: number, dataLength: number){
