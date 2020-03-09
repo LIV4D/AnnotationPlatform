@@ -20,8 +20,12 @@ export class TasksCompletedFacadeService {
     return await this.taskTypeService.getTaskTypesApp();
   }
 
-  hideTaskApp(taskId: number): void {
-    this.taskService.hideTaskApp(taskId);
+  ArchiveTaskApp(taskId: number): void {
+    this.taskService.ArchiveTaskApp(taskId);
+  }
+
+  isAllSelected(selectionLength: number, dataLength: number){
+    return this.taskService.isAllSelected(selectionLength, dataLength);
   }
 
   loadImageFromServer(imageId: string) {

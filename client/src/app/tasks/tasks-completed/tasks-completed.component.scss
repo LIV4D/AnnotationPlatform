@@ -175,6 +175,10 @@ input {
     left: 68%;
 }
 
+::ng-deep .mat-checkbox .mat-checkbox-frame {
+    background-color:#828282;
+  }
+
 #searchButton {
     text-align: center;
     padding: 0px !important;
@@ -197,7 +201,7 @@ input {
     display: flex;
 }
 
-#hideTasksButtons {
+#ArchiveTasksButtons {
   margin-top: 20px;
   text-align: center;
 }
@@ -213,7 +217,6 @@ input {
   .selected {
     opacity: 1.0;
   }
-
 
   #tasksFinishedText {
     margin: 50px;

@@ -84,13 +84,17 @@ export class TasksService {
    * Hide a task setting it to not visible
    * @param taskId:
    */
-  hideTask(taskId: number) {
+  ArchiveTask(taskId: number) {
     const params = new HttpParams()
                         .set('taskId', taskId ? taskId.toString() : '');
     return this.http.put<ITaskGroup>(`/api/tasks/update/${taskId}`,  { isVisible: false, isComplete: true, params});
   }
 
-  hideTaskApp(taskId: number) {
-    this.hideTask(taskId).subscribe();
+  ArchiveTaskApp(taskId: number) {
+    this.ArchiveTask(taskId).subscribe();
+  }
+
+  isAllSelected(selectionLength: number, dataLength: number){
+    return selectionLength === dataLength;
   }
 }

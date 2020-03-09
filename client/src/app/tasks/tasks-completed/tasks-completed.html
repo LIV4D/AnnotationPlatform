@@ -1,7 +1,7 @@
-<!-- Hide Task Button -->
-<div id="hideTasksButtons">
+<!-- Archive Task Button -->
+<div id="ArchiveTasksButtons">
   <button mat-raised-button (click)="removeSelectedRows()">
-    <span>Hide Tasks</span>
+    <span>ArchiveTasks</span>
   </button>
 </div>
 
@@ -9,18 +9,19 @@
 <section class="completedTasksDataTable" >
   <mat-table #table [dataSource]="dataTable" matSort matSortActive="lastModifiedTime" matSortDirection="desc" matSortDisableClear>
 
-    <!-- Hide Tasks Checkbox Column -->
+    <!-- Archive Tasks Checkbox Column -->
     <ng-container matColumnDef="selectTasks">
       <mat-header-cell *matHeaderCellDef>
         <mat-checkbox (change)="$event ? masterToggle() : null"
-                      [checked]="selection.hasValue() && isAllSelected()"
-                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+                      [checked]="taskSelection.hasValue() && isAllSelected()"
+                      [indeterminate]="taskSelection.hasValue() && !isAllSelected()">
         </mat-checkbox>
       </mat-header-cell>
       <mat-cell *matCellDef="let task">
         <mat-checkbox (click)="$event.stopPropagation()"
-                      (change)="$event ? selection.toggle(task) : null"
-                      [checked]="selection.isSelected(task)">
+                      (change)="$event ? taskSelection.toggle(task) : null"
+                      [checked]="taskSelection.isSelected(task)"
+                      color="accent">
         </mat-checkbox>
       </mat-cell>
     </ng-container>
@@ -67,9 +68,9 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="taskSelection.toggle(row)"></mat-row>
   </mat-table>
 
-      <p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p>
+      <!--p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
 <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
 </section>
