@@ -72,9 +72,8 @@ export class TaskBundleService {
             }
         }
 
-
         // create 3 bundles
-        for (let n of arrayIndexNumbers) {
+        for (const n of arrayIndexNumbers) {
 
             // TODO algo to create bundles
 
