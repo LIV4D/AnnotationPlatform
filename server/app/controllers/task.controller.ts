@@ -73,6 +73,10 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Get user gallery of task controller
+     * The list gets the tasks filtered with the userId and the completed status
+     */
     private getUserGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // if (req.user.id !== req.params.userId) {
         //     throwIfNotAdmin(req);
@@ -140,6 +144,10 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Update a task from the taskId given in params
+     * The visibility, completness and last modified time are updated
+     */
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedTask: ITask = {
             id: req.params.taskId,

@@ -81,13 +81,10 @@ export class TaskRepository {
 
         const tasks =  await qb.getMany();
         let taskList: ITaskGallery[];
-        // Regroup tasks in taskGroups by image
         taskList = await Promise.all(tasks.map(async task => {
-            // Todo: add imageId in arguments
-            let annotation = await this.annotationService.getAnnotation(task.annotationId);
+            const annotation = await this.annotationService.getAnnotation(task.annotationId);
             let dataUrl = '';
             try {
-                // tslint:disable-next-line:max-line-length
                 const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(annotation.imageId)), 'base64');
                 dataUrl = 'data:image/png;base64, ' + base64Image;
             } catch (error) {
@@ -99,11 +96,7 @@ export class TaskRepository {
                 isComplete: task.isComplete,
                 isVisible: task.isVisible,
                 thumbnail: dataUrl,
-                // taskTypeTitle: task.taskType.title,
-                taskTypeTitle: 'Todo',
                 annotationId: task.annotationId,
-                // imageId: task.annotation.image.id,
-                imageId: annotation.imageId,
                 comment: task.comment,
                 assignedUserId: task.assignedUserId,
                 creatorId: task.creatorId,

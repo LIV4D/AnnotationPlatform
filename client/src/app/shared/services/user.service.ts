@@ -15,7 +15,10 @@ import { Injectable } from '@angular/core';
 export class UserService {
   constructor(private http: HttpClient, private headerService: HeaderService) {}
 
-  getUsers(): Observable<object> {
+  /**
+   * Gets the list of all users
+   */
+  getUsers(): Observable<User[]> {
     const req = this.http.get<User[]>(`/api/users/list`, {observe: 'events', reportProgress: true});
     return this.headerService.display_progress(req, 'Downloading: Task Types List');
   }

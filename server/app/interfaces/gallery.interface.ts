@@ -16,15 +16,11 @@ export interface ITaskGallery {
     isComplete?: boolean;
     isVisible?: boolean;
     thumbnail?: string;
-    taskTypeTitle?: string;
-    imageId?: number;
-
     taskTypeId?: number;
     annotationId?: number;
     comment?: string;
     assignedUserId?: number;
     creatorId?: number;
     lastModifiedTime?: Date;
-
     projectTitle?: string;
 }
