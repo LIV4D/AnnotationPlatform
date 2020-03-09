@@ -9,12 +9,5 @@ import { Router } from '@angular/router';
 })
 export class TasksComponent {
 
-   constructor( private router: Router, private facadeService: TaskFacadeService) {
-   }
-    /**
-     * Logs tasks component: Executed each time a tab is changed
-     * May be usefull (or not)
-     * @param val: event
-     */
-    log(val) { }
+   constructor( private router: Router, private facadeService: TaskFacadeService) {}
 }
