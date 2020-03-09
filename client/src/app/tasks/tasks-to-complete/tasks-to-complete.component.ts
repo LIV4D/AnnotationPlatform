@@ -26,16 +26,16 @@ import { catchError, startWith, switchMap } from 'rxjs/operators';
 })
 export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   displayedColumns = ['imageSrc', 'imageId', 'projectTitle', 'creatorId', 'time'];
-  length: number;
-  pageSize: number;
-  noData: boolean;
-  isCompleted: boolean;
+  length: number;         // Number of tasks
+  pageSize: number;       // Number of tasks per page
+  isCompleted: boolean;   // Choose weither to display completed or uncompleted tasks
+  isDataEmpty: boolean;   // Notify when all tasks have been completed
 
   // List of tasks, taskTypes and Users
   dataSource: any = [];         // List of tasks
   taskTypes: TaskType[] = [];   // List of taskTypes
   selectedTaskType: string;     // TaskType selected for the filtering
-  users: User[] = [];           // Lust of users
+  users: User[] = [];           // List of users
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -43,26 +43,22 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
   constructor(private router: Router, private taskToCompleteFacadeService: TasksToCompleteFacadeService) {
     this.isCompleted = false;
     this.pageSize = 15;
-    this.noData = false;
+    this.isDataEmpty = false;
   }
 
   ngOnInit() {
-
-    // Declare the dataSource
-    // and sets 
     this.dataSource = new MatTableDataSource();
     this.dataSource.filterPredicate = this.configureFilterPredicate();
 
-
-    this.loadTaskTypes();   // Load the list of TaskTypes
-    this.loadUsers();       // Load the list of Users
+    this.loadTaskTypes(); // Load the list of TaskTypes
+    this.loadUsers();     // Load the list of Users
   }
 
   ngAfterViewInit() {
-    this.loadData();        // Load dataSource with tasks
+    this.loadData();      // Load dataSource with tasks
 
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator; // Set pagination on tasks List
+    this.dataSource.sort = this.sort;           // Set sorting on tasks List
   }
 
   /**
@@ -83,8 +79,14 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     this.users = await this.taskToCompleteFacadeService.getUsers();
   }
 
+  /**
+   * Loads the list of uncompleted tasks.
+   * The list is added on a DataSource adapted for the mat-table
+   * of Ng-Material. The pagination and the sorting are also setted
+   */
   loadData() {
-    this.noData = false;
+    this.isDataEmpty = false;
+
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
@@ -112,9 +114,8 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
           // Observer: Data emited from the server are added on data
           ).subscribe((data: ITaskGroup) => {
               this.dataSource.data = data;
-              console.log(data);
               this.length = this.dataSource.length;
-              if (this.length === 0) { this.noData = true; }
+              if (this.length === 0) { this.isDataEmpty = true; } // Notify when all tasks are completed
               setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar
           });
     }
@@ -134,14 +135,18 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
    */
   applyFilter(filterTaskType: TaskType) {
     this.selectedTaskType = filterTaskType.title; // Displays the title of the taskType selected
-    this.dataSource.filter = filterTaskType.id.toString().trim().toLowerCase(); // taskTypeId converted for matching the filtering
+    this.dataSource.filter = filterTaskType.id.toString().trim().toLowerCase(); // TaskTypeId converted for matching the filtering
 
     // Pagination updated
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
- }
+  }
 
+  /**
+   * Loads image and redirect the user on the Editor
+   * @param imageId: image annotation attributed for a task
+   */
   loadImage(imageId: string): void {
     this.taskToCompleteFacadeService.appService.localEditing = false;
     localStorage.setItem('previousPage', 'tasks');
