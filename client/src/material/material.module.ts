@@ -7,7 +7,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatSliderModule} from '@angular/material/slider';
-import {MatExpansionModule} from '@angular/material/expansion';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -18,23 +17,32 @@ import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 @NgModule({
     imports: [
-        BrowserModule,
-        MatDialogModule,
-        MatTreeModule,
-        MatTooltipModule,
-        MatIconModule,
-        LayoutModule,
-        MatToolbarModule,
-        MatExpansionModule,
-        MatTableModule,
-        MatCheckboxModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatSidenavModule,
-        MatSliderModule,
-        MatTabsModule
+      BrowserModule,
+      MatDialogModule,
+      MatTreeModule,
+      MatTooltipModule,
+      MatIconModule,
+      LayoutModule,
+      MatToolbarModule,
+      MatExpansionModule,
+      MatTableModule,
+      MatCheckboxModule,
+      MatPaginatorModule,
+      MatSortModule,
+      MatSidenavModule,
+      MatSliderModule,
+      MatTabsModule,
+
+      DragDropModule,
+      MatInputModule,
+      MatFormFieldModule
     ],
     exports: [
         BrowserModule,
@@ -52,7 +60,10 @@ import {MatSortModule} from '@angular/material/sort';
         MatSidenavModule,
         MatSliderModule,
         MatToolbarModule,
-        MatTabsModule
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        DragDropModule
     ]
 })
 

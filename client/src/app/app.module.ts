@@ -38,6 +38,9 @@ import { ManagementCreationService } from './shared/services/management-creation
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
+import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
+import { NgxImageZoomModule } from 'ngx-image-zoom';
+import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -56,13 +59,12 @@ import { VisualizationComponent } from './editor/right-menu/visualization/visual
 import { EditorContentComponent } from './editor/editor-content/editor-content.component';
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
+// import { MatIconModule } from '@angular/material/icon';
+
+
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
-
-// import { MatIconModule } from '@angular/material/icon';
-import { NgxImageZoomModule } from 'ngx-image-zoom';
-import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 
 @NgModule({
    declarations: [
@@ -89,7 +91,8 @@ import { ZoomngxComponent } from './zoomngx/zoomngx.component';
       ZoomComponent,
       MousewheelDirective,
       CamelCaseToTextPipe,
-      ZoomngxComponent
+      ZoomngxComponent,
+      CommentBoxComponent
    ],
    imports: [
       BrowserModule,
