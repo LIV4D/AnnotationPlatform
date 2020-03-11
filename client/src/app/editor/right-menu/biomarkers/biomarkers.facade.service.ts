@@ -50,12 +50,12 @@ export class BiomarkersFacadeService {
     //     this.biomarkerService.deleteElements(elem);
     // }
 
-    toggleVisibility(id, visibility?: string) {
-        this.biomarkerService.toggleVisibility(id, visibility);
+    toggleVisibility(node, visibility?: string) {
+        this.biomarkerService.toggleVisibility(node, visibility);
     }
 
-    toggleSoloVisibility(id) {
-        this.biomarkerService.toggleSoloVisibility(id);
+    toggleSoloVisibility(node) {
+        this.biomarkerService.toggleSoloVisibility(node);
     }
 
     // hideOtherBiomarkers() {

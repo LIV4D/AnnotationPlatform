@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BiomarkersFacadeService } from './biomarkers.facade.service';
 import { AppService } from './../../../shared/services/app.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { CamelCaseToTextPipe } from './../../../shared/pipes/camel-case-to-text.
 import { MatList } from '@angular/material/list';
 import { MatListModule } from '@angular/material/list';
 import { Biomarker } from 'src/app/shared/models/biomarker.model';
+import { CdkAccordion } from '@angular/cdk/accordion';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -30,14 +31,18 @@ export class BiomarkersComponent implements OnInit {
   opacity: number;
   shadowsChecked: boolean;
 
+  dataSource: Array<Biomarker> = [];
+
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
-              public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe) {
+              public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe, 
+              private changeDetector: ChangeDetectorRef) {
 
     this.biomarkersFacadeService.showBorders = false;
     this.opacity = 65;
     this.visibilityAll = 'visible';
     this.shadowsChecked = false;
     this.simplifiedView = true;
+    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
   }
 
   ngOnInit(): void {
@@ -87,12 +92,16 @@ export class BiomarkersComponent implements OnInit {
   //   this.biomarkersFacadeService.deleteElements(elem);
   // }
 
-  public toggleVisibility(id: string): void {
-    this.biomarkersFacadeService.toggleVisibility(id);
+  toggleVisibility(node: Biomarker): void {
+    this.biomarkersFacadeService.toggleVisibility(node);
+    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    this.changeDetector.detectChanges();
   }
 
-  public toggleSoloVisibility(id: string): void {
-    this.biomarkersFacadeService.toggleSoloVisibility(id);
+  public toggleSoloVisibility(node: Biomarker): void {
+    this.biomarkersFacadeService.toggleSoloVisibility(node);
+    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    this.changeDetector.detectChanges();
   }
 
   public getVisibility(type: Biomarker): string {

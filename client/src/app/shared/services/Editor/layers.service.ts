@@ -183,7 +183,7 @@ export class LayersService {
         this.newBiomarker(image, type, color);
       };
 
-      console.log("%c "+type, 'color: black; background: yellow;');
+      // console.log("%c "+type, 'color: black; background: yellow;');
 
       image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
     }

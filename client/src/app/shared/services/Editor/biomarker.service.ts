@@ -82,7 +82,6 @@ export class BiomarkerService {
             this.dataSourceJson.push(new Biomarker(type, color));
 
         }
-        console.log(this.dataSourceJson);
 
         this.onlyEnabledBiomarkers = Array.from(this.dataSourceJson);
 
@@ -150,7 +149,7 @@ export class BiomarkerService {
             }
             this.currentElement = elem;
             this.layersService.selectedBiomarkerId = elem.type;
-            this.toggleVisibility(elem.type, 'visible');
+            this.toggleVisibility(elem, 'visible');
         }
     }
 
@@ -198,7 +197,7 @@ export class BiomarkerService {
     //     return classes;
     // }
 
-    public toggleVisibility(type: string, visibility?: string): void {
+    public toggleVisibility(node: Biomarker, visibility?: string): void {
         // const elem: HTMLElement = document.getElementById(id);
         // if (visibility === undefined) {
         //     visibility = elem.style.visibility === 'hidden' ? 'visible' : 'hidden';
@@ -209,17 +208,16 @@ export class BiomarkerService {
         // this.setParentVisibility(elem);
         // this.applyVisibility();
 
+        const index = this.dataSourceJson.indexOf(node);
 
-        const index = this.dataSourceJson.indexOf(type);
         if (index != -1) {
-            this.dataSourceJson.splice(index, 1);
-        }
-        
+            this.dataSourceJson[index].isVisible = !this.dataSourceJson[index].isVisible;
+        }        
     }
 
-    public toggleSoloVisibility(type: string): void {
+    public toggleSoloVisibility(node: Biomarker): void {
         // this.toggleAllBiomarkers('hidden');
-        this.toggleVisibility(type);
+        this.toggleVisibility(node);
     }
 
     public toggleAllBiomarkers(visibility: string): void {
