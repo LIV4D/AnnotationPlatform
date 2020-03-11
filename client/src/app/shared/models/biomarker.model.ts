@@ -1,4 +1,6 @@
 export class Biomarker {
-    constructor(public type: string, public color: string, public isVisible=false){
+    public isVisible: boolean = true;
+    constructor(public type: string, public color: string, isVisible=true){
+        this.isVisible = isVisible;
     }
 }

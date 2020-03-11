@@ -18,6 +18,7 @@ import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
 import { BiomarkerService } from './biomarker.service';
+import { ImageBorderService } from './image-border.service';
 
 
 @Injectable({
@@ -29,7 +30,8 @@ export class ToolboxService {
     listOfTools: Tool[];
 
     constructor(private layersService: LayersService, private editorService: EditorService,
-                private toolPropertiesService: ToolPropertiesService, private biomarkerService: BiomarkerService) {
+                private toolPropertiesService: ToolPropertiesService, private biomarkerService: BiomarkerService, 
+                private imageBorderService: ImageBorderService) {
 
         this.listOfTools = [
             new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
@@ -86,10 +88,10 @@ export class ToolboxService {
     }
 
     public onCursorDown(point: Point): void {
-        // if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
-        //     // this.imageBorderService.showBorders = false;
-        //     // this.layersService.toggleBorders(false);
-        // }
+        if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
+            this.imageBorderService.showBorders = false;
+            this.layersService.toggleBorders(false);
+        }
         if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
             this.editorService.commentBoxVisible = true;
             console.log('SHOW')

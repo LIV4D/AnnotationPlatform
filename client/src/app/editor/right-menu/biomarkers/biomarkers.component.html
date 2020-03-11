@@ -75,10 +75,10 @@
                 {{node.type | camelCaseToText}}</span>
             <div class="align-right">
                 <mat-icon class="button left" (click)="toggleVisibility(node.type)"  (dblclick)="toggleSoloVisibility(node.type)"
-                    [matTooltip]="'Show/Hide ' + transform(node.type)" matTooltipShowDelay="1000" matTooltipPosition="right">
+                    [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                     {{getVisibility(node)}}
                 </mat-icon>
-                <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + transform(node.type)" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
+                <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
                     delete
                 </mat-icon>
             </div>

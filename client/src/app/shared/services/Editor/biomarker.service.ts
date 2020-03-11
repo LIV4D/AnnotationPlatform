@@ -217,9 +217,9 @@ export class BiomarkerService {
         
     }
 
-    public toggleSoloVisibility(id: string): void {
+    public toggleSoloVisibility(type: string): void {
         // this.toggleAllBiomarkers('hidden');
-        this.toggleVisibility(id);
+        this.toggleVisibility(type);
     }
 
     public toggleAllBiomarkers(visibility: string): void {
@@ -276,10 +276,10 @@ export class BiomarkerService {
 
     private applyVisibility(): void {
         // HACK...
-        this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
-            const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
-            b.displayCanvas.style.visibility = svgElem.style.visibility;
-        });
+        // this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
+        //     const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
+        //     b.displayCanvas.style.visibility = svgElem.style.visibility;
+        // });
     }
 
     private setParentVisibility(elem: HTMLElement): void {

@@ -95,13 +95,15 @@ export class BiomarkersComponent implements OnInit {
     this.biomarkersFacadeService.toggleSoloVisibility(id);
   }
 
-  public getVisibility(elem: HTMLElement): string {
-    const node = document.getElementById(elem.id);
-    if (node) {
-      return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
-    } else {
-      return '';
-    }
+  public getVisibility(type: Biomarker): string {
+    // const node = document.getElementById(elem.id);
+    // if (node) {
+    //   return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
+    // } else {
+    //   return '';
+    // }
+    // console.log(type.isVisible)
+    return type.isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
   }
 
   public getVisibilityAll(): string {
