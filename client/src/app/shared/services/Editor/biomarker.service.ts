@@ -14,7 +14,7 @@ export class BiomarkerService {
     public flat: HTMLElement[];
     public flatEnabledBiomarkers: HTMLElement[];
     public lastBiomarkers: Biomarker[];
-    public onlyEnabledBiomarkers = new Array<string>();
+    public onlyEnabledBiomarkers = new Array<Biomarker>();
     public dataSource;
     public nestedTreeControl: NestedTreeControl<HTMLElement>;
     public allChildrenHidden: boolean;
@@ -83,6 +83,10 @@ export class BiomarkerService {
 
         }
         console.log(this.dataSourceJson);
+
+        this.onlyEnabledBiomarkers = Array.from(this.dataSourceJson);
+
+        this.lastBiomarkers = [];
     }
 
     // public flatten(tree: SVGGElement[]): HTMLElement[] {
@@ -105,7 +109,7 @@ export class BiomarkerService {
     //     }
     // }
 
-    public isBiomarkerEnabled(bio: string): boolean {
+    public isBiomarkerEnabled(bio: Biomarker): boolean {
         return this.onlyEnabledBiomarkers.length === 0 || this.onlyEnabledBiomarkers.indexOf(bio) !== -1;
     }
 
@@ -134,7 +138,7 @@ export class BiomarkerService {
         if (this.currentElement !== null && this.currentElement !== undefined && this.currentElement.type === elem.type) {
             return;
         }
-        if (this.isBiomarkerEnabled(elem.type)) {
+        if (this.isBiomarkerEnabled(elem)) {
             if (this.currentElement !== null && this.currentElement !== undefined) {
                 for (let i = 0; i < this.lastBiomarkers.length; i++) {
                     if (this.lastBiomarkers[i].type === this.currentElement.type) {
@@ -194,7 +198,7 @@ export class BiomarkerService {
     //     return classes;
     // }
 
-    public toggleVisibility(id: string, visibility?: string): void {
+    public toggleVisibility(type: string, visibility?: string): void {
         // const elem: HTMLElement = document.getElementById(id);
         // if (visibility === undefined) {
         //     visibility = elem.style.visibility === 'hidden' ? 'visible' : 'hidden';
@@ -204,6 +208,13 @@ export class BiomarkerService {
         // this.toggleVisibilityRecursive(elem, visibility);
         // this.setParentVisibility(elem);
         // this.applyVisibility();
+
+
+        const index = this.dataSourceJson.indexOf(type);
+        if (index != -1) {
+            this.dataSourceJson.splice(index, 1);
+        }
+        
     }
 
     public toggleSoloVisibility(id: string): void {
@@ -212,25 +223,25 @@ export class BiomarkerService {
     }
 
     public toggleAllBiomarkers(visibility: string): void {
-        if (this.onlyEnabledBiomarkers === null) {
-            this.tree.forEach((e) => {
-                const elem = document.getElementById(e.id);
-                this.toggleVisibilityRecursive(elem, visibility);
-            });
-        } else {
-            this.tree.forEach((e) => {
-                const elem = document.getElementById(e.id);
-                this.toggleVisibilityRecursive(elem, 'hidden');
-            });
-            if (visibility === 'visible') {
-                this.flat.forEach((e) => {
-                    if (this.isBiomarkerEnabled(e.id)) {
-                        const elem = document.getElementById(e.id);
-                        this.toggleVisibility(e.id, 'visible');
-                    }
-                });
-            }
-        }
+        // if (this.onlyEnabledBiomarkers === null) {
+        //     this.tree.forEach((e) => {
+        //         const elem = document.getElementById(e.id);
+        //         this.toggleVisibilityRecursive(elem, visibility);
+        //     });
+        // } else {
+        //     this.tree.forEach((e) => {
+        //         const elem = document.getElementById(e.id);
+        //         this.toggleVisibilityRecursive(elem, 'hidden');
+        //     });
+        //     if (visibility === 'visible') {
+        //         this.flat.forEach((e) => {
+        //             if (this.isBiomarkerEnabled(e)) {
+        //                 const elem = document.getElementById(e.id);
+        //                 this.toggleVisibility(e.id, 'visible');
+        //             }
+        //         });
+        //     }
+        // }
 
         this.applyVisibility();
     }
