@@ -22,7 +22,6 @@ export class ManagementComponent implements OnInit {
 
     async ngOnInit() {
         this.availableModels = await this.facadeService.getModelNames();
-        console.log(this.availableModels);
     }
 
     public async generateTextFields(): Promise<void> {
