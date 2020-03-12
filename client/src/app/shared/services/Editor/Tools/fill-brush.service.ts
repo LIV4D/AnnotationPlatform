@@ -8,7 +8,8 @@ import { BiomarkerCanvas } from './biomarker-canvas.service';
 
 
 export class FillBrush extends Tool {
-    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService, layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
+    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService,
+                layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
         super(name, iconPath, tooltip, editorService, layersService);
     }
 

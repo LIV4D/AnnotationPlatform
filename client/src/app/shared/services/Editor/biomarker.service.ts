@@ -31,48 +31,6 @@ export class BiomarkerService {
     constructor(private layersService: LayersService) {
     }
 
-    // private _getChildren = (node: HTMLElement) => Array.from(node.children) as HTMLElement[];
-    // private hasNestedChild = (_: number, nodeData: SVGGElement) => (nodeData.children.length !== 0);
-
-
-
-    // public init(arbre: SVGGElement[]): void {
-    //     this.tree = arbre;
-    //     this.flat = [];
-    //     this.nestedTreeControl = new NestedTreeControl<HTMLElement>(this._getChildren);
-    //     this.dataSource = this.tree;
-    //     this.flat = this.flatten(this.tree);
-    //     this.flatEnabledBiomarkers = this.flat.slice();
-    //     this.lastBiomarkers = this.flat.slice();
-    //     this.nestedTreeControl.dataNodes = this.dataSource;
-
-    //     this.tree.forEach((e) => {
-    //         const elem = document.getElementById(e.id);
-    //         this.disable_recursive(elem);
-    //     });
-
-    //     if (this.onlyEnabledBiomarkers.length > 0) {
-    //         this.toggleAllBiomarkers('hidden');
-    //         this.onlyEnabledBiomarkers.forEach((b) => {
-    //             this.toggleVisibility(b);
-    //             this.expandToBiomarker(b);
-    //         });
-    //         this.flatEnabledBiomarkers = this.onlyEnabledBiomarkers.map((elem) => this.flat.find(x => x.id === elem));
-    //         this.lastBiomarkers = this.flatEnabledBiomarkers.slice();
-
-    //         for (let i = 0; i < this.flat.length; i++) {
-    //             if (this.flat[i].id === this.onlyEnabledBiomarkers[0]) {
-    //                 this.setFocusBiomarker(this.flat[i]);
-    //                 break;
-    //             }
-    //         }
-    //     } else {
-    //         this.toggleAllBiomarkers('visible');
-    //         this.nestedTreeControl.expandAll();
-    //         this.setFocusBiomarker(this.flat[0]);
-    //     }
-    // }
-
     public initJsonRecursive(data: object){
         const biomarkersString = 'biomarkers';
         const typeString = 'type';
@@ -115,7 +73,7 @@ export class BiomarkerService {
 
             if (value[biomarkersString]) {
                 const childrenNodes = this.buildTreeRecursive(value as object);
-                node['biomarkers'] = childrenNodes;
+                node[biomarkersString] = childrenNodes;
             }
 
             tree.push(node)

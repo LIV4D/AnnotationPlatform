@@ -41,7 +41,7 @@ export class BiomarkersComponent implements OnInit {
   treeDataSource = new MatTreeNestedDataSource<BioNode>();
 
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
-              public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe, 
+              public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
               private changeDetector: ChangeDetectorRef) {
 
     this.biomarkersFacadeService.showBorders = false;
