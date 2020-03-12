@@ -71,8 +71,8 @@ export class BiomarkersComponent implements OnInit {
   // }
 
   // Makes a biomarker the currently selected biomarker
-  public setFocusBiomarker(elem: Biomarker): void {
-    this.biomarkersFacadeService.setFocusBiomarker(elem);
+  public setFocusBiomarker(node: Biomarker): void {
+    this.biomarkersFacadeService.setFocusBiomarker(node);
   }
 
   // Transforms from camel case to text case
@@ -103,7 +103,7 @@ export class BiomarkersComponent implements OnInit {
   //   this.biomarkersFacadeService.deleteElements(elem);
   // }
 
-  toggleVisibility(node: Biomarker): void {
+  toggleVisibility(node: any): void {
     this.biomarkersFacadeService.toggleVisibility(node);
     this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
@@ -115,7 +115,7 @@ export class BiomarkersComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  public getVisibility(type: Biomarker): string {
+  public getVisibility(node: Biomarker): string {
     // const node = document.getElementById(elem.id);
     // if (node) {
     //   return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
@@ -123,7 +123,9 @@ export class BiomarkersComponent implements OnInit {
     //   return '';
     // }
     // console.log(type.isVisible)
-    return type.isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
+    return this.biomarkersFacadeService.getVisibility(node);
+
+    // return node.isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
   }
 
   public getVisibilityAll(): string {

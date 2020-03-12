@@ -14,18 +14,17 @@
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
           <li class="mat-tree-node">
             <!-- use a disabled button to provide padding for tree leaf -->
-            <button mat-icon-button disabled></button>
 
             <button mat-icon-button disabled></button>
             <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
             </svg>
-            <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
+            <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node)"
                         matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
                     {{node.type | camelCaseToText}}
             </span>
             <div class="align-right">
-                <mat-icon class="button left" (click)="toggleVisibility(node.type)"  (dblclick)="toggleSoloVisibility(node.type)"
+                <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node)"
                     [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                     {{getVisibility(node)}}
                 </mat-icon>
@@ -46,10 +45,10 @@
                     {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
             </button>
-            <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node.type)">{{node.type | camelCaseToText}}</span>
+            <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node)">{{node.type | camelCaseToText}}</span>
 
               <div class="align-right">
-                <mat-icon class="button left" (click)="toggleVisibility(node.type)" (dblclick)="toggleSoloVisibility(node.type)"
+                <mat-icon class="button left" (click)="toggleVisibility(node)" (dblclick)="toggleSoloVisibility(node)"
                 [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                     {{getVisibility(node)}}
                 </mat-icon>
@@ -72,11 +71,11 @@
             <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
             </svg>
-            <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
+            <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node)"
                     matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
                 {{node.type | camelCaseToText}}</span>
             <div class="align-right">
-                <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node.type)"
+                <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node)"
                     [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                     {{getVisibility(node)}}
                 </mat-icon>

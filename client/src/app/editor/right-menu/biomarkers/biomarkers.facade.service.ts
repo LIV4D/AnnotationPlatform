@@ -42,8 +42,8 @@ export class BiomarkersFacadeService {
     //     return this.biomarkerService.getCssClass(elem);
     // }
 
-    setFocusBiomarker(elem: Biomarker) {
-        this.biomarkerService.setFocusBiomarker(elem);
+    setFocusBiomarker(node: Biomarker) {
+        this.biomarkerService.setFocusBiomarker(node);
     }
 
     // deleteElements(elem) {
@@ -96,5 +96,9 @@ export class BiomarkersFacadeService {
 
     get tree(){
         return this.biomarkerService.tree;
+    }
+
+    public getVisibility(node: Biomarker): string {
+        return this.biomarkerService.getVisibility(node);
     }
 }
