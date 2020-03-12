@@ -18,6 +18,7 @@ export interface ITaskGallery {
     thumbnail?: string;
     imageId?: number;
     taskTypeId?: number;
+    taskTypeTitle?: string;
     annotationId?: number;
     comment?: string;
     assignedUserId?: number;
