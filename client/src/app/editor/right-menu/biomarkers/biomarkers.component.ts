@@ -7,6 +7,9 @@ import { MatList } from '@angular/material/list';
 import { MatListModule } from '@angular/material/list';
 import { Biomarker } from 'src/app/shared/models/biomarker.model';
 import { CdkAccordion } from '@angular/cdk/accordion';
+import { BioNode } from './../../../shared/models/bionode.model';
+import {NestedTreeControl} from '@angular/cdk/tree';
+import {MatTreeNestedDataSource} from '@angular/material/tree';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -32,6 +35,10 @@ export class BiomarkersComponent implements OnInit {
   shadowsChecked: boolean;
 
   dataSource: Array<Biomarker> = [];
+  tree: BioNode[];
+
+  treeControl = new NestedTreeControl<BioNode>(node => node.biomarkers);
+  treeDataSource = new MatTreeNestedDataSource<BioNode>();
 
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
               public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe, 
@@ -43,6 +50,8 @@ export class BiomarkersComponent implements OnInit {
     this.shadowsChecked = false;
     this.simplifiedView = true;
     this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    this.tree = this.biomarkersFacadeService.tree;
+    this.treeDataSource.data = this.tree;
   }
 
   ngOnInit(): void {
@@ -54,6 +63,8 @@ export class BiomarkersComponent implements OnInit {
     // this.biomarkersFacadeService.init(arbre);
     this.biomarkersFacadeService.changeOpacity(this.opacity.toString());
   }
+
+  hasChild = (_: number, node: BioNode) => !!node.biomarkers && node.biomarkers.length > 0;
 
   // public getCssClass(elem: HTMLElement): string {
   //   return this.biomarkersFacadeService.getCssClass(elem);
@@ -175,6 +186,9 @@ export class BiomarkersComponent implements OnInit {
 
   public toggleSimplifiedView(): void {
     this.simplifiedView = !this.simplifiedView;
+    this.tree = this.biomarkersFacadeService.tree;
+    this.treeDataSource.data = this.tree;
+    this.changeDetector.detectChanges();
   }
 
   public onKeyDown(event: KeyboardEvent): void {

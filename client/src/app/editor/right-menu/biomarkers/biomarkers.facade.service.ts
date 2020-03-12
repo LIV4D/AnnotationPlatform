@@ -94,4 +94,7 @@ export class BiomarkersFacadeService {
         return this.biomarkerService.lastBiomarkers;
     }
 
+    get tree(){
+        return this.biomarkerService.tree;
+    }
 }

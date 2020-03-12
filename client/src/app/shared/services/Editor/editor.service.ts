@@ -12,6 +12,7 @@ import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
 import { GalleryService } from './../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
+import { BioNode } from './../../models/bionode.model';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -203,7 +204,8 @@ export class EditorService {
             this.layersService.biomarkerCanvas = [];
             this.layersService.createFlatCanvasRecursiveJson(res);
             this.biomarkerService.initJsonRecursive(res);
-                  
+            // this.biomarkerService.buildTree(res as BioNode[]);
+
             // this.svgBox.innerHTML = (res as any).svg;
             // const parser = new DOMParser();
             // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
@@ -274,11 +276,12 @@ export class EditorService {
                   const reqBase = this.http.get<any>(`/api/annotations/getEmpty/`,
                                                 { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
-
+                          console.log('ALLO')
                           this.layersService.createFlatCanvasRecursiveJson(res);
                           this.biomarkerService.initJsonRecursive(res);
-
-
+                          this.biomarkerService.buildTreeRecursive(res);
+                          console.log(this.biomarkerService.tree);
+                          
                           // this.svgBox.innerHTML = (res as any).svg;
                           // console.log(this.svgBox.innerHTML);
                           

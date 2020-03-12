@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { LayersService } from './layers.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
-import { Biomarker } from './../../models/biomarker.model'; 
+import { Biomarker } from './../../models/biomarker.model';
+import { BioNode } from './../../models/bionode.model';
 
 export const ANNOTATION_PREFIX = 'annotation-';
 
@@ -10,7 +11,7 @@ export const ANNOTATION_PREFIX = 'annotation-';
     providedIn: 'root'
 })
 export class BiomarkerService {
-    public tree: SVGGElement[];
+    // public tree: SVGGElement[];
     public flat: HTMLElement[];
     public flatEnabledBiomarkers: HTMLElement[];
     public lastBiomarkers: Biomarker[];
@@ -22,6 +23,7 @@ export class BiomarkerService {
     public currentElement: Biomarker;
 
     public dataSourceJson = [];
+    public tree: BioNode[];
 
     constructor(private layersService: LayersService) {
     }
@@ -80,12 +82,38 @@ export class BiomarkerService {
                 this.initJsonRecursive(value as object);
             }
             this.dataSourceJson.push(new Biomarker(type, color));
-
         }
 
         this.onlyEnabledBiomarkers = Array.from(this.dataSourceJson);
 
         this.lastBiomarkers = [];
+    }
+
+    public buildTreeRecursive(data: object): BioNode[]{
+
+        let tree: BioNode[] = [];
+
+        const topLevelBiomarkers = data['biomarkers'];
+        for (let [key, value] of Object.entries(topLevelBiomarkers)) {
+            const type = value['type'];
+            let color = null;
+            if (value['color']) {
+                color = value['color'];
+            }
+
+            let node: BioNode = { type: type, color: color, biomarkers: null};
+
+            if (value['biomarkers']) {
+                const childrenNodes = this.buildTreeRecursive(value as object);
+                node['biomarkers'] = childrenNodes;
+            }
+
+            tree.push(node)
+
+        }
+        this.tree = tree;
+        console.log(tree);
+        return this.tree
     }
 
     // public flatten(tree: SVGGElement[]): HTMLElement[] {

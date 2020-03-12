@@ -12,15 +12,15 @@
 
 
 
-        <!-- <mat-tree *ngIf="!simplifiedView" class="example-tree"> -->
-        <!--LEAF-->
-        <!-- <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+        <!-- <mat-tree *ngIf="!simplifiedView" class="example-tree">
+        LEAF
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
             <li class="mat-tree-node">
                 <button mat-icon-button disabled></button>
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
-                </svg>
-                <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
+                </svg> -->
+                <!-- <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
                         matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
                     {{node.type | camelCaseToText}}</span>
                 <div class="align-right">
@@ -31,8 +31,8 @@
                     <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + transform(node.type)" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
                         delete
                     </mat-icon>
-                </div>
-            </li>
+                </div> -->
+            <!-- </li>
         </mat-tree-node> -->
 
 
@@ -62,6 +62,40 @@
             </li>
         </mat-nested-tree-node> -->
     <!-- </mat-tree> -->
+
+
+    <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" class="example-tree" *ngIf="!simplifiedView" class="example-tree">
+        <!-- This is the tree node template for leaf nodes -->
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+          <li class="mat-tree-node">
+            <!-- use a disabled button to provide padding for tree leaf -->
+            <button mat-icon-button disabled></button>
+            {{node.type}}
+
+            <button mat-icon-button disabled></button>
+            <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
+            </svg>
+          </li>
+        </mat-tree-node>
+        <!-- This is the tree node template for expandable nodes -->
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+          <li>
+            <div class="mat-tree-node">
+              <button mat-icon-button matTreeNodeToggle
+                      [attr.aria-label]="'toggle ' + node.type">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              {{node.type}}
+            </div>
+            <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+              <ng-container matTreeNodeOutlet></ng-container>
+            </ul>
+          </li>
+        </mat-nested-tree-node>
+      </mat-tree>
 
 
     <!-- SIMPLIFIED BIOMARKERS VIEW-->
