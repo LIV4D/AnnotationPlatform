@@ -12,11 +12,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
-// import { MatToolbarMixinBase } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
 import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @NgModule({
     imports: [
@@ -32,9 +36,13 @@ import {MatSortModule} from '@angular/material/sort';
         MatCheckboxModule,
         MatPaginatorModule,
         MatSortModule,
+        MatCardModule,
         MatSidenavModule,
         MatSliderModule,
-        MatTabsModule
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
     ],
     exports: [
         BrowserModule,
@@ -49,10 +57,14 @@ import {MatSortModule} from '@angular/material/sort';
         MatCheckboxModule,
         MatPaginatorModule,
         MatSortModule,
+        MatCardModule,
         MatSidenavModule,
         MatSliderModule,
         MatToolbarModule,
-        MatTabsModule
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule
     ]
 })
 

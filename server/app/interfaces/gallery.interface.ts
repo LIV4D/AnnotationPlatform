@@ -11,9 +11,17 @@ export interface IGallery {
 }
 
 export interface ITaskGallery {
-    taskId: number;
-    isComplete: boolean;
-    thumbnail: string;
-    taskTypeTitle: string;
-    imageId: number;
+    id?: number;
+    taskId?: number;
+    isComplete?: boolean;
+    isVisible?: boolean;
+    thumbnail?: string;
+    imageId?: number;
+    taskTypeId?: number;
+    annotationId?: number;
+    comment?: string;
+    assignedUserId?: number;
+    creatorId?: number;
+    lastModifiedTime?: Date;
+    projectTitle?: string;
 }

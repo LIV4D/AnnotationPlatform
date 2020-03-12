@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { isNullOrUndefined } from 'util';
 
 import { TaskType } from './taskType.model';
@@ -40,8 +40,8 @@ export class Task {
     @Column({ nullable: true })
     public imageId: number;
 
-    @Column({ nullable: true })
-    public projectId: number;
+    @Column({ default: '' })
+    public projectTitle: string;
 
     @Column({ nullable: true })
     public lastModifiedTime: Date;
@@ -63,7 +63,7 @@ export class Task {
     @OneToMany(type => User, user => user.preferredTask, { eager: true })
     public preferredUsers: Map<number, User>;
 
-    @OneToOne(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
+    @OneToMany(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
     public taskPriority: TaskPriority;
 
     public static fromInterface(itask: ITask): Task {
@@ -85,7 +85,7 @@ export class Task {
             assignedUserId: this.assignedUserId,
             creatorId: this.creatorId,
             imageId: this.imageId,
-            projectId: this.projectId,
+            projectTitle: this.projectTitle,
             lastModifiedTime: this.lastModifiedTime,
         };
     }
@@ -96,6 +96,7 @@ export class Task {
         if (!isNullOrUndefined(itask.isComplete)) { this.isComplete = itask.isComplete; }
         if (!isNullOrUndefined(itask.isVisible)) { this.isVisible = itask.isVisible; }
         if (!isNullOrUndefined(itask.comment)) { this.comment = itask.comment; }
+        if (!isNullOrUndefined(itask.projectTitle)) { this.projectTitle = itask.projectTitle; }
         if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
         if (!isNullOrUndefined(itask.lastModifiedTime)) { this.lastModifiedTime = itask.lastModifiedTime; }
     }
@@ -108,6 +109,7 @@ export class Task {
             isComplete: this.isComplete,
             isVisible: this.isVisible,
             comment: this.comment,
+            projectTitle: this.projectTitle,
             assignedUser: !isNullOrUndefined(this.assignedUser) ? this.assignedUser.proto() : null,
             creator: this.creator.proto(),
             // image: this.imageId.proto(),

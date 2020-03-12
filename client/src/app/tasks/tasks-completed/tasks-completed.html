@@ -1,36 +1,76 @@
-<!--Table-->
-<div class="example-container" >
-  <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
+<!-- Archive Task Button -->
+<div id="ArchiveTasksButtons">
+  <button mat-raised-button (click)="removeSelectedRows()">
+    <span>ArchiveTasks</span>
+  </button>
+</div>
 
-    <ng-container matColumnDef="imageSrc"  >
-        <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task" > <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
+<!-- Table -->
+<section class="completedTasksDataTable" >
+  <mat-table #table [dataSource]="dataTable" matSort matSortActive="lastModifiedTime" matSortDirection="desc" matSortDisableClear>
+
+    <!-- Archive Tasks Checkbox Column -->
+    <ng-container matColumnDef="selectTasks">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="taskSelection.hasValue() && isAllSelected()"
+                      [indeterminate]="taskSelection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let task">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? taskSelection.toggle(task) : null"
+                      [checked]="taskSelection.isSelected(task)"
+                      color="accent">
+        </mat-checkbox>
+      </mat-cell>
     </ng-container>
 
+    <!--Image Preview -->
+    <ng-container matColumnDef="imageSrc">
+        <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+        <mat-cell *matCellDef="let task" (mouseup)="loadImage(task.imageId.toString())" > <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
+    </ng-container>
+
+    <!-- Image Id -->
     <ng-container matColumnDef="imageId">
-        <mat-header-cell *matHeaderCellDef disableClear>Id</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Id</mat-header-cell>
+        <mat-cell *matCellDef="let task"> {{task.imageId}} </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="complete">
-        <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
-        <mat-cell *matCellDef="let task"> {{task.comment}} </mat-cell>
+    <!-- Task Type Title-->
+    <ng-container matColumnDef="taskTypeTitle" >
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Type</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+          <ng-container *ngFor="let taskType of taskTypes">
+            <p *ngIf="taskType.id === task.taskTypeId">{{taskType.title}} </p>
+          </ng-container>
+         </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="incomplete">
-      <mat-header-cell *matHeaderCellDef disableClear>Creator</mat-header-cell>
-      <mat-cell *matCellDef="let task"> {{task.creatorId}} </mat-cell>
+    <!-- Project Title-->
+    <ng-container matColumnDef="projectTitle">
+      <mat-header-cell *matHeaderCellDef  mat-sort-header disableClear>Project</mat-header-cell>
+      <mat-cell *matCellDef="let task"> {{task.projectTitle}} </mat-cell>
     </ng-container>
 
+    <!-- Cumulated Time -->
+    <!-- TODO: Get cumulated in Editor when it'll be operationnal -->
     <ng-container matColumnDef="time">
-      <mat-header-cell *matHeaderCellDef disableClear>Time</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Cumulated Time</mat-header-cell>
       <mat-cell *matCellDef="let task"> N/A </mat-cell>
     </ng-container>
 
+    <!-- Last Modified Time -->
+    <ng-container matColumnDef="lastModifiedTime">
+      <mat-header-cell *matHeaderCellDef  mat-sort-header disableClear>Last Modified</mat-header-cell>
+      <mat-cell *matCellDef="let task"> {{task.lastModifiedTime | date:'medium'}} </mat-cell>
+    </ng-container>
+
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"(mouseup)="loadImage(row.imageId.toString())" ng-hide="row.incompleteCount > 0"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="taskSelection.toggle(row)"></mat-row>
   </mat-table>
 
-      <!-- p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
-<mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
-</div>
+      <!--p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
+  <mat-paginator [length]="length" [pageSize]="pageSize"></mat-paginator>
+</section>

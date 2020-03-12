@@ -1,6 +1,28 @@
 @import '../../../colorVariables.scss';
 
-.example-container {
+.mat-form-field {
+  font-size: 14px;
+}
+
+.taskTypeSelector{
+  display: flex;
+  padding: 0px 0px 0px 200px;
+  flex-direction: column;
+  width: 10em
+}
+
+#taskTypeFilterForm {
+  background-color: #cccccc;
+  border-radius: 3px;
+  margin-top: 10px !important;
+}
+
+#taskTypeFilterSelector {
+  background-color: #cccccc;
+  border-radius: 3px;
+}
+
+.TasksToCompleteDataSource {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -25,6 +47,37 @@
 
 .mat-header-row {
     background-color: $gray-dark;
+}
+
+
+// Image Preview property
+mat-cell:nth-child(1),
+mat-header-cell:nth-child(1) {
+    flex: 0 0 10%;
+}
+
+// Image Id property
+mat-cell:nth-child(2),
+mat-header-cell:nth-child(2) {
+    flex: 0 0 5%;
+}
+
+// Project Title property
+mat-cell:nth-child(3),
+mat-header-cell:nth-child(3) {
+    flex: 0 0 30%;
+}
+
+// Creator property
+mat-cell:nth-child(4),
+mat-header-cell:nth-child(4) {
+    flex: 0 0 30%;
+}
+
+// Cumulated Time property
+mat-cell:nth-child(5),
+mat-header-cell:nth-child(5) {
+    flex: 0 0 20%;
 }
 
 .mat-header-cell.mat-sort-header-sorted {
@@ -152,28 +205,27 @@ input {
 .field {
     display: flex;
 }
-  #completeButtons {
-    margin-top: 20px;
-    text-align: center;
-  }
 
-  button {
-      border-radius: 8px;
-      background-color: $gray-dark;
-      box-shadow: 2px 2px 2px 2px $shadow-color;
-      margin-right:20px;
-      opacity: 0.5;
-  }
+button {
+    border-radius: 8px;
+    background-color: $gray-dark;
+    box-shadow: 2px 2px 2px 2px $shadow-color;
+    margin-right:20px;
+    opacity: 0.5;
+}
 
-  .selected {
-    opacity: 1.0;
-  }
+.selected {
+  opacity: 1.0;
+}
 
+#tasksFinishedText {
+  margin: 50px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 30px;
+}
 
-  #tasksFinishedText {
-    margin: 50px;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 500;
-    line-height: 30px;
-  }
+img {
+  border-radius: 4px;
+}
