@@ -74,14 +74,18 @@ export class BiomarkerService {
     // }
 
     public initJsonRecursive(data: object){
-        const topLevelBiomarkers = data['biomarkers'];
+        const biomarkersString = 'biomarkers';
+        const typeString = 'type';
+        const colorString = 'color';
+
+        const topLevelBiomarkers = data[biomarkersString];
         for (let [key, value] of Object.entries(topLevelBiomarkers)) {
-            const type = value['type'];
+            const type = value[typeString];
             let color = null;
-            if (value['color']) {
-                color = value['color'];
+            if (value[colorString]) {
+                color = value[colorString];
             }
-            if (value['biomarkers']) {
+            if (value[biomarkersString]) {
                 this.initJsonRecursive(value as object);
             }
             this.dataSourceJson.push(new Biomarker(type, color));
@@ -93,20 +97,23 @@ export class BiomarkerService {
     }
 
     public buildTreeRecursive(data: object): BioNode[]{
+        const biomarkersString = 'biomarkers';
+        const typeString = 'type';
+        const colorString = 'color';
 
         let tree: BioNode[] = [];
 
-        const topLevelBiomarkers = data['biomarkers'];
+        const topLevelBiomarkers = data[biomarkersString];
         for (let [key, value] of Object.entries(topLevelBiomarkers)) {
-            const type = value['type'];
+            const type = value[typeString];
             let color = null;
-            if (value['color']) {
-                color = value['color'];
+            if (value[colorString]) {
+                color = value[colorString];
             }
 
             let node: BioNode = { type: type, color: color, biomarkers: null};
 
-            if (value['biomarkers']) {
+            if (value[biomarkersString]) {
                 const childrenNodes = this.buildTreeRecursive(value as object);
                 node['biomarkers'] = childrenNodes;
             }

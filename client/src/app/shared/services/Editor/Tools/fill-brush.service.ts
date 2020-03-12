@@ -105,8 +105,8 @@ export class FillBrush extends Tool {
             this.resetChangeBoundedBox();
 
             this.layersService.removeFirstPoint();
-            const overlay = this.layersService.biomarkerOverlayCanvas;
-            this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
+            // const overlay = this.layersService.biomarkerOverlayCanvas;
+            // this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
         }
     }
 

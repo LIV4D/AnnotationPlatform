@@ -173,28 +173,6 @@ export class EditorService {
     }, 0);
     this.updateCanvasDisplayRatio();
 
-    const name = 'test';
-    const data1 =  { 
-      files: { 
-        image: [name, image, image]
-      },
-      type: 'default',
-      metadata: {"filename": "yoda.jpeg"}
-    };
-
-    this.http.post<any>('/api/images/createNew/', data1).subscribe(res => {
-      console.log(res);
-    });
-
-    const data = {'data': null, 'imageId': 1, 'comment': null};
-
-    this.http.post<any>('/api/annotations/create/', data).subscribe(res => {
-      console.log(res);
-    });
-
-
-    // this.http.post('/api/annotation/create')
-
     // TODO: Gotta understand how to make this work with the server.
     console.log('EMPTY');
     this.http.get(`/api/annotations/getEmpty/`,
@@ -234,10 +212,6 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(draw: boolean): Promise<void> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      // console.log('userid '+userId)
-      // const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
-      //                                                                            reportProgress: true, observe: 'events' });
-
       const req = this.http.get('/api/annotations/get/1', { headers: new HttpHeaders(),
         reportProgress: true, observe: 'events' });
 
@@ -281,10 +255,9 @@ export class EditorService {
                           this.biomarkerService.initJsonRecursive(res);
                           this.biomarkerService.buildTreeRecursive(res);
                           console.log(this.biomarkerService.tree);
-                          
+
                           // this.svgBox.innerHTML = (res as any).svg;
                           // console.log(this.svgBox.innerHTML);
-                          
                           // const parser = new DOMParser();
                           // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
                           // console.log(xmlDoc)
