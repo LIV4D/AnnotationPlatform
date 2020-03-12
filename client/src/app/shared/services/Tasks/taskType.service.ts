@@ -2,7 +2,7 @@
 import { HeaderService } from './../header.service';
 
 // Model
-import { TaskType } from '../../models/taskType.model';
+import { TaskType } from '../../models/serverModels/taskType.model';
 
 import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';

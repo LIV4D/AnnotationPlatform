@@ -2,7 +2,7 @@
 import { HeaderService } from './header.service';
 
 // Model
-import { User } from '../models/user.model';
+import { User } from '../models/serverModels/user.model';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
