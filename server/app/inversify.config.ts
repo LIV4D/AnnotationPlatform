@@ -12,6 +12,8 @@ import { AnnotationController } from './controllers/annotation.controller';
 import { ImageRepository } from './repository/image.repository';
 import { ImageService } from './services/image.service';
 import { ImageController } from './controllers/image.controller';
+import { ManagementService } from './services/management.service';
+import { ManagementController } from './controllers/management.controller';
 import { SubmissionEventService } from './services/submissionEvent.service';
 import { SubmissionEventRepository } from './repository/submissionEvent.repository';
 import { SubmissionEventController } from './controllers/submissionEvent.controller ';
@@ -28,6 +30,7 @@ import { UserController } from './controllers/user.controller';
 import { IController } from './controllers/abstractController.controller';
 import { TaskBundleService } from './services/taskBundle.service';
 import { TaskPriorityRepository } from './repository/taskPriority.repository';
+
 const container: Container = new Container();
 
 container.bind(TYPES.Server).to(Server);
@@ -41,6 +44,7 @@ container.bind<IController>(TYPES.Controller).to(TaskTypeController);
 container.bind<IController>(TYPES.Controller).to(SubmissionEventController);
 container.bind<IController>(TYPES.Controller).to(AnnotationController);
 container.bind<IController>(TYPES.Controller).to(TaskPriorityController);
+container.bind<IController>(TYPES.Controller).to(ManagementController);
 // Services
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TaskService>(TYPES.TaskService).to(TaskService);
@@ -48,6 +52,7 @@ container.bind<TaskTypeService>(TYPES.TaskTypeService).to(TaskTypeService);
 container.bind<SubmissionEventService>(TYPES.SubmissionEventService).to(SubmissionEventService);
 container.bind<AnnotationService>(TYPES.AnnotationService).to(AnnotationService);
 container.bind<ImageService>(TYPES.ImageService).to(ImageService);
+container.bind<ManagementService>(TYPES.ManagementService).to(ManagementService);
 container.bind<TaskBundleService>(TYPES.TaskPriorityService).to(TaskBundleService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);

@@ -1,7 +1,9 @@
 <p>management works!</p>
 <div>
-  <input cdkTextareaAutosize [(ngModel)]="modelName" placeholder="Input Model Name Here (non-capitalized)">
-  <button (click) = "generateTextFields()">Generate Fields</button>
+  <label>Please choose your desired model name here: </label>
+  <select name="Model Name" placeholder="Input Model Name Here" [(ngModel)]="modelName" (change)="generateTextFields()">
+    <option *ngFor = "let model of availableModels;" >{{model}}</option>
+  </select>
 </div>
 <div *ngFor = "let attribute of attributesForCreation; let i = index">
   <label>{{attribute}}: </label>

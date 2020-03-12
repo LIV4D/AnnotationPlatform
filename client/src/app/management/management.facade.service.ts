@@ -7,7 +7,6 @@ import { ManagementCreationService } from '../shared/services/management-creatio
 })
 export class ManagementFacadeService {
 
-
     constructor(private modelFinder: ModelFinderService, private managementCreation: ManagementCreationService) { }
 
     public async getAttributesForCreating(model: string): Promise<string[]> {
@@ -24,5 +23,9 @@ export class ManagementFacadeService {
 
     public sendCreationEvent(properties: string[], propertyValues: string[]): string {
         return this.managementCreation.sendCreationEvent(properties, propertyValues);
+    }
+
+    public async getModelNames(): Promise<string[]> {
+        return await this.modelFinder.getModelNames();
     }
 }

@@ -3,7 +3,7 @@ import { EditorService } from './../shared/services/Editor/editor.service';
 import { Point } from './../shared/models/point.model';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
-import { Image } from '../shared/models/image.model';
+import { Image } from '../shared/models/serverModels/image.model';
 
 @Injectable()
 export class EditorFacadeService {

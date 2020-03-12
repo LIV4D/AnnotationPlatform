@@ -12,8 +12,8 @@ import { MatPaginator } from '@angular/material/paginator';
 
 // Interface and Model
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
-import { TaskType } from 'src/app/shared/models/taskType.model';
-import { User } from 'src/app/shared/models/user.model';
+import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
+import { User } from 'src/app/shared/models/serverModels/user.model';
 
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
