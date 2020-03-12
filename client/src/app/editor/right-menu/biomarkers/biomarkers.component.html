@@ -19,8 +19,8 @@
                 <button mat-icon-button disabled></button>
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
-                </svg> -->
-                <!-- <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
+                </svg>
+                <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
                         matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
                     {{node.type | camelCaseToText}}</span>
                 <div class="align-right">
@@ -31,12 +31,12 @@
                     <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + transform(node.type)" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
                         delete
                     </mat-icon>
-                </div> -->
-            <!-- </li>
-        </mat-tree-node> -->
+                </div>
+            </li>
+        </mat-tree-node>
 
 
-        <!-- NODE
+        NODE
         <mat-nested-tree-node *matTreeNodeDef="let node; when: biomarkersService.hasNestedChild">
             <li>
                 <div class="mat-tree-node">
@@ -60,8 +60,8 @@
                     <ng-container matTreeNodeOutlet></ng-container>
                 </ul>
             </li>
-        </mat-nested-tree-node> -->
-    <!-- </mat-tree> -->
+        </mat-nested-tree-node>
+    </mat-tree> -->
 
 
     <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" class="example-tree" *ngIf="!simplifiedView" class="example-tree">
@@ -70,25 +70,56 @@
           <li class="mat-tree-node">
             <!-- use a disabled button to provide padding for tree leaf -->
             <button mat-icon-button disabled></button>
-            {{node.type}}
 
             <button mat-icon-button disabled></button>
             <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
             </svg>
+            <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.type)"
+                        matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
+                    {{node.type | camelCaseToText}}
+            </span>
+            <div class="align-right">
+                <mat-icon class="button left" (click)="toggleVisibility(node.type)"  (dblclick)="toggleSoloVisibility(node.type)"
+                    [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
+                    {{getVisibility(node)}}
+                </mat-icon>
+                <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
+                    delete
+                </mat-icon>
+            </div>
           </li>
         </mat-tree-node>
+
         <!-- This is the tree node template for expandable nodes -->
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
           <li>
             <div class="mat-tree-node">
-              <button mat-icon-button matTreeNodeToggle
+              <!-- <button mat-icon-button matTreeNodeToggle
                       [attr.aria-label]="'toggle ' + node.type">
                 <mat-icon class="mat-icon-rtl-mirror">
                   {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
               </button>
-              {{node.type}}
+              {{node.type}} -->
+
+
+              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.type">
+                <mat-icon class="mat-icon-rtl-mirror">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+            </button>
+            <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node.type)">{{node.type | camelCaseToText}}</span>
+
+              <div class="align-right">
+                <mat-icon class="button left" (click)="toggleVisibility(node.type)" (dblclick)="toggleSoloVisibility(node.type)"
+                [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
+                    {{getVisibility(node)}}
+                </mat-icon>
+                <mat-icon (click)="openConfirmDelete(node, $event)" class="button" [matTooltip]="'Delete ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
+                    delete
+                </mat-icon>
+            </div>
             </div>
             <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
               <ng-container matTreeNodeOutlet></ng-container>
