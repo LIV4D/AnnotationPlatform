@@ -28,7 +28,7 @@ import { UserRepository } from './repository/user.repository';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
 import { IController } from './controllers/abstractController.controller';
-import { TaskPriorityService } from './services/taskPriority.service';
+import { TaskBundleService } from './services/taskBundle.service';
 import { TaskPriorityRepository } from './repository/taskPriority.repository';
 
 const container: Container = new Container();
@@ -52,8 +52,8 @@ container.bind<TaskTypeService>(TYPES.TaskTypeService).to(TaskTypeService);
 container.bind<SubmissionEventService>(TYPES.SubmissionEventService).to(SubmissionEventService);
 container.bind<AnnotationService>(TYPES.AnnotationService).to(AnnotationService);
 container.bind<ImageService>(TYPES.ImageService).to(ImageService);
-container.bind<TaskPriorityService>(TYPES.TaskPriorityService).to(TaskPriorityService);
 container.bind<ManagementService>(TYPES.ManagementService).to(ManagementService);
+container.bind<TaskBundleService>(TYPES.TaskPriorityService).to(TaskBundleService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
