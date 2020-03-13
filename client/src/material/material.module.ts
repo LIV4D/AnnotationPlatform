@@ -21,6 +21,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @NgModule({
     imports: [
@@ -42,7 +44,8 @@ import { MatInputModule } from '@angular/material/input';
 
       DragDropModule,
       MatInputModule,
-      MatFormFieldModule
+      MatFormFieldModule,
+      MatButtonModule
     ],
     exports: [
         BrowserModule,
@@ -63,7 +66,8 @@ import { MatInputModule } from '@angular/material/input';
         MatTabsModule,
         MatFormFieldModule,
         MatInputModule,
-        DragDropModule
+        DragDropModule,
+        MatButtonModule
     ]
 })
 

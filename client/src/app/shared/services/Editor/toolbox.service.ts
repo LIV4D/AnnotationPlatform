@@ -17,6 +17,7 @@ import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
+import { CommentTool } from './Tools/comment-tool.service';
 
 
 @Injectable({
@@ -50,7 +51,10 @@ export class ToolboxService {
                 editorService, layersService),
             new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
                 navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)',
-                editorService, layersService)
+                editorService, layersService),
+
+            new CommentTool(TOOL_NAMES.COMMENT_TOOL, '../../icons/picker.svg', 'Add comment',
+                editorService, layersService, biomarkerService)
         ];
 
         this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
