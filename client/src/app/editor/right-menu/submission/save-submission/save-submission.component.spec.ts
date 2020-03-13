@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskSubmissionComponent } from './task-submission.component';
+import { SaveSubmissionComponent } from './save-submission.component';
 
-describe('TaskSubmissionComponent', () => {
-  let component: TaskSubmissionComponent;
-  let fixture: ComponentFixture<TaskSubmissionComponent>;
+describe('SaveSubmissionComponent', () => {
+  let component: SaveSubmissionComponent;
+  let fixture: ComponentFixture<SaveSubmissionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskSubmissionComponent ]
+      declarations: [ SaveSubmissionComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskSubmissionComponent);
+    fixture = TestBed.createComponent(SaveSubmissionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

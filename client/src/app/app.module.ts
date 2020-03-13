@@ -12,6 +12,9 @@ import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
+import { TaskDialogSubmissionComponent } from './editor/right-menu/submission/task-dialog-submission/task-dialog-submission.component';
+import { SaveSubmissionComponent } from './editor/right-menu/submission/save-submission/save-submission.component';
+
 import { GalleryComponent } from './gallery/gallery.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
@@ -50,7 +53,6 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 import { RightMenuComponent } from './editor/right-menu/right-menu.component';
-import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
 import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
 import { EditorContentComponent } from './editor/editor-content/editor-content.component';
@@ -78,7 +80,8 @@ import { CommentBoxComponent } from './editor/comment-box/comment-box.component'
       ToolElementComponent,
       RightMenuComponent,
       BiomarkersComponent,
-      TaskSubmissionComponent,
+      TaskDialogSubmissionComponent,
+      SaveSubmissionComponent,
       TimerComponent,
       VisualizationComponent,
       EditorContentComponent,
