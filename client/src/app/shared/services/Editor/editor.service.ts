@@ -13,6 +13,7 @@ import { HeaderService } from '../header.service';
 import { GalleryService } from './../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { BioNode } from './../../models/bionode.model';
+import * as FileSaver from 'file-saver';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -693,45 +694,47 @@ export class EditorService {
     // });
   }
 
-  // saveSVGFile(): void {
-  //     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-  //     this.layersService.biomarkerCanvas.forEach(b => {
-  //         const elem = document.getElementById((b.id).replace('annotation-', ''));
-  //         const url = b.currentCanvas.toDataURL();
-  //         elem.setAttribute('width', '100%');
-  //         elem.setAttribute('height', '100%');
-  //         elem.setAttribute('xlink:href', url);
-  //     });
-  //     const header = '<?xml version="1.0" encoding="UTF-8"?>';
-  //     const blob = new Blob([header + this.svgBox.getElementsByTagName('svg')[0].outerHTML], { type: 'image/svg+xml' });
-  //     // FileSaver.saveAs(blob, this.localSVGName);
-  // }
+   saveSVGFile(): void {
+	if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
+  		this.layersService.biomarkerCanvas.forEach(b => {
+  			const elem = document.getElementById((b.id).replace('annotation-', ''));
+  	          const url = b.currentCanvas.toDataURL();
+  	          elem.setAttribute('width', '100%');
+  	          elem.setAttribute('height', '100%');
+  		     elem.setAttribute('xlink:href', url);
+  		});
+  	     const header = '<?xml version="1.0" encoding="UTF-8"?>';
+  	     const blob = new Blob([header + this.svgBox.getElementsByTagName('svg')[0].outerHTML], { type: 'image/svg+xml' });
+     	FileSaver.saveAs(blob, this.localSVGName);
+   }
 
-  // saveToDB(): Observable<Object> {
-  //     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-  //     this.appService.loading = true;
-  //     if (this.layersService.unsavedChange) {
-  //         LocalStorage.save(this, this.layersService);
-  //         this.layersService.unsavedChange = false;
-  //     }
-  //     this.layersService.biomarkerCanvas.forEach(b => {
-  //         const elem = document.getElementById((b.id).replace('annotation-', ''));
-  //         if (!elem) {
-  //             return throwError(b.id.replace('annotation-', '') + ' was not found.');
-  //         }
-  //         const url = b.currentCanvas.toDataURL();
-  //         elem.setAttribute('xlink:href', url);
-  //     });
-  //     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  //     const body = {
-  //         svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
-  //         // diagnostic: this.commentService.comment
-  //     };
-  //     const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
-  //     const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
-  //     reqBody.pipe( tap(() => { this.appService.loading = false; }));
-  //     return reqBody;
-  // }
+  saveToDB(): Observable<Object> {
+     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
+       this.appService.loading = true;
+       if (this.layersService.unsavedChange) {
+           LocalStorage.save(this, this.layersService);
+           this.layersService.unsavedChange = false;
+       }
+
+       //
+       this.layersService.biomarkerCanvas.forEach(b => {
+        const elem = document.getElementById((b.id).replace('annotation-', ''));
+        if (!elem) {
+          return throwError(b.id.replace('annotation-', '') + ' was not found.');
+        }
+        const url = b.currentCanvas.toDataURL();
+          elem.setAttribute('xlink:href', url);
+       });
+        const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+        const body = {
+        svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
+        //diagnostic: this.commentService.comment
+       };
+       const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
+       const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
+       reqBody.pipe( tap(() => { this.appService.loading = false; }));
+       return reqBody;
+   }
 
   setImageId(id: string): void {
     console.log('EditorService::setImageId()');

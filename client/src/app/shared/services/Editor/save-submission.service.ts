@@ -9,7 +9,7 @@ export class SaveSubmissionService {
     }
 
     // Return the shortcut command depending on the OS of the user's system
-    getSaveShortCutToolTipText(){
+    getSaveShortCutToolTipText(): string{
       return navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';
     }
 }

@@ -18,4 +18,7 @@ export class SaveSubmissionComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // save on local editing
+  public saveLocal(): void {
+    this.saveSubmissionFacadeService.saveLocal();
 }
