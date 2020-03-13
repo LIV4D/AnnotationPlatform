@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SaveSubmissionFacadeService } from './save-submission.facade.service';
+
 
 @Component({
   selector: 'app-save-submission',
@@ -6,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./save-submission.component.scss']
 })
 export class SaveSubmissionComponent implements OnInit {
+  saveTooltip: string;
 
-  constructor() { }
+  constructor(public saveSubmissionFacadeService: SaveSubmissionFacadeService) {
+
+    this.saveTooltip = this.saveSubmissionFacadeService.getSaveShortCutToolTipText() // shortcut shown in the tooltip
+   }
 
   ngOnInit(): void {
   }
