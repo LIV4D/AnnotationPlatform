@@ -3,6 +3,7 @@ import { SaveSubmissionFacadeService } from './save-submission.facade.service';
 import { Task } from 'src/app/shared/models/task.model';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskDialogSubmissionComponent } from '../task-dialog-submission/task-dialog-submission.component';
+import { LocalStorage } from 'src/app/shared/services/Editor/local-storage.service';
 
 @Component({
   selector: 'app-save-submission',
@@ -22,10 +23,12 @@ export class SaveSubmissionComponent implements OnInit {
     this.loadTasks();
   }
 
-  // load the tasks matchinG with the current user and the image loaded in Editor
+  // load the tasks matching with the current user and the image loaded in Editor
   async loadTasks(){
-    const imageId = await this.saveSubmissionFacadeService.editorService.imageId;
-    this.tasks = await this.saveSubmissionFacadeService.getTasks(imageId);
+    if (!this.saveSubmissionFacadeService.editorService.imageLocal) {
+      const imageId = await this.saveSubmissionFacadeService.editorService.imageId;
+      this.tasks = await this.saveSubmissionFacadeService.getTasks(imageId);
+    }
   };
 
   // save on local editing
@@ -39,32 +42,20 @@ export class SaveSubmissionComponent implements OnInit {
 
   public openTaskDialog(): void {
     if (Object.keys(this.tasks).length > 0) {
-      this.tasks.forEach( (t) => { t.isComplete = true; });
+      this.saveSubmissionFacadeService.completeTasks(this.tasks);
+
+      // Save action dialog pops out
    		const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
         	data: { tasks: this.tasks },
                width: '600px',
            });
-  //         dialogRef.afterClosed().subscribe(result => {
-  //             if (result) {
-  //                 LocalStorage.save(this.editorService, this.editorService.layersService);
-  //                 this.saveRevision(result === 'next');
-  //             }
-  //         });
-  //     } else {
-  //         this.saveRevision();
-       }
-   }
+    // Service 2nd part: just have to call it on promise
+      this.saveSubmissionFacadeService.afterClosedTaskDialog(dialogRef);
+    } else {
+      //this.saveRevision();
+    }
+  }
 
-
-
-  // Retrieves the image types from the server
-  // getTasks(): void {
-  //     if (!this.editorService.imageLocal) {
-  //         this.editorService.getTasks().subscribe(res => {
-  //             this.tasks = res;
-  //         });
-  //     }
-  // }
-   //}
-
+  public saveRevision(loadNext= false): void {
+  }
 }

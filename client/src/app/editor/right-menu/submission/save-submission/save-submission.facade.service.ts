@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
 import { AppService } from 'src/app/shared/services/app.service';
-import { EditorService } from 'src/app/shared/services/Editor/editor.service'
-import { TasksService } from 'src/app/shared/services/tasks.service'
-import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
+import { EditorService } from 'src/app/shared/services/Editor/editor.service';
+import { TasksService } from 'src/app/shared/services/tasks.service';
 import { Task } from 'src/app/shared/models/task.model';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Injectable({
     providedIn: 'root'
@@ -27,4 +27,15 @@ export class SaveSubmissionFacadeService {
       return await this.tasksService.getTasksByImageIdApp(imageId);
     }
 
+    completeTasks(tasks: Task[]): void{
+      this.submitService.completeTasks(tasks);
+    }
+
+    afterClosedTaskDialog(dialogRef: MatDialogRef<any, any>) {
+      this.submitService.afterClosedTaskDialog(dialogRef);
+    }
+
+    saveRevision(loadNext= false): void {
+
+    }
 }
