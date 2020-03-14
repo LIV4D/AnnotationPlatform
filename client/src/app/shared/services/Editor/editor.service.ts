@@ -13,7 +13,7 @@ import { HeaderService } from '../header.service';
 import { GalleryService } from './../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { BioNode } from './../../models/bionode.model';
-import * as FileSaver from 'file-saver';
+import { saveAs } from 'file-saver';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -705,7 +705,7 @@ export class EditorService {
   		});
   	     const header = '<?xml version="1.0" encoding="UTF-8"?>';
   	     const blob = new Blob([header + this.svgBox.getElementsByTagName('svg')[0].outerHTML], { type: 'image/svg+xml' });
-     	FileSaver.saveAs(blob, this.localSVGName);
+     	   saveAs(blob, this.localSVGName);
    }
 
   saveToDB(): Observable<Object> {

@@ -147,6 +147,28 @@ export class TasksService {
     return this.headerService.display_progress(req, 'Downloading: Tasks List');
   }
 
+  getTasksByImageId(imageId:string, displayProgress= false):Observable<ITaskGroup> {
+    const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+    if (displayProgress) {
+      const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+      const base = 10;
+      const params = new HttpParams()
+                            .set('userId', userId ? userId: '' )
+                            .set('imageId', imageId ? imageId : '');
+                            console.log(params);
+      const req = this.http.get<ITaskGroup>(`/api/tasks/list`, {params,  observe: 'events', reportProgress: true});
+      return this.headerService.display_progress(req, 'Downloading: Tasks List');
+    } else {
+
+      return this.http.get<ITaskGroup>(`/api/tasks/list`);
+    }
+  }
+
+  async getTasksByImageIdApp(imageId:string, displayProgress= false): Promise<ITaskGroup>{
+    const tasks = await this.getTasksByImageId(imageId, displayProgress).toPromise();
+    return tasks as ITaskGroup;
+  }
+
   // tslint:disable-next-line: ban-types
   getNextTask(): Observable<Object> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;

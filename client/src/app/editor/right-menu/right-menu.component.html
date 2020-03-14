@@ -9,5 +9,5 @@
   <app-save-submission></app-save-submission>
 
   <button mat-button (click)="saveLocal()" *ngIf="appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Save</button>
-  <!-- <button mat-button *ngIf="!appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button> -->
+  <!--button mat-button (click)="saveDB()" *ngIf="!appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button-->
 </div>
