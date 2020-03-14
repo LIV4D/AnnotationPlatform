@@ -43,7 +43,7 @@ export class TaskRepository {
     public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
         let whereConditions = [];
         if (filter.imageId !== undefined) {
-            whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
+            //whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
         }
         if (filter.userId !== undefined) {
             whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());

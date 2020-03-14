@@ -49,9 +49,8 @@ export class SaveSubmissionComponent implements OnInit {
    //}
 
 	async loadTasks(){
-	  const imageId = await this.saveSubmissionFacadeService.editorService.imageId;
+    const imageId = await this.saveSubmissionFacadeService.editorService.imageId;
     this.tasks = await this.saveSubmissionFacadeService.getTasks(imageId);
-    console.log(this.tasks);
   };
 
   // Retrieves the image types from the server
