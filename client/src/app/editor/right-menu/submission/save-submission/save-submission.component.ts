@@ -10,7 +10,7 @@ import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 })
 export class SaveSubmissionComponent implements OnInit {
   saveTooltip: string;
-  tasks: ITaskGroup;
+  tasks: Task[] = [];
 
   constructor(public saveSubmissionFacadeService: SaveSubmissionFacadeService) {
 

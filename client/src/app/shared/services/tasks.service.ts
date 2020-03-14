@@ -23,6 +23,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { $ } from 'protractor';
 import { ITaskGroup } from '../interfaces/taskGroup.interface';
+import { Task } from '../models/task.model';
 
 @Injectable({
     providedIn: 'root'
@@ -147,22 +148,22 @@ export class TasksService {
     return this.headerService.display_progress(req, 'Downloading: Tasks List');
   }
 
-  getTasksByImageId(imageId:string, displayProgress= false):Observable<ITaskGroup> {
+  getTasksByImageId(imageId:string, displayProgress= false):Observable<Task[]> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
     const params = new HttpParams()
                             .set('userId', userId ? userId : '' )
                             .set('imageId', imageId ? imageId : '');
     if (displayProgress) {
-      const req = this.http.get<ITaskGroup>(`/api/tasks/list`, {params,  observe: 'events', reportProgress: true});
+      const req = this.http.get<Task[]>(`/api/tasks/list`, {params,  observe: 'events', reportProgress: true});
       return this.headerService.display_progress(req, 'Downloading: Tasks List');
     } else {
-      return this.http.get<ITaskGroup>(`/api/tasks/list`, {params});
+      return this.http.get<Task[]>(`/api/tasks/list`, {params});
     }
   }
 
-  async getTasksByImageIdApp(imageId:string, displayProgress= false): Promise<ITaskGroup>{
+  async getTasksByImageIdApp(imageId:string, displayProgress= false): Promise<Task[]>{
     const tasks = await this.getTasksByImageId(imageId, displayProgress).toPromise();
-    return tasks as ITaskGroup;
+    return tasks as Task[];
   }
 
   // tslint:disable-next-line: ban-types
