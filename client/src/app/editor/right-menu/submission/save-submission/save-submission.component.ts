@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SaveSubmissionFacadeService } from './save-submission.facade.service';
 import { Task } from 'src/app/shared/models/task.model';
-import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
+import { MatDialog } from '@angular/material/dialog';
+import { TaskDialogSubmissionComponent } from '../task-dialog-submission/task-dialog-submission.component';
 
 @Component({
   selector: 'app-save-submission',
@@ -12,14 +13,20 @@ export class SaveSubmissionComponent implements OnInit {
   saveTooltip: string;
   tasks: Task[] = [];
 
-  constructor(public saveSubmissionFacadeService: SaveSubmissionFacadeService) {
-
+  constructor(public saveSubmissionFacadeService: SaveSubmissionFacadeService,
+              public dialog: MatDialog) {
     this.saveTooltip = this.saveSubmissionFacadeService.getSaveShortCutToolTipText() // shortcut shown in the tooltip
-   }
+  }
 
   ngOnInit(): void {
     this.loadTasks();
   }
+
+  // load the tasks matchinG with the current user and the image loaded in Editor
+  async loadTasks(){
+    const imageId = await this.saveSubmissionFacadeService.editorService.imageId;
+    this.tasks = await this.saveSubmissionFacadeService.getTasks(imageId);
+  };
 
   // save on local editing
   public saveLocal(): void {
@@ -27,16 +34,16 @@ export class SaveSubmissionComponent implements OnInit {
 }
 
   public saveOnDB(): void {
-    //this.openTaskDialog();
+    this.openTaskDialog();
   }
 
-  // public openTaskDialog(): void {
-  //   if (Object.keys(this.tasks).length > 0) {
-  //   	this.tasks.forEach( (t) => { t.isComplete = true; });
-  // 		const dialogRef = this.dialog.open(TaskDialogComponent, {
-  //             data: { tasks: this.tasks },
-  //             width: '600px',
-  //         });
+  public openTaskDialog(): void {
+    if (Object.keys(this.tasks).length > 0) {
+      this.tasks.forEach( (t) => { t.isComplete = true; });
+   		const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
+        	data: { tasks: this.tasks },
+               width: '600px',
+           });
   //         dialogRef.afterClosed().subscribe(result => {
   //             if (result) {
   //                 LocalStorage.save(this.editorService, this.editorService.layersService);
@@ -45,13 +52,10 @@ export class SaveSubmissionComponent implements OnInit {
   //         });
   //     } else {
   //         this.saveRevision();
-  //     }
-   //}
+       }
+   }
 
-	async loadTasks(){
-    const imageId = await this.saveSubmissionFacadeService.editorService.imageId;
-    this.tasks = await this.saveSubmissionFacadeService.getTasks(imageId);
-  };
+
 
   // Retrieves the image types from the server
   // getTasks(): void {
