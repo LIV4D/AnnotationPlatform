@@ -27,7 +27,7 @@ export class TaskDialogSubmissionComponent implements OnInit {
 
 
   checkTask(checkValue, taskId): void {
-    this.data.tasks.find(x => x.id === taskId).completed = checkValue;
+    this.data.tasks.find(x => x.id === taskId).isComplete = checkValue;
   }
 
 }

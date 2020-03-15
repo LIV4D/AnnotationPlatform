@@ -52,10 +52,11 @@ export class SaveSubmissionComponent implements OnInit {
     // Service 2nd part: just have to call it on promise
       this.saveSubmissionFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
-      //this.saveRevision();
+      this.saveRevision();
     }
   }
 
   public saveRevision(loadNext= false): void {
+    this.saveSubmissionFacadeService.saveRevision(loadNext);
   }
 }

@@ -6,14 +6,17 @@ import { TaskDialogSubmissionComponent } from 'src/app/editor/right-menu/submiss
 import { Observable } from 'rxjs';
 import { LocalStorage } from './local-storage.service';
 import { EditorService } from './editor.service';
+import { TasksService } from '../tasks.service';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SubmitService {
-
-    constructor(private http: HttpClient, public editorService: EditorService) {
-    }
+    constructor(private http: HttpClient,
+                public editorService: EditorService,
+                private tasksService: TasksService,
+                private router: Router) {}
 
     // Return the shortcut command depending on the OS of the user's system
     getSaveShortCutToolTipText(): string{
@@ -39,8 +42,34 @@ export class SubmitService {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           LocalStorage.save(this.editorService, this.editorService.layersService);
-          //this.saveRevision(result === 'next');
+          this.saveRevision(result === 'next');
         }
       });
     }
+
+  	public saveRevision(loadNext= false): void {
+    	this.editorService.saveToDB().subscribe(() => {
+          if (loadNext) {
+              this.tasksService.getNextTask().subscribe((data: any) => {
+                  if (data && data.image) {
+                      const imageId = data.image.id.toString();
+                      LocalStorage.resetImageId(imageId);
+                      setTimeout(() => { window.location.reload(); }, 10);
+                  } else {
+                      this.router.navigate(['/tasks']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+                  }
+              }, () => {
+                  this.router.navigate(['/tasks']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+              });
+          } else {
+              if (localStorage.getItem('previousPage') === 'tasks') {
+                  this.router.navigate(['/tasks']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+              } else {
+                  this.router.navigate(['/gallery']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+              }
+          }
+      }, error => {
+          setTimeout(() => { window.location.reload(); }, 10);
+      });
+  }
 }

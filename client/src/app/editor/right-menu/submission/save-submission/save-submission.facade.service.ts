@@ -36,6 +36,6 @@ export class SaveSubmissionFacadeService {
     }
 
     saveRevision(loadNext= false): void {
-
+      this.submitService.saveRevision(loadNext);
     }
 }
