@@ -9,7 +9,6 @@ import { Task } from '../models/task.model';
 import { ITask } from '../interfaces/ITask.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
-import { createError } from '../utils/error';
 
 @injectable()
 export class TaskController implements IController {
@@ -143,7 +142,7 @@ export class TaskController implements IController {
         this.taskService.getTasksByFilter({ userId: req.params.userId })
             .then(tasks => {
                 tasks.forEach((task) => {
-                    if (!task.isComplete && !task.isVisible) {
+                    if (!task.isComplete && task.isVisible) {
                         res.send(task.proto());
                         return;
                     }
