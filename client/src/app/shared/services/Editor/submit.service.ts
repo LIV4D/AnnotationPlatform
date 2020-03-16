@@ -30,7 +30,8 @@ export class SubmitService {
           active: task.isVisible ? 'true' : 'false',
           completed: task.isComplete ? 'true' : 'false',
         };
-      this.http.put(`/api/tasks/${task.id}`, body).subscribe();
+
+      this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
       });
     }
 
