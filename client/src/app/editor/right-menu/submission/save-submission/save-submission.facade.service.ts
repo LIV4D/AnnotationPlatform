@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
-import { TasksService } from 'src/app/shared/services/tasks.service';
-import { Task } from 'src/app/shared/models/task.model';
+import { TasksService } from 'src/app/shared/services/tasks/tasks.service';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Injectable({

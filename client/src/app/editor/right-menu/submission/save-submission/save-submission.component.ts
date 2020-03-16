@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SaveSubmissionFacadeService } from './save-submission.facade.service';
-import { Task } from 'src/app/shared/models/task.model';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskDialogSubmissionComponent } from '../task-dialog-submission/task-dialog-submission.component';
-import { LocalStorage } from 'src/app/shared/services/Editor/local-storage.service';
 
 @Component({
   selector: 'app-save-submission',

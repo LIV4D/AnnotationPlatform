@@ -12,13 +12,16 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
-// import { MatToolbarMixinBase } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
 import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
-import { MatCardModule } from '@angular/material/card';
+
 
 @NgModule({
     imports: [
@@ -34,9 +37,13 @@ import { MatCardModule } from '@angular/material/card';
         MatCheckboxModule,
         MatPaginatorModule,
         MatSortModule,
+        MatCardModule,
         MatSidenavModule,
         MatSliderModule,
         MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
         MatListModule,
         MatCardModule
     ],
@@ -53,12 +60,15 @@ import { MatCardModule } from '@angular/material/card';
         MatCheckboxModule,
         MatPaginatorModule,
         MatSortModule,
+        MatCardModule,
         MatSidenavModule,
         MatSliderModule,
         MatToolbarModule,
-        MatTabsModule,
         MatListModule,
-        MatCardModule
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule
     ]
 })
 

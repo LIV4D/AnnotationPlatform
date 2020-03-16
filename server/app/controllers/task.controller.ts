@@ -44,6 +44,7 @@ export class TaskController implements IController {
             isComplete: req.body.isComplete,
             isVisible: req.body.isVisible,
             comment: req.body.comment,
+            projectTitle: req.body.projectTitle,
             assignedUserId: req.body.assignedUserId,
             creatorId: req.user.id,
             lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
@@ -81,6 +82,10 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Get user gallery of task controller
+     * The list gets the tasks filtered with the userId and the completed status
+     */
     private getUserGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // if (req.user.id !== req.params.userId) {
         //     throwIfNotAdmin(req);
@@ -88,10 +93,11 @@ export class TaskController implements IController {
         const userId = req.params.userId as string;
         const page = req.query.page as number;
         const pageSize = req.query.pageSize as number;
-        const isComplete = req.query.isComplete;
+        const isComplete = req.query.isCompleted;
 
         this.taskService
             .getUserGallery(userId, page, pageSize, isComplete)
+            .then(taskGallery => this.taskService.getGalleryWithTaskTypeTitle(taskGallery))
             .then(taskGallery => res.send(taskGallery))
             .catch(next);
     }
@@ -147,21 +153,17 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Update a task from the taskId given in params
+     * The visibility, completness and last modified time are updated
+     */
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedTask: ITask = {
             id: req.params.taskId,
-            isVisible: false,
-            isComplete: false,
+            isVisible: isNullOrUndefined(req.body.isVisible) ? false : req.body.isVisible,
+            isComplete: isNullOrUndefined(req.body.isComplete) ? false : req.body.isComplete,
+            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
         };
-        if (!isNullOrUndefined(req.body.isVisible)) {
-            updatedTask.isVisible = req.body.isVisible;
-        }
-        if (!isNullOrUndefined(req.body.isComplete)) {
-            updatedTask.isComplete = req.body.isComplete;
-        }
-        if (!isNullOrUndefined(req.body.lastModifiedTime)) {
-            updatedTask.lastModifiedTime = req.body.lastModifiedTime;
-        }
 
         this.taskService.updateTask(updatedTask, req.user)
             .then(task => res.send(task))

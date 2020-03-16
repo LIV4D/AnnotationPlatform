@@ -14,17 +14,18 @@ export class ManagementComponent implements OnInit {
     public attributeValues: Array<string>;
     public modelName = '';
     public successText = '';
+    public availableModels: string[];
 
     constructor(private facadeService: ManagementFacadeService, private router: Router) {
         this.attributeValues = new Array<string>();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.availableModels = await this.facadeService.getModelNames();
     }
 
     public async generateTextFields(): Promise<void> {
         this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
-        this.modelName = '';
     }
 
     public createModel(): void {

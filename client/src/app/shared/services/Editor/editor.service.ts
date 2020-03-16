@@ -4,9 +4,7 @@ import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
 import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LocalStorage } from './local-storage.service';
-import { Point } from './Tools/point.service';
-import { Image as ImageServer } from '../../models/image.model';
+import { Image as ImageServer } from '../../models/serverModels/image.model';
 import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
@@ -14,6 +12,8 @@ import { GalleryService } from './../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { BioNode } from './../../models/bionode.model';
 import { saveAs } from 'file-saver';
+import { LocalStorage } from './local-storage.service';
+import { Point } from './Tools/point.service';
 
 // Min and max values for zooming
 const ZOOM = {

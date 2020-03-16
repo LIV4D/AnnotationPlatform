@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Task } from '../../models/task.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TaskDialogSubmissionComponent } from 'src/app/editor/right-menu/submission/task-dialog-submission/task-dialog-submission.component';
-import { Observable } from 'rxjs';
+import { Task } from '../../models/serverModels/task.model';
+import { MatDialogRef } from '@angular/material/dialog';
 import { LocalStorage } from './local-storage.service';
 import { EditorService } from './editor.service';
-import { TasksService } from '../tasks.service';
+import { TasksService } from '../tasks/tasks.service';
 import { Router } from '@angular/router';
 
 @Injectable({
