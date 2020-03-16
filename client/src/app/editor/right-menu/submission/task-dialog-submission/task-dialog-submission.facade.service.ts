@@ -8,8 +8,7 @@ import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
 export class TaskDialogSubmissionFacadeService {
 
     constructor(private submitService: SubmitService,
-                public editorService: EditorService,
-                ) {}
+                public editorService: EditorService) {}
 
   // Function called upon clicking confirm in Task dialog
   // Updates all tasks with new completed value

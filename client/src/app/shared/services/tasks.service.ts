@@ -169,6 +169,6 @@ export class TasksService {
   // tslint:disable-next-line: ban-types
   getNextTask(): Observable<Object> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      return this.http.get(`/api/tasks/${userId}/next`);
+      return this.http.get(`/api/tasks/get/next/${userId}`);
   }
 }

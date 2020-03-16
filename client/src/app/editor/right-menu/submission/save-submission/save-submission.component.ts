@@ -49,7 +49,7 @@ export class SaveSubmissionComponent implements OnInit {
         	data: { tasks: this.tasks },
                width: '600px',
            });
-    // Service 2nd part: just have to call it on promise
+
       this.saveSubmissionFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
       this.saveRevision();
