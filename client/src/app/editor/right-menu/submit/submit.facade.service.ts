@@ -9,7 +9,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 @Injectable({
     providedIn: 'root'
 })
-export class SaveSubmissionFacadeService {
+export class SubmitFacadeService {
     constructor( private submitService: SubmitService,
                  public appService: AppService,
                  public editorService: EditorService,
