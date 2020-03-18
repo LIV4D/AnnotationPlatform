@@ -35,7 +35,7 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
     let items: any[] = [];
     let entityName: string;
     try {
-        console.log(`Seeding ${fileName}`);
+        // // console.log(`Seeding ${fileName}`);
         const seedsDirectory = process.env['NODE_ENV'] === 'test' ? 'test_seeds' : 'std_seeds';
         const data = JSON.parse(fs.readFileSync(`./seeding/${seedsDirectory}/${fileName}`).toString(), (key, value) => {
             // Used in order to correctly save buffer array in database.
@@ -98,9 +98,9 @@ async function insertRelations(connection: Connection, entityName: string, items
 
 if (require.main === module) {
     const dbInfo: any = config.get('database');
-    console.log(`This will delete all the data stored in the following database: \
+    // // console.log(`This will delete all the data stored in the following database: \
             ${ dbInfo.database}@${dbInfo.host}: ${dbInfo.port} `);
-    console.log(`Are you sure you want to proceed ? `);
+    // // console.log(`Are you sure you want to proceed ? `);
 
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     rl.question('(Y/N) ? ', answer => {

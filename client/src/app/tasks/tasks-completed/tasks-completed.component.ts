@@ -71,7 +71,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
-              console.log('there is an Error');
+              // // console.log('there is an Error');
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
               return observableOf([]);
           })
@@ -80,19 +80,19 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
 
               this.pageSize = 15;
               this.data = data;
-              console.log(this.data);
+              // console.log(this.data);
               // .data = this.data.tasks.filter (
               // filteredData => filteredData.completed === false);
               this.length = this.data.length;
-              console.log("length");
-              console.log(this.data.length);
+              // console.log("length");
+              // console.log(this.data.length);
               if (this.length === 0) { this.noData = true; }
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false));
           });
   }
 
   loadImage(imageId: string): void {
-    console.log('loading image');
+    // console.log('loading image');
   }
 
 }

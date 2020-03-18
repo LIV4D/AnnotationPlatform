@@ -21,7 +21,7 @@ export class GalleryService {
   // }
 
   getImages(sort: string, order: string, page: number, pageSize: number, filters?: string): Observable<IGallery> {
-    console.log('GalleryService::getImages()');
+    // console.log('GalleryService::getImages()');
 
     const params = new HttpParams()
     .set('sort', sort ? 'image.' + sort : 'image.id')

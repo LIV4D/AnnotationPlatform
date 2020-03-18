@@ -39,9 +39,9 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   ngAfterViewInit() {
-    console.log('EditorContent::ngOnInit()');
-    console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
-    console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
+    // console.log('EditorContent::ngOnInit()');
+    // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
+    // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
 
     this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
     this.svgLoaded.emit();
@@ -69,7 +69,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
     } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-      console.log('inside else-if');
+      // console.log('inside else-if');
 
       // let brushWidth =  this.toolPropertiesService.brushWidth;
       // const brushInc = delta > 0 ? 1 : -1;

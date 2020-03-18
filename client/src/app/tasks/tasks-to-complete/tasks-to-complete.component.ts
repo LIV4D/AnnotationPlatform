@@ -43,7 +43,7 @@ export class TasksToCompleteComponent implements OnInit {
   }
 
   loadImage(imageId: string): void {
-    console.log('loading image');
+    // console.log('loading image');
   }
 
 }

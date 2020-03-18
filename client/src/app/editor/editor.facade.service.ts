@@ -12,8 +12,8 @@ export class EditorFacadeService {
   constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
-    console.log('EditorFacadeService::init()');
-    console.log('c% viewPort.nativeElement' + viewPort.nativeElement, 'color:black; background:yellow;');
+    // console.log('EditorFacadeService::init()');
+    // console.log('c% viewPort.nativeElement' + viewPort.nativeElement, 'color:black; background:yellow;');
 
     this.editorService.init(svgLoaded, viewPort, svgBox);
   }

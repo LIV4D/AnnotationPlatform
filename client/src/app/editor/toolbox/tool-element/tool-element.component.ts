@@ -26,6 +26,8 @@ export class ToolElementComponent implements OnInit {
   }
 
   selectTool(): void {
+    console.log('Clicked Stik tik tik l7elwa l7elwa');
+
     this.toolboxFacadeService.setSelectedTool(this.tool.name);
   }
 

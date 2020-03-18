@@ -19,7 +19,7 @@ export class CommentBoxComponent implements OnInit {
   }
 
   onMouseUp(e: Event) {
-    console.log('mouse up');
+    // console.log('mouse up');
     // e.preventDefault();
     if (this.moving) {
       setTimeout(() => {
@@ -29,19 +29,19 @@ export class CommentBoxComponent implements OnInit {
       }, 100);
       this.pointFormat = 'example-box2';
     } else {
-      console.log('this.moving is false');
+      // console.log('this.moving is false');
     }
   }
 
   onMouseDown(e: Event) {
-    console.log('mouse down');
+    // console.log('mouse down');
     this.down = true;
     this.pointFormat = 'nothing';
     // this.isDisabled = false;
   }
 
   onMouseMove(e: Event) {
-    console.log('mouse move');
+    // console.log('mouse move');
     if (this.down) {
       this.isDisabled = true;
       this.moving = true;
@@ -49,7 +49,7 @@ export class CommentBoxComponent implements OnInit {
   }
 
   onFormClick(e: Event) {
-    console.log('textarea clicked');
+    // console.log('textarea clicked');
     this.pointFormat = 'nothing';
   }
 }
