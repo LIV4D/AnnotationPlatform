@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'click',
-        'requests'
+        'requests',
+        'ipython'
     ],
     entry_points='''
         [console_scripts]

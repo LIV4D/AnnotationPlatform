@@ -23,5 +23,5 @@ desroches = "d8fae448-3e1f-41cc-93cd-bef2df151d47"
 
 gabriel = "b45c99c9-b10e-4cd9-96d7-4060a889184b"
 
-import code
-code.interact(local=locals())
+from IPython import embed
+embed(colors='neutral')
