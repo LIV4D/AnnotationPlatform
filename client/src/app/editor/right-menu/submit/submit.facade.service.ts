@@ -27,6 +27,10 @@ export class SubmitFacadeService {
       return await this.tasksService.getTasksByImageIdApp(imageId);
     }
 
+    async getNextTask() {
+      return await this.tasksService.getNextTaskApp();
+    }
+
     completeTasks(tasks: Task[]): void{
       this.submitService.completeTasks(tasks);
     }

@@ -11,7 +11,7 @@ import { TaskDialogSubmissionComponent } from './task-dialog-submission/task-dia
 })
 export class SubmitComponent implements OnInit {
   saveTooltip: string;
-  tasks: Task[] = [];
+  nextTask: Task;
 
   constructor(public submitFacadeService: SubmitFacadeService,
               public dialog: MatDialog) {
@@ -26,7 +26,7 @@ export class SubmitComponent implements OnInit {
   async loadTasks(){
     if (!this.submitFacadeService.editorService.imageLocal) {
       const imageId = await this.submitFacadeService.editorService.imageId;
-      this.tasks = await this.submitFacadeService.getTasks(imageId);
+      this.nextTask = await this.submitFacadeService.getNextTask();
     }
   };
 
@@ -40,19 +40,19 @@ export class SubmitComponent implements OnInit {
   }
 
   public openTaskDialog(): void {
-    if (Object.keys(this.tasks).length > 0) {
-      this.submitFacadeService.completeTasks(this.tasks);
+    // if (Object.keys(this.tasks).length > 0) {
+    //   this.submitFacadeService.completeTasks(this.tasks);
 
-      // Save action dialog pops out
-   		const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
-        	data: { tasks: this.tasks },
-               width: '600px',
-           });
+    //   // Save action dialog pops out
+   	// 	const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
+    //     	data: { tasks: this.tasks },
+    //            width: '600px',
+    //        });
 
-      this.submitFacadeService.afterClosedTaskDialog(dialogRef);
-    } else {
-      this.saveRevision();
-    }
+    //   this.submitFacadeService.afterClosedTaskDialog(dialogRef);
+    // } else {
+    //   this.saveRevision();
+    // }
   }
 
   public saveRevision(loadNext= false): void {

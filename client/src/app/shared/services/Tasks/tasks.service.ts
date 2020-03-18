@@ -63,9 +63,14 @@ export class TasksService {
   }
 
   // tslint:disable-next-line: ban-types
-  getNextTask(): Observable<Object> {
+  getNextTask(): Observable<Task> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      return this.http.get(`/api/tasks/get/next/${userId}`);
+      return this.http.get<Task>(`/api/tasks/get/next/${userId}`);
+  }
+
+  async getNextTaskApp(): Promise<Task> {
+    const task = await this.getNextTask().toPromise();
+    return task as Task;
   }
 
   /**
