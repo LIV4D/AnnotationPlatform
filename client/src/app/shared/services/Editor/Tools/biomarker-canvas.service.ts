@@ -1,5 +1,5 @@
-import { Canvas } from './canvas.model';
-import { ImageBorderService } from './../services/Editor/image-border.service';
+import { Canvas } from './canvas.service';
+import { ImageBorderService } from './../image-border.service';
 
 export class BiomarkerCanvas extends Canvas {
 

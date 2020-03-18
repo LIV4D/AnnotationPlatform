@@ -4,6 +4,7 @@ import { AppService } from './../../../shared/services/app.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CamelCaseToTextPipe } from './../../../shared/pipes/camel-case-to-text.pipe';
 import { MatList } from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 
 export interface DialogData {
   confirmDelete: boolean;

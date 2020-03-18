@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
-import { Point } from 'src/app/shared/models/point.model';
+import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -44,6 +44,8 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
 
     this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
+    this.svgLoaded.emit();
+    // this.editorFacadeService.load(imageId); // I don't know why this is here
 
     // this.editorFacadeService.load(imageId); // I don't know why this is here
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;

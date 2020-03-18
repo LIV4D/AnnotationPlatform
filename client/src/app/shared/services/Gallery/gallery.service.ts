@@ -14,7 +14,7 @@ export class GalleryService {
   constructor(public http: HttpClient, private headerService: HeaderService) {}
 
   getImageTypes(): Observable<any> {
-      return this.http.get('/api/imageTypes');
+      return this.http.get('/api/imageTypes/');
   }
   // getTweakedImageTypes(): Observable<any> {
   //     return this.http.get('/api/images/gallery');

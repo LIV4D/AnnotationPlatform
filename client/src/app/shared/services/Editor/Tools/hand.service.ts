@@ -1,9 +1,10 @@
-import { Tool } from './tool.model';
-import { Point } from './point.model';
-import { ToolServices } from './tool-services.model';
+import { Tool } from './tool.service';
+import { Point } from './point.service';
+import { EditorService } from './../editor.service';
+import { LayersService } from './../layers.service';
 
 export class Hand extends Tool {
-    constructor(name: string, iconPath: string, tooltip: string, editorService, layersService) {
+    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService, layersService: LayersService) {
         super(name, iconPath, tooltip, editorService, layersService);
     }
 

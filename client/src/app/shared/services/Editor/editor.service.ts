@@ -2,10 +2,10 @@ import { Injectable, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
 import { BehaviorSubject, throwError, Observable } from 'rxjs';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
-import { BackgroundCanvas } from '../../models/background-canvas.model';
+import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LocalStorage } from '../../models/local-storage.model';
-import { Point } from '../../models/point.model';
+import { LocalStorage } from './local-storage.service';
+import { Point } from './Tools/point.service';
 import { Image as ImageServer } from '../../models/image.model';
 import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
@@ -13,6 +13,7 @@ import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
 import { resolve } from 'dns';
 import { worker } from 'cluster';
+import { BiomarkerService } from './biomarker.service';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -51,7 +52,8 @@ export class EditorService {
 
   constructor(private http: HttpClient, public layersService: LayersService,
               public galleryService: GalleryService, public router: Router,
-              private appService: AppService, private headerService: HeaderService) {
+              private appService: AppService, private headerService: HeaderService,
+              private biomarkerService: BiomarkerService) {
     this.scaleX = 1;
     this.imageLoaded = false;
     this.canvasDisplayRatio = new BehaviorSubject<number>(1);
@@ -67,7 +69,7 @@ export class EditorService {
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
     console.log('EditorService::init(svgLoaded: EventEmitter<any>, viewPort: ElementRef)');
 
-    // this.biomarkersService.dataSource = null;
+    this.biomarkerService.dataSource = null;
     this.zoomFactor = 1.0;
     this.offsetX = 0;
     this.offsetY = 0;
@@ -81,7 +83,7 @@ export class EditorService {
     this.svgLoaded = svgLoaded;
     if (this.imageLocal) {
         this.setImageId('local');
-        this.loadAllLocal(this.svgLoaded);
+        this.loadAllLocal(this.imageLocal, this.svgLoaded);
     } else {
       console.log('load from server');
 
@@ -130,8 +132,7 @@ export class EditorService {
   }
 
   // Load canvases and local variables when opening a local image.
-  public loadAllLocal(svgLoaded: EventEmitter<any>): void {
-
+  public loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): void {
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
@@ -183,94 +184,133 @@ export class EditorService {
     }, 0);
     this.updateCanvasDisplayRatio();
 
+    const name = 'test';
+    const data1 =  {
+      files: {
+        image: [name, image, image]
+      },
+      type: 'default',
+      metadata: {"filename": "yoda.jpeg"}
+    };
+
+    this.http.post<any>('/api/images/createNew/', data1).subscribe(res => {
+      console.log(res);
+    });
+
+    const data = {'data': null, 'imageId': 1, 'comment': null};
+
+    this.http.post<any>('/api/annotations/create/', data).subscribe(res => {
+      console.log(res);
+    });
+
+
+    // this.http.post('/api/annotation/create')
+
     // TODO: Gotta understand how to make this work with the server.
-    // this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
-    //     { headers: new HttpHeaders(), responseType: 'json' }).pipe(
-    //     ).subscribe(
-    //     res => {
-    // this.layersService.biomarkerCanvas = [];
-    //         this.svgBox.innerHTML = (res as any).svg;
-    //         const parser = new DOMParser();
-    //         const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-    //         const arbre: SVGGElement[] = [];
-    //         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-    //             const elems = e.getElementsByTagName('g');
-    //             for (let j = 0; j < elems.length; j++) {
-    //                 if (elems[j].parentElement.tagName !== 'g') {
-    //                     arbre.push(elems[j]);
-    //                 }
-    //             }
-    //         });
-    //         arbre.forEach((e: SVGGElement) => {
-    //             this.layersService.createFlatCanvasRecursive(e,
-    //                 this.backgroundCanvas.originalCanvas.width,
-    //                 this.backgroundCanvas.originalCanvas.height);
-    //         });
-    //         this.svgLoaded.emit(arbre);
-    //     });
+    console.log('EMPTY');
+    this.http.get(`/api/annotations/getEmpty/`,
+        { headers: new HttpHeaders(), responseType: 'json' }).pipe(
+        ).subscribe(
+        res => {
+          this.layersService.biomarkerCanvas = [];
+          this.svgBox.innerHTML = (res as any).svg;
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+          const arbre: SVGGElement[] = [];
+          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+            const elems = e.getElementsByTagName('g');
+            for (let j = 0; j < elems.length; j++) {
+              if (elems[j].parentElement.tagName !== 'g') {
+                  arbre.push(elems[j]);
+              }
+            }
+          });
+          arbre.forEach((e: SVGGElement) => {
+              this.layersService.createFlatCanvasRecursive(e,
+                  this.backgroundCanvas.originalCanvas.width,
+                  this.backgroundCanvas.originalCanvas.height);
+          });
+          this.svgLoaded.emit(arbre);
+    });
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
-  // loadRevision(draw: boolean): void {
-  //     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  //     const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
-  //                                                                                reportProgress: true, observe: 'events' });
-  //     this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
-  //         res => {
-  //             this.svgBox.innerHTML = res.svg;
-  //             const parser = new DOMParser();
-  //             const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
-  //             const arbre: SVGGElement[] = [];
-  //             Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //                 const elems = e.getElementsByTagName('g');
-  //                 for (let j = 0; j < elems.length; j++) {
-  //                     if (elems[j].parentElement.tagName !== 'g') {
-  //                         arbre.push(elems[j]);
-  //                     }
-  //                 }
-  //             });
+  loadRevision(draw: boolean): void {
+      const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+      // console.log('userid '+userId)
+      // const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
+      //                                                                            reportProgress: true, observe: 'events' });
 
-  //             // this.commentService.comment = res.diagnostic;
+      const req = this.http.get('/api/annotations/get/1', { headers: new HttpHeaders(),
+        reportProgress: true, observe: 'events' });
 
-  //             if (draw) {
-  //                 this.layersService.biomarkerCanvas = [];
-  //                 arbre.forEach((e: SVGGElement) => {
-  //                     this.layersService.createFlatCanvasRecursive(e);
-  //                 });
-  //                 // this.layersService.toggleBorders(true);
-  //                 setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-  //             }
-  //             this.svgLoaded.emit(arbre);
-  //         }, error => {
-  //             if (error.status === 404) {
-  //                 const reqBase = this.http.get(`/api/images/${this.imageId}/baseRevision/`,
-  //                                               { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
-  //                 this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
-  //                         this.svgBox.innerHTML = (res as any).svg;
-  //                         const parser = new DOMParser();
-  //                         const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-  //                         const arbre: SVGGElement[] = [];
-  //                         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //                             const elems = e.getElementsByTagName('g');
-  //                             for (let j = 0; j < elems.length; j++) {
-  //                                 if (elems[j].parentElement.tagName !== 'g') {
-  //                                     arbre.push(elems[j]);
-  //                                 }
-  //                             }
-  //                         });
-  //                         // this.commentService.comment = (res as any).diagnostic;
-  //                         if (draw) {
-  //                             this.layersService.biomarkerCanvas = [];
-  //                             arbre.forEach((e: SVGGElement) => {
-  //                                 this.layersService.createFlatCanvasRecursive(e);
-  //                             });
-  //                             setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-  //                         }
-  //                         this.svgLoaded.emit(arbre);
-  //                     });
-  //             }
-  //         });
-  // }
+      this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
+          res => {
+              this.svgBox.innerHTML = res.svg;
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
+              const arbre: SVGGElement[] = [];
+              Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                  const elems = e.getElementsByTagName('g');
+                  for (let j = 0; j < elems.length; j++) {
+                      if (elems[j].parentElement.tagName !== 'g') {
+                          arbre.push(elems[j]);
+                      }
+                  }
+              });
+
+              // this.commentService.comment = res.diagnostic;
+
+              if (draw) {
+                  this.layersService.biomarkerCanvas = [];
+                  arbre.forEach((e: SVGGElement) => {
+                      this.layersService.createFlatCanvasRecursive(e);
+                  });
+                  this.layersService.toggleBorders(true);
+                  setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+              }
+              this.svgLoaded.emit(arbre);
+          }, error => {
+              if (error.status === 404 || error.status === 500) {
+                  const reqBase = this.http.get(`/api/annotations/getEmpty/`,
+                                  { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
+                  this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
+                    this.svgBox.innerHTML = (res as any).svg;
+                    console.log(this.svgBox.innerHTML);
+
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+                    console.log(xmlDoc)
+                    const arbre: SVGGElement[] = [];
+                    console.log(xmlDoc.children)
+                    Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                      const elems = e.getElementsByTagName('g');
+                      console.log(elems)
+                      for (let j = 0; j < elems.length; j++) {
+                        if (elems[j].parentElement.tagName !== 'g') {
+                          arbre.push(elems[j]);
+                          console.log(elems[j]);
+                        }
+                      }
+                    });
+                    // this.biomarkerService.init(arbre);
+                    // this.commentService.comment = (res as any).diagnostic;
+                    if (draw) {
+                      this.biomarkerService.init(arbre);
+                      this.layersService.biomarkerCanvas = [];
+                      arbre.forEach((e: SVGGElement) => {
+                        this.layersService.createFlatCanvasRecursive(e);
+                      });
+                      setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+                    }
+                    this.svgLoaded.emit(arbre);
+                  });
+              }
+              console.log('Loaded : ')
+              console.log(this.biomarkerService.lastBiomarkers)
+              console.log(this.layersService.biomarkerCanvas)
+          });
+  }
 
 
   // Load the main image in the background canvas.
@@ -371,8 +411,10 @@ export class EditorService {
       this.imageId = lastImageId;
       this.getMainImage();
       LocalStorage.load(this, this.layersService);
-      // this.loadRevision(false);
+      this.loadRevision(true);
+      LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
+      // this.biomarkerService.init(this.layersService.)
       return;
     }
     // Check if imageId is set
@@ -381,7 +423,7 @@ export class EditorService {
     }
 
     this.getMainImage();
-    // this.loadRevision(true);
+    this.loadRevision(true);
   }
 
   // public loadPretreatmentImage(): void {
@@ -406,30 +448,30 @@ export class EditorService {
   //     );
   // }
 
-  // public loadSVGLocal(event: any): void {
-  //     const reader: FileReader = new FileReader();
-  //     reader.onload = () => {
-  //         this.layersService.biomarkerCanvas = [];
-  //         this.svgBox.innerHTML = reader.result as string;
-  //         const parser = new DOMParser();
-  //         const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
-  //         const arbre: SVGGElement[] = [];
-  //         Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //             const elems = e.getElementsByTagName('g');
-  //             for (let j = 0; j < elems.length; j++) {
-  //                 if (elems[j].parentElement.tagName !== 'g') {
-  //                     arbre.push(elems[j]);
-  //                 }
-  //             }
-  //         });
-  //         this.layersService.biomarkerCanvas = [];
-  //         arbre.forEach((e: SVGGElement) => {
-  //             this.layersService.createFlatCanvasRecursive(e);
-  //         });
-  //     };
-  //     reader.readAsBinaryString(event.target.files[0]);
-  //     this.localSVGName = event.target.files[0].name;
-  // }
+  public loadSVGLocal(event: any): void {
+      const reader: FileReader = new FileReader();
+      reader.onload = () => {
+          this.layersService.biomarkerCanvas = [];
+          this.svgBox.innerHTML = reader.result as string;
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
+          const arbre: SVGGElement[] = [];
+          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+              const elems = e.getElementsByTagName('g');
+              for (let j = 0; j < elems.length; j++) {
+                  if (elems[j].parentElement.tagName !== 'g') {
+                      arbre.push(elems[j]);
+                  }
+              }
+          });
+          this.layersService.biomarkerCanvas = [];
+          arbre.forEach((e: SVGGElement) => {
+              this.layersService.createFlatCanvasRecursive(e);
+          });
+      };
+      reader.readAsBinaryString(event.target.files[0]);
+      this.localSVGName = event.target.files[0].name;
+  }
 
   // Function to update the zoom rectangle.
   // TODO: Move this to zoom.service.ts if it gets enough logic, otherwise keep here.
@@ -664,27 +706,27 @@ export class EditorService {
     return this.backgroundCanvas.originalCanvas.width / this.backgroundCanvas.originalCanvas.height;
   }
 
-  // getMousePositionInCanvasSpace(clientPosition: Point): Point {
-  //     let clientX: number;
-  //     let clientY: number;
-  //     clientX = this.scaleX === 1 ?
-  //         clientPosition.x - this.viewPort.getBoundingClientRect().left :
-  //         this.viewPort.clientWidth - clientPosition.x + this.viewPort.getBoundingClientRect().left;
+  getMousePositionInCanvasSpace(clientPosition: Point): Point {
+      let clientX: number;
+      let clientY: number;
+      clientX = this.scaleX === 1 ?
+          clientPosition.x - this.viewPort.getBoundingClientRect().left :
+          this.viewPort.clientWidth - clientPosition.x + this.viewPort.getBoundingClientRect().left;
 
-  //     clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
-  //     const canvasX = clientX * this.backgroundCanvas.displayCanvas.width /
-  //         this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-  //     const canvasY = clientY * this.backgroundCanvas.displayCanvas.height /
-  //         this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
-  //     return new Point(canvasX, canvasY);
-  // }
+      clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+      const canvasX = clientX * this.backgroundCanvas.displayCanvas.width /
+          this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+      const canvasY = clientY * this.backgroundCanvas.displayCanvas.height /
+          this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+      return new Point(canvasX, canvasY);
+  }
 
-  // getMousePositionInDisplaySpace(clientPosition: Point): Point {
-  //     const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
-  //     const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+  getMousePositionInDisplaySpace(clientPosition: Point): Point {
+      const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
+      const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
 
-  //     return new Point(x, y);
-  // }
+      return new Point(x, y);
+  }
 
   // getTasks(display_progress= false): Observable<Task[]> {
   //     if (display_progress) {
@@ -717,9 +759,9 @@ export class EditorService {
   }
 
   loadMetadata(imageId: string): void {
-    this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
-        this.imageServer = res;
-    });
+    // this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
+    //     this.imageServer = res;
+    // });
   }
 
   // saveSVGFile(): void {

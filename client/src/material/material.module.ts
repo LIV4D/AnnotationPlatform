@@ -16,6 +16,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import {MatSortModule} from '@angular/material/sort';
 // import { MatToolbar } from '../material/material.module';
 // import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -41,6 +42,7 @@ import { MatButtonModule } from '@angular/material/button';
       MatSidenavModule,
       MatSliderModule,
       MatTabsModule,
+      MatListModule,
 
       DragDropModule,
       MatInputModule,
@@ -67,7 +69,8 @@ import { MatButtonModule } from '@angular/material/button';
         MatFormFieldModule,
         MatInputModule,
         DragDropModule,
-        MatButtonModule
+        MatButtonModule,
+        MatListModule
     ]
 })
 

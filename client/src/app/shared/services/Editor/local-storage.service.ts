@@ -1,5 +1,5 @@
-import { EditorService } from '../services/Editor/editor.service';
-import { LayersService } from '../services/Editor/layers.service';
+import { EditorService } from './editor.service';
+import { LayersService } from './layers.service';
 
 enum LocalStorageKeys {
   ImageId = 'imageId',
@@ -59,7 +59,7 @@ export class LocalStorage {
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
     const json = JSON.parse(str);
     if (!json) {
-        // editorService.loadRevision(true);
+        editorService.loadRevision(true);
         return;
     }
     if (!json.biomarkers) {
@@ -67,10 +67,10 @@ export class LocalStorage {
     }
 
     // Recreate biomarkers
-    // layersService.biomarkerCanvas.forEach(canvas => {
-    //     canvas.clear();
-    // });
-    // layersService.biomarkerCanvas = [];
+    layersService.biomarkerCanvas.forEach(canvas => {
+        canvas.clear();
+    });
+    layersService.biomarkerCanvas = [];
     json.biomarkers.forEach(element => {
         const imageString = element[0];
         const id = element[1];
@@ -81,12 +81,12 @@ export class LocalStorage {
             biomarker.width = biomarkerImage.width;
             biomarker.height = biomarkerImage.height;
             biomarker.getContext('2d').drawImage(biomarkerImage, 0, 0);
-            // layersService.newBiomarker(biomarkerImage, id, color);
+            layersService.newBiomarker(biomarkerImage, id, color);
         };
         biomarkerImage.src = imageString;
     });
-    // layersService.biomarkerCanvas.forEach(canvas => {
-    //     canvas.draw();
-    // });
+    layersService.biomarkerCanvas.forEach(canvas => {
+        canvas.draw();
+    });
   }
 }
