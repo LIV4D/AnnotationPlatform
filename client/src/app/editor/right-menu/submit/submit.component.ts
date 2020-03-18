@@ -20,12 +20,14 @@ export class SubmitComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTasks();
+
   }
 
   // load the tasks matching with the current user and the image loaded in Editor
   async loadTasks(){
     if (!this.submitFacadeService.editorService.imageLocal) {
-      const imageId = await this.submitFacadeService.editorService.imageId;
+      //const imageId = await this.submitFacadeService.editorService.imageId;
+      //this.tasks = await this.submitFacadeService.getTasks(imageId);
       this.nextTask = await this.submitFacadeService.getNextTask();
     }
   };
@@ -40,19 +42,19 @@ export class SubmitComponent implements OnInit {
   }
 
   public openTaskDialog(): void {
-    // if (Object.keys(this.tasks).length > 0) {
-    //   this.submitFacadeService.completeTasks(this.tasks);
+    if (Object.keys(this.nextTask).length > 0) {
+      this.submitFacadeService.completeTasks(this.nextTask);
 
-    //   // Save action dialog pops out
-   	// 	const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
-    //     	data: { tasks: this.tasks },
-    //            width: '600px',
-    //        });
+    // Save taskDialog pops out
+   	const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
+        	data: { task: this.nextTask },
+                  width: '600px',
+           });
 
-    //   this.submitFacadeService.afterClosedTaskDialog(dialogRef);
-    // } else {
-    //   this.saveRevision();
-    // }
+    this.submitFacadeService.afterClosedTaskDialog(dialogRef);
+    } else {
+      this.saveRevision();
+    }
   }
 
   public saveRevision(loadNext= false): void {

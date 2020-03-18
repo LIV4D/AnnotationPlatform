@@ -31,7 +31,7 @@ export class SubmitFacadeService {
       return await this.tasksService.getNextTaskApp();
     }
 
-    completeTasks(tasks: Task[]): void{
+    completeTasks(tasks: Task): void{
       this.submitService.completeTasks(tasks);
     }
 

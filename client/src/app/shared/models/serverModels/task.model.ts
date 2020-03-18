@@ -4,6 +4,7 @@ import { User } from './user.model';
 import { Annotation } from './annotation.model';
 
 export class Task {
+    public id = 0;
     public taskTypeId = 0;
     public annotationId = 0;
     public isComplete = false;

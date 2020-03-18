@@ -1,14 +1,13 @@
 <div id="taskdialogcontainer">
     <h2 mat-dialog-title>Complete Tasks</h2>
     <div id="tasklist">
-        <!--LIST OF TASKS-->
+        <!--LIST OF TASKS: TODO: Only show one task with NG-Container -->
         <table>
-            <tr *ngFor="let task of data.tasks; let i = index;">
-                <td>{{i+1}}. </td>
-                <td id="taskName">{{task.taskType.title}}</td>
-                <td id="taskdesc">{{task.taskType.description}}</td>
+            <tr [(ngModel)]="data" ngDefaultControl>
+                <td id="taskName">{{data.task.taskType.title}}</td>
+                <td id="taskdesc">{{data.task.taskType.description}}</td>
                 <td>
-                    <input [checked]="task.isComplete" type="checkbox" (change)="checkTask($event.target.checked, task.id)">
+                    <input [checked]="data.task.isComplete" type="checkbox" (change)="checkTask($event.target.checked, task.id)">
                 </td>
             </tr>
         </table>

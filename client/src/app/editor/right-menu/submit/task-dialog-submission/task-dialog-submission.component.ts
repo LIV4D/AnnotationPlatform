@@ -12,22 +12,19 @@ export class TaskDialogSubmissionComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
               public taskDialogSubmissionFacadeService: TaskDialogSubmissionFacadeService) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   // Function called upon clicking confirm in Task dialog
   // Updates all tasks with new completed value
   closeDialog(): void {
-    this.taskDialogSubmissionFacadeService.updateTasks(this.data.tasks);
+    this.taskDialogSubmissionFacadeService.updateTask(this.data.task);
   }
 
   // Function called upon clicking cancel in Task dialog
-  cancelDialog(): void {
-  }
+  cancelDialog(): void {}
 
-
-  checkTask(checkValue, taskId): void {
-    this.data.tasks.find(x => x.id === taskId).isComplete = checkValue;
+  checkTask(checkValue): void {
+    this.data.tasks.isComplete = checkValue;
   }
 
 }

@@ -73,6 +73,28 @@ export class TasksService {
     return task as Task;
   }
 
+  // Update task.isComplete in the server for a group of tasks
+  updateTasksCompleteness(tasks: Task[]): void {
+    // server takes 'true' and 'false' instead of booleans
+    tasks.forEach(task => {
+      const body = {
+        isComplete: task.isComplete ? 'true' : 'false',
+      };
+
+    this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
+    });
+  }
+
+  // Update task.isComplete in the server for one task
+  updateTaskCompleteness(task: Task): void {
+    // server takes 'true' and 'false' instead of booleans
+      const body = {
+        isComplete: task.isComplete ? 'true' : 'false',
+      };
+
+    this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
+  }
+
   /**
    * Archive a task setting it to not visible
    * @param taskId: taskType founded with the taskId

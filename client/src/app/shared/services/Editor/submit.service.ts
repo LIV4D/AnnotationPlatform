@@ -21,20 +21,12 @@ export class SubmitService {
       return navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';
     }
 
-    updateTasks(tasks: any[]): void {
-      // server takes 'true' and 'false' instead of booleans
-      tasks.forEach(task => {
-        const body = {
-          active: task.isVisible ? 'true' : 'false',
-          completed: task.isComplete ? 'true' : 'false',
-        };
-
-      this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
-      });
-    }
-
-    completeTasks(tasks: Task[]) {
-      tasks.forEach( (task) => { task.isComplete = true; });
+    /**
+     * Set a task as completed
+     * @param nextTask: task submited by a user
+     */
+    completeTasks(nextTask: Task) {
+      nextTask.isComplete = true;
     }
 
     afterClosedTaskDialog(dialogRef: MatDialogRef<any, any>) {
