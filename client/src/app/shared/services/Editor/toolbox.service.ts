@@ -8,6 +8,7 @@ import { Eraser } from './Tools/eraser.service';
 import { Hand } from './Tools/hand.service';
 import { LassoEraser } from './Tools/lasso-eraser.service';
 import { BioPicker } from './Tools/biopicker.service';
+import { CommentTool } from './Tools/comment-tool.service';
 
 import { TOOL_NAMES } from './../../constants/tools';
 
@@ -16,7 +17,6 @@ import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
-import { CommentTool } from './Tools/comment-tool.service';
 import { BiomarkerService } from './biomarker.service';
 
 
@@ -46,6 +46,7 @@ export class ToolboxService {
                 editorService, layersService, toolPropertiesService),
             new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)',
                 editorService, layersService, biomarkerService),
+            new CommentTool(TOOL_NAMES.COMMENT_TOOL, '../../icons/picker.svg', 'Add comment', editorService, layersService, biomarkerService),
             new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
                 navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)',
                 editorService, layersService),
@@ -89,6 +90,10 @@ export class ToolboxService {
         //     // this.imageBorderService.showBorders = false;
         //     // this.layersService.toggleBorders(false);
         // }
+        if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
+            // this.editorService.commentBoxVisible = true;
+            console.log('SHOW')
+        }
         this.selectedTool.getValue().onCursorDown(point);
         this.setUndoRedoState();
     }

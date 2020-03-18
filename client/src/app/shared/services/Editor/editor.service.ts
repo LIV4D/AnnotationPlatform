@@ -48,6 +48,8 @@ export class EditorService {
   menuState: boolean;
 
   canRedraw = true;
+  // commentBoxVisible: boolean = false;
+
   // public biomarkersService: BiomarkersService,
 
   constructor(private http: HttpClient, public layersService: LayersService,

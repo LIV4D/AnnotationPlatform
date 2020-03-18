@@ -108,6 +108,10 @@ export class EditorFacadeService {
     this.editorService.loadSVGLocal(event);
   }
 
+  get commentBoxVisible(){
+    return this.editorService.commentBoxVisible;
+  }
+
   // Biomarkers
 
   setFocusBiomarker(item: any) {

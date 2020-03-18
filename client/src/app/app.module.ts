@@ -41,7 +41,7 @@ import { ModelFinderService } from './shared/services/modelfinder.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
-import { ZoomngxComponent } from './zoomngx/zoomngx.component';
+// import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -91,7 +91,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       ZoomComponent,
       MousewheelDirective,
       CamelCaseToTextPipe,
-      ZoomngxComponent,
+      // ZoomngxComponent,
       CommentBoxComponent
    ],
    imports: [
