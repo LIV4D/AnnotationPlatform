@@ -49,3 +49,4 @@ token
 .DS_Store
 Thumbs.db
 package-lock.json
+*.pyc
