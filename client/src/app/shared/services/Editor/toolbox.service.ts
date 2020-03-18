@@ -31,31 +31,31 @@ export class ToolboxService {
     constructor(private layersService: LayersService, private editorService: EditorService,
                 private toolPropertiesService: ToolPropertiesService) {
 
-        this.listOfTools = [
-            new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
-                editorService, layersService),
-            new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)',
-                editorService, layersService, toolPropertiesService),
-            // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
-            new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)',
-                editorService, layersService),
-            // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
-            new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)',
-                editorService, layersService),
-            new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)',
-                editorService, layersService),
-            new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)',
-                editorService, layersService),
-            new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
-                navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)',
-                editorService, layersService),
-            new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
-                navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)',
-                editorService, layersService),
+      this.listOfTools = [
+        new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
+            editorService, layersService),
+        new PixelCrayon(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)',
+            editorService, layersService, toolPropertiesService),
+        // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
+        new PixelBucket(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)',
+            editorService, layersService),
+        // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
+        new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)',
+            editorService, layersService),
+        new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)',
+            editorService, layersService),
+        new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)',
+            editorService, layersService),
+        new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
+            navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)',
+            editorService, layersService),
+        new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
+            navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)',
+            editorService, layersService),
 
-            new CommentTool(TOOL_NAMES.COMMENT_TOOL, '../../icons/picker.svg', 'Add comment',
-                editorService, layersService, biomarkerService)
-        ];
+        new CommentTool(TOOL_NAMES.COMMENT_TOOL, '../../icons/picker.svg', 'Add comment',
+            editorService, layersService, biomarkerService)
+      ];
 
         this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
     }
