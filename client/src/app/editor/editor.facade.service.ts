@@ -104,12 +104,13 @@ export class EditorFacadeService {
     return this.editorService.getMousePositionInCanvasSpace(clientPosition);
   }
 
-  loadSVGLocal(event: any){
+  loadSVGLocal(event: any) {
     this.editorService.loadSVGLocal(event);
   }
 
-  get commentBoxVisible(){
-    return this.editorService.commentBoxVisible;
+  get commentBoxVisible() {
+    // return this.editorService.commentBoxVisible;
+    return undefined;
   }
 
   // Biomarkers

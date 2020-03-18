@@ -62,10 +62,8 @@ export class ToolboxService {
   }
 
   setSelectedTool(newSelectedTool: string): void {
-    const newSelectedToolTool: Tool = this.listOfTools.filter((tool) => tool.name === newSelectedTool)[0];
-    console.log('setSelectedToo():: ' + newSelectedToolTool.name);
-
-    this.selectedTool.next(newSelectedToolTool);
+    const tool: Tool = this.listOfTools.filter((toolToFilter) => toolToFilter.name === newSelectedTool)[0];
+    this.selectedTool.next(tool);
   }
 
   setUndo() {
@@ -91,11 +89,11 @@ export class ToolboxService {
   }
 
   public onCursorDown(point: Point): void {
-    console.log('SHOW COMMENT');
     // if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
-    //     // this.imageBorderService.showBorders = false;
-    //     // this.layersService.toggleBorders(false);
+    //   this.imageBorderService.showBorders = false;
+    //   this.layersService.toggleBorders(false);
     // }
+
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
         // this.editorService.commentBoxVisible = true;
     }
@@ -104,6 +102,10 @@ export class ToolboxService {
   }
 
   public onCursorUp(): void {
+    if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
+      console.log('STIK TIK TIK TIK L7ALWA L7ALWA');
+      // Notify comment add here
+    }
     this.selectedTool.getValue().onCursorUp();
   }
 

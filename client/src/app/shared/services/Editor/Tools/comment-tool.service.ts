@@ -14,11 +14,11 @@ export class CommentTool extends Tool {
   }
 
   onCursorDown(point: Point): void {
-      this.position = point;
-      const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
-      if (currentBiomarker) {
+    this.position = point;
+    const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
+    if (currentBiomarker) {
 
-      }
+    }
   }
 
   onCursorUp(): void {

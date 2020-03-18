@@ -8,7 +8,7 @@ export class CommentBoxFacadeService {
 
   constructor(private editorService: EditorService) { }
 
-  hideCommentBox(){
-    this.editorService.commentBoxVisible = false;
+  hideCommentBox() {
+    // this.editorService.commentBoxVisible = false;
   }
 }

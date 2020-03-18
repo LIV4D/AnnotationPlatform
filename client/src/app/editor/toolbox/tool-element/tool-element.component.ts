@@ -22,6 +22,9 @@ export class ToolElementComponent implements OnInit {
     this.toolboxFacadeService.selectedTool.subscribe(
       value => {
         this.isSelected = value === this.tool;
+        if (value === this.tool ) {
+          console.log('TRUE_____');
+        }
       });
   }
 
