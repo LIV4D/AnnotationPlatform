@@ -1,2 +1,4 @@
-<button mat-button (click)="saveLocal()" *ngIf="submitFacadeService.appService.localEditing" [matTooltip]="saveTooltip" matTooltipShowDelay="1000" matTooltipPosition="right">Save</button>
-<button mat-button (click)="saveOnDB()" *ngIf="!submitFacadeService.appService.localEditing" [matTooltip]="saveTooltip" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button>
+<div id="submitDiv">
+  <button mat-button (click)="saveLocal()" *ngIf="submitFacadeService.appService.localEditing" [matTooltip]="saveTooltip" matTooltipShowDelay="1000" matTooltipPosition="right">Save</button>
+  <button mat-button (click)="saveOnDB()" *ngIf="!submitFacadeService.appService.localEditing" [matTooltip]="saveTooltip" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button>
+</div>

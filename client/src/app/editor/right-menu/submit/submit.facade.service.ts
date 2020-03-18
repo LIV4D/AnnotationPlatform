@@ -31,8 +31,8 @@ export class SubmitFacadeService {
       return await this.tasksService.getNextTaskApp();
     }
 
-    completeTasks(tasks: Task): void{
-      this.submitService.completeTasks(tasks);
+    completeTask(tasks: Task): void{
+      this.submitService.completeTask(tasks);
     }
 
     afterClosedTaskDialog(dialogRef: MatDialogRef<any, any>) {

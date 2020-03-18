@@ -35,21 +35,23 @@ export class SubmitComponent implements OnInit {
   // save on local editing
   public saveLocal(): void {
     this.submitFacadeService.saveLocal();
-}
+  }
 
   public saveOnDB(): void {
     this.openTaskDialog();
   }
 
   public openTaskDialog(): void {
+
+    // Checkbox checked by default with the task set as completed in local
     if (Object.keys(this.nextTask).length > 0) {
-      this.submitFacadeService.completeTasks(this.nextTask);
+      this.submitFacadeService.completeTask(this.nextTask);
 
     // Save taskDialog pops out
    	const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
         	data: { task: this.nextTask },
                   width: '600px',
-           });
+          });
 
     this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {

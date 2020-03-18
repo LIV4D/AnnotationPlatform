@@ -23,6 +23,7 @@ export class TaskDialogSubmissionComponent implements OnInit {
   // Function called upon clicking cancel in Task dialog
   cancelDialog(): void {}
 
+  // Checkbox toggles completeness of the task
   checkTask(checkValue): void {
     this.data.tasks.isComplete = checkValue;
   }

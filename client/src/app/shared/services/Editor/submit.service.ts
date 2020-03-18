@@ -25,7 +25,7 @@ export class SubmitService {
      * Set a task as completed
      * @param nextTask: task submited by a user
      */
-    completeTasks(nextTask: Task) {
+    completeTask(nextTask: Task) {
       nextTask.isComplete = true;
     }
 
