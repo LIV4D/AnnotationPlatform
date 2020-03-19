@@ -30,11 +30,13 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   zoomInitFactor: number;
   delayEventTimer: any;
   delayedEventHandler: Function;
+  // Comment-box array
+  commentBoxes = [];
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
   @ViewChild('mainCanvas') mainCanvas: ElementRef;
-  @ViewChild('commentBox') commentBox: ViewContainerRef;
+  @ViewChild('commentBox', {read: ViewContainerRef}) commentBox: ViewContainerRef;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
