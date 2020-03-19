@@ -42,8 +42,8 @@ export class SubmitService {
     	this.editorService.saveToDB().subscribe(() => {
           if (loadNext) {
               this.tasksService.getNextTask().subscribe((data: any) => {
-                  if (data && data.image) {
-                      const imageId = data.image.id.toString();
+                  if (data && data.annotation) {
+                      const imageId = data.annotation.image.id.toString();
                       LocalStorage.resetImageId(imageId);
                       setTimeout(() => { window.location.reload(); }, 10);
                   } else {
