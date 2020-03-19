@@ -1,4 +1,6 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild,
+        OnDestroy, ElementRef, AfterViewInit, Renderer2,
+        ViewContainerRef } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
@@ -32,6 +34,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
   @ViewChild('mainCanvas') mainCanvas: ElementRef;
+  @ViewChild('commentBox') commentBox: ViewContainerRef;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -45,8 +48,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
 
     this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
     this.svgLoaded.emit();
-    // this.editorFacadeService.load(imageId); // I don't know why this is here
-
     // this.editorFacadeService.load(imageId); // I don't know why this is here
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
