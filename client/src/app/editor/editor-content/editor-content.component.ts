@@ -71,22 +71,14 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
 
     if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
-    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-      // console.log('inside else-if');
-
-      // let brushWidth =  this.toolPropertiesService.brushWidth;
-      // const brushInc = delta > 0 ? 1 : -1;
-      // if (brushWidth < 20) {
-      //     brushWidth += brushInc;
-      // } else {
-      //     brushWidth += brushInc * brushWidth / 10;
-      // }
-      // brushWidth = Math.round(brushWidth);
-      // this.toolPropertiesService.setBrushWidth(brushWidth);
     }
   }
 
   onMouseDown(event: MouseEvent): void {
+
+    // Dynamically create new comment-box
+    this.addNewCommentBox();
+
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
@@ -97,6 +89,13 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
       this.editorFacadeService.onCursorDownToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
     }
     // this.enableKeyEvents(false);
+  }
+
+  addNewCommentBox() {
+
+
+
+    console.log('Comment box created!');
   }
 
   onMouseUp(event: MouseEvent): void {
