@@ -1,9 +1,11 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild,
         OnDestroy, ElementRef, AfterViewInit, Renderer2,
-        ViewContainerRef } from '@angular/core';
+        ViewContainerRef,
+        ComponentFactoryResolver} from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
+import { CommentBoxComponent } from '../comment-box/comment-box.component';
 
 @Component({
   selector: 'app-editor-content',
@@ -15,7 +17,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
 
   constructor(public editorFacadeService: EditorFacadeService,
               public appService: AppService,
-              private renderer: Renderer2) {
+              private resolver: ComponentFactoryResolver) {
     this.delayEventTimer = null;
   }
 
@@ -32,6 +34,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   delayedEventHandler: Function;
   // Comment-box array
   commentBoxes = [];
+  commentBoxCreated = false;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
@@ -77,7 +80,10 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   onMouseDown(event: MouseEvent): void {
 
     // Dynamically create new comment-box
-    this.addNewCommentBox();
+    if (!this.commentBoxCreated) {
+      this.createCommentBox();
+      this.commentBoxCreated = true;
+    }
 
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
@@ -91,10 +97,10 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     // this.enableKeyEvents(false);
   }
 
-  addNewCommentBox() {
-
-
-
+  createCommentBox() {
+    this.commentBox.clear();
+    const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
+    const componentRef = this.commentBox.createComponent(factory);
     console.log('Comment box created!');
   }
 

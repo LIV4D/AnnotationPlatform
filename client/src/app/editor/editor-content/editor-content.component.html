@@ -21,6 +21,7 @@
     <span id="svg-box"></span>
 </div> -->
 
+<ng-template id="template" #commentBox></ng-template>
 <div id="editor-box" appMousewheel #editorBox
   (wheel)="onMouseWheel($event)"
   (window:resize)="onResize()"
@@ -34,5 +35,5 @@
   <canvas #mainCanvas id="main-canvas"></canvas>
   <app-layers id="app-layers"></app-layers>
   <span #svgBox id="svg-box"></span>
-  <ng-template #commentBox></ng-template>
+
 </div>
