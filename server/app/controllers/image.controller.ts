@@ -154,7 +154,7 @@ export class ImageController implements IController {
     }
 
     private getGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log('ImageController::getGallery()');
+        // // // // console.log('ImageController::getGallery()');
 
         const arr: IGalleryObject[] = [];
         // get Images with params setted
@@ -175,12 +175,12 @@ export class ImageController implements IController {
                         console.error(`Thumbnail for image ` + image.id.toString() + ` not found.`);
                     }
 
-                    // console.log('item.metadata: ' + item.metadata.filename);
-                    // console.log('item.thumbPath: ' + item.thumbnail);
+                    // // // // // console.log('item.metadata: ' + item.metadata.filename);
+                    // // // // // console.log('item.thumbPath: ' + item.thumbnail);
 
                     arr.push(item);
 
-                    console.log('arr.length : ' + arr.length);
+                    // // // // console.log('arr.length : ' + arr.length);
 
                 });
 
@@ -188,7 +188,7 @@ export class ImageController implements IController {
                     objects: arr,
                     objectCount: imageViewModel[1],
                 };
-                // console.log('TEST TEST TEST TEST ---- imageViewModel.length : ' + imageViewModel.length);
+                // // // // // console.log('TEST TEST TEST TEST ---- imageViewModel.length : ' + imageViewModel.length);
                 res.send(gallery);
             })
             .catch(next);
@@ -209,7 +209,7 @@ export class ImageController implements IController {
     }
 
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log('ImageController::getTask() -- Which should be named getImage()...');
+        // // // // console.log('ImageController::getTask() -- Which should be named getImage()...');
 
         this.imageService.getImage(req.params.imageId)
             .then(image => {
@@ -218,7 +218,7 @@ export class ImageController implements IController {
                     case 'proto': res.send(image.proto()); break;
                     case 'metata': res.send(image.metadata); break;
                 }
-                console.log('image ' + image);
+                // // // console.log('image ' + image);
             }).catch(next);
     }
 
@@ -237,11 +237,11 @@ export class ImageController implements IController {
     }
 
     private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log('\nImageController::getImageFile() with id : ' + req.params.imageId + '\n');
+        // // // console.log('\nImageController::getImageFile() with id : ' + req.params.imageId + '\n');
 
         this.imageService.getImagePath(req.params.imageId)
             .then(imgPath => {
-                // console.log('imgPath : ' + imgPath.metadata);
+                // // // // console.log('imgPath : ' + imgPath.metadata);
 
                 res.sendFile(path.resolve(imgPath));
             })

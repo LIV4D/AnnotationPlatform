@@ -1,5 +1,5 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import{ EditorService } from './../shared/services/Editor/editor.service';
+import { Injectable, EventEmitter, ElementRef } from '@angular/core';
+import { EditorService } from './../shared/services/Editor/editor.service';
 import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
@@ -11,10 +11,11 @@ export class EditorFacadeService {
 
   constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService) { }
 
-  init(svgLoaded: EventEmitter<any>): void {
-    console.log('EditorFacadeService::init(svgLoaded()) with svgLoaded: ' + svgLoaded);
+  init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
+    // console.log('EditorFacadeService::init()');
+    // console.log('c% viewPort.nativeElement' + viewPort.nativeElement, 'color:black; background:yellow;');
 
-    this.editorService.init(svgLoaded);
+    this.editorService.init(svgLoaded, viewPort, svgBox);
   }
 
   zoom(delta: number, position: Point = null): void {
@@ -103,12 +104,13 @@ export class EditorFacadeService {
     return this.editorService.getMousePositionInCanvasSpace(clientPosition);
   }
 
-  loadSVGLocal(event: any){
+  loadSVGLocal(event: any) {
     this.editorService.loadSVGLocal(event);
   }
 
-  get commentBoxVisible(){
-    return this.editorService.commentBoxVisible;
+  get commentBoxVisible() {
+    // return this.editorService.commentBoxVisible;
+    return undefined;
   }
 
   // Biomarkers

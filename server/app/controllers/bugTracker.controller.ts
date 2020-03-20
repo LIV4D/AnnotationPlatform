@@ -29,7 +29,7 @@ export class BugtrackerController implements IController {
 
         doc.useServiceAccountAuth(creds, (err: any, res: any) => {
             if (err) {
-                console.log('Auth Error:', err);
+                // // console.log('Auth Error:', err);
                 return;
             }
             const data = {

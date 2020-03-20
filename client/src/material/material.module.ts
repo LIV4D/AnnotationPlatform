@@ -7,7 +7,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatSliderModule} from '@angular/material/slider';
-import {MatExpansionModule} from '@angular/material/expansion';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -21,6 +20,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import {MatExpansionModule} from '@angular/material/expansion';
+
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -44,8 +48,11 @@ import { MatListModule } from '@angular/material/list';
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatCardModule,
         MatListModule,
-        MatCardModule
+      MatButtonModule,
+      DragDropModule,
+      MatInputModule,
     ],
     exports: [
         BrowserModule,
@@ -68,6 +75,8 @@ import { MatListModule } from '@angular/material/list';
         MatTabsModule,
         MatFormFieldModule,
         MatInputModule,
+        DragDropModule,
+        MatButtonModule,
         MatSelectModule
     ]
 })

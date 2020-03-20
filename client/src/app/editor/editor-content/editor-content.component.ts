@@ -1,7 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild,
+        OnDestroy, ElementRef, AfterViewInit, Renderer2,
+        ViewContainerRef,
+        ComponentFactoryResolver} from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
+import { CommentBoxComponent } from '../comment-box/comment-box.component';
 
 @Component({
   selector: 'app-editor-content',
@@ -9,9 +13,11 @@ import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
   styleUrls: ['./editor-content.component.scss']
 })
 
-export class EditorContentComponent implements OnInit, OnDestroy {
+export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor(public editorFacadeService: EditorFacadeService, public appService: AppService, ) {
+  constructor(public editorFacadeService: EditorFacadeService,
+              public appService: AppService,
+              private resolver: ComponentFactoryResolver) {
     this.delayEventTimer = null;
   }
 
@@ -19,7 +25,6 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   zoomFactor: number;
   offsetX: number;
   offsetY: number;
-  @ViewChild('editorBox') viewPort: any;
   cursorDown = false;
   middleMouseDown = false;
   touchFreeze = false;
@@ -27,16 +32,28 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   zoomInitFactor: number;
   delayEventTimer: any;
   delayedEventHandler: Function;
+  // Comment-box array
+  commentBoxes = [];
+  commentBoxCreated = false;
+
+  @ViewChild('editorBox') viewPort: ElementRef;
+  @ViewChild('svgBox') svgBox: ElementRef;
+  @ViewChild('mainCanvas') mainCanvas: ElementRef;
+  @ViewChild('commentBox', {read: ViewContainerRef}) commentBox: ViewContainerRef;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
-    console.log('EditorContent::ngOnInit()');
+  }
 
-    this.editorFacadeService.init(this.svgLoaded);
+  ngAfterViewInit() {
+    // console.log('EditorContent::ngOnInit()');
+    // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
+    // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
+
+    this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
     this.svgLoaded.emit();
     // this.editorFacadeService.load(imageId); // I don't know why this is here
-
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
@@ -49,29 +66,25 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   }
 
   onMouseWheel(event: WheelEvent): void {
-    console.log('EditorContent::onMouseWheel()');
+    // console.log('EditorContent::onMouseWheel()');
 
     const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-    const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 300;
+    // delta is used to lower the zooming speed
+    const delta = - event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 500;
 
     if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
-    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-      console.log('inside else-if');
-
-      // let brushWidth =  this.toolPropertiesService.brushWidth;
-      // const brushInc = delta > 0 ? 1 : -1;
-      // if (brushWidth < 20) {
-      //     brushWidth += brushInc;
-      // } else {
-      //     brushWidth += brushInc * brushWidth / 10;
-      // }
-      // brushWidth = Math.round(brushWidth);
-      // this.toolPropertiesService.setBrushWidth(brushWidth);
     }
   }
+
   onMouseDown(event: MouseEvent): void {
+
+    // Dynamically create new comment-box
+    if (!this.commentBoxCreated) {
+      this.createCommentBox();
+      this.commentBoxCreated = true;
+    }
+
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
@@ -82,6 +95,13 @@ export class EditorContentComponent implements OnInit, OnDestroy {
       this.editorFacadeService.onCursorDownToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
     }
     // this.enableKeyEvents(false);
+  }
+
+  createCommentBox() {
+    this.commentBox.clear();
+    const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
+    const componentRef = this.commentBox.createComponent(factory);
+    console.log('Comment box created!');
   }
 
   onMouseUp(event: MouseEvent): void {

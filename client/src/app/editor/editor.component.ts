@@ -56,7 +56,7 @@ export class EditorComponent implements OnInit {
   }
 
   public onSvgLoaded(arbre: SVGGElement[]): void {
-    console.log('EditorComponent::onSvgLoaded()');
+    // console.log('EditorComponent::onSvgLoaded()');
     this.rightMenu.svgLoaded(arbre);
   }
 

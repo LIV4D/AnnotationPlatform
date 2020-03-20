@@ -22,10 +22,15 @@ export class ToolElementComponent implements OnInit {
     this.toolboxFacadeService.selectedTool.subscribe(
       value => {
         this.isSelected = value === this.tool;
+        if (value === this.tool ) {
+          console.log('TRUE_____');
+        }
       });
   }
 
   selectTool(): void {
+    console.log('Clicked Stik tik tik l7elwa l7elwa');
+
     this.toolboxFacadeService.setSelectedTool(this.tool.name);
   }
 

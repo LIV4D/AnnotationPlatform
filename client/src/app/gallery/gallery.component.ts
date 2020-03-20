@@ -78,7 +78,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
       startWith({}),
       switchMap(
         () => {
-          console.log('%c here? ', 'color: red; background: yellow;');
+          // console.log('%c here? ', 'color: red; background: yellow;');
 
           setTimeout(() => this.appService.loading = true);
 

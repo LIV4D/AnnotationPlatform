@@ -212,7 +212,7 @@ export class LayersService {
   public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
     if (currentBiomarkerCanvas == null) {
-      console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+      // // console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
     }
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
   }

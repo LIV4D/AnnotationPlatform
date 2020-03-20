@@ -47,6 +47,7 @@ import { TasksService } from './shared/services/tasks/tasks.service';
 import { TaskTypeService } from './shared/services/tasks/taskType.service';
 import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
+import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -63,9 +64,10 @@ import { LayersComponent } from './editor/editor-content/layers/layers.component
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
 
+
+
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
-import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
@@ -107,7 +109,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       HttpClientModule,
       BrowserAnimationsModule,
       FormsModule,
-      ReactiveFormsModule
+      ReactiveFormsModule,
    ],
    providers: [
       LoginFacadeService,

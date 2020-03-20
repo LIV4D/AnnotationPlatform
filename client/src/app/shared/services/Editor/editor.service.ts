@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
 import { BehaviorSubject, throwError, Observable } from 'rxjs';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Image as ImageServer } from '../../models/serverModels/image.model';
 import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
-import { GalleryService } from './../Gallery/gallery.service';
+import { GalleryService } from '../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { BioNode } from './../../models/bionode.model';
 import { saveAs } from 'file-saver';
@@ -46,8 +46,12 @@ export class EditorService {
   svgLoaded: EventEmitter<any>;
   localSVGName: string;
   menuState: boolean;
-  commentBoxVisible: boolean = false;
+
+  canRedraw = true;
+  // commentBoxVisible: boolean = false;
+
   // public biomarkersService: BiomarkersService,
+
   constructor(private http: HttpClient, public layersService: LayersService,
               public galleryService: GalleryService, public router: Router,
               private appService: AppService, private headerService: HeaderService,
@@ -64,38 +68,41 @@ export class EditorService {
     }, 30000);
   }
 
-  init(svgLoaded: EventEmitter<any>): void {
-    console.log('EditorService::init(svgLoaded: EventEmitter<any>)');
+  init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
+    // console.log('EditorService::init(svgLoaded: EventEmitter<any>, viewPort: ElementRef)');
 
     this.biomarkerService.dataSource = null;
     this.zoomFactor = 1.0;
     this.offsetX = 0;
     this.offsetY = 0;
     this.imageLoaded = false;
-    this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
-    this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
+
+    // this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
+    this.viewPort = viewPort.nativeElement;
+    // this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
+    this.svgBox = svgBox.nativeElement;
+
     this.svgLoaded = svgLoaded;
     if (this.imageLocal) {
         this.setImageId('local');
         this.loadAllLocal(this.imageLocal, this.svgLoaded);
     } else {
-      console.log('load from server');
+      // console.log('load from server');
 
       this.loadAll();
     }
-    this.resize();
+    // this.resize();
   }
 
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
   updateCanvasDisplayRatio(): void {
-    const ratio = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width /
-      this.backgroundCanvas.displayCanvas.width;
+    const ratio = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width / this.backgroundCanvas.displayCanvas.width;
     this.canvasDisplayRatio.next(ratio);
   }
 
   // Resizes the canvases to the current window size.
   resize(): void {
-    console.log('EditorService::resize()');
+    // console.log('EditorService::resize()');
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
     const viewportRatio = this.viewportRatio();
     let H: number;
@@ -134,9 +141,11 @@ export class EditorService {
       document.getElementById('main-canvas') as HTMLCanvasElement,
       this.imageLocal
     );
+
     // Load the main canvas.
     const viewportRatio = this.viewportRatio();
     const imageRatio = this.originalImageRatio();
+
     if (imageRatio > viewportRatio) {
       this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
       this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
@@ -144,16 +153,19 @@ export class EditorService {
       this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
       this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
     }
+
     this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
     this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
     const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
     let x = 0;
     let y = 0;
+
     if (imageRatio > viewportRatio) {
       y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) / 2;
     } else {
       x = (this.backgroundCanvas.displayCanvas.width - this.backgroundCanvas.originalCanvas.width) / 2;
     }
+
     context.drawImage(
       this.backgroundCanvas.originalCanvas,
       x,
@@ -161,6 +173,7 @@ export class EditorService {
       this.backgroundCanvas.originalCanvas.width,
       this.backgroundCanvas.originalCanvas.height
     );
+
     // Load the zoom canvas.
     // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
     // Without this zoomCanvas is still undefined because of ngIf in template
@@ -175,7 +188,7 @@ export class EditorService {
     this.updateCanvasDisplayRatio();
 
     // TODO: Gotta understand how to make this work with the server.
-    console.log('EMPTY');
+    // console.log('EMPTY');
     this.http.get(`/api/annotations/getEmpty/`,
         { headers: new HttpHeaders(), responseType: 'json' }).pipe(
         ).subscribe(
@@ -248,8 +261,8 @@ export class EditorService {
             // ).toPromise();
             // console.log(res);
               if (error.status === 404 || error.status === 500) {
-                  const reqBase = this.http.get<any>(`/api/annotations/getEmpty/`,
-                                                { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
+                  const reqBase = this.http.get(`/api/annotations/getEmpty/`,
+                                  { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
                           console.log('ALLO')
                           this.layersService.createFlatCanvasRecursiveJson(res);
@@ -285,7 +298,7 @@ export class EditorService {
                           //     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
                           // }
                           // this.svgLoaded.emit(arbre);
-                      });
+                  });
               }
               // console.log('Loaded : ')
               // console.log(this.biomarkerService.lastBiomarkers)
@@ -293,14 +306,12 @@ export class EditorService {
           });
   }
 
+
   // Load the main image in the background canvas.
   public loadMainImage(image: HTMLImageElement): void {
-    console.log('EditorService::loadMainImage()');
+    // console.log('EditorService::loadMainImage()');
 
-    this.backgroundCanvas = new BackgroundCanvas(
-        document.getElementById('main-canvas') as HTMLCanvasElement,
-        image
-    );
+    this.backgroundCanvas = new BackgroundCanvas(document.getElementById('main-canvas') as HTMLCanvasElement, image);
     // Load the main canvas.
     const viewportRatio = this.viewportRatio();
     const imageRatio = this.originalImageRatio();
@@ -344,7 +355,7 @@ export class EditorService {
   }
 
   getMainImage(): void {
-    console.log('EditorService::getMainImage()');
+    // console.log('EditorService::getMainImage()');
 
     // '/api/images/download/:imageId/raw'
     // const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events', reportProgress: true });
@@ -353,17 +364,19 @@ export class EditorService {
       { responseType: 'blob', observe: 'events', reportProgress: true });
 
     this.headerService.display_progress(req, 'Downloading: Image').subscribe(
-        res => {
-            const reader: FileReader = new FileReader();
-            reader.onload = () => {
-                const image = new Image();
-                image.onload = () => {
-                  this.loadMainImage(image);
-                  // this.loadPretreatmentImage();
-                };
-                image.src = reader.result as string;
-            };
-            reader.readAsDataURL(res);
+      res => {
+        const reader: FileReader = new FileReader();
+        reader.onload = () => {
+          const image = new Image();
+          image.onload = () => {
+            // console.log('image.onload()' + image);
+
+            this.loadMainImage(image);
+            // this.loadPretreatmentImage();
+          };
+          image.src = reader.result as string;
+        };
+        reader.readAsDataURL(res);
     });
   }
 
@@ -383,26 +396,28 @@ export class EditorService {
 
   // Load everything in the editor.
   public loadAll(): void {
-      // Check if a an image is saved in localStorage
-      const lastImageId = LocalStorage.lastSavedImageId();
+    // Check if a an image is saved in localStorage
+    const lastImageId = LocalStorage.lastSavedImageId();
 
-      if (this.shouldLoadLocalStorage(lastImageId)) {
-        console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
-        this.imageId = lastImageId;
-        this.getMainImage();
-        LocalStorage.load(this, this.layersService);
-        this.loadRevision(true);
-        LocalStorage.load(this, this.layersService);
-        this.loadMetadata(this.imageId);
-        // this.biomarkerService.init(this.layersService.)
-        return;
-      }
-      // Check if imageId is set
-      if (!this.imageId) {
-        return;
-      }
+    if (this.shouldLoadLocalStorage(lastImageId)) {
+      // console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
+
+      this.imageId = lastImageId;
       this.getMainImage();
+      LocalStorage.load(this, this.layersService);
       this.loadRevision(true);
+      LocalStorage.load(this, this.layersService);
+      this.loadMetadata(this.imageId);
+      // this.biomarkerService.init(this.layersService.)
+      return;
+    }
+    // Check if imageId is set
+    if (!this.imageId) {
+      return;
+    }
+
+    this.getMainImage();
+    this.loadRevision(true);
   }
 
   // public loadPretreatmentImage(): void {
@@ -422,7 +437,7 @@ export class EditorService {
   //             reader.readAsDataURL(res);
   //         },
   //         err => {
-  //             // console.log('Error: ' + err);
+  //             // // console.log('Error: ' + err);
   //         }
   //     );
   // }
@@ -505,6 +520,7 @@ export class EditorService {
     } else {
       this.offsetX = 0;
     }
+
     if (this.backgroundCanvas.originalCanvas.height > this.backgroundCanvas.displayCanvas.height) {
       this.offsetY = Math.min(this.backgroundCanvas.originalCanvas.height - this.backgroundCanvas.displayCanvas.height, this.offsetY);
     } else {
@@ -518,11 +534,67 @@ export class EditorService {
     return oldXOffset !== this.offsetX || oldYOffset !== this.offsetY;
   }
 
+  testRedraw(position: Point) {
+      // console.log('%c testRedraw() ', 'color: black; background:red;');
+      const zoomFactor = this.zoomFactor;
+
+      // Adjust canvas sizes.
+      const oldWidth = this.backgroundCanvas.displayCanvas.width;
+      // // console.log('%c oldWidth : ' + oldWidth , 'color: black; background:yellow;');
+      // // console.log('%c this.fullCanvasWidth : ' + this.fullCanvasWidth , 'color: black; background:red;');
+      // // console.log('%c zoomFactor : ' + zoomFactor , 'color: black; background:yellow;');
+      // divide by the zoom factor in order to get the new selection's width to zoom at
+      const newWidth = this.fullCanvasWidth / zoomFactor;
+      // // console.log('%c newWidth : ' + newWidth , 'color: black; background:yellow;');
+      this.backgroundCanvas.displayCanvas.width = newWidth;
+
+      const newHeight = this.fullCanvasHeight / zoomFactor;
+      const oldHeight = this.backgroundCanvas.displayCanvas.height;
+      this.backgroundCanvas.displayCanvas.height = newHeight;
+
+      // this.layersService.resize(newWidth, newHeight);
+
+      if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
+        // this.zoomFactor = zoomFactor;
+
+        // Adjust offsets to keep them coherent with the previous zoom.
+        let positionXPercentage = 0.5;
+        let positionYPercentage = 0.5;
+
+        if (position !== null) {
+          // console.log('%c position.x : ' + position.x , 'color: black; background:red;');
+          // console.log('%c oldWidth : ' + oldWidth , 'color: black; background:red;');
+
+          // This is just to get a value 0 <= X <= 1 and 0 <= Y <= 1
+          positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
+          positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
+          // console.log('%c positionXPercentage : ' + positionXPercentage , 'color: black; background:yellow;');
+        }
+
+        const deltaX = (oldWidth - newWidth) * positionXPercentage;
+        // console.log('%c deltaX : ' + deltaX , 'color: black; background:red;');
+        const deltaY = (oldHeight - newHeight) * positionYPercentage;
+        // console.log('%c deltaY : ' + deltaY , 'color: black; background:red;');
+        this.offsetX += deltaX;
+        this.offsetY += deltaY;
+      }
+
+      this.adjustOffsets();
+      this.transform();
+      // this.updateCanvasDisplayRatio();
+  }
+
   // Function to zoom on a part of the image.
   // Currently only centered with specific ratios.
   zoom(delta: number, position: Point = null): void {
+    // console.log('%c delta:  ' + delta , 'color: black; background:yellow;');
+
     // Keep zoom in range [100%, 600%]
+    // exp is used for acceleration
     let zoomFactor = this.zoomFactor * Math.exp(delta);
+    // let zoomFactor = this.zoomFactor * (2 / (1 + Math.exp(delta)));
+    // console.log('%c zoomFactor:  ' + zoomFactor , 'color: white; background:black;');
+
 
     // Cap the values.
     if (zoomFactor > ZOOM.MAX) {
@@ -531,33 +603,25 @@ export class EditorService {
       zoomFactor = ZOOM.MIN;
     }
 
-    // Adjust canvas sizes.
-    const oldWidth = this.backgroundCanvas.displayCanvas.width;
-    const oldHeight = this.backgroundCanvas.displayCanvas.height;
-    const newWidth = this.fullCanvasWidth / zoomFactor;
-    const newHeight = this.fullCanvasHeight / zoomFactor;
-    this.backgroundCanvas.displayCanvas.width = newWidth;
-    this.backgroundCanvas.displayCanvas.height = newHeight;
-    this.layersService.resize(newWidth, newHeight);
+    this.zoomFactor = zoomFactor;
 
-    if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-      this.zoomFactor = zoomFactor;
-      // Adjust offsets to keep them coherent with the previous zoom.
-      let positionXPercentage = 0.5;
-      let positionYPercentage = 0.5;
-      if (position !== null) {
-        positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
-        positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
-      }
-      const deltaX = (oldWidth - newWidth) * positionXPercentage;
-      const deltaY = (oldHeight - newHeight) * positionYPercentage;
-      this.offsetX += deltaX;
-      this.offsetY += deltaY;
+    if (this.canRedraw) {
+      this.canRedraw = false;
+      this.testRedraw(position);
+      // do CSS translation here
+      // const imgg = new Image();
+      // imgg.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
+      // this.backgroundCanvas.currentCanvas.getContext('2d').drawImage(imgg, 0, 0);
+
+
+      setTimeout(() => {
+        this.canRedraw = true;
+      }, 100);
     }
+    // console.log('%c else ', 'color: black; background:blue;');
 
-    this.adjustOffsets();
-    this.transform();
-    this.updateCanvasDisplayRatio();
+    // maybe to implement
+    // return pointToTranslate;
   }
 
   // this only works for zoom slider (when using mobile device)
@@ -617,10 +681,10 @@ export class EditorService {
 
     this.backgroundCanvas.draw();
 
-    this.layersService.biomarkerCanvas.forEach(layer => {
-      layer.setOffset(this.offsetX, this.offsetY);
-      layer.draw();
-    });
+    // this.layersService.biomarkerCanvas.forEach(layer => {
+    //   layer.setOffset(this.offsetX, this.offsetY);
+    //   layer.draw();
+    // });
 
     // Redraw the zoom rectangle.
     this.updateZoomRect();
@@ -672,7 +736,7 @@ export class EditorService {
   // TODO: Make this work
   // Function called from gallery/tasks to load a new image and redirect to editor
   loadImageFromServer(imageId: string): void {
-    console.log('EditorService::loadImageFromServer()');
+    // console.log('EditorService::loadImageFromServer()');
 
     // TODO: change to above
     // const req = this.http.get<ImageServer>('/api/images/1/', {observe: 'events', reportProgress: true});
@@ -737,7 +801,7 @@ export class EditorService {
    }
 
   setImageId(id: string): void {
-    console.log('EditorService::setImageId()');
+    // console.log('EditorService::setImageId()');
 
     this.imageId = id;
   }

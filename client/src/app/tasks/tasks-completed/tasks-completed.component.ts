@@ -85,7 +85,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
-              console.log('there is an Error');
+              // // console.log('there is an Error');
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
               return observableOf([]);
           })

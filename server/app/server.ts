@@ -73,6 +73,6 @@ export class Server {
         const addr: AddressInfo | string = this.server.address();
         const bind: string = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
         // tslint:disable-next-line:no-console
-        console.log(`Listening on ${bind}`);
+        // console.log(`Listening on ${bind}`);
     }
 }
