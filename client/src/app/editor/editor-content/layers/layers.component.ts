@@ -35,7 +35,10 @@ export class LayersComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    ngOnInit(): void { }
+
+    ngAfterViewInit(): void{
+        /* All this was in ngOninit */
         this.layersFacadeService.init();
         this.layersFacadeService.canvasDisplayRatio.subscribe(
             value => {
@@ -43,6 +46,7 @@ export class LayersComponent implements OnInit {
             });
         this.layersFacadeService.brushWidthChanged.subscribe(() => { this.updateCursorRadius(); });
         this.layersFacadeService.selectedTool.subscribe(value => this.updateMouseCursor(value));
+        /*  */
     }
 
     updateMouseCursor(tool: Tool): void {

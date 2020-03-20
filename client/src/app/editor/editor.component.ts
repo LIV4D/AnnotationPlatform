@@ -10,6 +10,7 @@ import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { BioPicker } from './../shared/services/Editor/Tools/biopicker.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
+import { ToolPropertiesComponent } from './toolbox/tool-properties/tool-properties.component';
 
 @Component({
   selector: 'app-editor',

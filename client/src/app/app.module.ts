@@ -61,6 +61,7 @@ import { VisualizationComponent } from './editor/right-menu/visualization/visual
 import { EditorContentComponent } from './editor/editor-content/editor-content.component';
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
+import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
@@ -96,7 +97,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       MousewheelDirective,
       CamelCaseToTextPipe,
       TasksBundlesComponent,
-      CommentBoxComponent
+      CommentBoxComponent,
+      ToolPropertiesComponent
    ],
    imports: [
       BrowserModule,
