@@ -14,13 +14,14 @@ const routes: Routes = [
   // TODO: empty route redirect to ? for others if is login
   // TODO: empty route redirect to loginPage if is not login
   // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: '', component: LoginComponent,  pathMatch: 'full' },
-  { path: 'gallery', component: GalleryComponent },
-  { path: 'editor', component: EditorComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'tasks', component: TasksComponent },
+  { path: '', component: LoginComponent,  pathMatch: 'full', data: {authorizedRoles: []}  },
+  { path: 'gallery', component: GalleryComponent, data: {authorizedRoles: []}  },
+  { path: 'editor', component: EditorComponent, data: {authorizedRoles: []}  },
+  { path: 'dashboard', component: DashboardComponent, data: {authorizedRoles: []}  },
+  { path: 'tasks', component: TasksComponent, data: {authorizedRoles: []} },
   { path: 'management', canActivate: [AuthorizationGuard], component: ManagementComponent, data: {authorizedRoles: ['admin']} },
-  { path: '**', redirectTo: '/editor' },
+  { path: 'accessdenied', redirectTo: '/' },
+  { path: '**', redirectTo: '/editor', data: {authorizedRoles: []}  },
 ];
 
 @NgModule({

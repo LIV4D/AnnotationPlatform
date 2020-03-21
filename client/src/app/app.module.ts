@@ -30,7 +30,7 @@ import { LayersFacadeService } from './editor/editor-content/layers/layers.facad
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
-import { GalleryFacadeService } from './gallery/gallery.facade.service';;
+import { GalleryFacadeService } from './gallery/gallery.facade.service';
 import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';

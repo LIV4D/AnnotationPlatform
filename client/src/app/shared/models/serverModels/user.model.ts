@@ -2,6 +2,6 @@ export class User {
     firstName = '';
     lastName = '';
     email = '';
-    isAdmin = true;
+    role = '';
     password = '';
 }
