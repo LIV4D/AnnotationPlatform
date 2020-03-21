@@ -1,14 +1,17 @@
 @import '../../../colorVariables.scss';
 
 h3 {
-    margin-left: 5%;
     margin-top: 5%;
+    text-align: center;
+    font-size: xx-large;
+    font-weight: normal;
 }
 
 p {
-    margin-left: 5%;
+    text-align: center;
 }
 
 iframe {
-    margin-left: 5%;
+    margin: 0 auto;
+    display: block;
 }
