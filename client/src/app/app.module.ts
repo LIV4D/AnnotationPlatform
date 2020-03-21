@@ -67,6 +67,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
 
 
 @NgModule({
@@ -96,6 +97,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       CamelCaseToTextPipe,
       TasksBundlesComponent,
       AccessDeniedComponent,
+      NonExistentPageComponent,
    ],
    imports: [
       BrowserModule,

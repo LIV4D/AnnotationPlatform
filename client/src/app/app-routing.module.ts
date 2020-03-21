@@ -9,6 +9,7 @@ import { EditorComponent } from './editor/editor.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ManagementComponent } from './management/management.component';
 import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
+import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
 
 const routes: Routes = [
   // TODO: empty route redirect to tasks clinician if is login
@@ -22,7 +23,7 @@ const routes: Routes = [
   { path: 'tasks', component: TasksComponent, data: {authorizedRoles: []} },
   { path: 'management', canActivate: [AuthorizationGuard], component: ManagementComponent, data: {authorizedRoles: ['admin']} },
   { path: 'accessdenied', component: AccessDeniedComponent },
-  { path: '**', redirectTo: '/editor', data: {authorizedRoles: []}  },
+  { path: '**', component: NonExistentPageComponent },
 ];
 
 @NgModule({
