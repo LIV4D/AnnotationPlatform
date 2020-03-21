@@ -43,6 +43,7 @@ import { TasksService } from './shared/services/tasks/tasks.service';
 import { TaskTypeService } from './shared/services/tasks/taskType.service';
 import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
+import { AuthorizationService } from './shared/services/authorization.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -105,6 +106,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
    providers: [
       LoginFacadeService,
       LoginService,
+      AuthorizationService,
       ManagementFacadeService,
       ModelFinderService,
       NavigationBarFacadeService,
