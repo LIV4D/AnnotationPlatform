@@ -21,6 +21,7 @@ import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { ManagementComponent } from './management/management.component';
 import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
+import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -67,6 +68,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 
+
 @NgModule({
    declarations: [
       AppComponent,
@@ -93,6 +95,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       MousewheelDirective,
       CamelCaseToTextPipe,
       TasksBundlesComponent,
+      AccessDeniedComponent,
    ],
    imports: [
       BrowserModule,
