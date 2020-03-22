@@ -14,6 +14,7 @@ import { BioNode } from './../../models/bionode.model';
 import { saveAs } from 'file-saver';
 import { LocalStorage } from './local-storage.service';
 import { Point } from './Tools/point.service';
+import { Task } from '../../models/serverModels/task.model';
 
 // Min and max values for zooming
 const ZOOM = {
@@ -69,7 +70,6 @@ export class EditorService {
   }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
-    // console.log('EditorService::init(svgLoaded: EventEmitter<any>, viewPort: ElementRef)');
 
     this.biomarkerService.dataSource = null;
     this.zoomFactor = 1.0;
@@ -87,8 +87,6 @@ export class EditorService {
         this.setImageId('local');
         this.loadAllLocal(this.imageLocal, this.svgLoaded);
     } else {
-      // console.log('load from server');
-
       this.loadAll();
     }
     // this.resize();
@@ -193,8 +191,9 @@ export class EditorService {
         { headers: new HttpHeaders(), responseType: 'json' }).pipe(
         ).subscribe(
         res => {
+            // Replace
             this.layersService.biomarkerCanvas = [];
-            this.layersService.createFlatCanvasRecursiveJson(res);
+            this.layersService.createFlatCanvasRecursiveJson(res); //
             this.biomarkerService.initJsonRecursive(res);
             // this.biomarkerService.buildTree(res as BioNode[]);
 
@@ -231,18 +230,18 @@ export class EditorService {
 
       this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
           res => {
-              this.svgBox.innerHTML = res.svg;
-              const parser = new DOMParser();
-              const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
+               this.svgBox.innerHTML = res.svg;
+               const parser = new DOMParser();
+               const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
               const arbre: SVGGElement[] = [];
               Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                  const elems = e.getElementsByTagName('g');
-                  for (let j = 0; j < elems.length; j++) {
-                      if (elems[j].parentElement.tagName !== 'g') {
+                   const elems = e.getElementsByTagName('g');
+                   for (let j = 0; j < elems.length; j++) {
+                       if (elems[j].parentElement.tagName !== 'g') {
                           arbre.push(elems[j]);
-                      }
-                  }
-              });
+                       }
+                   }
+               });
 
               // this.commentService.comment = res.diagnostic;
 
@@ -251,7 +250,7 @@ export class EditorService {
                   arbre.forEach((e: SVGGElement) => {
                       this.layersService.createFlatCanvasRecursive(e);
                   });
-                  this.layersService.toggleBorders(true);
+
                   setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
               }
               this.svgLoaded.emit(arbre);
@@ -264,11 +263,9 @@ export class EditorService {
                   const reqBase = this.http.get(`/api/annotations/getEmpty/`,
                                   { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
-                          console.log('ALLO')
                           this.layersService.createFlatCanvasRecursiveJson(res);
                           this.biomarkerService.initJsonRecursive(res);
                           this.biomarkerService.buildTreeRecursive(res);
-                          console.log(this.biomarkerService.tree);
 
                           // this.svgBox.innerHTML = (res as any).svg;
                           // console.log(this.svgBox.innerHTML);
@@ -396,11 +393,11 @@ export class EditorService {
 
   // Load everything in the editor.
   public loadAll(): void {
+
     // Check if a an image is saved in localStorage
     const lastImageId = LocalStorage.lastSavedImageId();
 
     if (this.shouldLoadLocalStorage(lastImageId)) {
-      // console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
 
       this.imageId = lastImageId;
       this.getMainImage();
@@ -408,7 +405,6 @@ export class EditorService {
       this.loadRevision(true);
       LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
-      // this.biomarkerService.init(this.layersService.)
       return;
     }
     // Check if imageId is set
@@ -772,32 +768,44 @@ export class EditorService {
      	   saveAs(blob, this.localSVGName);
    }
 
-  saveToDB(): Observable<Object> {
-     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-       this.appService.loading = true;
-       if (this.layersService.unsavedChange) {
-           LocalStorage.save(this, this.layersService);
-           this.layersService.unsavedChange = false;
-       }
+   cancel(){
+   }
 
-       //
-       this.layersService.biomarkerCanvas.forEach(b => {
-        const elem = document.getElementById((b.id).replace('annotation-', ''));
-        if (!elem) {
-          return throwError(b.id.replace('annotation-', '') + ' was not found.');
-        }
-        const url = b.currentCanvas.toDataURL();
-          elem.setAttribute('xlink:href', url);
-       });
-        const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-        const body = {
-        svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
+  saveToDB(savedTask: Task) {
+  	// A canva has to be loaded
+	if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
+    this.appService.loading = true;
+
+	   // The ophtalmologist work is saved
+    if (this.layersService.unsavedChange) {
+       LocalStorage.save(this, this.layersService);
+       this.layersService.unsavedChange = false;
+	}
+
+    this.layersService.biomarkerCanvas.forEach(b => {
+		const elem = document.getElementById((b.id).replace('annotation-', ''));
+    	if (!elem) {
+        	return throwError(b.id.replace('annotation-', '') + ' was not found.');
+    	}
+    	const url = b.currentCanvas.toDataURL();
+		elem.setAttribute('xlink:href', url);
+    });
+
+    const taskId = savedTask.id;
+    const body = {
+        //revision : JSON.stringify(this.backgroundCanvas),
         //diagnostic: this.commentService.comment
+        data: JSON.stringify(this.backgroundCanvas.currentCanvas.toDataURL()),
+        uptime: + new Date(),
+        isComplete: savedTask.isComplete
        };
-       const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
-       const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
-       reqBody.pipe( tap(() => { this.appService.loading = false; }));
-       return reqBody;
+       console.log(taskId);
+       console.log(body);
+    const req = this.http.post(`/api/tasks/submit/${taskId}`,{body, reportProgress:true, observe: 'events'});
+       //const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
+    const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
+    reqBody.pipe( tap(() => { this.appService.loading = false; }));
+    return reqBody;
    }
 
   setImageId(id: string): void {
@@ -805,15 +813,4 @@ export class EditorService {
 
     this.imageId = id;
   }
-
-  // updateTasks(tasks: Task[]): void {
-  //     // server takes 'true' and 'false' instead of booleans
-  //     tasks.forEach(x => {
-  //         const body = {
-  //             active: x.active ? 'true' : 'false',
-  //             completed: x.completed ? 'true' : 'false',
-  //         };
-  //         this.http.put(`/api/tasks/${x.id}`, body).subscribe();
-  //     });
-  // }
 }

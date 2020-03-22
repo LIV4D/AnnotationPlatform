@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 		providedIn: 'root'
 })
 export class SubmitService {
-  private currentTask: Task;
+  public currentTask: Task;
 
 	constructor(private http: HttpClient,
 				public editorService: EditorService,
