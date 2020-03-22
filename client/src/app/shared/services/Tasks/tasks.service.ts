@@ -73,6 +73,14 @@ export class TasksService {
     return task as Task;
   }
 
+  /**
+   * Set a task as completed
+   * @param nextTask: task submited by a user
+   */
+  completeTask(nextTask: Task) {
+		nextTask.isComplete = true;
+	}
+
   // Update task.isComplete in the server for a group of tasks
   updateTasksCompleteness(tasks: Task[]): void {
     // server takes 'true' and 'false' instead of booleans

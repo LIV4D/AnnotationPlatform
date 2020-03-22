@@ -27,12 +27,19 @@ export class SubmitFacadeService {
       return await this.tasksService.getTasksByImageIdApp(imageId);
     }
 
-    async getNextTask() {
-      return await this.tasksService.getNextTaskApp();
+    async loadTask(): Promise<void> {
+      if (!this.editorService.imageLocal) {
+        const currentTask: Task = await this.tasksService.getNextTaskApp();
+        await this.submitService.setCurrentTask(currentTask);
+      }
+    }
+
+    getCurrentTask(): Task{
+      return this.submitService.getCurrentTask();
     }
 
     completeTask(tasks: Task): void{
-      this.submitService.completeTask(tasks);
+      this.tasksService.completeTask(tasks);
     }
 
     afterClosedTaskDialog(dialogRef: MatDialogRef<any, any>) {

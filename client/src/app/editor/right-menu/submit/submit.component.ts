@@ -11,7 +11,6 @@ import { TaskDialogSubmissionComponent } from './task-dialog-submission/task-dia
 })
 export class SubmitComponent implements OnInit {
   saveTooltip: string;
-  nextTask: Task;
 
   constructor(public submitFacadeService: SubmitFacadeService,
               public dialog: MatDialog) {
@@ -19,18 +18,16 @@ export class SubmitComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadTasks();
+    this.loadTask();
 
   }
 
   // load the tasks matching with the current user and the image loaded in Editor
-  async loadTasks(){
-    if (!this.submitFacadeService.editorService.imageLocal) {
+  async loadTask(){
       //const imageId = await this.submitFacadeService.editorService.imageId;
       //this.tasks = await this.submitFacadeService.getTasks(imageId);
-      this.nextTask = await this.submitFacadeService.getNextTask();
+      await this.submitFacadeService.loadTask();
     }
-  };
 
   // save on local editing
   public saveLocal(): void {
@@ -42,17 +39,16 @@ export class SubmitComponent implements OnInit {
   }
 
   public openTaskDialog(): void {
-
+    const currentTask = this.submitFacadeService.getCurrentTask();
     // Checkbox checked by default with the task set as completed in local
-    if (Object.keys(this.nextTask).length > 0) {
-      this.submitFacadeService.completeTask(this.nextTask);
+    if (Object.keys(currentTask).length > 0) {
+      this.submitFacadeService.completeTask(currentTask);
 
     // Save taskDialog pops out
-   	const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
-        	data: { task: this.nextTask },
-                  width: '600px',
-          });
-
+    const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
+	    data: { task: currentTask },
+        width: '600px',
+    });
     this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
       this.saveRevision();
@@ -60,6 +56,6 @@ export class SubmitComponent implements OnInit {
   }
 
   public saveRevision(loadNext= false): void {
-    this.submitFacadeService.saveRevision(loadNext);
+	this.submitFacadeService.saveRevision(loadNext);
   }
 }
