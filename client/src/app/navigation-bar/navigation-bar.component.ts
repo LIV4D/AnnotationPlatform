@@ -1,3 +1,4 @@
+import { StorageService } from './../shared/services/storage.service';
 import { Component } from '@angular/core';
 import { NavigationBarFacadeService } from './navigation-bar.facade.service';
 import { Router } from '@angular/router';
@@ -5,6 +6,7 @@ import { Router } from '@angular/router';
 import * as screenfull from 'screenfull';
 import {Screenfull} from 'screenfull';
 import { HeaderService } from '../shared/services/header.service';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -18,9 +20,13 @@ export class NavigationBarComponent {
   loadingLabel = '';
   loadingProgress = 0;
   loadingDownload = true;
+  isAdmin = false;
+  isResearcher = false;
+  userRole = '';
+  storageSub = new Subject<string>();
 
   constructor(private headerService: HeaderService, private navigationBarFacadeService: NavigationBarFacadeService,
-              public router: Router) {
+              public router: Router, private storageService: StorageService) {
 
     this.headerService.cbProgress = (progress: number) => { this.loadingProgress = progress; };
     this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
@@ -36,6 +42,16 @@ export class NavigationBarComponent {
       }
     };
   }
+
+  ngOnInit() {
+    this.storageService.watchStorage().subscribe((data: string) => {
+      // this will call whenever your localStorage data changes
+      this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
+      console.log(this.userRole);
+    });
+  }
+
+
 
   toggleFullScreen(): void {
     const sreenfullEntity = screenfull as Screenfull;
