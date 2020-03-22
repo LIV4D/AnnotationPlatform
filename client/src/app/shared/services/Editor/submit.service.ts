@@ -42,7 +42,7 @@ export class SubmitService {
 	}
 
 	public saveRevision(loadNext= false): void {
-		this.editorService.saveToDB().subscribe(() => {
+		this.editorService.saveToDB(this.getCurrentTask()).subscribe(() => {
 				if (loadNext) {
 						this.tasksService.getNextTask().subscribe((data: any) => {
 								if (data && data.annotation) {

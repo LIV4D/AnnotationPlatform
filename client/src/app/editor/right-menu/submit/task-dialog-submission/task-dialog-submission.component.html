@@ -2,8 +2,8 @@
     <h2 mat-dialog-title>Complete Tasks</h2>
     <div id="tasklist">
         <!--LIST OF TASKS: TODO: Only show one task with NG-Container -->
-        <table>
-            <tr [(ngModel)]="data" ngDefaultControl>
+        <table >
+            <tr [ngModel]="data" ngDefaultControl>
                 <td id="taskName">{{data.task.taskType.title}}</td>
                 <td id="taskdesc">{{data.task.taskType.description}}</td>
                 <td>

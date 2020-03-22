@@ -25,7 +25,7 @@ export class TaskDialogSubmissionComponent implements OnInit {
 
   // Checkbox toggles completeness of the task
   checkTask(checkValue): void {
-    this.data.tasks.isComplete = checkValue;
+    this.data.task.isComplete = checkValue;
   }
 
 }

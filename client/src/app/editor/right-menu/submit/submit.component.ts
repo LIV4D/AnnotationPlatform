@@ -40,6 +40,7 @@ export class SubmitComponent implements OnInit {
 
   public openTaskDialog(): void {
     const currentTask = this.submitFacadeService.getCurrentTask();
+
     // Checkbox checked by default with the task set as completed in local
     if (Object.keys(currentTask).length > 0) {
       this.submitFacadeService.completeTask(currentTask);
@@ -49,6 +50,8 @@ export class SubmitComponent implements OnInit {
 	    data: { task: currentTask },
         width: '600px',
     });
+
+    // Action after the dialog has been closed
     this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
       this.saveRevision();
