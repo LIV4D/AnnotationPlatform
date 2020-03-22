@@ -4,6 +4,7 @@ import { isNullOrUndefined } from 'util';
 import { Task } from './task.model';
 import { IProtoTaskType } from '../prototype interfaces/IProtoTaskType.interface';
 import { ITaskType } from '../interfaces/ITaskType.interface';
+import { Widget } from './widget.model';
 
 @Entity()
 export class TaskType {
@@ -18,6 +19,9 @@ export class TaskType {
 
     @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
+
+    @OneToMany(type => Widget, widget => widget.assignedTask)
+    public widgets: Widget[];
 
     public static fromInterface(itype: ITaskType): TaskType {
         const type = new TaskType();

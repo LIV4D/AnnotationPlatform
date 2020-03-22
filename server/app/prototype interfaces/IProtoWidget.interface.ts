@@ -3,6 +3,7 @@ export interface IProtoWidget {
     id: number;
     label: string;
     type: WidgetType;
+    defaultEntryValue: string;
     validationRegex: string;
     entryField: string;
 }

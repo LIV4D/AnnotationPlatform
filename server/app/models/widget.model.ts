@@ -4,6 +4,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'ty
 
 import { IWidget } from '../interfaces/IWidget.interface';
 import { IProtoWidget } from '../prototype interfaces/IProtoWidget.interface';
+import { TaskType } from './taskType.model';
 
 export enum WidgetType {
     multiLine = 'multiLine',
@@ -33,6 +34,9 @@ export class Widget {
     @Column({ length: 32, default: '' })
     public validationRegex: string;
 
+    @ManyToOne(type => TaskType, taskType => taskType.widgets)
+    public assignedTask: TaskType;
+
     public static fromInterface(iWidget: IWidget): Widget {
         const u = new Widget();
         if (!isNullOrUndefined(iWidget.id)) { u.id = iWidget.id; }
@@ -44,6 +48,7 @@ export class Widget {
         return {
             id: this.id,
             label: this.label,
+            defaultEntryValue: this.defaultEntryValue,
             entryField: this.entryField,
             validationRegex: this.validationRegex,
             type: this.type,
@@ -62,6 +67,7 @@ export class Widget {
             id: this.id,
             label: this.label,
             entryField: this.entryField,
+            defaultEntryValue: this.defaultEntryValue,
             validationRegex: this.validationRegex,
             type: this.type,
         };
