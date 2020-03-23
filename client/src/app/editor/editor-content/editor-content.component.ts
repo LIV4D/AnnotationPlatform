@@ -35,8 +35,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
 
   // Comment-box array
   commentBoxes = [];
-  commentBoxCreated = false;
-  commentBoxCreated2 = false;
+  commentBoxCreated = 0;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
@@ -81,10 +80,10 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   onMouseDown(event: MouseEvent): void {
 
     // Dynamically create new comment-box
-    // if (!this.commentBoxCreated) {
-    this.createCommentBox();
-      // this.commentBoxCreated = true;
-    // }
+    if (this.commentBoxCreated < 5) {
+      this.createCommentBox();
+      this.commentBoxCreated++;
+    }
 
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {

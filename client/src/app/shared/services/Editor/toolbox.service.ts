@@ -103,8 +103,8 @@ export class ToolboxService {
 
   public onCursorUp(): void {
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-      console.log('STIK TIK TIK TIK L7ALWA L7ALWA');
-      // Notify comment add here
+      // implement comment box here
+
     }
     this.selectedTool.getValue().onCursorUp();
   }
