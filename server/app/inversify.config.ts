@@ -30,6 +30,9 @@ import { UserController } from './controllers/user.controller';
 import { IController } from './controllers/abstractController.controller';
 import { TaskBundleService } from './services/taskBundle.service';
 import { TaskPriorityRepository } from './repository/taskPriority.repository';
+import { WidgetController } from './controllers/widget.controller';
+import { WidgetService } from './services/widget.service';
+import { WidgetRepository } from './repository/widget.repository';
 
 const container: Container = new Container();
 
@@ -45,6 +48,7 @@ container.bind<IController>(TYPES.Controller).to(SubmissionEventController);
 container.bind<IController>(TYPES.Controller).to(AnnotationController);
 container.bind<IController>(TYPES.Controller).to(TaskPriorityController);
 container.bind<IController>(TYPES.Controller).to(ManagementController);
+container.bind<IController>(TYPES.Controller).to(WidgetController);
 // Services
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TaskService>(TYPES.TaskService).to(TaskService);
@@ -54,6 +58,7 @@ container.bind<AnnotationService>(TYPES.AnnotationService).to(AnnotationService)
 container.bind<ImageService>(TYPES.ImageService).to(ImageService);
 container.bind<ManagementService>(TYPES.ManagementService).to(ManagementService);
 container.bind<TaskBundleService>(TYPES.TaskPriorityService).to(TaskBundleService);
+container.bind<WidgetService>(TYPES.WidgetService).to(WidgetService);
 // Repositories
 container.bind<ConnectionProvider>('ConnectionProvider').toProvider<Connection>(connectionProvider);
 container.bind<ImageRepository>(TYPES.ImageRepository).to(ImageRepository);
@@ -63,5 +68,6 @@ container.bind<TaskTypeRepository>(TYPES.TaskTypeRepository).to(TaskTypeReposito
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository);
 container.bind<SubmissionEventRepository>(TYPES.SubmissionEventRepository).to(SubmissionEventRepository);
 container.bind<TaskPriorityRepository>(TYPES.TaskPriorityRepository).to(TaskPriorityRepository);
+container.bind<WidgetRepository>(TYPES.WidgetRepository).to(WidgetRepository);
 
 export { container };
