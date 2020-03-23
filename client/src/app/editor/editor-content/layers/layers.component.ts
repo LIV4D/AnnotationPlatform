@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { LayersFacadeService } from './../layers/layers.facade.service';
 import { Tool } from './../../../shared/services/Editor/Tools/tool.service';
 import { Point } from './../../../shared/services/Editor/Tools/point.service';
 import { TOOL_NAMES } from './../../../shared/constants/tools';
+import { CommentBoxComponent } from '../../comment-box/comment-box.component';
 
 @Component({
   selector: 'app-layers',
@@ -10,8 +11,6 @@ import { TOOL_NAMES } from './../../../shared/constants/tools';
   styleUrls: ['./layers.component.scss']
 })
 export class LayersComponent implements OnInit {
-
-  // constructor(private layersFacadeService: LayersFacadeService, private editorService: EditorFacadeService) { }
 
   // ngOnInit(): void {
   //   // console.log('LayersComponent::ngOnInit()');
@@ -25,134 +24,152 @@ export class LayersComponent implements OnInit {
   //   // this.toolboxService.selectedTool.subscribe(value => this.updateMouseCursor(value));
   // }
 
+  @ViewChild('svgContainer') svgContainer: ElementRef;
+  @ViewChild('mouseCursor') mouseCursor: ElementRef;
+  @ViewChild('dashStroke') dashStroke: ElementRef;
 
-    @ViewChild('svgContainer') svgContainer: ElementRef;
-    @ViewChild('mouseCursor') mouseCursor: ElementRef;
-    @ViewChild('dashStroke') dashStroke: ElementRef;
 
-    constructor(
-        private layersFacadeService: LayersFacadeService,
-    ) {
+  // Comment-box array
+  // commentBoxes = [];
+  // commentBoxCreated = false;
+  // @ViewChild('commentBox', {read: ViewContainerRef}) commentBox: ViewContainerRef;
+
+  constructor(private layersFacadeService: LayersFacadeService,
+              private resolver: ComponentFactoryResolver) {}
+
+  ngOnInit(): void {
+
+    this.layersFacadeService.init();
+    this.layersFacadeService.canvasDisplayRatio.subscribe(
+      value => {
+        this.updateCursorRadius();
+    });
+    this.layersFacadeService.brushWidthChanged.subscribe(() => { this.updateCursorRadius(); });
+    this.layersFacadeService.selectedTool.subscribe(value => this.updateMouseCursor(value));
+
+    // Dynamically create new comment-box
+    // if (!this.commentBoxCreated) {
+    //   this.createCommentBox();
+    //   this.commentBoxCreated = true;
+    // }
+  }
+
+  createCommentBox() {
+    // console.log('inside createCommentBox()');
+    // this.commentBox.clear();
+    // const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
+    // const componentRef = this.commentBox.createComponent(factory);
+    // console.log('Comment box created!');
+  }
+
+  updateMouseCursor(tool: Tool): void {
+    if (tool.name === TOOL_NAMES.BRUSH || tool.name === TOOL_NAMES.ERASER) {
+      this.showMouseCursor();
+    } else {
+      this.hideMouseCursor();
     }
+  }
 
-    ngOnInit(): void {
-        this.layersFacadeService.init();
-        this.layersFacadeService.canvasDisplayRatio.subscribe(
-            value => {
-                this.updateCursorRadius();
-            });
-        this.layersFacadeService.brushWidthChanged.subscribe(() => { this.updateCursorRadius(); });
-        this.layersFacadeService.selectedTool.subscribe(value => this.updateMouseCursor(value));
-    }
+  hideMouseCursor(): void {
+    this.mouseCursor.nativeElement.setAttribute('stroke', 'transparent');
+  }
 
-    updateMouseCursor(tool: Tool): void {
-        if (tool.name === TOOL_NAMES.BRUSH || tool.name === TOOL_NAMES.ERASER) {
-            this.showMouseCursor();
-        } else {
-            this.hideMouseCursor();
-        }
+  showMouseCursor(): void {
+    if (this.layersFacadeService.mousePositionInDisplayCoordinates) {
+      this.mouseCursor.nativeElement.setAttribute('stroke', 'black');
+      this.updateCursorRadius();
+      this.setCursorPosition(this.layersFacadeService.mousePositionInDisplayCoordinates);
     }
+  }
 
-    hideMouseCursor(): void {
-        this.mouseCursor.nativeElement.setAttribute('stroke', 'transparent');
-    }
+  setCursorPosition(point: Point): void {
+    this.mouseCursor.nativeElement.setAttribute('cx', point.x.toString());
+    this.mouseCursor.nativeElement.setAttribute('cy', point.y.toString());
+  }
 
-    showMouseCursor(): void {
-        if (this.layersFacadeService.mousePositionInDisplayCoordinates) {
-            this.mouseCursor.nativeElement.setAttribute('stroke', 'black');
-            this.updateCursorRadius();
-            this.setCursorPosition(this.layersFacadeService.mousePositionInDisplayCoordinates);
-        }
+  onMouseIn(event: MouseEvent): void {
+    const selectedToolName = this.layersFacadeService.selectedTool.getValue().name;
+    this.layersFacadeService.mousePositionInDisplayCoordinates = this.getPoint(new Point(event.clientX, event.clientY));
+    if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {
+      this.showMouseCursor();
     }
+  }
 
-    setCursorPosition(point: Point): void {
-        this.mouseCursor.nativeElement.setAttribute('cx', point.x.toString());
-        this.mouseCursor.nativeElement.setAttribute('cy', point.y.toString());
+  onTouchStart(event: TouchEvent): void{
+    const touch = event.targetTouches[0];
+    const selectedToolName = this.layersFacadeService.selectedTool.getValue().name;
+    this.layersFacadeService.mousePositionInDisplayCoordinates = this.getPoint(new Point(touch.clientX, touch.clientY));
+    if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {
+      this.showMouseCursor();
     }
+  }
 
-    onMouseIn(event: MouseEvent): void {
-        const selectedToolName = this.layersFacadeService.selectedTool.getValue().name;
-        this.layersFacadeService.mousePositionInDisplayCoordinates = this.getPoint(new Point(event.clientX, event.clientY));
-        if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {
-            this.showMouseCursor();
-        }
-    }
+  onMouseMove(event: MouseEvent): void {
+    this.cursorMoveEvent(new Point(event.clientX, event.clientY));
+  }
 
-    onTouchStart(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        const selectedToolName = this.layersFacadeService.selectedTool.getValue().name;
-        this.layersFacadeService.mousePositionInDisplayCoordinates = this.getPoint(new Point(touch.clientX, touch.clientY));
-        if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {
-            this.showMouseCursor();
-        }
-    }
+  onTouchMove(event: TouchEvent): void{
+    const touch = event.targetTouches[0];
+    this.cursorMoveEvent(new Point(touch.clientX, touch.clientY));
+  }
 
-    onMouseMove(event: MouseEvent): void {
-        this.cursorMoveEvent(new Point(event.clientX, event.clientY));
+  onMouseUp(event: MouseEvent): void {
+    if (this.layersFacadeService.lastPoint) {
+      const point = this.getPoint(new Point(event.clientX, event.clientY));
+      this.layersFacadeService.lastPoint = point;
+      this.setDashStrokePosition(point);
     }
+  }
 
-    onTouchMove(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        this.cursorMoveEvent(new Point(touch.clientX, touch.clientY));
-    }
+  onMouseLeave(event: MouseEvent): void {
+    this.hideMouseCursor();
+    this.layersFacadeService.mousePositionInDisplayCoordinates = null;
+  }
 
-    onMouseUp(event: MouseEvent): void {
-        if (this.layersFacadeService.lastPoint) {
-            const point = this.getPoint(new Point(event.clientX, event.clientY));
-            this.layersFacadeService.lastPoint = point;
-            this.setDashStrokePosition(point);
-        }
+  onTouchEnd(event: TouchEvent): void{
+    const touch = event.targetTouches[0];
+    if (this.layersFacadeService.lastPoint) {
+      const point = this.getPoint(new Point(touch.clientX, touch.clientY));
+      this.layersFacadeService.lastPoint = point;
+      this.setDashStrokePosition(point);
     }
+    this.hideMouseCursor();
+    this.layersFacadeService.mousePositionInDisplayCoordinates = null;
+  }
 
-    onMouseLeave(event: MouseEvent): void {
-        this.hideMouseCursor();
-        this.layersFacadeService.mousePositionInDisplayCoordinates = null;
+  cursorMoveEvent(clientPoint: Point): void {
+    const selectedToolName = this.layersFacadeService.selectedTool.getValue().name;
+    const point = this.getPoint(clientPoint);
+    if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {
+      this.setCursorPosition(new Point(point.x, point.y));
     }
+    if (this.layersFacadeService.lastPoint) {
+      this.setDashStrokePosition(point);
+    }
+    this.layersFacadeService.mousePositionInDisplayCoordinates = new Point(point.x, point.y);
+  }
 
-    onTouchEnd(event: TouchEvent): void{
-        const touch = event.targetTouches[0];
-        if (this.layersFacadeService.lastPoint) {
-            const point = this.getPoint(new Point(touch.clientX, touch.clientY));
-            this.layersFacadeService.lastPoint = point;
-            this.setDashStrokePosition(point);
-        }
-        this.hideMouseCursor();
-        this.layersFacadeService.mousePositionInDisplayCoordinates = null;
+  updateCursorRadius(): void {
+    const r = this.layersFacadeService.brushWidth / 2 * this.layersFacadeService.canvasDisplayRatio.getValue();
+    if (r) {
+      this.mouseCursor.nativeElement.setAttribute('r', (r).toString());
     }
+  }
 
-    cursorMoveEvent(clientPoint: Point): void {
-        const selectedToolName = this.layersFacadeService.selectedTool.getValue().name;
-        const point = this.getPoint(clientPoint);
-        if (selectedToolName === TOOL_NAMES.BRUSH || selectedToolName === TOOL_NAMES.ERASER) {
-            this.setCursorPosition(new Point(point.x, point.y));
-        }
-        if (this.layersFacadeService.lastPoint) {
-            this.setDashStrokePosition(point);
-        }
-        this.layersFacadeService.mousePositionInDisplayCoordinates = new Point(point.x, point.y);
-    }
+  setDashStrokePosition(point: Point): void {
+    this.dashStroke.nativeElement.setAttribute('x1', this.layersFacadeService.lastPoint.x.toString());
+    this.dashStroke.nativeElement.setAttribute('y1', this.layersFacadeService.lastPoint.y.toString());
+    this.dashStroke.nativeElement.setAttribute('x2', point.x.toString());
+    this.dashStroke.nativeElement.setAttribute('y2', point.y.toString());
+  }
 
-    updateCursorRadius(): void {
-        const r = this.layersFacadeService.brushWidth / 2 * this.layersFacadeService.canvasDisplayRatio.getValue();
-        if (r) {
-            this.mouseCursor.nativeElement.setAttribute('r', (r).toString());
-        }
-    }
-
-    setDashStrokePosition(point: Point): void {
-        this.dashStroke.nativeElement.setAttribute('x1', this.layersFacadeService.lastPoint.x.toString());
-        this.dashStroke.nativeElement.setAttribute('y1', this.layersFacadeService.lastPoint.y.toString());
-        this.dashStroke.nativeElement.setAttribute('x2', point.x.toString());
-        this.dashStroke.nativeElement.setAttribute('y2', point.y.toString());
-    }
-
-    getPoint(clientPoint: Point): Point {
-        const x = this.layersFacadeService.scaleX === 1 ?
-            Math.ceil(clientPoint.x - this.svgContainer.nativeElement.getBoundingClientRect().left) :
-            this.layersFacadeService.viewPort.clientWidth -
-            (Math.ceil(clientPoint.x - this.svgContainer.nativeElement.getBoundingClientRect().left));
-        const y = Math.ceil(clientPoint.y - this.svgContainer.nativeElement.getBoundingClientRect().top);
-        return new Point(x, y);
-    }
+  getPoint(clientPoint: Point): Point {
+    const x = this.layersFacadeService.scaleX === 1 ?
+      Math.ceil(clientPoint.x - this.svgContainer.nativeElement.getBoundingClientRect().left) :
+      this.layersFacadeService.viewPort.clientWidth -
+      (Math.ceil(clientPoint.x - this.svgContainer.nativeElement.getBoundingClientRect().left));
+    const y = Math.ceil(clientPoint.y - this.svgContainer.nativeElement.getBoundingClientRect().top);
+    return new Point(x, y);
+  }
 
 }

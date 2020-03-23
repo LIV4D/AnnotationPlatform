@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild,
-        OnDestroy, ElementRef, AfterViewInit, Renderer2,
-        ViewContainerRef,
-        ComponentFactoryResolver} from '@angular/core';
+        OnDestroy, ElementRef, AfterViewInit,
+        ComponentFactoryResolver,
+        ViewContainerRef} from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
@@ -32,6 +32,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   zoomInitFactor: number;
   delayEventTimer: any;
   delayedEventHandler: Function;
+
   // Comment-box array
   commentBoxes = [];
   commentBoxCreated = false;
@@ -98,10 +99,10 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   createCommentBox() {
-    this.commentBox.clear();
-    const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
-    const componentRef = this.commentBox.createComponent(factory);
-    console.log('Comment box created!');
+    // this.commentBox.clear();
+    // const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
+    // const componentRef = this.commentBox.createComponent(factory);
+    // console.log('Comment box created!');
   }
 
   onMouseUp(event: MouseEvent): void {

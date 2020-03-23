@@ -9,8 +9,8 @@ import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 })
 export class LayersFacadeService {
 
-    constructor(private layersService: LayersService, private editorService: EditorService, public toolPropertiesService: ToolPropertiesService, public toolboxService: ToolboxService) {
-    }
+    constructor(private layersService: LayersService, private editorService: EditorService,
+                public toolPropertiesService: ToolPropertiesService, public toolboxService: ToolboxService) {}
 
     public init() {
         this.layersService.init();
@@ -43,7 +43,7 @@ export class LayersFacadeService {
     }
 
     get viewPort(){
-        return this.editorService.viewPort
+        return this.editorService.viewPort;
     }
 
     // Tool properties service

@@ -214,24 +214,24 @@ export class LayersService {
   }
 
   toggleBorders(showBorders: boolean): void {
-      this.appService.loading = true;
-      this.biomarkerCanvas.forEach((b) => {
-          if (showBorders) {
-              this.imageBorderService.erode(b.borderCanvas, b.currentCanvas);
-          }
-          b.drawBorders = showBorders;
-          b.draw();
-      });
-      this.appService.loading = false;
+    this.appService.loading = true;
+    this.biomarkerCanvas.forEach((b) => {
+      if (showBorders) {
+        this.imageBorderService.erode(b.borderCanvas, b.currentCanvas);
+      }
+      b.drawBorders = showBorders;
+      b.draw();
+    });
+    this.appService.loading = false;
   }
 
   toggleShadows(showShadows: boolean): void {
-      this.appService.loading = true;
-      this.biomarkerCanvas.forEach((b) => {
-          b.drawShadows = showShadows;
-          b.draw();
-      });
-      this.appService.loading = false;
+    this.appService.loading = true;
+    this.biomarkerCanvas.forEach((b) => {
+      b.drawShadows = showShadows;
+      b.draw();
+    });
+    this.appService.loading = false;
   }
 
   public resize(width: number, height: number): void {
@@ -257,12 +257,12 @@ export class LayersService {
   }
 
   public updateDashStroke(): void {
-      const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+    const dashStroke = document.getElementById('dashStroke') as HTMLElement;
 
-      dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
-      dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
-      dashStroke.setAttribute('x2', this.lastPoint.x.toString());
-      dashStroke.setAttribute('y2', this.lastPoint.y.toString());
+    dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
+    dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
+    dashStroke.setAttribute('x2', this.lastPoint.x.toString());
+    dashStroke.setAttribute('y2', this.lastPoint.y.toString());
   }
 
   public removeFirstPoint(): void {
