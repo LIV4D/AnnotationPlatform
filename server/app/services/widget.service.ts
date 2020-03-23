@@ -1,56 +1,40 @@
 import { inject, injectable } from 'inversify';
-import { isNullOrUndefined } from 'util';
 
 import TYPES from '../types';
-import { AnnotationService } from './annotation.service';
-import { TaskTypeRepository } from '../repository/taskType.repository';
-import { TaskRepository } from '../repository/task.repository';
-import { Task } from '../models/task.model';
-import { ITask } from '../interfaces/ITask.interface';
-import { IAnnotation } from '../interfaces/IAnnotation.interface';
-import { ISubmission } from '../../../common/interfaces';
-import { User } from '../models/user.model';
-import { ITaskGallery } from '../interfaces/gallery.interface';
 import { createError } from '../utils/error';
-import { throwIfNotAdmin } from '../utils/userVerification';
+import { WidgetRepository } from '../repository/widget.repository';
+import { IWidget } from '../interfaces/IWidget.interface';
+import { Widget } from '../models/widget.model';
 
 @injectable()
 export class WidgetService {
-    @inject(TYPES.TaskRepository)
-    private taskRepository: TaskRepository;
+    @inject(TYPES.WidgetRepository)
+    private widgetRepository: WidgetRepository;
 
-    public static throwIfNotAuthorized(task: Task, user: User) {
-        if (task.assignedUserId !== user.id && task.creatorId !== user.id) {
-            throwIfNotAdmin(user);
-        }
+    public async createWidget(newWidget: IWidget): Promise<Widget> {
+        const widget = Widget.fromInterface(newWidget);
+        return await this.widgetRepository.create(widget);
     }
 
-    public async createTask(newTask: ITask): Promise<Task> {
-        const task = Task.fromInterface(newTask);
-        return await this.taskRepository.create(task);
-    }
-
-    public async getTask(id: number, user: User): Promise<Task> {
-        const task = await this.taskRepository.find(id);
-        if (task == null) {
+    public async getWidget(id: number): Promise<Widget> {
+        const widget = await this.widgetRepository.find(id);
+        if (widget == null) {
             throw createError('This task does not exist.', 404);
         }
-        TaskService.throwIfNotAuthorized(task, user);
-        return task;
+        return widget;
     }
 
-    public async updateTask(updatedTask: ITask, user: User) {
-        const oldTask = await this.getTask(updatedTask.id, user);
-        oldTask.update(updatedTask);
-        return await this.taskRepository.create(oldTask);
+    public async updateWidget(updatedWidget: IWidget) {
+        const oldWidget = await this.getWidget(updatedWidget.id);
+        oldWidget.update(updatedWidget);
+        return await this.widgetRepository.create(oldWidget);
     }
 
-    public async deleteTask(id: number, user: User) {
-        const task = await this.taskRepository.find(id);
-        if (task == null) {
-            throw createError('This task does not exist.', 404);
+    public async deleteWidget(id: number) {
+        const widget = await this.widgetRepository.find(id);
+        if (widget == null) {
+            throw createError('This widget does not exist.', 404);
         }
-        TaskService.throwIfNotAuthorized(task, user);
-        return await this.taskRepository.delete(task);
+        return await this.widgetRepository.delete(widget);
     }
 }

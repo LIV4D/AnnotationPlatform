@@ -4,11 +4,7 @@ import { isNullOrUndefined } from 'util';
 
 import TYPES from '../types';
 import { IController } from './abstractController.controller';
-import { TaskService } from '../services/task.service';
-import { Task } from '../models/task.model';
-import { ITask } from '../interfaces/ITask.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
-import { ISubmission } from '../../../common/interfaces';
 import { IWidget } from '../interfaces/IWidget.interface';
 import { WidgetService } from '../services/widget.service';
 
@@ -41,21 +37,20 @@ export class WidgetController implements IController {
      * The visibility, completness and last modified time are updated
      */
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const updatedTask: ITask = {
-            id: req.params.taskId,
-            isVisible: isNullOrUndefined(req.body.isVisible) ? false : req.body.isVisible,
-            isComplete: isNullOrUndefined(req.body.isComplete) ? false : req.body.isComplete,
-            lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
+        const updatedWidget: IWidget = {
+            id: req.params.widgetId,
+            entryField: isNullOrUndefined(req.body.entryField) ? undefined : req.body.entryField,
+            label: isNullOrUndefined(req.body.label) ? undefined : req.body.label,
         };
 
-        this.widgetService.updateTask(updatedTask, req.user)
+        this.widgetService.updateWidget(updatedWidget)
             .then(task => res.send(task))
             .catch(next);
     }
 
     private deleteTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        this.widgetService.deleteTask(req.params.taskId, req.user)
+        this.widgetService.deleteWidget(req.params.taskId)
             .then(() => res.sendStatus(204))
             .catch(next);
     }

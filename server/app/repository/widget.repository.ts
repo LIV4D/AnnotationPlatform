@@ -1,6 +1,3 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Widget } from '../models/widget.model';
@@ -16,28 +13,28 @@ export class WidgetRepository {
         this.connectionProvider = connectionProvider;
     }
 
-    public async findAll(): Promise<Task[]> {
+    public async findAll(): Promise<Widget[]> {
         const repository =  (await this.connectionProvider()).getRepository(Widget);
         return await repository.find();
     }
 
-    public async create(task: Task): Promise<Task> {
+    public async create(widget: Widget): Promise<Widget> {
         const repository =  (await this.connectionProvider()).getRepository(Widget);
-        task = await repository.save(task);
-        return repository.findOne(task.id); // Reload task
+        widget = await repository.save(widget);
+        return repository.findOne(widget.id); // Reload task
     }
 
-    public async find(id: number): Promise<Task> {
+    public async find(id: number): Promise<Widget> {
         const repository =  (await this.connectionProvider()).getRepository(Widget);
         return await repository.findOne(id);
     }
 
-    public async findByIds(ids: number[]): Promise<Task[]> {
+    public async findByIds(ids: number[]): Promise<Widget[]> {
         const repository =  (await this.connectionProvider()).getRepository(Widget);
         return await repository.findByIds(ids);
     }
 
-    public async delete(task: Task): Promise<DeleteResult> {
+    public async delete(task: Widget): Promise<DeleteResult> {
         const repository =  (await this.connectionProvider()).getRepository(Widget);
         return await repository.delete(task);
     }
