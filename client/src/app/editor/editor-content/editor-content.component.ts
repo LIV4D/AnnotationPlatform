@@ -42,7 +42,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   @ViewChild('svgBox') svgBox: ElementRef;
   @ViewChild('mainCanvas') mainCanvas: ElementRef;
   @ViewChild('commentBox', {read: ViewContainerRef}) commentBox: ViewContainerRef;
-  // @ViewChild('commentBox2', {read: ViewContainerRef}) commentBox2: ViewContainerRef;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
@@ -86,10 +85,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.createCommentBox();
       // this.commentBoxCreated = true;
     // }
-    // if (!this.commentBoxCreated2) {
-    //   this.createCommentBox2();
-    //   this.commentBoxCreated = true;
-    // }
 
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
@@ -108,20 +103,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
     console.log('Comment box created!');
-
-    // this.divtest.clear();
-    // this.divtest.createEmbeddedView(factoryTest);
-    // const factoryTest = this.resolver.resolveComponentFactory(CommentBoxComponent);
-    // const componentRefTest = this.commentBox.createComponent(factoryTest);
-    // console.log('Comment box created!');
   }
-
-  // createCommentBox2() {
-  //   this.commentBox2.clear();
-  //   const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
-  //   const componentRef = this.commentBox2.createComponent(factory);
-  //   console.log('Comment box created!');
-  // }
 
   onMouseUp(event: MouseEvent): void {
     this.cursorDown = false;
