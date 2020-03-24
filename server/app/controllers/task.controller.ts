@@ -93,7 +93,7 @@ export class TaskController implements IController {
             .catch(next);
     }
 
-    private async submitTask(req: express.Request, res: express.Response, next: express.NextFunction) {
+    private submitTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const submission: ISubmission = {
             taskId: req.params.taskId as number,
             data: req.body.data,
@@ -102,7 +102,9 @@ export class TaskController implements IController {
         };
 
         try {
-            await this.taskService.submitTask(submission, req.user);
+            await this.taskService.submitTask(submission, req.user)
+            .then(res.sendStatus(204))
+            .catch(next);
             res.sendStatus(204);
         } catch (error) {
             next(error);

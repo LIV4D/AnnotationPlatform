@@ -31,7 +31,7 @@ export class Widget {
     @Column({ length: 254, default: '' })
     public entryField: string;
 
-    @Column({ length: 32, default: '' })
+    @Column({ length: 32, default: '' , nullable: true })
     public validationRegex: string;
 
     @ManyToOne(type => TaskType, taskType => taskType.widgets)
