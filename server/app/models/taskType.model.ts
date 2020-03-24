@@ -20,7 +20,7 @@ export class TaskType {
     @OneToMany(type => Task, task => task.taskType)
     public tasks: Task[];
 
-    @OneToMany(type => Widget, widget => widget.assignedTask)
+    @OneToMany(type => Widget, widget => widget.assignedTaskType)
     public widgets: Widget[];
 
     public static fromInterface(itype: ITaskType): TaskType {

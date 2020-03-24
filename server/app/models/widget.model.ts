@@ -19,6 +19,9 @@ export class Widget {
     @PrimaryGeneratedColumn('increment')
     public id: number;
 
+    @Column()
+    public taskTypeId: number;
+
     @Column({ type: 'text', default : WidgetType.simpleLine })
     public type: WidgetType;
 
@@ -34,8 +37,9 @@ export class Widget {
     @Column({ length: 32, default: '' , nullable: true })
     public validationRegex: string;
 
+
     @ManyToOne(type => TaskType, taskType => taskType.widgets)
-    public assignedTask: TaskType;
+    public assignedTaskType: TaskType;
 
     public static fromInterface(iWidget: IWidget): Widget {
         const u = new Widget();
@@ -47,6 +51,7 @@ export class Widget {
     public interface(): IWidget {
         return {
             id: this.id,
+            taskTypeId: this.taskTypeId,
             label: this.label,
             defaultEntryValue: this.defaultEntryValue,
             entryField: this.entryField,
@@ -55,16 +60,18 @@ export class Widget {
         };
     }
 
-    public update(iuser: IWidget) {
-        if (!isNullOrUndefined(iuser.label)) { this.label = iuser.label; }
-        if (!isNullOrUndefined(iuser.entryField)) { this.entryField = iuser.entryField; }
-        if (!isNullOrUndefined(iuser.validationRegex)) { this.validationRegex = iuser.validationRegex; }
-        if (!isNullOrUndefined(iuser.type)) { this.type = iuser.type; }
+    public update(iwidget: IWidget) {
+        if (!isNullOrUndefined(iwidget.taskTypeId)) {  this.taskTypeId = iwidget.taskTypeId; }
+        if (!isNullOrUndefined(iwidget.label)) { this.label = iwidget.label; }
+        if (!isNullOrUndefined(iwidget.entryField)) { this.entryField = iwidget.entryField; }
+        if (!isNullOrUndefined(iwidget.validationRegex)) { this.validationRegex = iwidget.validationRegex; }
+        if (!isNullOrUndefined(iwidget.type)) { this.type = iwidget.type; }
     }
 
     public proto(): IProtoWidget {
         return {
             id: this.id,
+            taskTypeId: this.taskTypeId,
             label: this.label,
             entryField: this.entryField,
             defaultEntryValue: this.defaultEntryValue,
