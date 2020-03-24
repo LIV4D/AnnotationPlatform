@@ -19,7 +19,7 @@ export class CommentBoxComponent implements OnInit {
   }
 
   onMouseUp(e: Event) {
-    console.log('commentBox -- mouse up');
+    // console.log('commentBox -- mouse up');
     // e.preventDefault();
     if (this.moving) {
       setTimeout(() => {
@@ -34,14 +34,14 @@ export class CommentBoxComponent implements OnInit {
   }
 
   onMouseDown(e: Event) {
-    console.log('commentBox -- mouse down');
+    // console.log('commentBox -- mouse down');
     this.down = true;
     this.pointFormat = 'nothing';
     // this.isDisabled = false;
   }
 
   onMouseMove(e: Event) {
-    console.log('commentBox -- mouse move');
+    // console.log('commentBox -- mouse move');
     if (this.down) {
       this.isDisabled = true;
       this.moving = true;
@@ -49,7 +49,7 @@ export class CommentBoxComponent implements OnInit {
   }
 
   onFormClick(e: Event) {
-    console.log('commentBox -- textarea clicked');
+    // console.log('commentBox -- textarea clicked');
     this.pointFormat = 'nothing';
   }
 }
@@ -87,7 +87,3 @@ export class CommentBoxComponent implements OnInit {
 //   }
 
 // }
-
-
-
-

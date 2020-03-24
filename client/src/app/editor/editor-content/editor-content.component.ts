@@ -6,6 +6,7 @@ import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
+import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -17,7 +18,8 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
 
   constructor(public editorFacadeService: EditorFacadeService,
               public appService: AppService,
-              private resolver: ComponentFactoryResolver) {
+              private resolver: ComponentFactoryResolver,
+              private toolBoxService: ToolboxService) {
     this.delayEventTimer = null;
   }
 
@@ -57,6 +59,13 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     // this.editorFacadeService.load(imageId); // I don't know why this is here
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
+
+    this.toolBoxService.commentBoxClicked.subscribe( hasBeenClicked => {
+      console.log('this.event : ' + hasBeenClicked.commentClicked);
+      if (hasBeenClicked) {
+        this.createCommentBox();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -64,6 +73,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.cursorDown = false;
     this.middleMouseDown = false;
     this.zoomInitFactor = null;
+    this.toolBoxService.commentBoxClicked.unsubscribe();
   }
 
   onMouseWheel(event: WheelEvent): void {
@@ -80,10 +90,10 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   onMouseDown(event: MouseEvent): void {
 
     // Dynamically create new comment-box
-    if (this.commentBoxCreated < 5) {
-      this.createCommentBox();
-      this.commentBoxCreated++;
-    }
+    // if (this.commentBoxCreated < 5) {
+    //   this.createCommentBox();
+    //   this.commentBoxCreated++;
+    // }
 
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {

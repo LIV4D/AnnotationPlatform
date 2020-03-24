@@ -12,7 +12,7 @@ import { CommentTool } from './Tools/comment-tool.service';
 
 import { TOOL_NAMES } from './../../constants/tools';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
@@ -26,6 +26,7 @@ import { BiomarkerService } from './biomarker.service';
 export class ToolboxService {
 
   selectedTool: BehaviorSubject<Tool>;
+  commentBoxClicked: Subject<any>;
   listOfTools: Tool[];
 
   constructor(private layersService: LayersService, private editorService: EditorService,
@@ -59,6 +60,7 @@ export class ToolboxService {
     ];
 
     this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
+    this.commentBoxClicked = new Subject<any>();
   }
 
   setSelectedTool(newSelectedTool: string): void {
@@ -104,7 +106,7 @@ export class ToolboxService {
   public onCursorUp(): void {
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
       // implement comment box here
-
+      this.commentBoxClicked.next({commentClicked: true});
     }
     this.selectedTool.getValue().onCursorUp();
   }
