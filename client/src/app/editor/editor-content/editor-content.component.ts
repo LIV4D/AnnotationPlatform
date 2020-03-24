@@ -88,13 +88,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onMouseDown(event: MouseEvent): void {
-
-    // Dynamically create new comment-box
-    // if (this.commentBoxCreated < 5) {
-    //   this.createCommentBox();
-    //   this.commentBoxCreated++;
-    // }
-
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
