@@ -60,7 +60,7 @@ export class EditorService {
     this.commentBoxes = CommentBoxSingleton.getInstance();
     // Check if a change was made to save to localStorage every 30 seconds.
     setInterval(() => {
-      console.log(this.commentBoxes.comments);
+      console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;

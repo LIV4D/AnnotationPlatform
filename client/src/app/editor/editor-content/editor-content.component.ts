@@ -99,7 +99,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   createCommentBox() {
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
-    this.commentBoxes.comments.push(componentRef);
+    this.commentBoxes.comments.push(componentRef.instance);
   }
 
   onMouseUp(event: MouseEvent): void {

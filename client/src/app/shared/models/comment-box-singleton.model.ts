@@ -1,7 +1,9 @@
+import { CommentBoxComponent } from 'src/app/editor/comment-box/comment-box.component';
+
 export class CommentBoxSingleton {
 
   private static instance: CommentBoxSingleton;
-  comments = [];
+  comments: CommentBoxComponent[] = [];
 
   /**
    * The Singleton's constructor should always be private to prevent direct
@@ -21,5 +23,13 @@ export class CommentBoxSingleton {
       }
 
       return CommentBoxSingleton.instance;
+  }
+
+  /**
+   * Finally, any singleton should define some business logic, which can be
+   * executed on its instance.
+   */
+  getTextAreaValues(): string[] {
+    return this.comments.map( value => value.textAreaValue );
   }
 }
