@@ -1,5 +1,5 @@
-import { Injectable, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
-import { BehaviorSubject, throwError, Observable } from 'rxjs';
+import { Injectable, EventEmitter, ElementRef } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
 import { BackgroundCanvas } from './Tools/background-canvas.service';
@@ -7,13 +7,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalStorage } from './local-storage.service';
 import { Point } from './Tools/point.service';
 import { Image as ImageServer } from '../../models/image.model';
-import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
-import { resolve } from 'dns';
-import { worker } from 'cluster';
 import { BiomarkerService } from './biomarker.service';
+import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
+
 
 // Min and max values for zooming
 const ZOOM = {
@@ -26,7 +25,6 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 @Injectable({
   providedIn: 'root'
 })
-// @Injectable()
 export class EditorService {
   imageLocal: HTMLImageElement;
   imageServer: ImageServer;
@@ -48,7 +46,7 @@ export class EditorService {
   menuState: boolean;
 
   canRedraw = true;
-  // commentBoxVisible: boolean = false;
+  commentBoxes: CommentBoxSingleton;
 
   // public biomarkersService: BiomarkersService,
 
@@ -59,8 +57,10 @@ export class EditorService {
     this.scaleX = 1;
     this.imageLoaded = false;
     this.canvasDisplayRatio = new BehaviorSubject<number>(1);
+    this.commentBoxes = CommentBoxSingleton.getInstance();
     // Check if a change was made to save to localStorage every 30 seconds.
     setInterval(() => {
+      console.log(this.commentBoxes.comments);
       if (this.layersService.unsavedChange) {
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;

@@ -1,21 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 
 @Component({
   selector: 'app-comment-box',
   templateUrl: './comment-box.component.html',
   styleUrls: ['./comment-box.component.scss']
 })
-export class CommentBoxComponent implements OnInit {
+export class CommentBoxComponent implements OnInit, OnChanges {
   panelOpenState = false;
   isDisabled = false;
   up = false;
   down = false;
   moving = false;
   pointFormat = 'example-box2';
+  // @ViewChild('textArea', {read: ViewContainerRef}) textArea: ViewContainerRef;
+  textAreaValue: string;
 
   constructor() { }
 
   ngOnInit(): void {
+    this.textAreaValue = 'This is a test';
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('Event Changes' + changes);
+    // console.log(this.textArea.element.nativeElement);
   }
 
   onMouseUp(e: Event) {

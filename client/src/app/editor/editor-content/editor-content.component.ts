@@ -1,12 +1,12 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild,
         OnDestroy, ElementRef, AfterViewInit,
-        ComponentFactoryResolver,
-        ViewContainerRef} from '@angular/core';
+        ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
+import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 
 @Component({
   selector: 'app-editor-content',
@@ -34,10 +34,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   zoomInitFactor: number;
   delayEventTimer: any;
   delayedEventHandler: Function;
-
-  // Comment-box array
-  commentBoxes = [];
-  commentBoxCreated = 0;
+  commentBoxes: CommentBoxSingleton;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
@@ -47,6 +44,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
+    this.commentBoxes = CommentBoxSingleton.getInstance();
     this.toolBoxService.commentBoxClicked.subscribe( hasBeenClicked => {
       console.log('this.event : ' + hasBeenClicked.commentClicked);
       if (hasBeenClicked) {
@@ -101,7 +99,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   createCommentBox() {
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
-    this.commentBoxes.push(componentRef);
+    this.commentBoxes.comments.push(componentRef);
   }
 
   onMouseUp(event: MouseEvent): void {
@@ -297,10 +295,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   //     for (let i = 0; i < event.targetTouches.length; i++) {
   //         const t = event.targetTouches[i];
   //     }
-  // }
-
-  // flip(): void {
-  //     this.editorService.scaleX *= -1;
   // }
 
   onResize(): void {
