@@ -105,7 +105,6 @@ export class ToolboxService {
 
   public onCursorUp(): void {
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-      // implement comment box here
       this.commentBoxClicked.next({commentClicked: true});
     }
     this.selectedTool.getValue().onCursorUp();

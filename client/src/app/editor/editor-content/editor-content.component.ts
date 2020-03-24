@@ -47,25 +47,23 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit() {
-    // console.log('EditorContent::ngOnInit()');
-    // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
-    // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
-
-    this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
-    this.svgLoaded.emit();
-    // this.editorFacadeService.load(imageId); // I don't know why this is here
-    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
-    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
-
     this.toolBoxService.commentBoxClicked.subscribe( hasBeenClicked => {
       console.log('this.event : ' + hasBeenClicked.commentClicked);
       if (hasBeenClicked) {
         this.createCommentBox();
       }
     });
+  }
+
+  ngAfterViewInit() {
+    // console.log('EditorContent::ngOnInit()');
+    // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
+    // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
+    this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
+    this.svgLoaded.emit();
+    // this.editorFacadeService.load(imageId);
+    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
+    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
 
   ngOnDestroy(): void {
@@ -101,10 +99,9 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   createCommentBox() {
-    // this.commentBox.clear();
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
-    console.log('Comment box created!');
+    this.commentBoxes.push(componentRef);
   }
 
   onMouseUp(event: MouseEvent): void {
