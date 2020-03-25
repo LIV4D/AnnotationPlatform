@@ -68,6 +68,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
+import { WidgetComponent } from './editor/right-menu/widget/widget.component';
 
 
 @NgModule({
@@ -98,6 +99,7 @@ import { NonExistentPageComponent } from './user-control/non-existent-page/non-e
       TasksBundlesComponent,
       AccessDeniedComponent,
       NonExistentPageComponent,
+      WidgetComponent,
    ],
    imports: [
       BrowserModule,
