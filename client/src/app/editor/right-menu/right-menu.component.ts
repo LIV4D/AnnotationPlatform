@@ -1,6 +1,6 @@
 import { WidgetComponent } from './widget/widget.component';
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { BackgroundCanvas } from 'src/app/shared/models/background-canvas.model';
+import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
 import { BiomarkersComponent } from './biomarkers/biomarkers.component';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { AppService } from 'src/app/shared/services/app.service';
@@ -24,7 +24,7 @@ export class RightMenuComponent implements OnInit {
   // public commentService: CommentsService, , private taskService: TasksService
   constructor(public appService: AppService, public editorService: EditorService,
               public router: Router, public dialog: MatDialog) {
-    this.loaded = false;
+    this.loaded = true;
     this.saveText = navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';
   }
 

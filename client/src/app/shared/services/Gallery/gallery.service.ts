@@ -14,14 +14,14 @@ export class GalleryService {
   constructor(public http: HttpClient, private headerService: HeaderService) {}
 
   getImageTypes(): Observable<any> {
-      return this.http.get('/api/imageTypes');
+      return this.http.get('/api/imageTypes/');
   }
   // getTweakedImageTypes(): Observable<any> {
   //     return this.http.get('/api/images/gallery');
   // }
 
   getImages(sort: string, order: string, page: number, pageSize: number, filters?: string): Observable<IGallery> {
-    console.log('GalleryService::getImages()');
+    // console.log('GalleryService::getImages()');
 
     const params = new HttpParams()
     .set('sort', sort ? 'image.' + sort : 'image.id')

@@ -23,10 +23,64 @@ export class AnnotationController implements IController {
         app.get('/api/annotations/list/:attr([a-zA-Z][a-zA-Z0-9]+)', this.list);
 
         // Get
+        app.get('/api/annotations/getBase', this.getBaseAnnotation);
+        app.get('/api/annotations/getEmpty', this.getEmptyAnnotation);
         app.get('/api/annotations/get/:annotationId([0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get/:annotationId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get', this.getMultipleAnnotations);
         app.get('/api/annotations/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleAnnotations);
+    }
+
+    private getEmptyAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+        const empty_revision = {
+            biomarkers: [
+                {type: "Lesions",
+                 biomarkers: [
+                     {type: "Others", color: "#fff4ee",},
+                     {type: "Pigmented lesions", color: "#5bffb7"},
+                     {type: "Bright",
+                      biomarkers: [
+                          {type: "Cotton Wool Spots", color: "#7a9d32"},
+                          {type: "Drusen", color: "#3cb371"},
+                          {type: "Exudates", color: "#85ffa6"},
+                          {type: "Uncertain - Bright", color: "#a9ff84"}
+                      ]},
+                     {type: "Red",
+                      biomarkers: [
+                          {type: "Hemorrhages", color: "#4b18ff"},
+                          {type: "Microaneurysms", color: "#2a63fd"},
+                          {type: "Sub-retinal hemorrhage", color: "#7a2afd"},
+                          {type: "Pre-retinal hemorrhage", color: "#a12afd"},
+                          {type: "Neovascularization", color: "#ba2afd"},
+                          {type: "Uncertain - Red", color: "#d62afd"}
+                      ]}
+                 ]
+                },
+                {type: "Normal",
+                 biomarkers: [
+                     {type: "Macula", color: "#be3c1b"},
+                     {type: "Optic Nerve",
+                      biomarkers: [
+                          {type: "Disk", color: "#ddc81c"},
+                          {type: "Cup", color: "#dda61c"}
+                      ]},
+                     {type: "Vasculature",
+                      biomarkers: [
+                          {type: "Arteries", color: "#dd1c1c"},
+                          {type: "Veins", color: "#6d13b2"},
+                          {type: "Vessels", color: "#770067"}
+                      ]},
+                 ],
+                }
+            ]
+        }
+        res.send(JSON.stringify(empty_revision));
+    }
+
+    private getBaseAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const base_revision = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><svg><g></g></svg>";
+        res.send({svg: base_revision});
     }
 
     /**

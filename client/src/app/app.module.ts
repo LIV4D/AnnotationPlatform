@@ -12,6 +12,9 @@ import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
+import { TaskDialogSubmissionComponent } from './editor/right-menu/submit/task-dialog-submission/task-dialog-submission.component';
+import { SubmitComponent } from './editor/right-menu/submit/submit.component';
+
 import { GalleryComponent } from './gallery/gallery.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
@@ -19,6 +22,7 @@ import { TasksToCompleteComponent } from './tasks/tasks-to-complete/tasks-to-com
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
 import { ManagementComponent } from './management/management.component';
 import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
 import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
@@ -45,6 +49,7 @@ import { TaskTypeService } from './shared/services/tasks/taskType.service';
 import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 import { AuthorizationService } from './shared/services/authorization.service';
+import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -54,13 +59,14 @@ import { MaterialModule } from '../material/material.module';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 import { RightMenuComponent } from './editor/right-menu/right-menu.component';
-import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
-import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
 import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
 import { EditorContentComponent } from './editor/editor-content/editor-content.component';
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
+import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
+
+
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
@@ -86,7 +92,8 @@ import { WidgetComponent } from './editor/right-menu/widget/widget.component';
       ToolElementComponent,
       RightMenuComponent,
       BiomarkersComponent,
-      TaskSubmissionComponent,
+      TaskDialogSubmissionComponent,
+      SubmitComponent,
       TimerComponent,
       VisualizationComponent,
       EditorContentComponent,
@@ -100,6 +107,8 @@ import { WidgetComponent } from './editor/right-menu/widget/widget.component';
       AccessDeniedComponent,
       NonExistentPageComponent,
       WidgetComponent,
+      CommentBoxComponent,
+      ToolPropertiesComponent
    ],
    imports: [
       BrowserModule,
@@ -108,7 +117,7 @@ import { WidgetComponent } from './editor/right-menu/widget/widget.component';
       HttpClientModule,
       BrowserAnimationsModule,
       FormsModule,
-      ReactiveFormsModule
+      ReactiveFormsModule,
    ],
    providers: [
       LoginFacadeService,

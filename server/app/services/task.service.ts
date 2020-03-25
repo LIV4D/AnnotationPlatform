@@ -55,6 +55,10 @@ export class TaskService {
         return this.taskRepository.findByFilter(filter);
     }
 
+    // public async getTaskByFilter(filter: {userId?: number, imageId?: number}) {
+    //     return this.taskRepository.findOneByFilter(filter);
+    // }
+
     public async updateTask(updatedTask: ITask, user: User) {
         const oldTask = await this.getTask(updatedTask.id, user);
         oldTask.update(updatedTask);
@@ -75,6 +79,7 @@ export class TaskService {
             data: submission.data,
         };
         this.annotationService.update(newAnnotation, user, { description: 'Task submission', timestamp: submission.uptime });
+        this.updateTask(task, user);
     }
 
     public async getUserGallery(userId: string, page?: number, pageSize?: number, isComplete?: boolean): Promise<ITaskGallery[]> {

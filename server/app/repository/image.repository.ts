@@ -34,7 +34,7 @@ export class ImageRepository {
             queryBuilder.orderBy(sort, 'DESC');
         }
         const queryResult = await this.filterImages(queryBuilder, filters);
-        console.log('QUERY RESULT : ' + queryResult[1]);
+        // console.log('QUERY RESULT : ' + queryResult[1]);
 
         return queryResult;
     }

@@ -1,4 +1,5 @@
 export class Image {
+    public id = 0;
     public type = '';
     public preprocessing = false;
     public files = '';

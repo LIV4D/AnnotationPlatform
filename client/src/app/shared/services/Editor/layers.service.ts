@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
-import { BiomarkerCanvas } from '../../models/biomarker-canvas.model';
-import { Point } from '../../models/point.model';
+import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
+import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
 export const ANNOTATION_PREFIX = 'annotation-';
 
@@ -162,6 +162,34 @@ export class LayersService {
     }
   }
 
+  createFlatCanvasRecursiveJson(data: object, width: number = 0, height: number = 0): void {
+    const topLevelBiomarkers = data['biomarkers'];
+    for (let [key, value] of Object.entries(topLevelBiomarkers)) {
+      const type = value['type']
+      let color = null;
+      if (value['color']) {
+        color = value['color'];
+      }
+      if (value['biomarkers']) {
+        this.createFlatCanvasRecursiveJson(value as object, width, height);
+      }
+
+      const image = new Image();
+      if (height !== 0 && width !== 0) {
+        image.width = width;
+        image.height = height;
+      }
+      image.onload = () => {
+        this.newBiomarker(image, type, color);
+      };
+
+      // console.log("%c "+type, 'color: black; background: yellow;');
+
+      image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+    }
+
+  }
+
   public setCanvasStyle(canvas: HTMLCanvasElement): void {
     canvas.style.height = '100%';
     canvas.style.width = '100%';
@@ -184,7 +212,7 @@ export class LayersService {
   public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
     if (currentBiomarkerCanvas == null) {
-      console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+      // // console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
     }
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
   }
@@ -249,40 +277,40 @@ export class LayersService {
   }
 
   // Add a point on the canvas to indicate the first point
-  // public addFirstPoint(): void {
-  //     this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
-  //     this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
-  //     this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
-  //     this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
-  // }
+  public addFirstPoint(): void {
+      this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
+      this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
+      this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
+      this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
+  }
 
-  // public updateDashStroke(): void {
-  //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+  public updateDashStroke(): void {
+      const dashStroke = document.getElementById('dashStroke') as HTMLElement;
 
-  //     dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
-  //     dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
-  //     dashStroke.setAttribute('x2', this.lastPoint.x.toString());
-  //     dashStroke.setAttribute('y2', this.lastPoint.y.toString());
-  // }
+      dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
+      dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
+      dashStroke.setAttribute('x2', this.lastPoint.x.toString());
+      dashStroke.setAttribute('y2', this.lastPoint.y.toString());
+  }
 
-  // public removeFirstPoint(): void {
-  //     this.lastPoint = null;
-  //     this.firstPoint.setAttribute('cx', '-10');
-  //     this.firstPoint.setAttribute('cy', '-10');
-  //     this.firstPoint = null;
+  public removeFirstPoint(): void {
+      this.lastPoint = null;
+      this.firstPoint.setAttribute('cx', '-10');
+      this.firstPoint.setAttribute('cy', '-10');
+      this.firstPoint = null;
 
-  //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
-  //     dashStroke.setAttribute('x1', '-10');
-  //     dashStroke.setAttribute('y1', '-10');
-  //     dashStroke.setAttribute('x2', '-10');
-  //     dashStroke.setAttribute('y2', '-10');
-  // }
+      const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+      dashStroke.setAttribute('x1', '-10');
+      dashStroke.setAttribute('y1', '-10');
+      dashStroke.setAttribute('x2', '-10');
+      dashStroke.setAttribute('y2', '-10');
+  }
 
-  // public nearFirstPoint(): void {
-  //     this.firstPoint.setAttribute('fill', 'white');
-  // }
+  public nearFirstPoint(): void {
+      this.firstPoint.setAttribute('fill', 'white');
+  }
 
-  // public farFirstPoint(): void {
-  //     this.firstPoint.setAttribute('fill', 'grey');
-  // }
+  public farFirstPoint(): void {
+      this.firstPoint.setAttribute('fill', 'grey');
+  }
 }

@@ -8,6 +8,7 @@ import { ITaskGroup } from '../../interfaces/taskGroup.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Task } from '../../models/serverModels/task.model';
 
 @Injectable({
     providedIn: 'root'
@@ -43,10 +44,63 @@ export class TasksService {
     return this.headerService.display_progress(req, 'Downloading: Tasks List');
   }
 
-  // tslint:disable-next-line: ban-types
-  getNextTask(): Observable<Object> {
+  getTasksByImageId(imageId:string, displayProgress= false):Observable<Task[]> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    return this.http.get(`/api/tasks/${userId}/next`);
+    const params = new HttpParams()
+                            .set('userId', userId ? userId : '' )
+                            .set('imageId', imageId ? imageId : '');
+    if (displayProgress) {
+      const req = this.http.get<Task[]>(`/api/tasks/list`, {params,  observe: 'events', reportProgress: true});
+      return this.headerService.display_progress(req, 'Downloading: Tasks List');
+    } else {
+      return this.http.get<Task[]>(`/api/tasks/list`, {params});
+    }
+  }
+
+  async getTasksByImageIdApp(imageId:string, displayProgress= false): Promise<Task[]>{
+    const tasks = await this.getTasksByImageId(imageId, displayProgress).toPromise();
+    return tasks as Task[];
+  }
+
+  // tslint:disable-next-line: ban-types
+  getNextTask(): Observable<Task> {
+      const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
+      return this.http.get<Task>(`/api/tasks/get/next/${userId}`);
+  }
+
+  async getNextTaskApp(): Promise<Task> {
+    const task = await this.getNextTask().toPromise();
+    return task as Task;
+  }
+
+  /**
+   * Set a task as completed
+   * @param nextTask: task submited by a user
+   */
+  completeTask(nextTask: Task) {
+		nextTask.isComplete = true;
+	}
+
+  // Update task.isComplete in the server for a group of tasks
+  updateTasksCompleteness(tasks: Task[]): void {
+    // server takes 'true' and 'false' instead of booleans
+    tasks.forEach(task => {
+      const body = {
+        isComplete: task.isComplete ? 'true' : 'false',
+      };
+
+    this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
+    });
+  }
+
+  // Update task.isComplete in the server for one task
+  updateTaskCompleteness(task: Task): void {
+    // server takes 'true' and 'false' instead of booleans
+      const body = {
+        isComplete: task.isComplete ? 'true' : 'false',
+      };
+
+    this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
   }
 
   /**

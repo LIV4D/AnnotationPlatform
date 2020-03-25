@@ -8,38 +8,38 @@
           <div id="overlay">
 
               <!--TOOLPROPS-->
-              <!-- <app-tool-properties></app-tool-properties> -->
+              <app-tool-properties></app-tool-properties>
 
               <!--CURRENT BIOMARKER-->
-              <!-- <div id="classTitle" *ngIf="biomarkersService.currentElement" matTooltip="Previous (A) Next (D)" matTooltipShowDelay="1000"
+              <div id="classTitle" *ngIf="biomarkersFacadeService.currentElement" matTooltip="Previous (A) Next (D)" matTooltipShowDelay="1000"
                   matTooltipPosition="below">
                   <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : biomarkersService.currentElement.getAttribute('color')}" />
+                      <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : editorFacadeService.biomarkersCurrentElement['color']}" />
                   </svg>
-                  {{biomarkersService.currentElement.id | camelCaseToText}}
-              </div> -->
+                  {{biomarkersFacadeService.currentElement['type'] | camelCaseToText}}
+              </div>
 
 
               <!--METADATA-->
-              <!-- <div id="metadata" *ngIf="editorService.imageServer">
+              <div id="metadata" *ngIf="editorFacadeService.imageServer">
                   <div>
-                      <span class="meta">Image Id : <span class="metaVal">{{editorService.imageServer.id || 'N\\A'}}</span></span>
-                      <span class="meta">Eye Side : <span class="metaVal">{{editorService.imageServer.eye || 'N\\A' }}</span></span>
-                      <span class="meta">Image Type : <span class="metaVal">{{editorService.imageServer.imageType.name || 'N\\A'}}</span></span>
+                      <span class="meta">Image Id : <span class="metaVal">{{editorFacadeService.imageServer.id || 'N\\A'}}</span></span>
+                      <span class="meta">Eye Side : <span class="metaVal">{{editorFacadeService.imageServer.eye || 'N\\A' }}</span></span>
+                      <!-- <span class="meta">Image Type : <span class="metaVal">{{editorFacadeService.imageServer.imageType.name || 'N\\A'}}</span></span> -->
                   </div>
                   <div>
-                      <span class="meta">Hospital : <span class="metaVal">{{editorService.imageServer.hospital || 'N\\A'}}</span></span>
-                      <span class="meta">Patient : <span class="metaVal">{{editorService.imageServer.patient || 'N\\A'}}</span></span>
-                      <span class="meta">Visit : <span class="metaVal">{{editorService.imageServer.visit || 'N\\A'}}</span></span>
-                      <span class="meta">Code : <span class="metaVal">{{editorService.imageServer.code || 'N\\A'}}</span></span>
+                      <span class="meta">Hospital : <span class="metaVal">{{editorFacadeService.imageServer.hospital || 'N\\A'}}</span></span>
+                      <span class="meta">Patient : <span class="metaVal">{{editorFacadeService.imageServer.patient || 'N\\A'}}</span></span>
+                      <span class="meta">Visit : <span class="metaVal">{{editorFacadeService.imageServer.visit || 'N\\A'}}</span></span>
+                      <span class="meta">Code : <span class="metaVal">{{editorFacadeService.imageServer.code || 'N\\A'}}</span></span>
                   </div>
-              </div> -->
+              </div>
 
               <!--LOAD SVG LOCAL IMAGE-->
-              <!-- <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
+              <button id="loadsvg" (click)="fileInput.click()" mat-button *ngIf="appService.localEditing">
                   <span>Load Annotations</span>
                   <input #fileInput type="file" accept="image/svg+xml" (change)="loadSVG($event)" style="display:none;"/>
-              </button> -->
+              </button>
 
               <!--ZOOM WINDOW-->
               <div id="zoomSlider">
@@ -47,30 +47,35 @@
                     [(value)]="sliderZoom" (input)="zoomSliderChange($event)" min="0" max="100" style="min-height: 83px;"
                   ></mat-slider> -->
               </div>
-              <app-zoom *ngIf="editorService.imageLoaded"></app-zoom>
+              <app-zoom *ngIf="editorFacadeService.imageLoaded"></app-zoom>
               <span id="zoomFactorDisplay"> x 1.0 </span>
-              <!-- {{editorService.zoomFactor.toFixed(1)}} -->
+              <!-- {{editorFacadeService.zoomFactor.toFixed(1)}} -->
           </div>
 
           <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor-content> -->
           <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)"></app-editor-content> -->
+          
           <app-editor-content id="app-editor-content" #editor></app-editor-content>
 
 
           <!--SELECT BIOMARKER ON RIGHT CLICK-->
-          <!-- <div #contextMenu [ngClass]="this.editorService.menuState?'context-active':'context-menu'" [ngStyle]="{'left':this.menuPositionX, 'top':this.menuPositionY}">
-              <div class="biomarkerflat" *ngFor="let item of biomarkersService.lastBiomarkers" (click)="selectBiomarker(item)">
+          <div #contextMenu [ngClass]="this.editorFacadeService.menuState?'context-active':'context-menu'" [ngStyle]="{'left':this.menuPositionX, 'top':this.menuPositionY}">
+              <div class="biomarkerflat" *ngFor="let item of biomarkersFacadeService.lastBiomarkers" (click)="selectBiomarker(item)">
                   <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : item.getAttribute('color')}" />
                   </svg>
                   {{item.id | camelCaseToText}}
               </div>
-          </div> -->
+          </div>
           <div id="bodyblack"></div>
       </div>
 
       <!--RIGHT MENU-->
-      <app-right-menu #rightMenu></app-right-menu>
+      <app-right-menu #rightMenu [canvas]="this.editorFacadeService.backgroundCanvas"></app-right-menu>
       <!-- (flip)="flip()" [canvas]="editorComponent.editorService.backgroundCanvas" -->
   </div>
+</div>
+<!-- COMMENT BOX -->
+<div>
+    <app-comment-box *ngIf="this.editorFacadeService.commentBoxVisible"></app-comment-box>
 </div>

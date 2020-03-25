@@ -11,75 +11,93 @@
 
     <div id="biomarkers-container" (window:keydown)="onKeyDown($event)">
 
-        <mat-tree *ngIf="!simplifiedView" [dataSource]="biomarkersFacadeService.dataSource" [treeControl]="biomarkersFacadeService.nestedTreeControl"
-            class="example-tree">
-            <!--LEAF-->
+        <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" class="example-tree" *ngIf="!simplifiedView" class="example-tree">
+            <!-- This is the tree node template for leaf nodes -->
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                <li class="mat-tree-node" [ngClass]="getCssClass(node)">
-                    <button mat-icon-button disabled></button>
-                    <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.getAttribute('color')}" />
-                    </svg>
-                    <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
+            <li class="mat-tree-node">
+                <!-- Padding for tree leaf -->
+                <button mat-icon-button disabled></button>
+                <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
+                </svg>
+                <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node)"
                             matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
-                        {{node.getAttribute("id") | camelCaseToText}}</span>
-                    <div class="align-right">
-                        <mat-icon class="button left" (click)="toggleVisibility(node.getAttribute('id'))"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
-                            [matTooltip]="'Show/Hide ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right">
-                            {{getVisibility(node)}}
-                        </mat-icon>
-                        <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
-                            delete
-                        </mat-icon>
-                    </div>
-                </li>
+                        {{node.type | camelCaseToText}}
+                </span>
+                <div class="align-right">
+                    <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node)"
+                        [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
+                        {{getVisibility(node)}}
+                    </mat-icon>
+                    <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
+                        delete
+                    </mat-icon>
+                </div>
+            </li>
             </mat-tree-node>
-            <!--NODE-->
-            <mat-nested-tree-node *matTreeNodeDef="let node; when: biomarkersFacadeService.hasNestedChild">
-                <li>
-                    <div class="mat-tree-node">
-                        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.getAttribute('id')">
-                            <mat-icon class="mat-icon-rtl-mirror">
-                                {{biomarkersFacadeService.nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                            </mat-icon>
-                        </button>
-                        <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node.getAttribute('id'))">{{node.getAttribute("id") | camelCaseToText}}</span>
-                        <div class="align-right">
-                            <mat-icon class="button left" (click)="toggleVisibility(node.getAttribute('id'))" (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
-                            [matTooltip]="'Show/Hide ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right">
-                                {{getVisibility(node)}}
-                            </mat-icon>
-                            <mat-icon (click)="openConfirmDelete(node, $event)" class="button" [matTooltip]="'Delete ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right">
-                                delete
-                            </mat-icon>
-                        </div>
-                    </div>
-                    <ul [class.example-tree-invisible]="!biomarkersFacadeService.nestedTreeControl.isExpanded(node)">
-                        <ng-container matTreeNodeOutlet></ng-container>
-                    </ul>
-                </li>
+
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+            <li>
+                <div class="mat-tree-node">
+
+                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.type">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node)">{{node.type | camelCaseToText}}</span>
+
+                <div class="align-right">
+                    <mat-icon class="button left" (click)="toggleVisibility(node)" (dblclick)="toggleSoloVisibility(node)"
+                    [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
+                        {{getVisibility(node)}}
+                    </mat-icon>
+                    <mat-icon (click)="openConfirmDelete(node, $event)" class="button" [matTooltip]="'Delete ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
+                        delete
+                    </mat-icon>
+                </div>
+                </div>
+                <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+                <ng-container matTreeNodeOutlet></ng-container>
+                </ul>
+            </li>
             </mat-nested-tree-node>
         </mat-tree>
 
+
         <!-- SIMPLIFIED BIOMARKERS VIEW-->
-        <!-- <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
-            <mat-list-item *ngFor="let node of biomarkersFacadeService.flatEnabledBiomarkers" [ngClass]="getCssClass(node)">
+        <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
+            <mat-list-item *ngFor="let node of dataSource">
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.getAttribute('color')}" />
+                    <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
                 </svg>
-                <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
+                <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node)"
                         matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
-                    {{node.getAttribute("id") | camelCaseToText}}</span>
+                    {{node.type | camelCaseToText}}</span>
                 <div class="align-right">
-                    <mat-icon class="button left" (click)="toggleVisibility(node.getAttribute('id'))"  (dblclick)="toggleSoloVisibility(node.getAttribute('id'))"
-                        [matTooltip]="'Show/Hide ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right">
+                    <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node)"
+                        [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                         {{getVisibility(node)}}
                     </mat-icon>
-                    <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + transform(node.id)" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
+                    <mat-icon (click)="openConfirmDelete(node, $event)" [matTooltip]="'Delete ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right" class="button">
                         delete
                     </mat-icon>
                 </div>
             </mat-list-item>
-        </mat-list> -->
+        </mat-list>
+    </div>
+
+    <!--OPACITY SLIDER-->
+    <div id="opacity" *ngIf="!biomarkersFacadeService.showBorders">
+        <mat-icon matTooltip="Opacity" matTooltipShowDelay="1000" matTooltipPosition="right" (dblclick)="resetOpacity()" class="slider-icon">opacity</mat-icon>
+        <mat-slider min="0" max="100" step="1" [(ngModel)]="opacity" (input)="changeOpacity($event)" id="slider"></mat-slider>
+        <input [(ngModel)]="opacity" (input)="changeOpacity($event)" (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" maxlength="4"/>
+    </div>
+    <!--SHADOWS-->
+    <div id="shadows" *ngIf="biomarkersFacadeService.showBorders">
+        <span>Shadows</span>
+        <mat-checkbox [disableRipple]="true" (change)="toggleShadows()" [checked]="shadowsChecked" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
+            matTooltipPosition="right"></mat-checkbox>
     </div>
 </div>

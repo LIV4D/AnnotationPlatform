@@ -1,9 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BiomarkersFacadeService } from './biomarkers.facade.service';
 import { AppService } from './../../../shared/services/app.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CamelCaseToTextPipe } from './../../../shared/pipes/camel-case-to-text.pipe';
 import { MatList } from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
+import { Biomarker } from 'src/app/shared/models/biomarker.model';
+import { CdkAccordion } from '@angular/cdk/accordion';
+import { BioNode } from './../../../shared/models/bionode.model';
+import {NestedTreeControl} from '@angular/cdk/tree';
+import {MatTreeNestedDataSource} from '@angular/material/tree';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -28,14 +34,24 @@ export class BiomarkersComponent implements OnInit {
   opacity: number;
   shadowsChecked: boolean;
 
+  dataSource: Array<Biomarker> = [];
+  tree: BioNode[];
+
+  treeControl = new NestedTreeControl<BioNode>(node => node.biomarkers);
+  treeDataSource = new MatTreeNestedDataSource<BioNode>();
+
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
-              public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe) {
+              public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
+              private changeDetector: ChangeDetectorRef) {
 
     this.biomarkersFacadeService.showBorders = false;
     this.opacity = 65;
     this.visibilityAll = 'visible';
     this.shadowsChecked = false;
     this.simplifiedView = true;
+    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    this.tree = this.biomarkersFacadeService.tree;
+    this.treeDataSource.data = this.tree;
   }
 
   ngOnInit(): void {
@@ -44,17 +60,19 @@ export class BiomarkersComponent implements OnInit {
   public init(arbre: SVGGElement[]): void {
     this.opacity = 65;
     this.arbre = arbre;
-    this.biomarkersFacadeService.init(arbre);
+    // this.biomarkersFacadeService.init(arbre);
     this.biomarkersFacadeService.changeOpacity(this.opacity.toString());
   }
 
-  public getCssClass(elem: HTMLElement): string {
-    return this.biomarkersFacadeService.getCssClass(elem);
-  }
+  hasChild = (_: number, node: BioNode) => !!node.biomarkers && node.biomarkers.length > 0;
+
+  // public getCssClass(elem: HTMLElement): string {
+  //   return this.biomarkersFacadeService.getCssClass(elem);
+  // }
 
   // Makes a biomarker the currently selected biomarker
-  public setFocusBiomarker(elem: HTMLElement): void {
-    this.biomarkersFacadeService.setFocusBiomarker(elem);
+  public setFocusBiomarker(node: Biomarker): void {
+    this.biomarkersFacadeService.setFocusBiomarker(node);
   }
 
   // Transforms from camel case to text case
@@ -81,25 +99,33 @@ export class BiomarkersComponent implements OnInit {
     // });
   }
 
-  public deleteElement(elem: HTMLElement): void {
-    this.biomarkersFacadeService.deleteElements(elem);
+  // public deleteElement(elem: HTMLElement): void {
+  //   this.biomarkersFacadeService.deleteElements(elem);
+  // }
+
+  toggleVisibility(node: any): void {
+    this.biomarkersFacadeService.toggleVisibility(node);
+    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    this.changeDetector.detectChanges();
   }
 
-  public toggleVisibility(id: string): void {
-    this.biomarkersFacadeService.toggleVisibility(id);
+  public toggleSoloVisibility(node: Biomarker): void {
+    this.biomarkersFacadeService.toggleSoloVisibility(node);
+    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    this.changeDetector.detectChanges();
   }
 
-  public toggleSoloVisibility(id: string): void {
-    this.biomarkersFacadeService.toggleSoloVisibility(id);
-  }
+  public getVisibility(node: Biomarker): string {
+    // const node = document.getElementById(elem.id);
+    // if (node) {
+    //   return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
+    // } else {
+    //   return '';
+    // }
+    // console.log(type.isVisible)
+    return this.biomarkersFacadeService.getVisibility(node);
 
-  public getVisibility(elem: HTMLElement): string {
-    const node = document.getElementById(elem.id);
-    if (node) {
-      return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
-    } else {
-      return '';
-    }
+    // return node.isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
   }
 
   public getVisibilityAll(): string {
@@ -121,9 +147,9 @@ export class BiomarkersComponent implements OnInit {
     }
   }
 
-  public hideOtherBiomarkers(): void {
-    this.biomarkersFacadeService.hideOtherBiomarkers();
-  }
+  // public hideOtherBiomarkers(): void {
+  //   this.biomarkersFacadeService.hideOtherBiomarkers();
+  // }
 
   public toggleAllBiomarkers(): void {
     this.visibilityAll = this.visibilityAll === 'visible' ? 'hidden' : 'visible';
@@ -162,6 +188,9 @@ export class BiomarkersComponent implements OnInit {
 
   public toggleSimplifiedView(): void {
     this.simplifiedView = !this.simplifiedView;
+    this.tree = this.biomarkersFacadeService.tree;
+    this.treeDataSource.data = this.tree;
+    this.changeDetector.detectChanges();
   }
 
   public onKeyDown(event: KeyboardEvent): void {

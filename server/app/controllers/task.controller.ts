@@ -67,7 +67,15 @@ export class TaskController implements IController {
     }
 
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const filter = isNullOrUndefined(req.body.filter) ? {} : req.body.filter;
+
+        // Make sure the filter is in type Number
+        const radix = 10;
+        const parseIntParams = {
+            userId: parseInt(req.query.userId, radix),
+            imageId: parseInt(req.query.imageId, radix),
+        };
+
+        const filter = (isNaN(parseIntParams.userId) || isNaN(parseIntParams.imageId)) ? {} : parseIntParams;
         this.taskService.getTasksByFilter(filter)
             .then(tasks => res.send(tasks.map(task => this.export_task(task, req.params.attr))))
             .catch(next);
@@ -136,7 +144,7 @@ export class TaskController implements IController {
         this.taskService.getTasksByFilter({ userId: req.params.userId })
             .then(tasks => {
                 tasks.forEach((task) => {
-                    if (!task.isComplete && !task.isVisible) {
+                    if (!task.isComplete && task.isVisible) {
                         res.send(task.proto());
                         return;
                     }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Tool } from '../../../shared/models/tool.model';
+import { Tool } from '../../../shared/services/Editor/Tools/tool.service';
 import { ToolboxFacadeService } from './../toolbox.facade.service';
 
 @Component({
@@ -22,10 +22,15 @@ export class ToolElementComponent implements OnInit {
     this.toolboxFacadeService.selectedTool.subscribe(
       value => {
         this.isSelected = value === this.tool;
+        if (value === this.tool ) {
+          console.log('TRUE_____');
+        }
       });
   }
 
   selectTool(): void {
+    console.log('Clicked Stik tik tik l7elwa l7elwa');
+
     this.toolboxFacadeService.setSelectedTool(this.tool.name);
   }
 
