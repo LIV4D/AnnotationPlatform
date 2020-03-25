@@ -7,6 +7,7 @@ import { Annotation } from './annotation.model';
 import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
 import { ITask } from '../interfaces/ITask.interface';
 import { TaskPriority } from './taskPriority.model';
+import { Widget } from './widget.model';
 
 @Entity()
 export class Task {
@@ -65,6 +66,9 @@ export class Task {
 
     @OneToMany(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
     public taskPriority: TaskPriority;
+
+    @OneToMany(type => Widget, widget => widget.assignedTask, { eager: false, nullable: true })
+    public widgets: Widget;
 
     public static fromInterface(itask: ITask): Task {
         const task = new Task();

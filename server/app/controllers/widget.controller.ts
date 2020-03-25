@@ -23,7 +23,7 @@ export class WidgetController implements IController {
         throwIfNotAdmin(req.user);
         const newWidget: IWidget = {
             label: req.body.label,
-            taskTypeId: req.body.taskTypeId,
+            taskId: req.body.taskTypeId,
             type: req.body.type,
             defaultEntryValue: req.body.defaultEntryValue,
             validationRegex: req.body.validationRegex,
