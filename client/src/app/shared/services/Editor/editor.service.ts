@@ -783,25 +783,23 @@ export class EditorService {
 	}
 
     this.layersService.biomarkerCanvas.forEach(b => {
-		const elem = document.getElementById((b.id).replace('annotation-', ''));
-    	if (!elem) {
-        	return throwError(b.id.replace('annotation-', '') + ' was not found.');
-    	}
-    	const url = b.currentCanvas.toDataURL();
-		elem.setAttribute('xlink:href', url);
-    });
 
+      const url = b.currentCanvas.toDataURL();
+
+    });
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const taskId = savedTask.id;
     const body = {
         //revision : JSON.stringify(this.backgroundCanvas),
         //diagnostic: this.commentService.comment
-        data: JSON.stringify(this.backgroundCanvas.currentCanvas.toDataURL()),
+        //data: JSON.stringify(this.backgroundCanvas.currentCanvas.toDataURL()),
+        data: "eiofoeija",
         uptime: + new Date(),
-        isComplete: savedTask.isComplete
+        isComplete: savedTask.isComplete,
+        user: currentUser
        };
-       console.log(taskId);
-       console.log(body);
-    const req = this.http.post(`/api/tasks/submit/${taskId}`,{body, reportProgress:true, observe: 'events'});
+
+    const req = this.http.post(`/api/tasks/submit/${taskId}`, body, { reportProgress:true, observe: 'events'});
        //const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
     const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
     reqBody.pipe( tap(() => { this.appService.loading = false; }));
