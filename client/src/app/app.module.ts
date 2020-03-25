@@ -75,6 +75,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
 import { WidgetComponent } from './editor/right-menu/widget/widget.component';
+import { WidgetSingleLineComponent } from './editor/right-menu/widget/widgetTypes/widget-single-line/widget-single-line.component';
+import { WidgetMultipleLinesComponent } from './editor/right-menu/widget/widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
 
 
 @NgModule({
@@ -108,7 +110,9 @@ import { WidgetComponent } from './editor/right-menu/widget/widget.component';
       NonExistentPageComponent,
       WidgetComponent,
       CommentBoxComponent,
-      ToolPropertiesComponent
+      ToolPropertiesComponent,
+      WidgetSingleLineComponent,
+      WidgetMultipleLinesComponent
    ],
    imports: [
       BrowserModule,
