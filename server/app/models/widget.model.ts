@@ -1,10 +1,9 @@
 import 'reflect-metadata';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { IWidget } from '../interfaces/IWidget.interface';
 import { IProtoWidget } from '../prototype interfaces/IProtoWidget.interface';
-import { TaskType } from './taskType.model';
 import { Task } from './task.model';
 
 export enum WidgetType {
