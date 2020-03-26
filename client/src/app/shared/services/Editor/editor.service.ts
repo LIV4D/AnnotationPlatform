@@ -15,6 +15,9 @@ import { saveAs } from 'file-saver';
 import { LocalStorage } from './local-storage.service';
 import { Point } from './Tools/point.service';
 import { Task } from '../../models/serverModels/task.model';
+import { AnnotationData } from '../../models/serverModels/annotationData.model';
+
+declare const Buffer;
 
 // Min and max values for zooming
 const ZOOM = {
@@ -781,19 +784,27 @@ export class EditorService {
        LocalStorage.save(this, this.layersService);
        this.layersService.unsavedChange = false;
 	}
+    const annotationData: AnnotationData = {
+      biomarker: {},
+      hierarchy: {},
+      nongraphic: {}
+    };
 
+    // Each biomarker datas are formated in Base64
+    // and then added in the dictionary
     this.layersService.biomarkerCanvas.forEach(b => {
+      const key = b.id.toString();
 
-      const url = b.currentCanvas.toDataURL();
-
+      // strip off the data: url prefix to get just the base64-encoded bytes
+      const url: string = b.currentCanvas.toDataURL();
+      annotationData.biomarker[key] = url;
     });
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const taskId = savedTask.id;
     const body = {
         //revision : JSON.stringify(this.backgroundCanvas),
         //diagnostic: this.commentService.comment
-        //data: JSON.stringify(this.backgroundCanvas.currentCanvas.toDataURL()),
-        data: "eiofoeija",
+        data: annotationData,
         uptime: + new Date(),
         isComplete: savedTask.isComplete,
         user: currentUser
