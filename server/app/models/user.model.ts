@@ -91,6 +91,7 @@ export class User {
     }
 
     public update(iuser: IUser) {
+        if (!isNullOrUndefined(iuser.id)) { this.id = iuser.id; }
         if (!isNullOrUndefined(iuser.firstName)) { this.firstName = iuser.firstName; }
         if (!isNullOrUndefined(iuser.lastName)) { this.lastName = iuser.lastName; }
         if (!isNullOrUndefined(iuser.isAdmin)) { this.isAdmin = iuser.isAdmin; }
