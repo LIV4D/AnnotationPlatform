@@ -10,9 +10,15 @@
   <input cdkTextareaAutosize [(ngModel)]="attributeValues[i]" placeholder="Input values">
 </div>
 <div>
-  <button (click) = "createModel()" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+  <button matTooltip="Does not require id field" (click) = "createModel('create')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
     Create
   </button>
-  <p></p>
+  <button matTooltip="Requires id field" (click) = "createModel('update')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+    Update
+  </button>
+  <button matTooltip="Requires id field" (click) = "createModel('delete')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+    Delete
+  </button>
+  <p>{{successText}}</p>
 </div>
 
