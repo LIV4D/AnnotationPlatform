@@ -12,5 +12,5 @@ export function throwIfNotAdmin(user: any) {
 }
 // TODO: this method is never called...
 export function isAdmin(req: express.Request) {
-    return req.user.role;
+    return req.user.role === UserRole.admin;
 }

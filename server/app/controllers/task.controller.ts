@@ -110,7 +110,7 @@ export class TaskController implements IController {
         };
 
         try {
-            await this.taskService.submitTask(submission, req.user)
+            this.taskService.submitTask(submission, req.user)
             .then(res.sendStatus(204))
             .catch(next);
             res.sendStatus(204);
