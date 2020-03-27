@@ -84,6 +84,16 @@ export class BiomarkerService {
         return this.tree
     }
 
+    get dataSourceSimpleView() {
+        const data = [];
+        for (const node of this.dataSourceJson) {
+            if (node.color != null){
+                data.push(node);
+            }
+        }
+        return data;
+    }
+
     // public flatten(tree: SVGGElement[]): HTMLElement[] {
     //     const flat = new Array<HTMLElement>();
     //     tree.forEach(t => {

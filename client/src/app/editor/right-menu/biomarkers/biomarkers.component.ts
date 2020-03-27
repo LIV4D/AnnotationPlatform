@@ -34,7 +34,6 @@ export class BiomarkersComponent implements OnInit {
   opacity: number;
   shadowsChecked: boolean;
 
-  dataSource: Array<Biomarker> = [];
   tree: BioNode[];
 
   treeControl = new NestedTreeControl<BioNode>(node => node.biomarkers);
@@ -49,7 +48,6 @@ export class BiomarkersComponent implements OnInit {
     this.visibilityAll = 'visible';
     this.shadowsChecked = false;
     this.simplifiedView = true;
-    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.tree = this.biomarkersFacadeService.tree;
     this.treeDataSource.data = this.tree;
   }
@@ -69,6 +67,14 @@ export class BiomarkersComponent implements OnInit {
   // public getCssClass(elem: HTMLElement): string {
   //   return this.biomarkersFacadeService.getCssClass(elem);
   // }
+
+  get dataSource() {
+    return this.biomarkersFacadeService.dataSourceJson;
+  }
+
+  get dataSourceSimpleView(){
+    return this.biomarkersFacadeService.dataSourceSimpleView;
+  }
 
   // Makes a biomarker the currently selected biomarker
   public setFocusBiomarker(node: Biomarker): void {
@@ -105,13 +111,13 @@ export class BiomarkersComponent implements OnInit {
 
   toggleVisibility(node: any): void {
     this.biomarkersFacadeService.toggleVisibility(node);
-    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 
   public toggleSoloVisibility(node: Biomarker): void {
     this.biomarkersFacadeService.toggleSoloVisibility(node);
-    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 

@@ -101,4 +101,8 @@ export class BiomarkersFacadeService {
     public getVisibility(node: Biomarker): string {
         return this.biomarkerService.getVisibility(node);
     }
+
+    get dataSourceSimpleView(){
+        return this.biomarkerService.dataSourceSimpleView;
+    }
 }
