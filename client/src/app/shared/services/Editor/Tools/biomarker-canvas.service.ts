@@ -120,6 +120,10 @@ export class BiomarkerCanvas extends Canvas {
         return this.displayCanvas.style.visibility === 'visible' || this.displayCanvas.style.visibility === '';
     }
 
+    setVisibility(isVisible: boolean){
+        this.displayCanvas.style.visibility = isVisible ? 'visible' : '';
+    }
+
     reset(): void {
         this.borderCanvas.getContext('2d').clearRect(0, 0, this.borderCanvas.width, this.borderCanvas.height);
         this.currentCanvas.getContext('2d').clearRect(0, 0, this.currentCanvas.width, this.currentCanvas.height);

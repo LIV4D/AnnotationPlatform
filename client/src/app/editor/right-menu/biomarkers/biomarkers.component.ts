@@ -10,6 +10,7 @@ import { CdkAccordion } from '@angular/cdk/accordion';
 import { BioNode } from './../../../shared/models/bionode.model';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
+import { BiomarkersDialogComponent } from './biomarkers-dialog/biomarkers-dialog.component';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -87,27 +88,27 @@ export class BiomarkersComponent implements OnInit {
   }
 
   // Opens a popup to confirm deletion of biomarkers
-  public openConfirmDelete(node: HTMLElement, event: MouseEvent): void {
-    // const dialogPosition = {
-    //   top: (event.y + 10) + 'px',
-    //   left: (event.x - 70) + 'px'
-    // };
+  public openConfirmDelete(node: BioNode, event: MouseEvent): void {
+    const dialogPosition = {
+      top: (event.y + 10) + 'px',
+      left: (event.x - 70) + 'px'
+    };
 
-    // const dialogRef = this.dialog.open(BiomarkersDialogComponent, {
-    //   data: { confirm: this.confirmDelete },
-    //   position: dialogPosition
-    // });
+    const dialogRef = this.dialog.open(BiomarkersDialogComponent, {
+      data: { confirm: this.confirmDelete },
+      position: dialogPosition
+    });
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.deleteElement(node);
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteElement(node.type);
+      }
+    });
   }
 
-  // public deleteElement(elem: HTMLElement): void {
-  //   this.biomarkersFacadeService.deleteElements(elem);
-  // }
+  public deleteElement(type: string): void {
+    this.biomarkersFacadeService.deleteElements(type);
+  }
 
   toggleVisibility(node: any): void {
     this.biomarkersFacadeService.toggleVisibility(node);

@@ -46,9 +46,9 @@ export class BiomarkersFacadeService {
         this.biomarkerService.setFocusBiomarker(node);
     }
 
-    // deleteElements(elem) {
-    //     this.biomarkerService.deleteElements(elem);
-    // }
+    deleteElements(type: string) {
+        this.biomarkerService.deleteElements(type);
+    }
 
     toggleVisibility(node, visibility?: string) {
         this.biomarkerService.toggleVisibility(node, visibility);
