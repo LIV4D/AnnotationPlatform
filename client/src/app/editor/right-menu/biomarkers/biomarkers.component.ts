@@ -219,4 +219,8 @@ export class BiomarkersComponent implements OnInit {
     // }
   }
 
+  shortenedTypeOf(node: BioNode){
+    return this.biomarkersFacadeService.shortenedTypeOf(node);
+  }
+
 }

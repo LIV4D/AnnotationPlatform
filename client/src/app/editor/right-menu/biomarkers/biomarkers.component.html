@@ -74,7 +74,7 @@
                 </svg>
                 <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node)"
                         matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
-                    {{node.type | camelCaseToText}}</span>
+                    {{this.shortenedTypeOf(node) | camelCaseToText}}</span>
                 <div class="align-right">
                     <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node)"
                         [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
