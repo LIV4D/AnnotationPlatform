@@ -45,7 +45,7 @@ import { ModelFinderService } from './shared/services/modelfinder.service';
 import { AppService } from './shared/services/app.service';
 import { TasksBundlesService } from './shared/services/tasks/tasksBundles.service';
 import { TasksService } from './shared/services/tasks/tasks.service';
-import { TaskTypeService } from './shared/services/tasks/taskType.service';
+import { TaskTypeService } from './shared/services/Tasks/taskType.service';
 import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 import { AuthorizationService } from './shared/services/authorization.service';
