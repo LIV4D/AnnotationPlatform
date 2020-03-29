@@ -23,7 +23,6 @@ const routes: Routes = [
   { path: 'editor', component: EditorComponent, data: {authorizedRoles: []}  },
   { path: 'dashboard', component: DashboardComponent, data: {authorizedRoles: []}  },
   { path: 'tasks', component: TasksComponent, data: {authorizedRoles: []} },
-  { path: 'management/:modelName', canActivate: [AuthorizationGuard], component: ManagementComponent, data: {authorizedRoles: ['admin']} },
   { path: 'management', canActivate: [AuthorizationGuard], component: ManagementComponent, data: {authorizedRoles: ['admin']} },
   { path: 'zoomtest', component: ZoomngxComponent, data: {authorizedRoles: []} },
   { path: 'comment', component: CommentBoxComponent, data: {authorizedRoles: []} },

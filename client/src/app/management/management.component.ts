@@ -19,24 +19,25 @@ export class ManagementComponent implements OnInit {
 
     constructor(private facadeService: ManagementFacadeService, private router: Router, private activatedRoute: ActivatedRoute) {
         this.attributeValues = new Array<string>();
-        this.activatedRoute.paramMap.subscribe( params => {
-            this.modelName = params.get('modelName');
+        // this.activatedRoute.paramMap.subscribe( params => {
+        //     this.modelName = params.get('modelName');
+        //     this.generateTextFields();
+        // });
+        this.activatedRoute.queryParamMap.subscribe( params => {
+            this.modelName = params.has('modelName') ? params.get('modelName') : '';
+            this.attributeValues = params.has('attributeValues') ? params.getAll('attributeValues') : [];
             this.generateTextFields();
-        });
+        })
     }
 
     public changeUrlParams() {
-
-        // this.activatedRoute.paramMap.subscribe( params => {
-        //     params.
-        // });
-        // const queryParams: Params = { modelName : this.modelName };
-        console.log(this.activatedRoute.firstChild);
+        const queryParams: Params = { modelName : this.modelName, attributeValues : this.attributeValues };
         this.router.navigate(
-            [this.modelName],
+            [],
             {
                 relativeTo: this.activatedRoute,
-                queryParamsHandling: 'merge',
+                queryParams,
+                queryParamsHandling: 'merge'
             }
         )
     }
