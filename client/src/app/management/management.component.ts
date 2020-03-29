@@ -3,13 +3,14 @@ import { ManagementFacadeService } from './management.facade.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { isNullOrUndefined } from 'util';
+import { IRoutable } from '../shared/interfaces/IRoutable.interface';
 
 @Component({
   selector: 'app-management',
   templateUrl: './management.component.html',
   styleUrls: ['./management.component.scss']
 })
-export class ManagementComponent implements OnInit {
+export class ManagementComponent implements OnInit, IRoutable {
 
     public attributesForCreation: string[];
     public attributeValues: Array<string>;
@@ -17,12 +18,13 @@ export class ManagementComponent implements OnInit {
     public successText = '';
     public availableModels: string[];
 
-    constructor(private facadeService: ManagementFacadeService, private router: Router, private activatedRoute: ActivatedRoute) {
+    constructor(private facadeService: ManagementFacadeService, public router: Router, public activatedRoute: ActivatedRoute) {
         this.attributeValues = new Array<string>();
-        // this.activatedRoute.paramMap.subscribe( params => {
-        //     this.modelName = params.get('modelName');
-        //     this.generateTextFields();
-        // });
+
+        this.applyUrlParams();
+    }
+
+    public applyUrlParams() {
         this.activatedRoute.queryParamMap.subscribe( params => {
             this.modelName = params.has('modelName') ? params.get('modelName') : '';
             this.attributeValues = params.has('attributeValues') ? params.getAll('attributeValues') : [];
