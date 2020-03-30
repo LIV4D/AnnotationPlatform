@@ -3,6 +3,7 @@ import { Point } from './point.service';
 import { EditorService } from '../editor.service';
 import { LayersService } from '../layers.service';
 import { ToolPropertiesService } from '../tool-properties.service';
+import { BiomarkerCanvas } from './biomarker-canvas.service';
 
 export class Brush extends Tool {
     isMouseDown = false;
@@ -88,10 +89,10 @@ export class Brush extends Tool {
             const overlayCtx = overlay.getContext('2d');
 
             if (this.toolPropertiesService.smartMask) {
-                // this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
+                this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
                 this.layersService.tempDrawCanvas.getContext('2d').closePath();
             } else {
-                // this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
+                this.layersService.addToUndoStack(new Array<BiomarkerCanvas>(currentBiomarker));
                 overlayCtx.closePath();
             }
 
