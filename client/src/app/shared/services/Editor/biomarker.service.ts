@@ -310,8 +310,6 @@ export class BiomarkerService {
         //     const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
         //     b.displayCanvas.style.visibility = svgElem.style.visibility;
         // });
-        console.log(this.layersService.biomarkerCanvas[0].displayCanvas.style.visibility)
-
         for (const item of this.layersService.biomarkerCanvas) {
             if (item.id === 'annotation-'+node.type){
                 // console.log(item.id)
@@ -320,8 +318,6 @@ export class BiomarkerService {
                 // item.displayCanvas.style.visibility = '';
             }
         }
-
-        console.log(this.layersService.biomarkerCanvas[0].displayCanvas.style.visibility)
     }
 
     private setParentVisibility(elem: HTMLElement): void {
@@ -382,4 +378,12 @@ export class BiomarkerService {
     // get serviceHasNestedChild() {
     //     return this.hasNestedChild;
     // }
+
+    shortenedTypeOf(node: BioNode){
+        const MAX_LENGTH = 10;
+        if (node.type.length <= MAX_LENGTH) {
+            return node.type
+        }
+        return node.type.slice(0,MAX_LENGTH) + '...'
+    }
 }

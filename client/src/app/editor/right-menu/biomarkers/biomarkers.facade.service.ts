@@ -3,6 +3,7 @@ import { LayersService } from './../../../shared/services/Editor/layers.service'
 import { ImageBorderService } from 'src/app/shared/services/Editor/image-border.service';
 import { BiomarkerService } from 'src/app/shared/services/Editor/biomarker.service';
 import { Biomarker } from 'src/app/shared/models/biomarker.model';
+import { BioNode } from 'src/app/shared/models/bionode.model';
 
 @Injectable({
     providedIn: 'root'
@@ -104,5 +105,9 @@ export class BiomarkersFacadeService {
 
     get dataSourceSimpleView(){
         return this.biomarkerService.dataSourceSimpleView;
+    }
+
+    shortenedTypeOf(node: BioNode){
+        return this.biomarkerService.shortenedTypeOf(node);
     }
 }
