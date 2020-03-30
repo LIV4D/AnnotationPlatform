@@ -3,6 +3,7 @@ import { WidgetSingleLineComponent } from './widgetTypes/widget-single-line/widg
 import { Component, OnInit } from '@angular/core';
 import { WidgetFacadeService } from './widget.facade.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
+import { Widget } from 'src/app/shared/models/serverModels/widget.model';
 
 @Component({
   selector: 'app-widget',
@@ -18,11 +19,13 @@ export class WidgetComponent implements OnInit {
   validationRegex = '';
   entryField = 'allo';
   private task : Task;
+  private widgets: Widget[];
 
   constructor(private facadeService: WidgetFacadeService) { }
 
   ngOnInit(): void {
       this.task = this.facadeService.getCurrentTask();
+      this.widgets = this.task.widgets;
   }
 
 
