@@ -10,12 +10,10 @@ import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
-import { BioNode } from './../../models/bionode.model';
 import { saveAs } from 'file-saver';
 import { LocalStorage } from './local-storage.service';
 import { Point } from './Tools/point.service';
-import { Task } from '../../models/serverModels/task.model';
-import { AnnotationData } from '../../models/serverModels/annotationData.model';
+
 
 declare const Buffer;
 
@@ -774,48 +772,7 @@ export class EditorService {
    cancel(){
    }
 
-  saveToDB(savedTask: Task) {
-  	// A canva has to be loaded
-	if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-    this.appService.loading = true;
 
-	   // The ophtalmologist work is saved
-    if (this.layersService.unsavedChange) {
-       LocalStorage.save(this, this.layersService);
-       this.layersService.unsavedChange = false;
-	}
-    const annotationData: AnnotationData = {
-      biomarker: {},
-      hierarchy: {},
-      nongraphic: {}
-    };
-
-    // Each biomarker datas are formated in Base64
-    // and then added in the dictionary
-    this.layersService.biomarkerCanvas.forEach(b => {
-      const key = b.id.toString();
-
-      // strip off the data: url prefix to get just the base64-encoded bytes
-      const url: string = b.currentCanvas.toDataURL();
-      annotationData.biomarker[key] = url;
-    });
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
-    const taskId = savedTask.id;
-    const body = {
-        //revision : JSON.stringify(this.backgroundCanvas),
-        //diagnostic: this.commentService.comment
-        data: annotationData,
-        uptime: + new Date(),
-        isComplete: savedTask.isComplete,
-        user: currentUser
-       };
-
-    const req = this.http.post(`/api/tasks/submit/${taskId}`, body, { reportProgress:true, observe: 'events'});
-       //const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
-    const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
-    reqBody.pipe( tap(() => { this.appService.loading = false; }));
-    return reqBody;
-   }
 
   setImageId(id: string): void {
     // console.log('EditorService::setImageId()');

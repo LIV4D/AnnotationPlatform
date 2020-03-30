@@ -3,6 +3,7 @@ import { AppService } from '../app.service';
 import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
 import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
+import { AnnotationData } from '../../models/serverModels/annotationData.model';
 export const ANNOTATION_PREFIX = 'annotation-';
 
 
@@ -219,6 +220,26 @@ export class LayersService {
 
   public getBiomarkerCanvas(): BiomarkerCanvas[] {
     return this.biomarkerCanvas.filter(element => element.isVisible());
+  }
+
+  public getAnnotationDatas(): AnnotationData {
+      const annotationData: AnnotationData = {
+        biomarker: {},
+        hierarchy: {},
+        nongraphic:{}
+      };
+
+      // Each biomarker datas are formated in Base64
+      // and then added in the dictionary
+      this.biomarkerCanvas.forEach(b => {
+        const key = b.id.toString();
+        const url: string = b.currentCanvas.toDataURL();
+		const index: string = b.index.toString();
+
+        annotationData.biomarker[key] = url;
+        annotationData.hierarchy[key] = index;
+      });
+    return annotationData;
   }
 
   public resetBiomarkerCanvas(ids: Array<string>): void {

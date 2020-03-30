@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SubmitFacadeService } from './submit.facade.service';
-import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskDialogSubmissionComponent } from './task-dialog-submission/task-dialog-submission.component';
 
@@ -54,11 +53,11 @@ export class SubmitComponent implements OnInit {
     // Action after the dialog has been closed
     this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
-      this.saveRevision();
+      this.saveAnnotation();
     }
   }
 
-  public saveRevision(loadNext= false): void {
-	this.submitFacadeService.saveRevision(loadNext);
+  public saveAnnotation(loadNext= false): void {
+	this.submitFacadeService.saveAnnotation(loadNext);
   }
 }
