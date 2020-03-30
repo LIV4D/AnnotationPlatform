@@ -69,11 +69,11 @@ export class ToolboxService {
   }
 
   setUndo() {
-    // this.layersService.undo();
+    this.layersService.undo();
   }
 
   setRedo() {
-    // this.layersService.redo();
+    this.layersService.redo();
   }
 
     public onCursorDown(point: Point): void {
