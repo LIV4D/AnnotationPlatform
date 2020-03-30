@@ -1,7 +1,7 @@
 import { WidgetType } from './../models/widget.model';
 export interface IWidget {
     id?: number;
-    taskId?: number;
+    annotationId?: number;
     label?: string;
     type?: WidgetType;
     defaultEntryValue?: string;

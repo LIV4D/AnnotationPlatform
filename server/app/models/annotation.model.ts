@@ -6,6 +6,7 @@ import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
 import { IProtoAnnotation } from '../prototype interfaces/IProtoAnnotation.interface';
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
+import { Widget } from './widget.model';
 
 export class StringHierarchy { [key: string]: StringHierarchy | string}
 
@@ -41,6 +42,9 @@ export class Annotation {
 
     @Column()
     public submitEventId: number;
+
+    @OneToMany(type => Widget, widget => widget.assignedAnnotation, { eager: false, nullable: true })
+    public widgets: Widget;
 
     @OneToMany(type => Task, tasks => tasks.annotation)
     public tasks: Task[];

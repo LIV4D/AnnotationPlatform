@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { IWidget } from '../interfaces/IWidget.interface';
 import { IProtoWidget } from '../prototype interfaces/IProtoWidget.interface';
-import { Task } from './task.model';
+import { Annotation } from './annotation.model';
 
 export enum WidgetType {
     multiLine = 'multiLine',
@@ -20,7 +20,7 @@ export class Widget {
     public id: number;
 
     @Column()
-    public taskId: number;
+    public annotationId: number;
 
     @Column({ type: 'text', default : WidgetType.simpleLine })
     public type: WidgetType;
@@ -37,8 +37,8 @@ export class Widget {
     @Column({ length: 32, default: '' , nullable: true })
     public validationRegex: string;
 
-    @ManyToOne(type => Task, task => task.widgets)
-    public assignedTask: Task;
+    @ManyToOne(type => Annotation, annotation => annotation.widgets)
+    public assignedAnnotation: Annotation;
 
     public static fromInterface(iWidget: IWidget): Widget {
         const u = new Widget();
@@ -50,7 +50,7 @@ export class Widget {
     public interface(): IWidget {
         return {
             id: this.id,
-            taskId: this.taskId,
+            annotationId: this.annotationId,
             label: this.label,
             defaultEntryValue: this.defaultEntryValue,
             entryField: this.entryField,
@@ -60,7 +60,7 @@ export class Widget {
     }
 
     public update(iwidget: IWidget) {
-        if (!isNullOrUndefined(iwidget.taskId)) {  this.taskId = iwidget.taskId; }
+        if (!isNullOrUndefined(iwidget.annotationId)) {  this.annotationId = iwidget.annotationId; }
         if (!isNullOrUndefined(iwidget.label)) { this.label = iwidget.label; }
         if (!isNullOrUndefined(iwidget.entryField)) { this.entryField = iwidget.entryField; }
         if (!isNullOrUndefined(iwidget.validationRegex)) { this.validationRegex = iwidget.validationRegex; }
@@ -70,7 +70,7 @@ export class Widget {
     public proto(): IProtoWidget {
         return {
             id: this.id,
-            taskId: this.taskId,
+            annotationId: this.annotationId,
             label: this.label,
             entryField: this.entryField,
             defaultEntryValue: this.defaultEntryValue,

@@ -67,9 +67,6 @@ export class Task {
     @OneToMany(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
     public taskPriority: TaskPriority;
 
-    @OneToMany(type => Widget, widget => widget.assignedTask, { eager: false, nullable: true })
-    public widgets: Widget;
-
     public static fromInterface(itask: ITask): Task {
         const task = new Task();
         task.update(itask);
