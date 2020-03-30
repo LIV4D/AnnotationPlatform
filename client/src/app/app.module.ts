@@ -77,6 +77,7 @@ import { NonExistentPageComponent } from './user-control/non-existent-page/non-e
 import { WidgetComponent } from './editor/right-menu/widget/widget.component';
 import { WidgetSingleLineComponent } from './editor/right-menu/widget/widgetTypes/widget-single-line/widget-single-line.component';
 import { WidgetMultipleLinesComponent } from './editor/right-menu/widget/widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
+import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
 
 
 @NgModule({
@@ -140,6 +141,7 @@ import { WidgetMultipleLinesComponent } from './editor/right-menu/widget/widgetT
       TaskTypeService,
       TasksBundlesService,
       ManagementCreationService,
+      WidgetFacadeService,
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,

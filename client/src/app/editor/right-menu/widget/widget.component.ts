@@ -1,6 +1,8 @@
 import { WidgetMultipleLinesComponent } from './widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
 import { WidgetSingleLineComponent } from './widgetTypes/widget-single-line/widget-single-line.component';
 import { Component, OnInit } from '@angular/core';
+import { WidgetFacadeService } from './widget.facade.service';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Component({
   selector: 'app-widget',
@@ -15,10 +17,12 @@ export class WidgetComponent implements OnInit {
   defaultEntryValue = '';
   validationRegex = '';
   entryField = 'allo';
+  private task : Task;
 
-  constructor() { }
+  constructor(private facadeService: WidgetFacadeService) { }
 
   ngOnInit(): void {
+      this.task = this.facadeService.getCurrentTask();
   }
 
 
