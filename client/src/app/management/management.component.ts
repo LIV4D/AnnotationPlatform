@@ -17,11 +17,11 @@ export class ManagementComponent implements OnInit, IRoutable {
     public modelName = '';
     public successText = '';
     public availableModels: string[];
+    private queryParams: Params;
 
     constructor(private facadeService: ManagementFacadeService, public router: Router, public activatedRoute: ActivatedRoute) {
         this.attributeValues = new Array<string>();
 
-        this.applyUrlParams();
     }
 
     public applyUrlParams() {
@@ -33,12 +33,19 @@ export class ManagementComponent implements OnInit, IRoutable {
     }
 
     public changeUrlParams() {
-        const queryParams: Params = { modelName : this.modelName, attributeValues : this.attributeValues };
+        // Slices attribute values to the size of the creation attributes so that there aren't extraneous slots.
+        this.attributeValues = (!isNullOrUndefined(this.attributesForCreation) && this.attributesForCreation.length > 0) ?
+                                this.attributeValues.slice(0, this.attributesForCreation.length) :
+                                this.attributeValues;
+
+        // Version is necessary so that the route ALWAYS updates.
+        // For the moment, Angular is bugged (https://github.com/angular/angular/issues/17609) so it is necessary.
+        this.queryParams = { modelName : this.modelName, attributeValues : this.attributeValues, version : Math.random() };
         this.router.navigate(
             [],
             {
                 relativeTo: this.activatedRoute,
-                queryParams,
+                queryParams : this.queryParams,
                 queryParamsHandling: 'merge'
             }
         )
@@ -46,18 +53,19 @@ export class ManagementComponent implements OnInit, IRoutable {
 
     async ngOnInit() {
         this.availableModels = await this.facadeService.getModelNames();
+
+        this.applyUrlParams();
     }
 
     public async generateTextFields(): Promise<void> {
         if (!isNullOrUndefined(this.modelName) && this.modelName !== '') {
             this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
-            this.changeUrlParams();
         }
     }
 
-    public createModel(eventName: string): void {
+    public async createModel(eventName: string): Promise<void> {
         this.successText = 'Event loading...';
-        this.successText = this.facadeService.sendHttpEvent(eventName, this.attributesForCreation, this.attributeValues);
         this.changeUrlParams();
+        this.successText = await this.facadeService.sendHttpEvent(eventName, this.attributesForCreation, this.attributeValues);
     }
 }
