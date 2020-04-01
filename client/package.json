@@ -30,6 +30,7 @@
     "rxjs": "~6.5.4",
     "screenfull": "^5.0.2",
     "tslib": "^1.11.1",
+    "underscore": "^1.10.1",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -41,6 +42,7 @@
     "@types/jasmine": "~3.5.7",
     "@types/jasminewd2": "~2.0.8",
     "@types/node": "^13.7.7",
+    "@types/underscore": "^1.9.4",
     "codelyzer": "^5.2.1",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
