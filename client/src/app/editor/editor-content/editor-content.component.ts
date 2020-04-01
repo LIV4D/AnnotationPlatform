@@ -35,6 +35,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   delayEventTimer: any;
   delayedEventHandler: Function;
   commentBoxes: CommentBoxSingleton;
+  commentClickObservable: any;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
@@ -44,9 +45,10 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
+    console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
     this.commentBoxes = CommentBoxSingleton.getInstance();
-    this.toolBoxService.commentBoxClicked.subscribe( hasBeenClicked => {
-      console.log('this.event : ' + hasBeenClicked.commentClicked);
+    this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe( hasBeenClicked => {
+      console.log("%c inside ngOnInit() " + hasBeenClicked.commentClicked, 'color:black; background: yellow;');
       if (hasBeenClicked) {
         this.createCommentBox();
       }
@@ -54,7 +56,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   ngAfterViewInit() {
-    // console.log('EditorContent::ngOnInit()');
+    console.log('%c inside ngAfterViewInit()', 'color:black; background: yellow;');
     // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
     // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
     this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
@@ -69,7 +71,9 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.cursorDown = false;
     this.middleMouseDown = false;
     this.zoomInitFactor = null;
-    this.toolBoxService.commentBoxClicked.unsubscribe();
+    if (!this.commentClickObservable.closed()) {
+      this.commentClickObservable.unsubscribe();
+    }
   }
 
   onMouseWheel(event: WheelEvent): void {
@@ -136,7 +140,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.editorFacadeService.onCursorOutToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
     // this.enableKeyEvents(true);
   }
-
 
   // onPointerDown(event: PointerEvent): void {
   //     this.delayEventHandling(() => {

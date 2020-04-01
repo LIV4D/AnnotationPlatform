@@ -80,7 +80,9 @@ export class BiomarkerService {
 
         }
         this.tree = tree;
-        console.log(tree);
+
+        // console.log("tree: " + tree);
+
         return this.tree
     }
 

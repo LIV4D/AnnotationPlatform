@@ -59,7 +59,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   getImages(): void {
-    console.log('GalleryComponent::getImage()');
+    // console.log('GalleryComponent::getImage()');
 
     // Create filters
     // WARNING : key must correspond to valid column in model
@@ -111,7 +111,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   onLocalImageLoaded(event: any): void {
-    console.log('GalleryComponent::onLocalImageLoaded()');
+    // console.log('GalleryComponent::onLocalImageLoaded()');
 
     const reader: FileReader = new FileReader();
     reader.onload = () => {
@@ -138,12 +138,12 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   loadImage(imageId: string): void {
-    console.log('GalleryComponent::loadImage()');
+    // console.log('GalleryComponent::loadImage()');
 
     this.appService.localEditing = false;
     localStorage.setItem('previousPage', 'gallery');
 
-    console.log('imageID :' + imageId);
+    // console.log('imageID :' + imageId);Í
     this.editorFacadeService.loadImageFromServer(imageId);
   }
 }

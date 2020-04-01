@@ -84,7 +84,7 @@ export class ToolboxService {
             this.layersService.toggleBorders(false);
         }
         if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-            console.log('SHOW')
+            // console.log('SHOW')
         }
         this.selectedTool.getValue().onCursorDown(point);
     }

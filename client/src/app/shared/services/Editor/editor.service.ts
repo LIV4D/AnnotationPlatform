@@ -137,7 +137,7 @@ export class EditorService {
 
   // Load canvases and local variables when opening a local image.
   public async loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): Promise<void> {
-    console.log("Load all local");
+    // console.log("Load all local");
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
