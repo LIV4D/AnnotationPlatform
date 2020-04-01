@@ -17,7 +17,8 @@ export class BioPicker extends Tool {
         const biomarkers = this.layersService.getBiomarkerCanvas();
 
         // HACK... 2 offset, wtf?
-        let correctionX = 0, correctionY = 0;
+        let correctionX = 0;
+        let correctionY = 0;
         if (biomarkers[0].currentCanvas.width < this.layersService.biomarkerOverlayCanvas.width) {
             correctionX = (biomarkers[0].currentCanvas.width - this.layersService.biomarkerOverlayCanvas.width) / 2;
         }
@@ -29,11 +30,11 @@ export class BioPicker extends Tool {
 
         for (let i = 0; i < biomarkers.length; i++) {
             const b = biomarkers[i];
-            const b_id = b.id.substr(11); // HACK TO REMOVE annotation_ prefix
+            const type = b.id.substr(11); // HACK TO REMOVE annotation_ prefix
             const data = b.currentCanvas.getContext('2d').getImageData(point.x, point.y, 1, 1);
             if (data.data[3] > 120) {
-                // const biomarkerElem = this.biomarkerService.flat.filter((e) => e.id === b_id)[0];
-                // this.biomarkerService.setFocusBiomarker(biomarkerElem);
+                 const biomarkerElem = this.biomarkerService.getBiomarkerOfType(type);
+                 this.biomarkerService.setFocusBiomarker(biomarkerElem);
                 return true;
             }
         }
