@@ -7,6 +7,7 @@ import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-editor-content',
@@ -35,7 +36,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   delayEventTimer: any;
   delayedEventHandler: Function;
   commentBoxes: CommentBoxSingleton;
-  commentClickObservable: any;
+  commentClickObservable: Subscription;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
@@ -71,7 +72,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.cursorDown = false;
     this.middleMouseDown = false;
     this.zoomInitFactor = null;
-    if (!this.commentClickObservable.closed()) {
+    if (!this.commentClickObservable.closed) {
       this.commentClickObservable.unsubscribe();
     }
   }
