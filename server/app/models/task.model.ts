@@ -7,7 +7,6 @@ import { Annotation } from './annotation.model';
 import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
 import { ITask } from '../interfaces/ITask.interface';
 import { TaskPriority } from './taskPriority.model';
-import { Widget } from './widget.model';
 
 @Entity()
 export class Task {

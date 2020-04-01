@@ -8,7 +8,7 @@ import { Annotation } from './annotation.model';
 
 export enum WidgetType {
     multiLine = 'multiLine',
-    simpleLine = 'simpleLine',
+    singleLine = 'singleLine',
     numerical = 'numerical',
     multiButton = 'multiButton',
 
@@ -22,7 +22,7 @@ export class Widget {
     @Column()
     public annotationId: number;
 
-    @Column({ type: 'text', default : WidgetType.simpleLine })
+    @Column({ type: 'text', default : WidgetType.singleLine })
     public type: WidgetType;
 
     @Column({ length: 32, default: '' })

@@ -12,6 +12,9 @@ export interface IRoutable {
     /**
      * Call this function whenever you wish to update the URL.
      * Straightforward, create a variable of type Params with all of the parameters that you wish within it.
+     * In addition, the Params variable must also contain a version variable which simply changes everytime it's called
+     * with Math.random() for example. Due to an oversight in Angular, if there are only minor changes brought to the Params,
+     * the route will not update.
      * Afterwards, add the following lines of code:
      * this.router.navigate(
      *      [],

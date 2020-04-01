@@ -24,6 +24,12 @@ export class ManagementComponent implements OnInit, IRoutable {
 
     }
 
+    async ngOnInit() {
+        this.availableModels = await this.facadeService.getModelNames();
+
+        this.applyUrlParams();
+    }
+
     public applyUrlParams() {
         this.activatedRoute.queryParamMap.subscribe( params => {
             this.modelName = params.has('modelName') ? params.get('modelName') : '';
@@ -33,10 +39,7 @@ export class ManagementComponent implements OnInit, IRoutable {
     }
 
     public changeUrlParams() {
-        // Slices attribute values to the size of the creation attributes so that there aren't extraneous slots.
-        this.attributeValues = (!isNullOrUndefined(this.attributesForCreation) && this.attributesForCreation.length > 0) ?
-                                this.attributeValues.slice(0, this.attributesForCreation.length) :
-                                this.attributeValues;
+        this.trimAttributeValueArray();
 
         // Version is necessary so that the route ALWAYS updates.
         // For the moment, Angular is bugged (https://github.com/angular/angular/issues/17609) so it is necessary.
@@ -51,10 +54,13 @@ export class ManagementComponent implements OnInit, IRoutable {
         )
     }
 
-    async ngOnInit() {
-        this.availableModels = await this.facadeService.getModelNames();
-
-        this.applyUrlParams();
+    /**
+     * Slices attribute values array to the size of the creation attributes array so that there aren't extraneous slots.
+     */
+    private trimAttributeValueArray() {
+        this.attributeValues = (!isNullOrUndefined(this.attributesForCreation) && this.attributesForCreation.length > 0) ?
+                                this.attributeValues.slice(0, this.attributesForCreation.length) :
+                                this.attributeValues;
     }
 
     public async generateTextFields(): Promise<void> {
