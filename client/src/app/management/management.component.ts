@@ -63,6 +63,11 @@ export class ManagementComponent implements OnInit, IRoutable {
         }
     }
 
+    public clearValues() {
+        this.attributeValues = [];
+        this.modelName = '';
+    }
+
     public async createModel(eventName: string): Promise<void> {
         this.successText = 'Event loading...';
         this.changeUrlParams();

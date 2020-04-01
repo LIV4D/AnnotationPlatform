@@ -1,5 +1,5 @@
 <p>management works!</p>
-<button (click) = "changeUrlParams()">SOMETHING</button>
+<button (click) = "clearValues()">Clear Fields</button>
 <div>
   <label>Please choose your desired model name here: </label>
   <select name="Model Name" placeholder="Input Model Name Here" [(ngModel)]="modelName" (change)="generateTextFields(); changeUrlParams();">
