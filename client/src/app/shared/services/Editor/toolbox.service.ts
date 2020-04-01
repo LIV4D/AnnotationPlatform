@@ -18,6 +18,7 @@ import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
 import { BiomarkerService } from './biomarker.service';
+import { ImageBorderService } from './image-border.service';
 
 
 @Injectable({
@@ -29,8 +30,9 @@ export class ToolboxService {
   commentBoxClicked: Subject<any>;
   listOfTools: Tool[];
 
-  constructor(private layersService: LayersService, private editorService: EditorService,
-              private toolPropertiesService: ToolPropertiesService, private biomarkerService: BiomarkerService) {
+    constructor(private layersService: LayersService, private editorService: EditorService,
+                private toolPropertiesService: ToolPropertiesService, private biomarkerService: BiomarkerService,
+                private imageBorderService: ImageBorderService) {
 
     this.listOfTools = [
       new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
@@ -76,32 +78,16 @@ export class ToolboxService {
     // this.layersService.redo();
   }
 
-  setUndoRedoState(): void {
-    // if (this.layersService.undoStack.getLength() === 0) {
-    //     this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
-    // } else {
-    //     this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = false;
-    // }
-
-    // if (this.layersService.redoStack.getLength() === 0) {
-    //     this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
-    // } else {
-    //     this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = false;
-    // }
-  }
-
-  public onCursorDown(point: Point): void {
-    // if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
-    //   this.imageBorderService.showBorders = false;
-    //   this.layersService.toggleBorders(false);
-    // }
-
-    if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-        // this.editorService.commentBoxVisible = true;
+    public onCursorDown(point: Point): void {
+        if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
+            this.imageBorderService.showBorders = false;
+            this.layersService.toggleBorders(false);
+        }
+        if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
+            console.log('SHOW')
+        }
+        this.selectedTool.getValue().onCursorDown(point);
     }
-    this.selectedTool.getValue().onCursorDown(point);
-    this.setUndoRedoState();
-  }
 
   public onCursorUp(): void {
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
@@ -120,7 +106,6 @@ export class ToolboxService {
 
   public onCancel(): void {
     this.selectedTool.getValue().onCancel();
-    this.setUndoRedoState();
   }
 
 }

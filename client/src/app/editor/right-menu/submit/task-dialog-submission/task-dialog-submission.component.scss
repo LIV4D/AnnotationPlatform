@@ -1,0 +1,41 @@
+@import './../../../../../../src/colorVariables.scss';
+
+div {
+  background-color: $gray;
+  color: $font-color-gray;
+}
+
+#cancelTask {
+    margin-right: 16px;
+    margin: 4px;
+    background-color: $error-color;
+}
+
+#confirmTask {
+    margin-left: 4px;
+    background-color: $register-color;
+}
+
+
+#taskbuttons {
+    text-align: center;
+    color: $font-color-light;
+}
+
+.mat-dialog-title {
+    margin: 0px !important;
+    text-align: center;
+}
+
+#taskdesc {
+    width: 350px;
+    margin-left: 10px;
+}
+
+#tasklist {
+    word-break: break-word;
+}
+
+#taskName {
+    width:150px;
+}

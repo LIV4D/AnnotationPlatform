@@ -12,6 +12,9 @@ import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
 // Components
 import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
+import { TaskDialogSubmissionComponent } from './editor/right-menu/submit/task-dialog-submission/task-dialog-submission.component';
+import { SubmitComponent } from './editor/right-menu/submit/submit.component';
+
 import { GalleryComponent } from './gallery/gallery.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
@@ -21,6 +24,7 @@ import { LoginComponent } from './login/login.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
 import { ManagementComponent } from './management/management.component';
+import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -30,41 +34,43 @@ import { LayersFacadeService } from './editor/editor-content/layers/layers.facad
 import { TaskFacadeService } from './tasks/tasks.facade.service';
 import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-Complete.facade.service';
-import { GalleryFacadeService } from './gallery/gallery.facade.service';
-// import { LayoutModule } from '@angular/cdk/layout';
+import { GalleryFacadeService } from './gallery/gallery.facade.service';;
 import { ImageBorderService } from './shared/services/Editor/image-border.service';
 import { LoginService } from './shared/services/login.service';
 import { HeaderService } from './shared/services/header.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/modelfinder.service';
+import { AppService } from './shared/services/app.service';
+import { TasksBundlesService } from './shared/services/tasks/tasksBundles.service';
+import { TasksService } from './shared/services/tasks/tasks.service';
+import { TaskTypeService } from './shared/services/tasks/taskType.service';
+import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
-import { NgxImageZoomModule } from 'ngx-image-zoom';
-// import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
-import { AppService } from './shared/services/app.service';
-import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ToolboxComponent } from './editor/toolbox/toolbox.component';
 import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
 import { RightMenuComponent } from './editor/right-menu/right-menu.component';
-import { TaskSubmissionComponent } from './editor/right-menu/task-submission/task-submission.component';
 import { TimerComponent } from './editor/right-menu/timer/timer.component';
 import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
 import { EditorContentComponent } from './editor/editor-content/editor-content.component';
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
-// import { MatIconModule } from '@angular/material/icon';
+import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
 
 
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+
+// Interceptor
+import { AuthInterceptor } from './shared/services/authentification.intercept';
 
 @NgModule({
    declarations: [
@@ -81,7 +87,8 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       ToolElementComponent,
       RightMenuComponent,
       BiomarkersComponent,
-      TaskSubmissionComponent,
+      TaskDialogSubmissionComponent,
+      SubmitComponent,
       TimerComponent,
       VisualizationComponent,
       EditorContentComponent,
@@ -91,8 +98,9 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       ZoomComponent,
       MousewheelDirective,
       CamelCaseToTextPipe,
-      // ZoomngxComponent,
-      CommentBoxComponent
+      TasksBundlesComponent,
+      CommentBoxComponent,
+      ToolPropertiesComponent
    ],
    imports: [
       BrowserModule,
@@ -102,7 +110,6 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       BrowserAnimationsModule,
       FormsModule,
       ReactiveFormsModule,
-      NgxImageZoomModule
    ],
    providers: [
       LoginFacadeService,
@@ -115,6 +122,10 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
       TaskFacadeService,
       TasksToCompleteFacadeService,
       TasksCompletedFacadeService,
+      TasksBundlesFacadeService,
+      TasksService,
+      TaskTypeService,
+      TasksBundlesService,
       ManagementCreationService,
       HeaderService,
       EditorFacadeService,

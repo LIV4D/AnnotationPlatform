@@ -1,61 +1,38 @@
-<mat-tab-group class="Taskgroup" color=: (selectedTabChange)="log($event)"
- (focusChange)="log($event)" dynamicHeight mat-align-tabs="center">
+<mat-tab-group class="Taskgroup" dynamicHeight mat-align-tabs="center">
 
-  <!-- Todo: Separate each table in one component with URL-->
-  <mat-tab label="Ancien Tableau">
-    <div id="completeButtons">
-        <button mat-button (click)="showIncomplete()" id="incompleteButton" [class.selected]="!showCompleted">
-            <span>Incomplete</span>
-        </button>
-        <button mat-button (click)="showComplete()" id="completeButton" [class.selected]="showCompleted">
-            <span>Completed</span>
-        </button>
-    </div>
-    <div class="example-container">
-      <mat-table #table [dataSource]="data" matSort matSortActive="id" matSortDisableClear>
-          <ng-container matColumnDef="imageSrc">
-              <mat-header-cell *matHeaderCellDef disableClear>Preview</mat-header-cell>
-              <mat-cell *matCellDef="let task"> <img [src]="task.imageSrc | safeImage" height="64px" /> </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="image">
-              <mat-header-cell *matHeaderCellDef disableClear>Id</mat-header-cell>
-              <mat-cell *matCellDef="let task"> {{task.id}} </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="complete">
-              <mat-header-cell *matHeaderCellDef disableClear>Project</mat-header-cell>
-              <mat-cell *matCellDef="let task"> {{task.completeCount}} </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="incomplete">
-            <mat-header-cell *matHeaderCellDef disableClear>Creator</mat-header-cell>
-            <mat-cell *matCellDef="let task"> {{task.creatorId}} </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="time">
-            <mat-header-cell *matHeaderCellDef disableClear>Time</mat-header-cell>
-            <mat-cell *matCellDef="let task"> N/A </mat-cell>
-          </ng-container>
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"
-          (mouseup)="loadImage(row.imageId.toString())"
-          ng-hide="row.incompleteCount > 0"
-          >
-      </mat-row>
-      </mat-table>
-
-      <!--p *ngIf="!showCompleted && noData" id="tasksFinishedText"> You've completed all your assigned tasks. <br />Thanks for your work! </p-->
-
-      <mat-paginator [length]="10" [pageSize]="1"></mat-paginator>
-    </div>
+  <!-- Task to Complete -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>check_box_outline_blank</mat-icon>
+         Tasks To Complete
+    </ng-template>
+    <ng-template matTabContent>
+      <app-tasks-to-complete></app-tasks-to-complete>
+    </ng-template>
   </mat-tab>
 
-  <mat-tab label="Tasks To Complete">
+  <!-- Task Completed -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>check_box</mat-icon>
+         Tasks Completed
+    </ng-template>
+    <ng-template matTabContent>
+      <app-tasks-completed></app-tasks-completed>
+    </ng-template>
   </mat-tab>
 
-  <mat-tab label="Tasks Completed" >
-    <app-tasks-completed></app-tasks-completed>
-  </mat-tab>
-
-  <mat-tab label="Tasks Choices">
-   <app-tasks-completed></app-tasks-completed>
+  <!-- Bundles -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>storage</mat-icon>
+         Bundles
+    </ng-template>
+    <ng-template matTabContent>
+      <app-tasks-bundles></app-tasks-bundles>
+    </ng-template>
   </mat-tab>
 
 <mat-tab-group>
+
+<!-- In case you want to add links on each tables https://stackoverflow.com/questions/50313246/angular-6-material-mat-tab-link-be-selected-by-underlining-bar -->

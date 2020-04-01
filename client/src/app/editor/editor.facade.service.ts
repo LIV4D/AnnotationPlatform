@@ -4,7 +4,7 @@ import { BiomarkerService } from './../shared/services/Editor/biomarker.service'
 import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
-import { Image } from '../shared/models/image.model';
+import { Image } from '../shared/models/serverModels/image.model';
 
 @Injectable()
 export class EditorFacadeService {

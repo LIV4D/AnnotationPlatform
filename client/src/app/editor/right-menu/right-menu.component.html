@@ -4,6 +4,7 @@
   <div class="spacer"></div>
   <app-timer *ngIf="!appService.localEditing"></app-timer>
   <!-- <app-comments *ngIf="!appService.localEditing"></app-comments> -->
-  <button mat-button (click)="saveLocal()" *ngIf="appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Save</button>
-  <!-- <button mat-button *ngIf="!appService.localEditing" [matTooltip]="saveText" matTooltipShowDelay="1000" matTooltipPosition="right">Submit</button> -->
+
+  <!-- Submit Button -->
+  <app-submit></app-submit>
 </div>

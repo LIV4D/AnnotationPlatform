@@ -6,13 +6,19 @@ import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalStorage } from './local-storage.service';
 import { Point } from './Tools/point.service';
-import { Image as ImageServer } from '../../models/image.model';
+import { Image as ImageServer } from '../../models/serverModels/image.model';
+import { tap } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
+import { BioNode } from './../../models/bionode.model';
+import { saveAs } from 'file-saver';
+import { Task } from '../../models/serverModels/task.model';
+import { AnnotationData } from '../../models/serverModels/annotationData.model';
 
+declare const Buffer;
 
 // Min and max values for zooming
 const ZOOM = {
@@ -69,7 +75,6 @@ export class EditorService {
   }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
-    // console.log('EditorService::init(svgLoaded: EventEmitter<any>, viewPort: ElementRef)');
 
     this.biomarkerService.dataSource = null;
     this.zoomFactor = 1.0;
@@ -87,8 +92,6 @@ export class EditorService {
         this.setImageId('local');
         this.loadAllLocal(this.imageLocal, this.svgLoaded);
     } else {
-      // console.log('load from server');
-
       this.loadAll();
     }
     // this.resize();
@@ -134,7 +137,8 @@ export class EditorService {
   }
 
   // Load canvases and local variables when opening a local image.
-  public loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): void {
+  public async loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): Promise<void> {
+    console.log("Load all local");
     this.imageLoaded = true;
     this.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
@@ -186,132 +190,123 @@ export class EditorService {
     }, 0);
     this.updateCanvasDisplayRatio();
 
-    const name = 'test';
-    const data1 =  {
-      files: {
-        image: [name, image, image]
-      },
-      type: 'default',
-      metadata: {"filename": "yoda.jpeg"}
-    };
-
-    this.http.post<any>('/api/images/createNew/', data1).subscribe(res => {
-      // console.log(res);
-    });
-
-    const data = {'data': null, 'imageId': 1, 'comment': null};
-
-    this.http.post<any>('/api/annotations/create/', data).subscribe(res => {
-      // console.log(res);
-    });
-
-
-    // this.http.post('/api/annotation/create')
-
     // TODO: Gotta understand how to make this work with the server.
     // console.log('EMPTY');
     this.http.get(`/api/annotations/getEmpty/`,
         { headers: new HttpHeaders(), responseType: 'json' }).pipe(
         ).subscribe(
         res => {
-          this.layersService.biomarkerCanvas = [];
-          this.svgBox.innerHTML = (res as any).svg;
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-          const arbre: SVGGElement[] = [];
-          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-            const elems = e.getElementsByTagName('g');
-            for (let j = 0; j < elems.length; j++) {
-              if (elems[j].parentElement.tagName !== 'g') {
-                  arbre.push(elems[j]);
-              }
-            }
-          });
-          arbre.forEach((e: SVGGElement) => {
-              this.layersService.createFlatCanvasRecursive(e,
-                  this.backgroundCanvas.originalCanvas.width,
-                  this.backgroundCanvas.originalCanvas.height);
-          });
-          this.svgLoaded.emit(arbre);
-    });
+            // Replace
+            this.layersService.biomarkerCanvas = [];
+            this.layersService.createFlatCanvasRecursiveJson(res); //
+            this.biomarkerService.initJsonRecursive(res);
+            // this.biomarkerService.buildTree(res as BioNode[]);
+
+            // this.svgBox.innerHTML = (res as any).svg;
+            // const parser = new DOMParser();
+            // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+            // const arbre: SVGGElement[] = [];
+            // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+            //     const elems = e.getElementsByTagName('g');
+            //     for (let j = 0; j < elems.length; j++) {
+            //         if (elems[j].parentElement.tagName !== 'g') {
+            //             arbre.push(elems[j]);
+            //         }
+            //     }
+            // });
+            // arbre.forEach((e: SVGGElement) => {
+            //     this.layersService.createFlatCanvasRecursive(e,
+            //         this.backgroundCanvas.originalCanvas.width,
+            //         this.backgroundCanvas.originalCanvas.height);
+            // });
+            // this.svgLoaded.emit(arbre);
+      });
+
+    const res = await this.http.get<any>(`/api/annotations/getEmpty/`, { headers: new HttpHeaders(), responseType: 'json' })
+      .pipe().toPromise();
+
+    console.log(JSON.parse(res));
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
-  loadRevision(draw: boolean): void {
+  public async loadRevision(draw: boolean): Promise<void> {
       const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-      // // console.log('userid '+userId)
-      // const req = this.http.get(`api/revisions/svg/${userId}/${this.imageId}`, { headers: new HttpHeaders(),
-      //                                                                            reportProgress: true, observe: 'events' });
-
       const req = this.http.get('/api/annotations/get/1', { headers: new HttpHeaders(),
         reportProgress: true, observe: 'events' });
 
       this.headerService.display_progress(req, 'Downloading Preannotations').subscribe(
           res => {
-              this.svgBox.innerHTML = res.svg;
-              const parser = new DOMParser();
-              const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
-              const arbre: SVGGElement[] = [];
-              Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                  const elems = e.getElementsByTagName('g');
-                  for (let j = 0; j < elems.length; j++) {
-                      if (elems[j].parentElement.tagName !== 'g') {
-                          arbre.push(elems[j]);
-                      }
+            this.svgBox.innerHTML = res.svg;
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
+            const arbre: SVGGElement[] = [];
+            Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+              const elems = e.getElementsByTagName('g');
+              for (let j = 0; j < elems.length; j++) {
+                  if (elems[j].parentElement.tagName !== 'g') {
+                      arbre.push(elems[j]);
                   }
-              });
+              }
+            });
 
               // this.commentService.comment = res.diagnostic;
 
-              if (draw) {
-                  this.layersService.biomarkerCanvas = [];
-                  arbre.forEach((e: SVGGElement) => {
-                      this.layersService.createFlatCanvasRecursive(e);
-                  });
-                  this.layersService.toggleBorders(true);
-                  setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-              }
-              this.svgLoaded.emit(arbre);
-          }, error => {
+            if (draw) {
+              this.layersService.biomarkerCanvas = [];
+              arbre.forEach((e: SVGGElement) => {
+                this.layersService.createFlatCanvasRecursive(e);
+              });
+
+              setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+            }
+            this.svgLoaded.emit(arbre);
+          }, async error => {
+            // const res = await this.http.get<any>(`/api/annotations/getEmpty/`,
+            // { headers: new HttpHeaders(), responseType: 'json' }).pipe(
+            // ).toPromise();
+            // console.log(res);
               if (error.status === 404 || error.status === 500) {
                   const reqBase = this.http.get(`/api/annotations/getEmpty/`,
                                   { headers: new HttpHeaders(), observe: 'events',  reportProgress: true});
                   this.headerService.display_progress(reqBase, 'Downloading Preannotations').subscribe(res => {
-                    this.svgBox.innerHTML = (res as any).svg;
-                    // console.log(this.svgBox.innerHTML);
+                    this.layersService.createFlatCanvasRecursiveJson(res);
+                    this.biomarkerService.initJsonRecursive(res);
+                    this.biomarkerService.buildTreeRecursive(res);
 
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
+                    // this.svgBox.innerHTML = (res as any).svg;
+                    // console.log(this.svgBox.innerHTML);
+                    // const parser = new DOMParser();
+                    // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
                     // console.log(xmlDoc)
-                    const arbre: SVGGElement[] = [];
+                    // const arbre: SVGGElement[] = [];
                     // console.log(xmlDoc.children)
-                    Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                      const elems = e.getElementsByTagName('g');
-                      // console.log(elems)
-                      for (let j = 0; j < elems.length; j++) {
-                        if (elems[j].parentElement.tagName !== 'g') {
-                          arbre.push(elems[j]);
-                          // console.log(elems[j]);
-                        }
-                      }
-                    });
-                    // this.biomarkerService.init(arbre);
-                    // this.commentService.comment = (res as any).diagnostic;
-                    if (draw) {
-                      this.biomarkerService.init(arbre);
-                      this.layersService.biomarkerCanvas = [];
-                      arbre.forEach((e: SVGGElement) => {
-                        this.layersService.createFlatCanvasRecursive(e);
-                      });
-                      setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-                    }
-                    this.svgLoaded.emit(arbre);
+                    // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+                    //     const elems = e.getElementsByTagName('g');
+                    //     console.log(elems)
+                    //     for (let j = 0; j < elems.length; j++) {
+                    //         if (elems[j].parentElement.tagName !== 'g') {
+                    //             arbre.push(elems[j]);
+                    //             console.log(elems[j]);
+                    //         }
+                    //     }
+                    // });
+                    // // this.biomarkerService.init(arbre);
+                    // // this.commentService.comment = (res as any).diagnostic;
+                    // if (draw) {
+                    //     this.biomarkerService.init(arbre);
+                    //     this.layersService.biomarkerCanvas = [];
+                    //     arbre.forEach((e: SVGGElement) => {
+                    //         this.layersService.createFlatCanvasRecursive(e);
+                    //     });
+                    //     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
+                    // }
+                    // this.svgLoaded.emit(arbre);
                   });
               }
               // console.log('Loaded : ')
               // console.log(this.biomarkerService.lastBiomarkers)
               // console.log(this.layersService.biomarkerCanvas)
-          });
+      });
   }
 
 
@@ -404,11 +399,11 @@ export class EditorService {
 
   // Load everything in the editor.
   public loadAll(): void {
+
     // Check if a an image is saved in localStorage
     const lastImageId = LocalStorage.lastSavedImageId();
 
     if (this.shouldLoadLocalStorage(lastImageId)) {
-      // console.log('if -- this.shouldLoadLocalStorage(lastImageId)');
 
       this.imageId = lastImageId;
       this.getMainImage();
@@ -416,7 +411,6 @@ export class EditorService {
       this.loadRevision(true);
       LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
-      // this.biomarkerService.init(this.layersService.)
       return;
     }
     // Check if imageId is set
@@ -766,60 +760,76 @@ export class EditorService {
     // });
   }
 
-  // saveSVGFile(): void {
-  //     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-  //     this.layersService.biomarkerCanvas.forEach(b => {
-  //         const elem = document.getElementById((b.id).replace('annotation-', ''));
-  //         const url = b.currentCanvas.toDataURL();
-  //         elem.setAttribute('width', '100%');
-  //         elem.setAttribute('height', '100%');
-  //         elem.setAttribute('xlink:href', url);
-  //     });
-  //     const header = '<?xml version="1.0" encoding="UTF-8"?>';
-  //     const blob = new Blob([header + this.svgBox.getElementsByTagName('svg')[0].outerHTML], { type: 'image/svg+xml' });
-  //     // FileSaver.saveAs(blob, this.localSVGName);
-  // }
+   saveSVGFile(): void {
+    if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
+      return;
+    }
+    this.layersService.biomarkerCanvas.forEach(b => {
+      const elem = document.getElementById((b.id).replace('annotation-', ''));
+      const url = b.currentCanvas.toDataURL();
+      elem.setAttribute('width', '100%');
+      elem.setAttribute('height', '100%');
+      elem.setAttribute('xlink:href', url);
+    });
+    const header = '<?xml version="1.0" encoding="UTF-8"?>';
+    const blob = new Blob([header + this.svgBox.getElementsByTagName('svg')[0].outerHTML], { type: 'image/svg+xml' });
+    saveAs(blob, this.localSVGName);
+  }
 
-  // saveToDB(): Observable<Object> {
-  //     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
-  //     this.appService.loading = true;
-  //     if (this.layersService.unsavedChange) {
-  //         LocalStorage.save(this, this.layersService);
-  //         this.layersService.unsavedChange = false;
-  //     }
-  //     this.layersService.biomarkerCanvas.forEach(b => {
-  //         const elem = document.getElementById((b.id).replace('annotation-', ''));
-  //         if (!elem) {
-  //             return throwError(b.id.replace('annotation-', '') + ' was not found.');
-  //         }
-  //         const url = b.currentCanvas.toDataURL();
-  //         elem.setAttribute('xlink:href', url);
-  //     });
-  //     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  //     const body = {
-  //         svg: this.svgBox.getElementsByTagName('svg')[0].outerHTML,
-  //         // diagnostic: this.commentService.comment
-  //     };
-  //     const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
-  //     const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
-  //     reqBody.pipe( tap(() => { this.appService.loading = false; }));
-  //     return reqBody;
-  // }
+  cancel() {
+
+  }
+
+  saveToDB(savedTask: Task) {
+    // A canva has to be loaded
+    if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
+      return;
+    }
+
+    this.appService.loading = true;
+
+    // The ophtalmologist work is saved
+    if (this.layersService.unsavedChange) {
+      LocalStorage.save(this, this.layersService);
+      this.layersService.unsavedChange = false;
+    }
+
+    const annotationData: AnnotationData = {
+      biomarker: {},
+      hierarchy: {},
+      nongraphic: {}
+    };
+
+    // Each biomarker datas are formated in Base64
+    // and then added in the dictionary
+    this.layersService.biomarkerCanvas.forEach(b => {
+      const key = b.id.toString();
+
+      // strip off the data: url prefix to get just the base64-encoded bytes
+      const url: string = b.currentCanvas.toDataURL();
+      annotationData.biomarker[key] = url;
+    });
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
+    const taskId = savedTask.id;
+    const body = {
+      //  revision : JSON.stringify(this.backgroundCanvas),
+      //  diagnostic: this.commentService.comment
+      data: annotationData,
+      uptime: + new Date(),
+      isComplete: savedTask.isComplete,
+      user: currentUser
+    };
+
+    const req = this.http.post(`/api/tasks/submit/${taskId}`, body, { reportProgress:true, observe: 'events'});
+       //const req = this.http.put(`/api/revisions/${userId}/${this.imageId}`, body, {reportProgress: true, observe: 'events'});
+    const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
+    reqBody.pipe( tap(() => { this.appService.loading = false; }));
+    return reqBody;
+   }
 
   setImageId(id: string): void {
     // console.log('EditorService::setImageId()');
 
     this.imageId = id;
   }
-
-  // updateTasks(tasks: Task[]): void {
-  //     // server takes 'true' and 'false' instead of booleans
-  //     tasks.forEach(x => {
-  //         const body = {
-  //             active: x.active ? 'true' : 'false',
-  //             completed: x.completed ? 'true' : 'false',
-  //         };
-  //         this.http.put(`/api/tasks/${x.id}`, body).subscribe();
-  //     });
-  // }
 }

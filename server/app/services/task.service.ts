@@ -3,6 +3,7 @@ import { isNullOrUndefined } from 'util';
 
 import TYPES from '../types';
 import { AnnotationService } from './annotation.service';
+import { TaskTypeRepository } from '../repository/taskType.repository';
 import { TaskRepository } from '../repository/task.repository';
 import { Task } from '../models/task.model';
 import { ITask } from '../interfaces/ITask.interface';
@@ -17,6 +18,8 @@ import { throwIfNotAdmin } from '../utils/userVerification';
 export class TaskService {
     @inject(TYPES.TaskRepository)
     private taskRepository: TaskRepository;
+    @inject(TYPES.TaskTypeRepository)
+    private taskTypeRepository: TaskTypeRepository;
     @inject(TYPES.AnnotationService)
     private annotationService: AnnotationService;
 
@@ -52,6 +55,10 @@ export class TaskService {
         return this.taskRepository.findByFilter(filter);
     }
 
+    // public async getTaskByFilter(filter: {userId?: number, imageId?: number}) {
+    //     return this.taskRepository.findOneByFilter(filter);
+    // }
+
     public async updateTask(updatedTask: ITask, user: User) {
         const oldTask = await this.getTask(updatedTask.id, user);
         oldTask.update(updatedTask);
@@ -72,10 +79,25 @@ export class TaskService {
             data: submission.data,
         };
         this.annotationService.update(newAnnotation, user, { description: 'Task submission', timestamp: submission.uptime });
+        this.updateTask(task, user);
     }
 
     public async getUserGallery(userId: string, page?: number, pageSize?: number, isComplete?: boolean): Promise<ITaskGallery[]> {
         return await this.taskRepository.findTaskListByUser(userId, page, pageSize, isComplete);
+    }
+
+    /**
+     * Find each taskType title of a group of Tasks
+     * and put in each tasks
+     * @param taskGallery: contains tasks filtered by userID
+     * @returns a group of tasks with taskTypeTitle fielded
+     */
+    public async getGalleryWithTaskTypeTitle(taskGallery: ITaskGallery[]): Promise<ITaskGallery[]> {
+        await Promise.all(taskGallery.map(async task => {
+            const taskTypeTitle = await this.taskTypeRepository.find(task.taskTypeId);
+            task.taskTypeTitle =  taskTypeTitle.title;
+        } ));
+        return await taskGallery;
     }
 
     public async deleteTask(id: number, user: User) {

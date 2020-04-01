@@ -1,8 +1,10 @@
-import { Tool } from './../../../shared/models/tool.model';
+import { Tool } from './../../../shared/services/Editor/Tools/tool.service';
 import { ToolboxFacadeService } from './../toolbox.facade.service';
 import { Component, OnInit } from '@angular/core';
 import { ToolPropertiesFacadeService } from './tool-properties.facade.service';
 import { AppService } from './../../../shared/services/app.service';
+import { MatSlider } from '@angular/material/slider';
+import { CamelCaseToTextPipe } from './../../../shared/pipes/camel-case-to-text.pipe';
 
 @Component({
   selector: 'app-tool-properties',
@@ -17,7 +19,7 @@ export class ToolPropertiesComponent implements OnInit {
     eraseAll: boolean;
     smartMask: boolean;
 
-    constructor(private toolboxFacadeService: ToolboxFacadeService, private toolPropertiesFacadeService: ToolPropertiesFacadeService,
+    constructor(private toolboxFacadeService: ToolboxFacadeService, public toolPropertiesFacadeService: ToolPropertiesFacadeService,
                 public appService: AppService) {
         this.eraseAll = true;
         this.smartMask = false;

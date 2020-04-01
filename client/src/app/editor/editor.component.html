@@ -8,15 +8,15 @@
           <div id="overlay">
 
               <!--TOOLPROPS-->
-              <!-- <app-tool-properties></app-tool-properties> -->
+              <app-tool-properties></app-tool-properties>
 
               <!--CURRENT BIOMARKER-->
               <div id="classTitle" *ngIf="biomarkersFacadeService.currentElement" matTooltip="Previous (A) Next (D)" matTooltipShowDelay="1000"
                   matTooltipPosition="below">
                   <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : editorFacadeService.biomarkersCurrentElement.getAttribute('color')}" />
+                      <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : editorFacadeService.biomarkersCurrentElement['color']}" />
                   </svg>
-                  {{biomarkersFacadeService.currentElement.id | camelCaseToText}}
+                  {{biomarkersFacadeService.currentElement['type'] | camelCaseToText}}
               </div>
 
 

@@ -32,8 +32,8 @@ export class BioPicker extends Tool {
             const b_id = b.id.substr(11); // HACK TO REMOVE annotation_ prefix
             const data = b.currentCanvas.getContext('2d').getImageData(point.x, point.y, 1, 1);
             if (data.data[3] > 120) {
-                const biomarkerElem = this.biomarkerService.flat.filter((e) => e.id === b_id)[0];
-                this.biomarkerService.setFocusBiomarker(biomarkerElem);
+                // const biomarkerElem = this.biomarkerService.flat.filter((e) => e.id === b_id)[0];
+                // this.biomarkerService.setFocusBiomarker(biomarkerElem);
                 return true;
             }
         }

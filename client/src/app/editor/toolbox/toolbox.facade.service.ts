@@ -24,16 +24,13 @@ export class ToolboxFacadeService {
 
     public setUndo() {
         this.toolboxService.setUndo();
-        this.toolboxService.setUndoRedoState();
     }
 
     public setRedo() {
         this.toolboxService.setRedo();
-        this.toolboxService.setUndoRedoState();
     }
 
     public setUndoRedoState() {
-        this.toolboxService.setUndoRedoState();
     }
 
 }

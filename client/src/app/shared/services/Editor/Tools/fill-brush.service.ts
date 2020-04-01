@@ -8,7 +8,8 @@ import { BiomarkerCanvas } from './biomarker-canvas.service';
 
 
 export class FillBrush extends Tool {
-    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService, layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
+    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService,
+                layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
         super(name, iconPath, tooltip, editorService, layersService);
     }
 
@@ -105,8 +106,8 @@ export class FillBrush extends Tool {
             this.resetChangeBoundedBox();
 
             this.layersService.removeFirstPoint();
-            const overlay = this.layersService.biomarkerOverlayCanvas;
-            this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
+            // const overlay = this.layersService.biomarkerOverlayCanvas;
+            // this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
         }
     }
 

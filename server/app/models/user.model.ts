@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as crypto from 'crypto';
 import { IsEmail, validateSync } from 'class-validator';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { isUndefined } from 'util';
 import { SubmissionEvent } from './submissionEvent.model';
@@ -48,7 +48,7 @@ export class User {
     @ManyToOne(type => Task, task => task.preferredUsers)
     public preferredTask: Task;
 
-    @OneToOne(type => TaskPriority, taskPriority => taskPriority.userId, { eager: false })
+    @OneToMany(type => TaskPriority, taskPriority => taskPriority.userId, { eager: false })
     public taskPriority: TaskPriority;
 
     public static hashPassword(password: string, salt?: Buffer) {
@@ -91,6 +91,7 @@ export class User {
     }
 
     public update(iuser: IUser) {
+        if (!isNullOrUndefined(iuser.id)) { this.id = iuser.id; }
         if (!isNullOrUndefined(iuser.firstName)) { this.firstName = iuser.firstName; }
         if (!isNullOrUndefined(iuser.lastName)) { this.lastName = iuser.lastName; }
         if (!isNullOrUndefined(iuser.isAdmin)) { this.isAdmin = iuser.isAdmin; }
