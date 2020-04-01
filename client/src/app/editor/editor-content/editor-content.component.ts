@@ -46,10 +46,9 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
-    console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
+    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
     this.commentBoxes = CommentBoxSingleton.getInstance();
     this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe( hasBeenClicked => {
-      console.log("%c inside ngOnInit() " + hasBeenClicked.commentClicked, 'color:black; background: yellow;');
       if (hasBeenClicked) {
         this.createCommentBox();
       }
@@ -57,9 +56,6 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   ngAfterViewInit() {
-    console.log('%c inside ngAfterViewInit()', 'color:black; background: yellow;');
-    // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
-    // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
     this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
     this.svgLoaded.emit();
     // this.editorFacadeService.load(imageId);
@@ -72,6 +68,7 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.cursorDown = false;
     this.middleMouseDown = false;
     this.zoomInitFactor = null;
+    // closed::boolean is a flag to indicate whether this Subscription has already been unsubscribed
     if (!this.commentClickObservable.closed) {
       this.commentClickObservable.unsubscribe();
     }
