@@ -53,5 +53,4 @@ export class WidgetComponent implements OnInit, AfterViewInit {
   }
 
 
-
 }
