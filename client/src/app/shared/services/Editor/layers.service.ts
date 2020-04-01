@@ -3,6 +3,8 @@ import { AppService } from '../app.service';
 import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
 import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
+import { AnnotationData } from '../../models/serverModels/annotationData.model';
+import { Stack } from './Tools/stack.service';
 export const ANNOTATION_PREFIX = 'annotation-';
 
 
@@ -18,8 +20,8 @@ export class LayersService {
   tempDrawCanvas: HTMLCanvasElement;
   biomarkerCanvas: BiomarkerCanvas[] = [];
 
-  // undoStack: Stack<[number[], ImageData[]]>;
-  // redoStack: Stack<[number[], ImageData[]]>;
+  undoStack: Stack<[number[], ImageData[]]>;
+  redoStack: Stack<[number[], ImageData[]]>;
 
   selectedBiomarkerId: string;
 
@@ -50,63 +52,65 @@ export class LayersService {
 
     // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
     this.MAX_CAPACITY = 15;
-    // this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
-    // this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+
+    this.MAX_CAPACITY = 15;
+    this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+    this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
     this.biomarkerCanvas = [];
   }
 
-  // undo(): void {
-  //     if (this.undoStack.getLength() > 0) {
-  //         this.unsavedChange = true;
-  //         const canvas = this.undoStack.pop();
-  //         const imageDatas = new Array<ImageData>();
+  undo(): void {
+      if (this.undoStack.getLength() > 0) {
+          this.unsavedChange = true;
+          const canvas = this.undoStack.pop();
+          const imageDatas = new Array<ImageData>();
 
-  //         canvas[0].forEach( (canvasIndex, arrayIndex) => {
-  //             const biomarker = this.biomarkerCanvas[canvasIndex];
-  //             imageDatas.push(biomarker.getCurrentImageData());
-  //             biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
-  //             biomarker.draw();
-  //         });
+          canvas[0].forEach( (canvasIndex, arrayIndex) => {
+              const biomarker = this.biomarkerCanvas[canvasIndex];
+              imageDatas.push(biomarker.getCurrentImageData());
+              biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
+              biomarker.draw();
+          });
 
-  //         this.redoStack.push([canvas[0], imageDatas]);
-  //     }
-  // }
+          this.redoStack.push([canvas[0], imageDatas]);
+      }
+  }
 
-  // redo(): void {
-  //     if (this.redoStack.getLength() > 0) {
-  //         this.unsavedChange = true;
-  //         const canvas = this.redoStack.pop();
-  //         const imageDatas = new Array<ImageData>();
+  redo(): void {
+      if (this.redoStack.getLength() > 0) {
+          this.unsavedChange = true;
+          const canvas = this.redoStack.pop();
+          const imageDatas = new Array<ImageData>();
 
-  //         canvas[0].forEach( (canvasIndex, arrayIndex) => {
-  //             const biomarker = this.biomarkerCanvas[canvasIndex];
-  //             imageDatas.push(biomarker.getCurrentImageData());
+          canvas[0].forEach( (canvasIndex, arrayIndex) => {
+              const biomarker = this.biomarkerCanvas[canvasIndex];
+              imageDatas.push(biomarker.getCurrentImageData());
 
-  //             biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
-  //             biomarker.draw();
-  //         });
-  //         this.undoStack.push([canvas[0], imageDatas]);
-  //     }
-  // }
+              biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
+              biomarker.draw();
+          });
+          this.undoStack.push([canvas[0], imageDatas]);
+      }
+  }
 
-  // addToUndoStack(biomarkerCanvas: BiomarkerCanvas[]): void {
-  //     this.unsavedChange = true;
-  //     const indices = new Array<number>();
-  //     const imageDatas = new Array<ImageData>();
-  //     biomarkerCanvas.forEach((b) => {
-  //         indices.push(b.index);
-  //         imageDatas.push(b.getCurrentImageData());
-  //     });
-  //     this.undoStack.push([
-  //         indices,
-  //         imageDatas
-  //     ]);
-  //     this.redoStack.clear();
-  // }
+  addToUndoStack(biomarkerCanvas: BiomarkerCanvas[]): void {
+      this.unsavedChange = true;
+      const indices = new Array<number>();
+      const imageDatas = new Array<ImageData>();
+      biomarkerCanvas.forEach((b) => {
+          indices.push(b.index);
+          imageDatas.push(b.getCurrentImageData());
+      });
+      this.undoStack.push([
+          indices,
+          imageDatas
+      ]);
+      this.redoStack.clear();
+  }
 
-  // popUndoStack(): void {
-  //     this.undoStack.pop();
-  // }
+  popUndoStack(): void {
+      this.undoStack.pop();
+  }
 
   newBiomarker(image: HTMLImageElement, id: string, color: string): void {
     const canvas = document.createElement('canvas');
@@ -221,8 +225,28 @@ export class LayersService {
     return this.biomarkerCanvas.filter(element => element.isVisible());
   }
 
+  public getAnnotationDatas(): AnnotationData {
+      const annotationData: AnnotationData = {
+        biomarker: {},
+        hierarchy: {},
+        nongraphic:{}
+      };
+
+      // Each biomarker datas are formated in Base64
+      // and then added in the dictionary
+      this.biomarkerCanvas.forEach(b => {
+        const key = b.id.toString();
+        const url: string = b.currentCanvas.toDataURL();
+		const index: string = b.index.toString();
+
+        annotationData.biomarker[key] = url;
+        annotationData.hierarchy[key] = index;
+      });
+    return annotationData;
+  }
+
   public resetBiomarkerCanvas(ids: Array<string>): void {
-      // this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
+      this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
       ids.forEach(id => {
           const biomarker = this.getBiomarkerCanvasById(id);
           biomarker.reset();

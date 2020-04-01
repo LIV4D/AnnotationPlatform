@@ -46,7 +46,7 @@ export class SubmitFacadeService {
       this.submitService.afterClosedTaskDialog(dialogRef);
     }
 
-    saveRevision(loadNext= false): void {
-      this.submitService.saveRevision(loadNext);
+    saveAnnotation(loadNext= false): void {
+      this.submitService.saveAnnotation(loadNext);
     }
 }
