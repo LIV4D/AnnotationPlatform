@@ -1,9 +1,16 @@
-import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 
 @Component({
   selector: 'app-comment-box',
   templateUrl: './comment-box.component.html',
-  styleUrls: ['./comment-box.component.scss']
+  styleUrls: ['./comment-box.component.scss'],
 })
 export class CommentBoxComponent implements OnInit, OnChanges {
   panelOpenState = false;
@@ -15,7 +22,7 @@ export class CommentBoxComponent implements OnInit, OnChanges {
   // @ViewChild('textArea', {read: ViewContainerRef}) textArea: ViewContainerRef;
   textAreaValue: string;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.textAreaValue = 'This is a test';
