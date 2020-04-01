@@ -6,11 +6,15 @@ import { ToolPropertiesService } from '../tool-properties.service';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
 
 export class Brush extends Tool {
+
     isMouseDown = false;
     lastPoint: Point;
 
-    constructor(name: string, iconPath: string, tooltip: string,
-                editorService: EditorService, layersService: LayersService,
+    constructor(name: string,
+                iconPath: string,
+                tooltip: string,
+                editorService: EditorService,
+                layersService: LayersService,
                 private toolPropertiesService: ToolPropertiesService) {
         super(name, iconPath, tooltip, editorService, layersService);
     }
@@ -113,6 +117,7 @@ export class Brush extends Tool {
                         const bioCtx = biomarker.getCurrentContext();
                         bioCtx.save();
                         bioCtx.globalCompositeOperation = 'destination-out';
+
                         biomarker.drawToCurrentCanvas(drawCanvas, this.changeBoundedBox);
                         bioCtx.restore();
                     }
@@ -129,16 +134,16 @@ export class Brush extends Tool {
             this.isMouseDown = false;
             this.resetChangeBoundedBox();
 
-            // const overlay = this.layersService.biomarkerOverlayCanvas;
-            // const overlayCtx = overlay.getContext('2d');
-            // overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            const overlayCtx = overlay.getContext('2d');
+            //overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
 
-            // if (this.toolPropertiesService.smartMask) {
-            //     const maskCanvas = this.layersService.tempMaskCanvas;
-            //     const drawCanvas = this.layersService.tempDrawCanvas;
-            //     this.maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
-            //     this.drawContext.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-            // }
+            if (this.toolPropertiesService.smartMask) {
+                 const maskCanvas = this.layersService.tempMaskCanvas;
+                 const drawCanvas = this.layersService.tempDrawCanvas;
+                 //this.maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+                 //this.drawContext.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+             }
         }
     }
 

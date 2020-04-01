@@ -93,7 +93,7 @@ export class EditorService {
     } else {
       this.loadAll();
     }
-    // this.resize();
+    this.resize();
   }
 
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
