@@ -21,6 +21,8 @@ export class WidgetComponent implements OnInit, AfterViewInit {
   entryField = 'allo';
   private task : Task;
   private widgets: Widget[];
+  public singleLineWidgets: Widget[];
+  public multiLineWidgets: Widget[];
 
   // this would be the array of all widgets that we receive from t he server
   private test = [
@@ -34,23 +36,26 @@ export class WidgetComponent implements OnInit, AfterViewInit {
   private grouped: any;
 
   // this would be an array of only single line widgets for example
-  private kim: any;
+  public kim: any;
+
 
   constructor(private facadeService: WidgetFacadeService) { }
 
   ngOnInit(): void {
       this.task = this.facadeService.getCurrentTask();
       this.widgets = this.task.widgets;
+
   }
 
   ngAfterViewInit(): void {
 
-    // console.log(_.groupBy(this.test, 'Name'));
+    const sortedWidgets = _.groupBy(this.widgets, 'type');
+    this.singleLineWidgets = sortedWidgets['singleLine'];
+    this.singleLineWidgets = sortedWidgets['multiLine'];
+
     this.grouped = _.groupBy(this.test, 'Name');
     this.kim = this.grouped['Kim'];
     console.log(this.kim);
-    // console.log(_.groupBy(this.widgets, 'type'));
   }
-
 
 }
