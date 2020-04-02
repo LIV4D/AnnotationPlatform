@@ -23,7 +23,7 @@ export class LayersService {
   undoStack: Stack<[number[], ImageData[]]>;
   redoStack: Stack<[number[], ImageData[]]>;
 
-  selectedBiomarkerId: string;
+  selectedBiomarkerId ='Others';
 
   mousePositionInDisplayCoordinates: Point;
   lastPoint: Point = null;
@@ -215,15 +215,11 @@ export class LayersService {
 
   public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
-    if (currentBiomarkerCanvas !== null) {
+    if (currentBiomarkerCanvas == null) {
+        console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
+    }
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
-
-      // // console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
-    }
-    else {
-      return null;
-    }
-  }
+}
 
   public getBiomarkerCanvas(): BiomarkerCanvas[] {
     return this.biomarkerCanvas.filter(element => element.isVisible());
