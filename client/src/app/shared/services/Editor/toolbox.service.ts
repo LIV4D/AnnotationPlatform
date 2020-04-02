@@ -120,12 +120,16 @@ export class ToolboxService {
   }
 
   setSelectedTool(newSelectedTool: string): void {
-    const tool: Tool = this.listOfTools.filter(
-      (toolToFilter) => toolToFilter.name === newSelectedTool
-    )[0];
-    this.selectedTool.next(tool);
+    if (newSelectedTool === TOOL_NAMES.UNDO) {
+      this.layersService.undo();
+  } else if (newSelectedTool === TOOL_NAMES.REDO) {
+      this.layersService.redo();
+  } else {
+      const tool: Tool = this.listOfTools.filter((toolToFilter) => toolToFilter.name === newSelectedTool)[0];
+      this.selectedTool.next(tool);
   }
 
+  }
   setUndo() {
     this.layersService.undo();
   }
