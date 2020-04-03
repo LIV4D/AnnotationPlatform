@@ -71,6 +71,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
 
 @NgModule({
    declarations: [
@@ -132,6 +133,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       LayersFacadeService,
       GalleryFacadeService,
       ToolPropertiesService,
+      VisualizationService,
       ImageBorderService,
       CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
