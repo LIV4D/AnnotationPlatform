@@ -586,7 +586,7 @@ export class EditorService {
 
     this.adjustOffsets();
     this.transform();
-    // this.updateCanvasDisplayRatio();
+     this.updateCanvasDisplayRatio();
   }
 
   // Function to zoom on a part of the image.
@@ -612,10 +612,7 @@ export class EditorService {
     if (this.canRedraw) {
       this.canRedraw = false;
       this.testRedraw(position);
-      // do CSS translation here
-      // const imgg = new Image();
-      // imgg.src = '../../assets/Screenshot 2020-03-05 12.02.17.png';
-      // this.backgroundCanvas.currentCanvas.getContext('2d').drawImage(imgg, 0, 0);
+      // TODO: CSS translation here
 
       setTimeout(() => {
         this.canRedraw = true;
@@ -627,31 +624,31 @@ export class EditorService {
     // return pointToTranslate;
   }
 
-  // this only works for zoom slider (when using mobile device)
-  // setZoomFactor(zoomFactor: number): void {
-  //     // Cap the values.
-  //     if (zoomFactor > 1) { zoomFactor = 1;
-  //     } else if (zoomFactor < 0) { zoomFactor = 0; }
-  //     zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
 
-  //     // Adjust canvas sizes.
-  //     const oldWidth = this.backgroundCanvas.displayCanvas.width;
-  //     const oldHeight = this.backgroundCanvas.displayCanvas.height;
-  //     const newWidth = this.fullCanvasWidth / zoomFactor;
-  //     const newHeight = this.fullCanvasHeight / zoomFactor;
-  //     this.backgroundCanvas.displayCanvas.width = newWidth;
-  //     this.backgroundCanvas.displayCanvas.height = newHeight;
-  //     this.layersService.resize(newWidth, newHeight);
+  setZoomFactor(zoomFactor: number): void {
+      // Cap the values.
+      if (zoomFactor > 1) { zoomFactor = 1;
+      } else if (zoomFactor < 0) { zoomFactor = 0; }
+      zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
 
-  //     if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-  //         this.zoomFactor = zoomFactor;
-  //         this.offsetX += (oldWidth - newWidth) / 2;
-  //         this.offsetY += (oldHeight - newHeight) / 2;
-  //     }
-  //     this.adjustOffsets();
-  //     this.transform();
-  //     this.updateCanvasDisplayRatio();
-  // }
+      // Adjust canvas sizes.
+      const oldWidth = this.backgroundCanvas.displayCanvas.width;
+      const oldHeight = this.backgroundCanvas.displayCanvas.height;
+      const newWidth = this.fullCanvasWidth / zoomFactor;
+      const newHeight = this.fullCanvasHeight / zoomFactor;
+      this.backgroundCanvas.displayCanvas.width = newWidth;
+      this.backgroundCanvas.displayCanvas.height = newHeight;
+      this.layersService.resize(newWidth, newHeight);
+
+      if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
+          this.zoomFactor = zoomFactor;
+          this.offsetX += (oldWidth - newWidth) / 2;
+          this.offsetY += (oldHeight - newHeight) / 2;
+      }
+      this.adjustOffsets();
+      this.transform();
+      this.updateCanvasDisplayRatio();
+  }
 
   // Function to translate the view in the editor.
   translate(deltaX: number, deltaY: number): void {
@@ -690,10 +687,10 @@ export class EditorService {
 
     this.backgroundCanvas.draw();
 
-    // this.layersService.biomarkerCanvas.forEach(layer => {
-    //   layer.setOffset(this.offsetX, this.offsetY);
-    //   layer.draw();
-    // });
+    this.layersService.biomarkerCanvas.forEach(layer => {
+      layer.setOffset(this.offsetX, this.offsetY);
+      layer.draw();
+    });
 
     // Redraw the zoom rectangle.
     this.updateZoomRect();

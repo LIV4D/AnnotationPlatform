@@ -128,9 +128,9 @@ export class EditorComponent implements OnInit {
       this.editorFacadeService.loadSVGLocal(event);
   }
 
-  // onMouseUp(event: MouseEvent): void {
-  //     this.toolboxService.setUndoRedoState();
-  // }
+   onMouseUp(event: MouseEvent): void {
+       this.toolboxFacadeService.setUndoRedoState();
+   }
   // onKeyDown(event: KeyboardEvent): void {
   //     if (event.keyCode === HOTKEYS.KEY_CTRL_S_SAVE && this.commandOrCtrlPressed(event) ||
   //     event.keyCode === HOTKEYS.KEY_CTRL_Y_REDO && this.commandOrCtrlPressed(event)) {
