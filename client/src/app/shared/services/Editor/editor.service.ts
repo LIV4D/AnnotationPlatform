@@ -223,28 +223,8 @@ export class EditorService {
       .subscribe((res) => {
         // Replace
         this.layersService.biomarkerCanvas = [];
-        this.layersService.createFlatCanvasRecursiveJson(res); //
+        this.layersService.createFlatCanvasRecursiveJson(res);
         this.biomarkerService.initJsonRecursive(res);
-        // this.biomarkerService.buildTree(res as BioNode[]);
-
-        // this.svgBox.innerHTML = (res as any).svg;
-        // const parser = new DOMParser();
-        // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-        // const arbre: SVGGElement[] = [];
-        // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-        //     const elems = e.getElementsByTagName('g');
-        //     for (let j = 0; j < elems.length; j++) {
-        //         if (elems[j].parentElement.tagName !== 'g') {
-        //             arbre.push(elems[j]);
-        //         }
-        //     }
-        // });
-        // arbre.forEach((e: SVGGElement) => {
-        //     this.layersService.createFlatCanvasRecursive(e,
-        //         this.backgroundCanvas.originalCanvas.width,
-        //         this.backgroundCanvas.originalCanvas.height);
-        // });
-        // this.svgLoaded.emit(arbre);
       });
 
     const res = await this.http
@@ -299,10 +279,6 @@ export class EditorService {
           this.svgLoaded.emit(arbre);
         },
         async (error) => {
-          // const res = await this.http.get<any>(`/api/annotations/getEmpty/`,
-          // { headers: new HttpHeaders(), responseType: 'json' }).pipe(
-          // ).toPromise();
-          // console.log(res);
           if (error.status === 404 || error.status === 500) {
             const reqBase = this.http.get(`/api/annotations/getEmpty/`, {
               headers: new HttpHeaders(),
@@ -315,48 +291,14 @@ export class EditorService {
                 this.layersService.createFlatCanvasRecursiveJson(res);
                 this.biomarkerService.initJsonRecursive(res);
                 this.biomarkerService.buildTreeRecursive(res);
-
-                // this.svgBox.innerHTML = (res as any).svg;
-                // console.log(this.svgBox.innerHTML);
-                // const parser = new DOMParser();
-                // const xmlDoc = parser.parseFromString((res as any).svg, 'image/svg+xml');
-                // console.log(xmlDoc)
-                // const arbre: SVGGElement[] = [];
-                // console.log(xmlDoc.children)
-                // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-                //     const elems = e.getElementsByTagName('g');
-                //     console.log(elems)
-                //     for (let j = 0; j < elems.length; j++) {
-                //         if (elems[j].parentElement.tagName !== 'g') {
-                //             arbre.push(elems[j]);
-                //             console.log(elems[j]);
-                //         }
-                //     }
-                // });
-                // // this.biomarkerService.init(arbre);
-                // // this.commentService.comment = (res as any).diagnostic;
-                // if (draw) {
-                //     this.biomarkerService.init(arbre);
-                //     this.layersService.biomarkerCanvas = [];
-                //     arbre.forEach((e: SVGGElement) => {
-                //         this.layersService.createFlatCanvasRecursive(e);
-                //     });
-                //     setTimeout(() => { LocalStorage.save(this, this.layersService); }, 1000);
-                // }
-                // this.svgLoaded.emit(arbre);
               });
           }
-          // console.log('Loaded : ')
-          // console.log(this.biomarkerService.lastBiomarkers)
-          // console.log(this.layersService.biomarkerCanvas)
         }
       );
   }
 
   // Load the main image in the background canvas.
   public loadMainImage(image: HTMLImageElement): void {
-    // console.log('EditorService::loadMainImage()');
-
     this.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
       image
@@ -414,10 +356,6 @@ export class EditorService {
 
   getMainImage(): void {
     // console.log('EditorService::getMainImage()');
-
-    // '/api/images/download/:imageId/raw'
-    // const req = this.http.get(`/api/images/${this.imageId}/getFile`, { responseType: 'blob', observe: 'events', reportProgress: true });
-
     const req = this.http.get(`/api/images/download/${this.imageId}/raw`, {
       responseType: 'blob',
       observe: 'events',
@@ -431,9 +369,8 @@ export class EditorService {
         reader.onload = () => {
           const image = new Image();
           image.onload = () => {
-            // console.log('image.onload()' + image);
-
             this.loadMainImage(image);
+            // TODO
             // this.loadPretreatmentImage();
           };
           image.src = reader.result as string;
@@ -609,14 +546,10 @@ export class EditorService {
   }
 
   testRedraw(position: Point) {
-    // console.log('%c testRedraw() ', 'color: black; background:red;');
     const zoomFactor = this.zoomFactor;
 
     // Adjust canvas sizes.
     const oldWidth = this.backgroundCanvas.displayCanvas.width;
-    // // console.log('%c oldWidth : ' + oldWidth , 'color: black; background:yellow;');
-    // // console.log('%c this.fullCanvasWidth : ' + this.fullCanvasWidth , 'color: black; background:red;');
-    // // console.log('%c zoomFactor : ' + zoomFactor , 'color: black; background:yellow;');
     // divide by the zoom factor in order to get the new selection's width to zoom at
     const newWidth = this.fullCanvasWidth / zoomFactor;
     // // console.log('%c newWidth : ' + newWidth , 'color: black; background:yellow;');
@@ -636,8 +569,6 @@ export class EditorService {
       let positionYPercentage = 0.5;
 
       if (position !== null) {
-        // console.log('%c position.x : ' + position.x , 'color: black; background:red;');
-        // console.log('%c oldWidth : ' + oldWidth , 'color: black; background:red;');
 
         // This is just to get a value 0 <= X <= 1 and 0 <= Y <= 1
         positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
