@@ -46,7 +46,9 @@ export class BiomarkerService {
             if (value[biomarkersString]) {
                 this.initJsonRecursive(value as object);
             }
-            this.dataSourceJson.push(new Biomarker(type, color));
+            if (this.getBiomarkerOfType(type) == null) {
+                this.dataSourceJson.push(new Biomarker(type, color));
+            }
         }
 
         this.onlyEnabledBiomarkers = Array.from(this.dataSourceJson);
