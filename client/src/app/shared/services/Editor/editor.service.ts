@@ -222,7 +222,8 @@ export class EditorService {
       .subscribe((res) => {
         // Replace
         this.layersService.biomarkerCanvas = [];
-        this.layersService.createFlatCanvasRecursiveJson(res);
+        this.layersService.createFlatCanvasRecursiveJson(res, this.backgroundCanvas.originalCanvas.width,
+          this.backgroundCanvas.originalCanvas.height);
         this.biomarkerService.initJsonRecursive(res);
       });
 
@@ -287,7 +288,8 @@ export class EditorService {
             this.headerService
               .display_progress(reqBase, 'Downloading Preannotations')
               .subscribe((res) => {
-                this.layersService.createFlatCanvasRecursiveJson(res);
+                this.layersService.createFlatCanvasRecursiveJson(res, this.backgroundCanvas.originalCanvas.width,
+                  this.backgroundCanvas.originalCanvas.height);
                 this.biomarkerService.initJsonRecursive(res);
                 this.biomarkerService.buildTreeRecursive(res);
               });
