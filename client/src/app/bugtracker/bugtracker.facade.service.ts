@@ -6,10 +6,6 @@ export class BugtrackerFacadeService {
 
     constructor(public bugtrackerService: BugtrackerService) {  }
 
-    getIsVisible(): boolean {
-        return this.bugtrackerService.getIsVisible();
-    }
-
     send(description: string): void {
         this.bugtrackerService.send(description);
     }

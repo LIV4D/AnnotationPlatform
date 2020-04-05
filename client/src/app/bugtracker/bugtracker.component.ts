@@ -13,7 +13,7 @@ export interface DialogData {}
 export class BugtrackerComponent implements OnInit {
 
   visible = false;
-  @ViewChild('bugDescription') bugDescription: ElementRef;
+  bugDescription = '';
 
   constructor(
     public facadeService: BugtrackerFacadeService, public appService: AppService,
@@ -27,23 +27,18 @@ export class BugtrackerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get bug(): string {
-      return this.bugDescription.nativeElement.value;
-  }
-
-  send(): void {
-      if (!this.bug) {
+  send(description: string): void {
+      if (description === '') {
           return;
       }
-
-      this.facadeService.send(this.bug);
-      this.bugDescription.nativeElement.value = '';
-      // this.facadeService.hide();
+      this.bugDescription = description;
+      this.facadeService.send(this.bugDescription);
+      this.bugDescription = '';
+      this.onNoClick();
   }
 
   cancel(): void {
-      this.bugDescription.nativeElement.value = '';
-      // this.facadeService.hide();
+      this.onNoClick();
   }
 
   enableOnKeyDown(): void {

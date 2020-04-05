@@ -8,31 +8,31 @@ import { BugtrackerComponent } from 'src/app/bugtracker/bugtracker.component';
 @Injectable()
 export class BugtrackerService {
 
-    public isVisible = false;
+    // public isVisible = false;
 
     constructor(public loginService: LoginService, private http: HttpClient) {
     }
 
-    getIsVisible(): boolean {
-        return this.isVisible;
-      }
+    // getIsVisible(): boolean {
+    //     return this.isVisible;
+    //   }
 
-    show(bugtrackerDialog: MatDialog): void {
-          this.isVisible = true;
-        }
+    // show(bugtrackerDialog: MatDialog): void {
+    //       this.isVisible = true;
+    //     }
 
 
-    hide(): void {
-        this.isVisible = false;
-    }
+    // hide(): void {
+    //     this.isVisible = false;
+    // }
 
-    toggleVisible(bugtrackerDialog: MatDialog): void {
-        if (this.isVisible) {
-            this.hide();
-        } else {
-            this.show(bugtrackerDialog);
-        }
-    }
+    // toggleVisible(bugtrackerDialog: MatDialog): void {
+    //     if (this.isVisible) {
+    //         this.hide();
+    //     } else {
+    //         this.show(bugtrackerDialog);
+    //     }
+    // }
 
     send(description: string): void {
         const body = {
