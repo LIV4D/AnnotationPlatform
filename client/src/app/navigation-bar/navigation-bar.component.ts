@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { NavigationBarFacadeService } from './navigation-bar.facade.service';
 import { Router } from '@angular/router';
-
 import * as screenfull from 'screenfull';
 import {Screenfull} from 'screenfull';
-import { HeaderService } from '../shared/services/header.service';
+import { MatDialog } from '@angular/material/dialog';
+import { BugtrackerComponent } from '../bugtracker/bugtracker.component';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -19,9 +19,11 @@ export class NavigationBarComponent {
   loadingProgress = 0;
   loadingDownload = true;
 
-  constructor(private navigationBarFacadeService: NavigationBarFacadeService,
-              public router: Router) {
+  constructor(private navigationBarFacadeService: NavigationBarFacadeService, public router: Router,
+    public bugtrackerDialog: MatDialog) {
+
     this.navigationBarFacadeService.initProgress(this.loadingProgress, this.showLoading, this.loadingLabel, this.loadingDownload);
+
   }
 
   toggleFullScreen(): void {
@@ -37,7 +39,15 @@ export class NavigationBarComponent {
   }
 
   toggleBugtracker(): void {
-    this.navigationBarFacadeService.toggleBugtracker();
+    const dialogRef = this.bugtrackerDialog.open(BugtrackerComponent, {
+      // width: '250px',
+      // data: {name: this.name, animal: this.animal}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+
   }
 
   logout(): void {

@@ -1,6 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { AppService } from '../shared/services/app.service';
 import { BugtrackerFacadeService } from './bugtracker.facade.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+export interface DialogData {}
 
 @Component({
   selector: 'app-bugtracker',
@@ -12,17 +15,20 @@ export class BugtrackerComponent implements OnInit {
   visible = false;
   @ViewChild('bugDescription') bugDescription: ElementRef;
 
-  constructor(public facadeService: BugtrackerFacadeService, public appService: AppService) {}
+  constructor(
+    public facadeService: BugtrackerFacadeService, public appService: AppService,
+    public dialogRef: MatDialogRef<BugtrackerComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 
   ngOnInit(): void {
   }
 
   get bug(): string {
       return this.bugDescription.nativeElement.value;
-  }
-
-  getIsVisible(): boolean {
-    return this.facadeService.getIsVisible();
   }
 
   send(): void {
@@ -32,12 +38,12 @@ export class BugtrackerComponent implements OnInit {
 
       this.facadeService.send(this.bug);
       this.bugDescription.nativeElement.value = '';
-      this.facadeService.hide();
+      // this.facadeService.hide();
   }
 
   cancel(): void {
       this.bugDescription.nativeElement.value = '';
-      this.facadeService.hide();
+      // this.facadeService.hide();
   }
 
   enableOnKeyDown(): void {

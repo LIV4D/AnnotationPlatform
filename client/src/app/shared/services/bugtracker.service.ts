@@ -1,6 +1,8 @@
 import { LoginService } from './login.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { BugtrackerComponent } from 'src/app/bugtracker/bugtracker.component';
 
 
 @Injectable()
@@ -15,19 +17,20 @@ export class BugtrackerService {
         return this.isVisible;
       }
 
-    show(): void {
-        this.isVisible = true;
-    }
+    show(bugtrackerDialog: MatDialog): void {
+          this.isVisible = true;
+        }
+
 
     hide(): void {
         this.isVisible = false;
     }
 
-    toggleVisible(): void {
+    toggleVisible(bugtrackerDialog: MatDialog): void {
         if (this.isVisible) {
             this.hide();
         } else {
-            this.show();
+            this.show(bugtrackerDialog);
         }
     }
 
