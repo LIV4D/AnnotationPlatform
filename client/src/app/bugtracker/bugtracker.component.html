@@ -7,15 +7,17 @@
     </div>
 </div>   -->
 
-<h1 mat-dialog-title>Hi </h1>
-<div mat-dialog-content>
-  <p>What's your favorite animal?</p>
-  <mat-form-field>
-    <mat-label>Favorite Animal</mat-label>
-    <input matInput>
-  </mat-form-field>
-</div>
-<div mat-dialog-actions>
-  <button mat-button>No Thanks</button>
-  <button mat-button cdkFocusInitial>Ok</button>
+<div id="bugtrackerDiv">
+    <h2 mat-dialog-title>Report a bug </h2>
+    <div mat-dialog-content>
+    <mat-form-field>
+        <textarea #bugDescription id="bugDescriptionBox"  matInput placeholder="Bug Description..." (focus)="disableOnKeyDown()" (blur)="enableOnKeyDown()" cdkTextareaAutosize></textarea>
+        <mat-label>Favorite Animal</mat-label>
+        <input matInput>
+    </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button class="bugButton" id="bugSend" (click)="send()">Send</button>
+        <button mat-button class="bugButton" id="bugCancel" (click)="cancel()">Cancel</button>
+    </div>
 </div>

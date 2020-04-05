@@ -40,7 +40,7 @@ export class NavigationBarComponent {
 
   toggleBugtracker(): void {
     const dialogRef = this.bugtrackerDialog.open(BugtrackerComponent, {
-      // width: '250px',
+       hasBackdrop: false
       // data: {name: this.name, animal: this.animal}
     });
 
