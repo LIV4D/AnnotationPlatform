@@ -136,13 +136,13 @@ export class Brush extends Tool {
 
             const overlay = this.layersService.biomarkerOverlayCanvas;
             const overlayCtx = overlay.getContext('2d');
-           // overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+      overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
 
-            if (this.toolPropertiesService.smartMask) {
+      if (this.toolPropertiesService.smartMask) {
                  const maskCanvas = this.layersService.tempMaskCanvas;
                  const drawCanvas = this.layersService.tempDrawCanvas;
-                 //this.maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
-                 //this.drawContext.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+        this.maskContext.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+                 this.drawContext.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
              }
         }
     }

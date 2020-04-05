@@ -114,7 +114,6 @@ export class EditorService {
 
   // Resizes the canvases to the current window size.
   resize(): void {
-    // console.log('EditorService::resize()');
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
       return;
     }
@@ -559,10 +558,10 @@ export class EditorService {
     const oldHeight = this.backgroundCanvas.displayCanvas.height;
     this.backgroundCanvas.displayCanvas.height = newHeight;
 
-    // this.layersService.resize(newWidth, newHeight);
+     this.layersService.resize(newWidth, newHeight);
 
     if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-      // this.zoomFactor = zoomFactor;
+       this.zoomFactor = zoomFactor;
 
       // Adjust offsets to keep them coherent with the previous zoom.
       let positionXPercentage = 0.5;
@@ -613,10 +612,11 @@ export class EditorService {
       this.canRedraw = false;
       this.testRedraw(position);
       // TODO: CSS translation here
+      this.canRedraw = true;
 
-      setTimeout(() => {
-        this.canRedraw = true;
-      }, 100);
+      // setTimeout(() => {
+      //   this.canRedraw = true;
+      // }, 100);
     }
     // console.log('%c else ', 'color: black; background:blue;');
 
@@ -689,10 +689,15 @@ export class EditorService {
 
     this.layersService.biomarkerCanvas.forEach(layer => {
       layer.setOffset(this.offsetX, this.offsetY);
+      layer.currentCanvas.height = 100;
+      layer.currentCanvas.width = 100;
+      // console.log(layer);
+      console.log(layer.currentCanvas.height);
+      console.log(layer.currentCanvas.width);
       layer.draw();
     });
 
-    // Redraw the zoom rectangle.
+    //Redraw the zoom rectangle.
     this.updateZoomRect();
   }
 
