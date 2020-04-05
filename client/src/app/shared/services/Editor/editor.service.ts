@@ -222,7 +222,8 @@ export class EditorService {
       .subscribe((res) => {
         // Replace
         this.layersService.biomarkerCanvas = [];
-        this.layersService.createFlatCanvasRecursiveJson(res);
+        this.layersService.createFlatCanvasRecursiveJson(res, this.backgroundCanvas.originalCanvas.width,
+          this.backgroundCanvas.originalCanvas.height);
         this.biomarkerService.initJsonRecursive(res);
       });
 
