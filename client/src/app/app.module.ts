@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import { EditorComponent } from './editor/editor.component';
 import { TaskDialogSubmissionComponent } from './editor/right-menu/submit/task-dialog-submission/task-dialog-submission.component';
 import { SubmitComponent } from './editor/right-menu/submit/submit.component';
-
+import { BugtrackerComponent } from './bugtracker/bugtracker.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
@@ -26,6 +26,10 @@ import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.c
 import { ManagementComponent } from './management/management.component';
 import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
 import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
+import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
+import { WidgetComponent } from './editor/right-menu/widget/widget.component';
+import { WidgetSingleLineComponent } from './editor/right-menu/widget/widgetTypes/widget-single-line/widget-single-line.component';
+import { WidgetMultipleLinesComponent } from './editor/right-menu/widget/widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
 
 // Services
 import { LoginFacadeService } from './login/login.facade.service';
@@ -50,6 +54,10 @@ import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.f
 import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
 import { AuthorizationService } from './shared/services/authorization.service';
 import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
+import { BugtrackerService } from './shared/services/bugtracker.service';
+import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
+import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
+
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -66,18 +74,14 @@ import { LayersComponent } from './editor/editor-content/layers/layers.component
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
 
-
-
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
-import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
-import { WidgetComponent } from './editor/right-menu/widget/widget.component';
-import { WidgetSingleLineComponent } from './editor/right-menu/widget/widgetTypes/widget-single-line/widget-single-line.component';
-import { WidgetMultipleLinesComponent } from './editor/right-menu/widget/widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
-import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
+
+
+
 
 
 @NgModule({
@@ -113,7 +117,8 @@ import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.se
       CommentBoxComponent,
       ToolPropertiesComponent,
       WidgetSingleLineComponent,
-      WidgetMultipleLinesComponent
+      WidgetMultipleLinesComponent,
+      BugtrackerComponent
    ],
    imports: [
       BrowserModule,
@@ -127,6 +132,8 @@ import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.se
    providers: [
       LoginFacadeService,
       LoginService,
+      BugtrackerService,
+      BugtrackerFacadeService,
       AuthorizationService,
       ManagementFacadeService,
       ModelFinderService,

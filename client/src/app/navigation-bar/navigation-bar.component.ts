@@ -19,22 +19,9 @@ export class NavigationBarComponent {
   loadingProgress = 0;
   loadingDownload = true;
 
-  constructor(private headerService: HeaderService, private navigationBarFacadeService: NavigationBarFacadeService,
+  constructor(private navigationBarFacadeService: NavigationBarFacadeService,
               public router: Router) {
-
-    this.headerService.cbProgress = (progress: number) => { this.loadingProgress = progress; };
-    this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
-      if (show) {
-        this.showLoading = true;
-        this.loadingLabel = name;
-        this.loadingProgress = 0;
-        this.loadingDownload = download;
-      } else {
-        this.showLoading = false;
-        this.loadingLabel = '';
-        this.loadingProgress = 0;
-      }
-    };
+    this.navigationBarFacadeService.initProgress(this.loadingProgress, this.showLoading, this.loadingLabel, this.loadingDownload);
   }
 
   toggleFullScreen(): void {
@@ -47,6 +34,10 @@ export class NavigationBarComponent {
       fullscreenIcon.innerHTML =  'fullscreen';
     }
     sreenfullEntity.toggle();
+  }
+
+  toggleBugtracker(): void {
+    this.navigationBarFacadeService.toggleBugtracker();
   }
 
   logout(): void {

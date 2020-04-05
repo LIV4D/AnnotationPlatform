@@ -1,5 +1,7 @@
+import { BugtrackerService } from './../shared/services/bugtracker.service';
 import { Injectable, Injector } from '@angular/core';
 import { LoginService } from '../shared/services/login.service';
+import { HeaderService } from '../shared/services/header.service';
 
 @Injectable()
 export class NavigationBarFacadeService {
@@ -15,7 +17,28 @@ export class NavigationBarFacadeService {
   // }
   // ... add the other service wrappers
 
-  constructor(private injector: Injector, private loginService: LoginService) {  }
+  constructor(private injector: Injector, private loginService: LoginService, private bugtrackerService: BugtrackerService,
+    private headerService: HeaderService) {  }
+
+  toggleBugtracker(): void {
+    this.bugtrackerService.toggleVisible();
+  }
+
+  initProgress(loadingProgress, showLoading, loadingLabel, loadingDownload) {
+    this.headerService.cbProgress = (progress: number) => { loadingProgress = progress; };
+    this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
+      if (show) {
+        showLoading = true;
+        loadingLabel = name;
+        loadingProgress = 0;
+        loadingDownload = download;
+      } else {
+        showLoading = false;
+        loadingLabel = '';
+        loadingProgress = 0;
+      }
+    };
+  }
 
   logout() {
     this.loginService.logout();
