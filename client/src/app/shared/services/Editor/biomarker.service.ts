@@ -148,7 +148,7 @@ export class BiomarkerService {
             this.getBiomarkerOfType(node.type).isVisible = false;
         }
 
-        this.applyVisibility(node);
+        this.applyVisibility(this.getBiomarkerOfType(node.type));
     }
 
     public toggleSoloVisibility(node: Biomarker): void {
@@ -211,7 +211,7 @@ export class BiomarkerService {
     private applyVisibility(node: Biomarker): void {
         for (const item of this.layersService.biomarkerCanvas) {
             if (item.id === 'annotation-'+node.type){
-                item.setVisibility(node.isVisible);
+                item.setVisibility(this.getBiomarkerOfType(node.type).isVisible);
             }
         }
     }
