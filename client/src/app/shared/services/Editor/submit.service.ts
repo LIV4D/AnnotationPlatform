@@ -70,12 +70,12 @@ export class SubmitService {
 
 	/**
   * Saves the annotation with the possibility of loading the next task
-  * @param [loadNext] : Load the next task when true
+  * @param [loadNextHasBeenSelected] : Load the next task when true
   */
-  public saveAnnotation(loadNext= false): void {
+  public saveAnnotation(loadNextHasBeenSelected= false): void {
     // The annotation is saved on the DB
 		this.saveToDB().subscribe(() => {
-				if (loadNext) {
+				if (loadNextHasBeenSelected) {
 					// The next task is loaded on the editor
 					this.tasksService.getNextTask().subscribe((data: any) => {
 							if (data && data.annotation) {
@@ -120,7 +120,7 @@ export class SubmitService {
     const taskId = this.getCurrentTask().id;
 
     // Body
-    const annotationData: AnnotationData = this.layersService.getAnnotationDatas();
+    const annotationData:string = JSON.stringify(this.layersService.getAnnotationDatas());
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const body = {
       data: annotationData,

@@ -31,17 +31,17 @@ export class LocalStorage {
     if (!editorService.imageId || editorService.imageId === 'local') {
       return;
     }
-    // const biomarkers = layersService.biomarkerCanvas;
+    const biomarkers = layersService.biomarkerCanvas;
 
     // Convert values to strings
     const encodedBiomarkers: [string, string, string][] = []; // [image, id, color]
-    // biomarkers.forEach(element => {
-    //     encodedBiomarkers.push([
-    //         element.currentCanvas.toDataURL('image/png'),
-    //         element.id.substr(11), // remove 'annotation-' from the id
-    //         element.color
-    //     ]);
-    // });
+    biomarkers.forEach(element => {
+         encodedBiomarkers.push([
+             element.currentCanvas.toDataURL('image/png'),
+             element.id.substr(11), // remove 'annotation-' from the id
+             element.color
+         ]);
+     });
 
     // Save string values in json
     const json = {
@@ -86,6 +86,7 @@ export class LocalStorage {
         biomarkerImage.src = imageString;
     });
     layersService.biomarkerCanvas.forEach(canvas => {
+      console.log("je load draw local");
         canvas.draw();
     });
   }

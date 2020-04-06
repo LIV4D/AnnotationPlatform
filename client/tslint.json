@@ -1,5 +1,5 @@
 {
-  "extends": ["tslint:recommended", "tslint-plugin-prettier"],
+//  "extends": ["tslint:recommended", "tslint-plugin-prettier"],
   "rules": {
     "prettier": [true, { "singleQuote": true }],
     // "indent": [true, "tabs", 2],

@@ -46,7 +46,7 @@ export class SubmitFacadeService {
       this.submitService.afterClosedTaskDialog(dialogRef);
     }
 
-    saveAnnotation(loadNext= false): void {
-      this.submitService.saveAnnotation(loadNext);
+    saveAnnotation(loadNextHasBeenSelected= false): void {
+      this.submitService.saveAnnotation(loadNextHasBeenSelected);
     }
 }

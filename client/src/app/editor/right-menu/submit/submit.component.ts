@@ -57,7 +57,7 @@ export class SubmitComponent implements OnInit {
     }
   }
 
-  public saveAnnotation(loadNext= false): void {
-	this.submitFacadeService.saveAnnotation(loadNext);
+  public saveAnnotation(loadNextHasBeenSelected= false): void {
+	this.submitFacadeService.saveAnnotation(loadNextHasBeenSelected);
   }
 }
