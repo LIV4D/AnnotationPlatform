@@ -142,9 +142,9 @@ export class BiomarkerService {
     public toggleVisibility(node: Biomarker, visibility?: string): void {
         if (visibility === undefined){
             this.getBiomarkerOfType(node.type).isVisible = !this.getBiomarkerOfType(node.type).isVisible;
-        } else if (visibility === this.VISIBILITY) {
+        } else if (visibility === 'visible') {
             this.getBiomarkerOfType(node.type).isVisible = true;
-        } else if (visibility === this.VISIBILITY_OFF) {
+        } else if (visibility === 'hidden') {
             this.getBiomarkerOfType(node.type).isVisible = false;
         }
 
@@ -152,61 +152,15 @@ export class BiomarkerService {
     }
 
     public toggleSoloVisibility(node: Biomarker): void {
-        // this.toggleAllBiomarkers('hidden');
-        // this.toggleVisibility(node);
+        this.toggleAllBiomarkers('hidden');
+        this.toggleVisibility(this.getBiomarkerOfType(node.type));
     }
 
     public toggleAllBiomarkers(visibility: string): void {
-        // if (this.onlyEnabledBiomarkers === null) {
-        //     this.tree.forEach((e) => {
-        //         const elem = document.getElementById(e.id);
-        //         this.toggleVisibilityRecursive(elem, visibility);
-        //     });
-        // } else {
-        //     this.tree.forEach((e) => {
-        //         const elem = document.getElementById(e.id);
-        //         this.toggleVisibilityRecursive(elem, 'hidden');
-        //     });
-        //     if (visibility === 'visible') {
-        //         this.flat.forEach((e) => {
-        //             if (this.isBiomarkerEnabled(e)) {
-        //                 const elem = document.getElementById(e.id);
-        //                 this.toggleVisibility(e.id, 'visible');
-        //             }
-        //         });
-        //     }
-        // }
-
-        // this.applyVisibility();
+        for (const item of this.layersService.biomarkerCanvas) {
+            this.toggleVisibility(this.getBiomarkerOfType(item.id.replace('annotation-', '')), visibility)
+        }
     }
-
-    // public hideOtherBiomarkers(): void {
-    //     if (this.currentElement !== undefined) {
-    //         const elemSelected = document.getElementById(this.currentElement.id);
-    //         const visibility = elemSelected.style.visibility;
-    //         let everythingHidden = true;
-    //         for (let i = 0; i < this.flat.length; i++) {
-    //             const b = this.flat[i];
-    //             if (b.id === this.currentElement.id) {
-    //                 continue;
-    //             }
-    //             const elem = document.getElementById(b.id);
-    //             if (elem.style.visibility === 'visible') {
-    //                 everythingHidden = false;
-    //                 break;
-    //             }
-    //         }
-
-    //         this.toggleAllBiomarkers('hidden');
-
-    //         if ((!everythingHidden) || visibility === 'hidden') {
-    //             elemSelected.style.visibility = 'visible';
-    //             this.toggleVisibilityRecursive(elemSelected, 'visible');
-    //         }
-
-    //         this.applyVisibility();
-    //     }
-    // }
 
     private applyVisibility(node: Biomarker): void {
         for (const item of this.layersService.biomarkerCanvas) {
