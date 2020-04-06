@@ -9,9 +9,8 @@ import { isNullOrUndefined } from 'util';
 @Injectable()
 export class BugtrackerService {
 
-    // public isVisible = false;
 
-    constructor(public loginService: LoginService, private http: HttpClient) {
+    constructor(private http: HttpClient) {
     }
 
     send(description: string): void {
