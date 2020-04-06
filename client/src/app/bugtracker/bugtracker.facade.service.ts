@@ -10,14 +10,4 @@ export class BugtrackerFacadeService {
         this.bugtrackerService.send(description);
     }
 
-    // show(): void {
-    //     console.log("show");
-    //     setTimeout(() => { document.getElementById('bugDescriptionBox').focus(); }, 0);
-    //     this.bugtrackerService.show();
-    // }
-
-    // hide(): void {
-    //     this.bugtrackerService.hide();
-    // }
-
 }

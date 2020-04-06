@@ -14,27 +14,6 @@ export class BugtrackerService {
     constructor(public loginService: LoginService, private http: HttpClient) {
     }
 
-    // getIsVisible(): boolean {
-    //     return this.isVisible;
-    //   }
-
-    // show(bugtrackerDialog: MatDialog): void {
-    //       this.isVisible = true;
-    //     }
-
-
-    // hide(): void {
-    //     this.isVisible = false;
-    // }
-
-    // toggleVisible(bugtrackerDialog: MatDialog): void {
-    //     if (this.isVisible) {
-    //         this.hide();
-    //     } else {
-    //         this.show(bugtrackerDialog);
-    //     }
-    // }
-
     send(description: string): void {
         const email = JSON.parse(localStorage.getItem('currentUser')).user.email;
         const body = {

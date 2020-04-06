@@ -3,7 +3,6 @@ import { AppService } from '../shared/services/app.service';
 import { BugtrackerFacadeService } from './bugtracker.facade.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-export interface DialogData {}
 
 @Component({
   selector: 'app-bugtracker',
@@ -17,8 +16,7 @@ export class BugtrackerComponent implements OnInit {
 
   constructor(
     public facadeService: BugtrackerFacadeService, public appService: AppService,
-    public dialogRef: MatDialogRef<BugtrackerComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    public dialogRef: MatDialogRef<BugtrackerComponent>) {}
 
   onNoClick(): void {
     this.dialogRef.close();
