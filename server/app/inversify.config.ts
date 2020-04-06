@@ -5,10 +5,11 @@ import { Container } from 'inversify';
 import { Server } from './server';
 // Controllers
 // Services
-import { connectionProvider, ConnectionProvider } from './repository/connection.provider';
 import { AnnotationRepository } from './repository/annotation.repository';
 import { AnnotationService } from './services/annotation.service';
 import { AnnotationController } from './controllers/annotation.controller';
+import { BugtrackerController } from './controllers/bugTracker.controller';
+import { connectionProvider, ConnectionProvider } from './repository/connection.provider';
 import { ImageRepository } from './repository/image.repository';
 import { ImageService } from './services/image.service';
 import { ImageController } from './controllers/image.controller';
@@ -49,6 +50,7 @@ container.bind<IController>(TYPES.Controller).to(AnnotationController);
 container.bind<IController>(TYPES.Controller).to(TaskPriorityController);
 container.bind<IController>(TYPES.Controller).to(ManagementController);
 container.bind<IController>(TYPES.Controller).to(WidgetController);
+container.bind<IController>(TYPES.Controller).to(BugtrackerController);
 // Services
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TaskService>(TYPES.TaskService).to(TaskService);

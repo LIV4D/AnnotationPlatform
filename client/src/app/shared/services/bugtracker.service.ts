@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { BugtrackerComponent } from 'src/app/bugtracker/bugtracker.component';
+import { isNullOrUndefined } from 'util';
 
 
 @Injectable()
@@ -35,13 +36,14 @@ export class BugtrackerService {
     // }
 
     send(description: string): void {
+        const email = JSON.parse(localStorage.getItem('currentUser')).user.email;
         const body = {
             'description': description,
-            'author': this.loginService.name !== null ? this.loginService.name : 'unknown',
+            'author': !isNullOrUndefined(email) ? email : 'unknown',
             'date': new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}).replace(',', ''),
         };
-
-        this.http.post(`/api/bugtracker`, body).subscribe();
+        console.log(body);
+        this.http.post(`/api/bugtracker/create`, body).subscribe();
 
     }
 }
