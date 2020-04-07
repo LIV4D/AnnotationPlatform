@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { AppService } from '../shared/services/app.service';
 import { BugtrackerFacadeService } from './bugtracker.facade.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 
 @Component({
@@ -9,32 +9,35 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   templateUrl: './bugtracker.component.html',
   styleUrls: ['./bugtracker.component.scss']
 })
-export class BugtrackerComponent implements OnInit {
+export class BugtrackerComponent {
 
-  visible = false;
-  bugDescription = '';
 
   constructor(
     public facadeService: BugtrackerFacadeService, public appService: AppService,
     public dialogRef: MatDialogRef<BugtrackerComponent>) {}
 
+  /**
+   * Close bugtracker dialog
+   */
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  ngOnInit(): void {
-  }
-
+  /**
+   * Send bug description entered by user in bugtracker dialog textbox
+   * @param description: bug description entered by user in bugtracker dialog textbox
+   */
   send(description: string): void {
       if (description === '') {
           return;
       }
-      this.bugDescription = description;
-      this.facadeService.send(this.bugDescription);
-      this.bugDescription = '';
+      this.facadeService.send(description);
       this.onNoClick();
   }
 
+  /**
+   * Cancel bugtracker dialog
+   */
   cancel(): void {
       this.onNoClick();
   }
