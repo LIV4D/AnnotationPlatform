@@ -397,7 +397,6 @@ export class EditorService {
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
       this.getMainImage();
-      LocalStorage.load(this, this.layersService);
       this.loadRevision(true);
       LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
