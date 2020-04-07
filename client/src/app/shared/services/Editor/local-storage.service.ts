@@ -27,6 +27,8 @@ export class LocalStorage {
   }
 
   static save(editorService: EditorService, layersService: LayersService): void {
+
+
     // No save for local files or if nothing is loaded
     if (!editorService.imageId || editorService.imageId === 'local') {
       return;
@@ -49,14 +51,18 @@ export class LocalStorage {
     };
 
     // Save json as string
+
     const str = JSON.stringify(json);
     window.localStorage.setItem(LocalStorageKeys.AllCanvasInfo, str);
     window.localStorage.setItem(LocalStorageKeys.ImageId, editorService.imageId);
+
   }
 
   static load(editorService: EditorService, layersService: LayersService): void {
-    // Read local storage
+    // Read local storage\\
+
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
+
     const json = JSON.parse(str);
     if (!json) {
         editorService.loadRevision(true);
@@ -67,6 +73,8 @@ export class LocalStorage {
     }
 
     // Recreate biomarkers
+    console.log(layersService.biomarkerCanvas.length);
+    console.log(layersService.biomarkerCanvas);
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.clear();
     });
@@ -85,9 +93,11 @@ export class LocalStorage {
         };
         biomarkerImage.src = imageString;
     });
+
     layersService.biomarkerCanvas.forEach(canvas => {
-      console.log("je load draw local");
         canvas.draw();
     });
+    console.log(layersService.biomarkerCanvas);
   }
+
 }
