@@ -26,6 +26,9 @@ export class NavigationBarComponent {
 
   }
 
+  /**
+   * Enters or exits fullscreen mode
+   */
   toggleFullScreen(): void {
     const sreenfullEntity = screenfull as Screenfull;
 
@@ -38,10 +41,12 @@ export class NavigationBarComponent {
     sreenfullEntity.toggle();
   }
 
+  /**
+   * Opens Bugtracker component in an ngMaterial dialog
+   */
   toggleBugtracker(): void {
     const dialogRef = this.bugtrackerDialog.open(BugtrackerComponent, {
        hasBackdrop: false
-      // data: {name: this.name, animal: this.animal}
     });
 
     dialogRef.afterClosed().subscribe(result => {

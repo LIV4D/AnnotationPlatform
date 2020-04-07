@@ -1,9 +1,5 @@
-// Services
 import { HeaderService } from './header.service';
-
-// Model
 import { User } from '../models/serverModels/user.model';
-
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -23,6 +19,9 @@ export class UserService {
     return this.headerService.display_progress(req, 'Downloading: Task Types List');
   }
 
+  /**
+   * Returns list of all users as array of users
+   */
   async getUsersApp() {
     const data = await this.getUsers().toPromise();
     return data as User[];

@@ -1,11 +1,10 @@
-import { LoginService } from './login.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { BugtrackerComponent } from 'src/app/bugtracker/bugtracker.component';
 import { isNullOrUndefined } from 'util';
 
-
+/**
+ * Bugtracker service sends bug info to server
+ */
 @Injectable()
 export class BugtrackerService {
 
@@ -13,6 +12,10 @@ export class BugtrackerService {
     constructor(private http: HttpClient) {
     }
 
+    /**
+     * posts bug info to server
+     * @param description: description entered by user in bugtracker dialog
+     */
     send(description: string): void {
         const email = JSON.parse(localStorage.getItem('currentUser')).user.email;
         const body = {
