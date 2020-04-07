@@ -105,7 +105,7 @@ def info_from_diagnostic(diagnostic):
             b = c_stripped[12:].split(',')
             biomarkers += [_.strip() for _ in b if _.strip() not in ('Others', )]
         elif c_stripped.startswith('[time='):
-            t = c[6:].split(':')
+            t = c_stripped[6:].split(':')
             if len(t) == 1:
                 t = int(t[0])
             elif len(t) == 2:
@@ -120,6 +120,40 @@ def info_from_diagnostic(diagnostic):
         comment = comment[:-1]
 
     return biomarkers, time, comment
+
+
+def dict_info_from_diagnostic(diagnostic):
+    d = dict(comment="")
+    for c in diagnostic.split(']'):
+        c_stripped = c.strip()
+        if c_stripped.startswith('[onlyEnable='):
+            b = c_stripped[12:].split(',')
+            d['biomarkers'] += [_.strip() for _ in b if _.strip() not in ('Others', )]
+        elif c_stripped.startswith('[time='):
+            t = c_stripped[6:].split(':')
+            if len(t) == 1:
+                t = int(t[0])
+            elif len(t) == 2:
+                t = int(t[0])*60 + int(t[1])
+            elif len(t) == 3:
+                t = int(t[0])*3600 + int(t[1])*60 + int(t[2])
+            d['time'] = t
+        elif c_stripped.startswith('[diagnostic='):
+            diagnostics = c_stripped[12:].split('M')
+            if len(diagnostics) == 1:
+                diagnostics.append('')
+            else:
+                if diagnostics[0]:
+                    d['RD'] = {0:'R0', 1: 'R1', 2: 'R2', 3: 'R3', 4: 'R4A', 5: 'R4S', 6: 'R6'}[int(diagnostics[0])]
+                if diagnostic[1]:
+                    d['ME'] = {0:'M0', 1: 'M1', 2: 'M2', 6: 'M6'}[int(diagnostics[1])]
+        else:
+            d['comment'] += c+']'
+
+    if d['comment']:
+        d['comment'] = d['comment'][:-1]
+    
+    return d
 
 
 def info_to_diagnostic(biomakers=None, time=None, comment=None):
