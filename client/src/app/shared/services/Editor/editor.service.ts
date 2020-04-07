@@ -752,28 +752,6 @@ export class EditorService {
   //     }
   // }
 
-  // TODO: Make this work
-  // Function called from gallery/tasks to load a new image and redirect to editor
-  loadImageFromServer(imageId: string): void {
-    // console.log('EditorService::loadImageFromServer()');
-
-    // TODO: change to above
-    // const req = this.http.get<ImageServer>('/api/images/1/', {observe: 'events', reportProgress: true});
-    const req = this.http.get<ImageServer>(`/api/images/get/${imageId}/`, {
-      observe: 'events',
-      reportProgress: true,
-    });
-    this.headerService
-      .display_progress(req, 'Downloading: Image')
-      .subscribe((res) => {
-        this.imageLocal = null;
-        this.imageServer = res;
-
-        this.setImageId(imageId);
-        this.router.navigate(['/' + 'editor']);
-      });
-  }
-
   loadMetadata(imageId: string): void {
     // this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
     //     this.imageServer = res;
@@ -802,8 +780,6 @@ export class EditorService {
   cancel() {}
 
   setImageId(id: string): void {
-    // console.log('EditorService::setImageId()');
-
     this.imageId = id;
   }
 }
