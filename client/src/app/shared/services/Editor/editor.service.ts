@@ -660,12 +660,12 @@ export class EditorService {
   // Function to change the offsets to match a new center.
   moveCenter(percentX: number, percentY: number): void {
     const displayW =
-      this.backgroundCanvas.displayCanvas.width >
+      this.backgroundCanvas.displayCanvas.width <
       this.backgroundCanvas.originalCanvas.width
         ? this.backgroundCanvas.originalCanvas.width
         : this.backgroundCanvas.displayCanvas.width;
     const displayH =
-      this.backgroundCanvas.displayCanvas.height >
+      this.backgroundCanvas.displayCanvas.height <
       this.backgroundCanvas.originalCanvas.height
         ? this.backgroundCanvas.originalCanvas.height
         : this.backgroundCanvas.displayCanvas.height;
