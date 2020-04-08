@@ -247,12 +247,12 @@ export class EditorService {
       reportProgress: true,
       observe: 'events',
     });
-    console.log("load revision");
+    console.log('load revision');
     this.headerService
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          console.log("ca passe");
+          console.log('ca passe');
           this.layersService.biomarkerCanvas = [];
           this.svgBox.innerHTML = res.svg;
           const parser = new DOMParser();
@@ -283,7 +283,7 @@ export class EditorService {
         },
         async (error) => {
           if (error.status === 404 || error.status === 500) {
-            console.log("ca passe pas");
+            console.log('ca passe pas');
             this.layersService.biomarkerCanvas = [];
             const reqBase = this.http.get(`/api/annotations/getEmpty/`, {
               headers: new HttpHeaders(),
