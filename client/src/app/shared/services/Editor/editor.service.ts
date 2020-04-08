@@ -244,19 +244,13 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(draw: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    // const currentAnnotationId = this.submitService.getCurrentTask().annotationId;
+    const currentAnnotationId:string = this.bridgeSingleton.getCurrentTask().annotationId.toString();
 
-    const currentAnnotationId = this.bridgeSingleton.getCurrentTask();
-    console.log("current");
-    console.log(currentAnnotationId);
-
-
-    const req = this.http.get('/api/annotations/get/getEmpty', {
+    const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {
       headers: new HttpHeaders(),
       reportProgress: true,
       observe: 'events',
     });
-    console.log('load revision');
     this.headerService
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
