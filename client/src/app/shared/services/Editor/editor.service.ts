@@ -72,6 +72,7 @@ export class EditorService {
     setInterval(() => {
       console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
+        LocalStorage.clear();
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;
       }
@@ -240,16 +241,19 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(draw: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    const req = this.http.get('/api/annotations/get/1', {
+    //const currentAnnotationId = this.submitService.getCurrentTask().annotationId;
+    const req = this.http.get('/api/annotations/get/getEmpty', {
       headers: new HttpHeaders(),
       reportProgress: true,
       observe: 'events',
     });
-
+    console.log("load revision");
     this.headerService
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
+          console.log("ca passe");
+          this.layersService.biomarkerCanvas = [];
           this.svgBox.innerHTML = res.svg;
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
@@ -268,17 +272,19 @@ export class EditorService {
           if (draw) {
             this.layersService.biomarkerCanvas = [];
             arbre.forEach((e: SVGGElement) => {
-              this.layersService.createFlatCanvasRecursive(e);
+            this.layersService.createFlatCanvasRecursiveJson(e, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
             });
 
             setTimeout(() => {
-              LocalStorage.save(this, this.layersService);
+              //LocalStorage.save(this, this.layersService);
             }, 1000);
           }
           this.svgLoaded.emit(arbre);
         },
         async (error) => {
           if (error.status === 404 || error.status === 500) {
+            console.log("ca passe pas");
+            this.layersService.biomarkerCanvas = [];
             const reqBase = this.http.get(`/api/annotations/getEmpty/`, {
               headers: new HttpHeaders(),
               observe: 'events',
@@ -688,9 +694,6 @@ export class EditorService {
 
     this.layersService.biomarkerCanvas.forEach(layer => {
       layer.setOffset(this.offsetX, this.offsetY);
-      // console.log(layer);
-      console.log(layer.currentCanvas.height);
-      console.log(layer.currentCanvas.width);
       layer.draw();
     });
 

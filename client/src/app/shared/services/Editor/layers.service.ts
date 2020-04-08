@@ -5,6 +5,7 @@ import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { Stack } from './Tools/stack.service';
+import { LocalStorage } from './local-storage.service';
 export const ANNOTATION_PREFIX = 'annotation-';
 
 
@@ -78,6 +79,7 @@ export class LayersService {
   }
 
   redo(): void {
+    LocalStorage.clear();
       if (this.redoStack.getLength() > 0) {
           this.unsavedChange = true;
           const canvas = this.redoStack.pop();
@@ -138,7 +140,6 @@ export class LayersService {
     context.drawImage(image, x, y, image.width, image.height);
     canvas.id = ANNOTATION_PREFIX + id;
     this.appLayers.appendChild(canvas);
-    console.log("push");
     this.biomarkerCanvas.push(
       new BiomarkerCanvas(canvas, image, ANNOTATION_PREFIX + id, color, this.biomarkerCanvas.length, this.imageBorderService)
     );
@@ -153,6 +154,7 @@ export class LayersService {
         image.height = height;
       }
       image.onload = () => {
+        console.log("push createFlatCanvasRecursive");
         this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
       };
       if (!node.hasAttribute('xlink:href')) {
@@ -186,6 +188,7 @@ export class LayersService {
         image.height = height;
       }
       image.onload = () => {
+        console.log("create flat canvas recursive json");
         this.newBiomarker(image, type, color);
       };
 
@@ -218,9 +221,7 @@ export class LayersService {
   public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
 
     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
-    console.log(currentBiomarkerCanvas.currentCanvas.width);
     if (currentBiomarkerCanvas == null) {
-        console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
     }
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
 }

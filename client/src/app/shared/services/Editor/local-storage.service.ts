@@ -53,9 +53,12 @@ export class LocalStorage {
     // Save json as string
 
     const str = JSON.stringify(json);
+    console.log("save");
+    console.log(biomarkers.length);
+    localStorage.removeItem(LocalStorageKeys.AllCanvasInfo);
     window.localStorage.setItem(LocalStorageKeys.AllCanvasInfo, str);
-    window.localStorage.setItem(LocalStorageKeys.ImageId, editorService.imageId);
 
+    window.localStorage.setItem(LocalStorageKeys.ImageId, editorService.imageId);
   }
 
   static load(editorService: EditorService, layersService: LayersService): void {
@@ -73,12 +76,12 @@ export class LocalStorage {
     }
 
     // Recreate biomarkers
-    console.log(layersService.biomarkerCanvas.length);
-    console.log(layersService.biomarkerCanvas);
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.clear();
     });
     layersService.biomarkerCanvas = [];
+    console.log('json');
+    console.log(json);
     json.biomarkers.forEach(element => {
         const imageString = element[0];
         const id = element[1];
@@ -97,7 +100,6 @@ export class LocalStorage {
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.draw();
     });
-    console.log(layersService.biomarkerCanvas);
   }
 
 }
