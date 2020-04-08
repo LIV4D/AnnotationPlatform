@@ -1,8 +1,8 @@
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 
-export class Hack {
-  private static instance: Hack;
-  hack: Task;
+export class BridgeSingleton {
+  private static instance: BridgeSingleton;
+  currentTask : Task;
 
   /**
    * The Singleton's constructor should always be private to prevent direct
@@ -16,12 +16,12 @@ export class Hack {
    * This implementation let you subclass the Singleton class while keeping
    * just one instance of each subclass around.
    */
-  public static getInstance(): Hack {
-      if (!Hack.instance) {
-        Hack.instance = new Hack();
+  public static getInstance(): BridgeSingleton {
+      if (!BridgeSingleton.instance) {
+        BridgeSingleton.instance = new BridgeSingleton();
       }
 
-      return Hack.instance;
+      return BridgeSingleton.instance;
   }
 
   /**
@@ -29,10 +29,10 @@ export class Hack {
    * executed on its instance.
    */
   getCurrentTask(): Task {
-    return this.hack;
+    return this.currentTask;
   }
 
   setCurrentTask(task: Task) {
-    this.hack = task;
+    this.currentTask = task;
   }
 }

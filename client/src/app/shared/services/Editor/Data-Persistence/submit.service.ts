@@ -22,7 +22,7 @@ import { LocalStorage } from '../local-storage.service';
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskType } from '../../../models/serverModels/taskType.model';
-import { Hack } from './hack.model';
+import { BridgeSingleton} from './bridge.service';
 
 @Injectable({
 		providedIn: 'root'
@@ -30,7 +30,7 @@ import { Hack } from './hack.model';
 export class SubmitService {
     private currentTask: Task;
     private currentTaskType: TaskType
-    hack: Hack;
+    bridgeSingleton: BridgeSingleton;
 
 	constructor(
 		private http: HttpClient,
@@ -41,7 +41,7 @@ export class SubmitService {
     public editorService: EditorService,
 		private router: Router
 		){
-      this.hack = Hack.getInstance();
+      this.bridgeSingleton = BridgeSingleton.getInstance();
     }
 
 	public getCurrentTask(): Task{
@@ -50,7 +50,7 @@ export class SubmitService {
 
 	public setCurrentTask(currentTask:Task): void{
     this.currentTask = currentTask;
-    this.hack.setCurrentTask(this.currentTask);
+    this.bridgeSingleton.setCurrentTask(this.currentTask);
   }
 
   public getCurrentTaskType(): TaskType{
