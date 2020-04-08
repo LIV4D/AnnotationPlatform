@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ErrorSeverity } from 'src/app/shared/services/errorMessage.service';
 
 @Component({
@@ -14,7 +14,10 @@ export class ErrorComponent implements OnInit {
     errorDescription = '';
     severity: ErrorSeverity;
 
-    constructor(public dialogRef: MatDialogRef<ErrorComponent>) { }
+    constructor(public dialogRef: MatDialogRef<ErrorComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.errorDescription = data.errorDescription;
+        this.severity = data.severity;
+     }
 
     ngOnInit(): void {
     }
