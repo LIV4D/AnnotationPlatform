@@ -12,7 +12,7 @@ export class Stack<T> {
     push(val: T): void {
         this._head = (this._head + 1) % this._capacity;
         this._store[this._head] = val;
-        if (this._numberOfItems < 10) {
+        if (this._numberOfItems < 20) {
             this._numberOfItems += 1;
         }
     }
