@@ -26,7 +26,7 @@ export class ErrorMessageService {
                 case 200:
                 case 204:
                     return;
-                case 403:
+                case 304:
                     severity = ErrorSeverity.benign;
                     break;
                 case 401:
@@ -34,6 +34,7 @@ export class ErrorMessageService {
                 case 500:
                     severity = ErrorSeverity.noticeable;
                     break;
+                case 403:
                 default:
                     severity = ErrorSeverity.critical;
             }
@@ -51,7 +52,7 @@ export class ErrorMessageService {
         return of(err.message);
     }
 
-    public handleStorageError(error: Error, severity?: ErrorSeverity) {
+    public handleStorageError(error: Error, severity = ErrorSeverity.critical) {
         this.errorDialog.open(ErrorComponent, {
             hasBackdrop: false,
             data: {

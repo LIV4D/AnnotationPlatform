@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BugtrackerComponent } from 'src/app/bugtracker/bugtracker.component';
 import { isNullOrUndefined } from 'util';
 import { ErrorMessageService, ErrorSeverity } from './errorMessage.service';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable()
@@ -12,7 +13,7 @@ export class BugtrackerService {
 
     // public isVisible = false;
 
-    constructor(public loginService: LoginService, private errorMessage: ErrorMessageService,private http: HttpClient) {
+    constructor(public loginService: LoginService, private errorMessage: ErrorMessageService, private http: HttpClient) {
     }
 
     send(description: string): void {
@@ -28,7 +29,7 @@ export class BugtrackerService {
             date: new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}).replace(',', ''),
         };
         console.log(body);
-        this.http.post(`/api/bugtracker/create`, body).subscribe();
+        this.http.post(`/api/bugtracker/create`, body).pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
     }
 }
