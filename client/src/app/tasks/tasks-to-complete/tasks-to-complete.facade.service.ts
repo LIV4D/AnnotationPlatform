@@ -40,6 +40,6 @@ export class TasksToCompleteFacadeService {
   }
 
   setCurrentTask(task: Task) {
-    this.submitService.setCurrentTask(task);
+    this.submitService.setSubmitedTask(task);
   }
 }
