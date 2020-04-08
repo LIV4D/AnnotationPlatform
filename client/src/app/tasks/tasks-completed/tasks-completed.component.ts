@@ -20,7 +20,7 @@ import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
+import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Component({

@@ -3,7 +3,7 @@ import { TasksService } from '../../shared/services/tasks/tasks.service';
 import { TaskTypeService } from '../../shared/services/Tasks/taskType.service';
 import { AppService} from '../../shared/services/app.service';
 import { LoadingService } from '../../shared/services/Editor/Data-Persistence/loading.service';
-import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
+import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Injectable()

@@ -4,24 +4,24 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 // Models
-import { Task } from '../../models/serverModels/task.model';
-import { AnnotationData } from '../../models/serverModels/annotationData.model';
+import { Task } from '../../../models/serverModels/task.model';
+import { AnnotationData } from '../../../models/serverModels/annotationData.model';
 
 // rxjs
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 // Services
-import { EditorService } from './editor.service';
-import { TasksService } from '../tasks/tasks.service';
-import { LayersService } from './layers.service';
-import { AppService } from '../app.service';
-import { HeaderService } from '../header.service';
-import { LocalStorage } from './local-storage.service';
+import { EditorService } from '../editor.service';
+import { TasksService } from '../../tasks/tasks.service';
+import { LayersService } from '../layers.service';
+import { AppService } from '../../app.service';
+import { HeaderService } from '../../header.service';
+import { LocalStorage } from '../local-storage.service';
 
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
-import { TaskType } from '../../models/serverModels/taskType.model';
+import { TaskType } from '../../../models/serverModels/taskType.model';
 
 @Injectable({
 		providedIn: 'root'

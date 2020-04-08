@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 
 // Services
 
-
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -22,8 +21,8 @@ export class LoadingService {
     private headerService: HeaderService,
     public editorService: EditorService,
     public router: Router,
-
-    ){}
+    ){
+  }
 
   // Function called from gallery/tasks to load a new image and redirect to editor
   loadImageFromServer(imageId: string): void {
@@ -46,5 +45,4 @@ export class LoadingService {
   setImageId(id: string): void {
     this.editorService.imageId = id;
   }
-
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
+import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { TasksService } from 'src/app/shared/services/tasks/tasks.service';
