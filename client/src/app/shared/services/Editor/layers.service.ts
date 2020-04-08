@@ -52,9 +52,8 @@ export class LayersService {
     drawCtx.imageSmoothingEnabled = false;
 
     // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
-    this.MAX_CAPACITY = 15;
 
-    this.MAX_CAPACITY = 15;
+    this.MAX_CAPACITY = 20;
     this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
     this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
     this.biomarkerCanvas = [];
