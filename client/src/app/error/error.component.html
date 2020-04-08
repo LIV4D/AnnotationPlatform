@@ -1,1 +1,8 @@
-<p>{{errorDescription}}</p>
+<div>
+  <h1 mat-dialog-title>Error Found</h1>
+  <div mat-dialog-content>{{errorDescription}}</div>
+  <div>
+    <button mat-button (click) = "close()">Close</button>
+    <button mat-button (click) = "logout()">Logout</button>
+  </div>
+</div>

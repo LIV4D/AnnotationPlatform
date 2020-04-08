@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { isNullOrUndefined } from 'util';
+import { catchError } from 'rxjs/operators';
+import { ErrorMessageService } from './errorMessage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class ManagementCreationService {
     private properties: string[];
     private instantiatedModel: object;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private errorMessage: ErrorMessageService) { }
 
     /**
      * Checks to see if the values are appropriate for they types and sends an event to the server
@@ -27,7 +29,7 @@ export class ManagementCreationService {
         if (this.checkPropertyValues()) {
             const observable = this.chooseAppropriateObservable(eventName);
 
-            observable.subscribe();
+            observable.pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
             return 'Event Success!';
         }
