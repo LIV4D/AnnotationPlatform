@@ -5,15 +5,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorComponent } from 'src/app/error/error.component';
 import { isNullOrUndefined } from 'util';
 
-@Injectable({
-  providedIn: 'root'
-})
-
 export enum ErrorSeverity {
     benign = 0,
     noticeable = 1,
     critical = 2,
 }
+@Injectable({
+    providedIn: 'root'
+})
 
 export class ErrorMessageService {
 
@@ -50,5 +49,13 @@ export class ErrorMessageService {
         return of(err.message);
     }
 
-    public handleStorageError() {}
+    public handleStorageError(error: Error, severity?: ErrorSeverity) {
+        this.errorDialog.open(ErrorComponent, {
+            hasBackdrop: false,
+            data: {
+                severity,
+                errorDescription: error.message,
+            }
+        });
+    }
 }
