@@ -63,7 +63,7 @@ import { EditorContentComponent } from './editor/editor-content/editor-content.c
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
-
+import { BiomarkersDialogComponent } from './editor/right-menu/biomarkers/biomarkers-dialog/biomarkers-dialog.component';
 
 
 // Directives
@@ -101,7 +101,8 @@ import { VisualizationService } from './editor/right-menu/visualization/visualiz
       CamelCaseToTextPipe,
       TasksBundlesComponent,
       CommentBoxComponent,
-      ToolPropertiesComponent
+      ToolPropertiesComponent,
+      BiomarkersDialogComponent
    ],
    imports: [
       BrowserModule,
