@@ -79,6 +79,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { ErrorComponent } from './error/error.component';
 
 
 
@@ -118,7 +119,8 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
       ToolPropertiesComponent,
       WidgetSingleLineComponent,
       WidgetMultipleLinesComponent,
-      BugtrackerComponent
+      BugtrackerComponent,
+      ErrorComponent
    ],
    imports: [
       BrowserModule,
