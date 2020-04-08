@@ -26,18 +26,22 @@ export class LoadingService {
 
   // Function called from gallery/tasks to load a new image and redirect to editor
   loadImageFromServer(imageId: string): void {
+    console.log('%c imageId : ' + imageId, 'color:white;background:red;');
+
     const req = this.http.get<ImageServer>(`/api/images/get/${imageId}/`, {
       observe: 'events',
-      reportProgress: true,
+      reportProgress: true
     });
     this.headerService
       .display_progress(req, 'Downloading: Image')
-      .subscribe((res) => {
+      .subscribe(res => {
+        console.log('%c response: ', 'color:black;background:yellow;');
         console.log(res);
-        this.editorService.imageId = null;
+
+        this.editorService.imageLocal = null;
+        this.editorService.setImageId(imageId);
         this.editorService.imageServer = res;
 
-        this.setImageId(this.editorService.imageId);
         this.router.navigate(['/' + 'editor']);
       });
   }
