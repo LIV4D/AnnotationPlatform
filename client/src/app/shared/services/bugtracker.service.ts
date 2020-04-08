@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
+import { ErrorMessageService, ErrorSeverity } from './errorMessage.service';
+import { catchError } from 'rxjs/operators';
+import { LoginService } from './login.service';
 
 /**
  * Bugtracker service sends bug info to server
@@ -9,7 +12,7 @@ import { isNullOrUndefined } from 'util';
 export class BugtrackerService {
 
 
-    constructor(private http: HttpClient) {
+    constructor(public loginService: LoginService, private errorMessage: ErrorMessageService, private http: HttpClient) {
     }
 
     /**
@@ -17,14 +20,19 @@ export class BugtrackerService {
      * @param description: description entered by user in bugtracker dialog
      */
     send(description: string): void {
-        const email = JSON.parse(localStorage.getItem('currentUser')).user.email;
+        let email: string;
+        try {
+            email = JSON.parse(localStorage.getItem('currentUser')).user.email;
+        } catch (error) {
+            this.errorMessage.handleStorageError(error as Error, ErrorSeverity.critical);
+        }
         const body = {
-            'description': description,
-            'author': !isNullOrUndefined(email) ? email : 'unknown',
-            'date': new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}).replace(',', ''),
+            description,
+            author: !isNullOrUndefined(email) ? email : 'unknown',
+            date: new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}).replace(',', ''),
         };
         console.log(body);
-        this.http.post(`/api/bugtracker/create`, body).subscribe();
+        this.http.post(`/api/bugtracker/create`, body).pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
     }
 }
