@@ -22,6 +22,7 @@ import { LocalStorage } from '../local-storage.service';
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskType } from '../../../models/serverModels/taskType.model';
+import { Hack } from './hack.model';
 
 @Injectable({
 		providedIn: 'root'
@@ -29,6 +30,7 @@ import { TaskType } from '../../../models/serverModels/taskType.model';
 export class SubmitService {
     private currentTask: Task;
     private currentTaskType: TaskType
+    hack: Hack;
 
 	constructor(
 		private http: HttpClient,
@@ -38,7 +40,9 @@ export class SubmitService {
     private tasksService: TasksService,
     public editorService: EditorService,
 		private router: Router
-		){}
+		){
+      this.hack = Hack.getInstance();
+    }
 
 	public getCurrentTask(): Task{
 		return this.currentTask;
@@ -46,6 +50,7 @@ export class SubmitService {
 
 	public setCurrentTask(currentTask:Task): void{
     this.currentTask = currentTask;
+    this.hack.setCurrentTask(this.currentTask);
   }
 
   public getCurrentTaskType(): TaskType{

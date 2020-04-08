@@ -17,6 +17,7 @@ import { BioNode } from './../../models/bionode.model';
 import { saveAs } from 'file-saver';
 import { Task } from '../../models/serverModels/task.model';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
+import { Hack } from './Data-Persistence/hack.model';
 declare const Buffer;
 
 // Min and max values for zooming
@@ -52,6 +53,7 @@ export class EditorService {
 
   canRedraw = true;
   commentBoxes: CommentBoxSingleton;
+  hack: Hack;
 
   // public biomarkersService: BiomarkersService,
 
@@ -68,6 +70,7 @@ export class EditorService {
     this.imageLoaded = false;
     this.canvasDisplayRatio = new BehaviorSubject<number>(1);
     this.commentBoxes = CommentBoxSingleton.getInstance();
+    this.hack = Hack.getInstance();
     // Check if a change was made to save to localStorage every 30 seconds.
     setInterval(() => {
       console.log(this.commentBoxes.getTextAreaValues());
@@ -241,7 +244,12 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(draw: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    //const currentAnnotationId = this.submitService.getCurrentTask().annotationId;
+    // const currentAnnotationId = this.submitService.getCurrentTask().annotationId;
+
+    const currentAnnotationId = this.hack.getCurrentTask();
+    console.log('NUNO!!! ' + currentAnnotationId);
+
+
     const req = this.http.get('/api/annotations/get/getEmpty', {
       headers: new HttpHeaders(),
       reportProgress: true,
@@ -617,11 +625,10 @@ export class EditorService {
       this.canRedraw = false;
       this.testRedraw(position);
       // TODO: CSS translation here
-      this.canRedraw = true;
 
-      // setTimeout(() => {
-      //   this.canRedraw = true;
-      // }, 100);
+      setTimeout(() => {
+        this.canRedraw = true;
+      }, 100);
     }
     // console.log('%c else ', 'color: black; background:blue;');
 
