@@ -15,8 +15,8 @@
 
     <!--Image Preview -->
     <ng-container matColumnDef="imageSrc">
-        <mat-header-cell *matHeaderCellDef disableClear disableClear>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task" (mouseup)="loadImage(task.imageId.toString())"> <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
+        <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+        <mat-cell *matCellDef="let task" (mouseup)="loadTaskAnnotation(task, task.imageId.toString())" > <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
     <!-- Image Id -->
@@ -50,7 +50,7 @@
 
     <!-- TaskType Selected Header -->
     <ng-container [(ngModel)]="selectedTaskType" ngDefaultControl matColumnDef="selectedTaskType">
-      <mat-header-cell *matHeaderCellDef> 
+      <mat-header-cell *matHeaderCellDef>
         {{selectedTaskType}}
       </mat-header-cell>
     </ng-container>

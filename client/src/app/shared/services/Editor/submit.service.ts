@@ -21,12 +21,14 @@ import { LocalStorage } from './local-storage.service';
 
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
+import { TaskType } from '../../models/serverModels/taskType.model';
 
 @Injectable({
 		providedIn: 'root'
 })
 export class SubmitService {
-  	private currentTask: Task;
+    private currentTask: Task;
+    private currentTaskType: TaskType
 
 	constructor(
 		private http: HttpClient,
@@ -43,7 +45,15 @@ export class SubmitService {
 	}
 
 	public setCurrentTask(currentTask:Task): void{
-		this.currentTask = currentTask;
+    this.currentTask = currentTask;
+  }
+
+  public getCurrentTaskType(): TaskType{
+		return this.currentTaskType;
+	}
+
+	public setCurrentTaskType(currentTaskType:TaskType): void{
+    this.currentTaskType = currentTaskType;
 	}
 
 	// Return the shortcut command depending on the OS of the user's system
@@ -55,6 +65,7 @@ export class SubmitService {
 	afterClosedTaskDialog(dialogRef: MatDialogRef<any, any>) {
 		dialogRef.afterClosed().subscribe(result => {
 			if (result) {
+        LocalStorage.clear();
 				LocalStorage.save(this.editorService, this.layersService);
 				// Load the next task when the user clicks << Save & load Next >>
 				this.saveAnnotation(result === 'next');
@@ -79,6 +90,7 @@ export class SubmitService {
 					// The next task is loaded on the editor
 					this.tasksService.getNextTask().subscribe((data: any) => {
 							if (data && data.annotation) {
+                  this.setCurrentTask(data)
 									const imageId = data.annotation.image.id.toString();
 									LocalStorage.resetImageId(imageId);
 									setTimeout(() => { window.location.reload(); }, 10);
@@ -112,6 +124,7 @@ export class SubmitService {
 
     // The ophtalmologist work is saved
     if (this.layersService.unsavedChange) {
+      LocalStorage.clear();
       LocalStorage.save(this.editorService, this.layersService);
       this.layersService.unsavedChange = false;
     }

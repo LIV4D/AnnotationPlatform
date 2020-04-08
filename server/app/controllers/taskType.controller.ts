@@ -69,6 +69,7 @@ export class TaskTypeController implements IController {
 
     private getTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.taskTypeService.getTaskType(req.params.taskTypeId)
+        this.taskTypeService.getTaskType(+req.params.taskTypeId)
             .then(taskType => {
                 switch (req.params.attr) {
                     case undefined: res.send(taskType); break;

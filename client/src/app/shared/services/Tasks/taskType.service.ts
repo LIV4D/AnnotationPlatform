@@ -4,7 +4,7 @@ import { HeaderService } from './../header.service';
 // Model
 import { TaskType } from '../../models/serverModels/taskType.model';
 
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
@@ -14,6 +14,22 @@ import { Injectable } from '@angular/core';
 
 export class TaskTypeService {
   constructor(private http: HttpClient, private headerService: HeaderService) {}
+
+
+  /**
+   * Gets a task type with the taskType id
+   * @param taskTypeId
+   * @returns task type
+   */
+  getTaskType(taskTypeId: number): Observable<TaskType>{
+    const req = this.http.get<TaskType>(`/api/taskTypes/get/${taskTypeId}`, {observe: 'events', reportProgress: true});
+    return this.headerService.display_progress(req, 'Downloading: Task Types');
+  }
+
+  async getTaskTypeApp(taskTypeId: number) {
+    const data = await this.getTaskType(taskTypeId).toPromise();
+    return data as TaskType;
+  }
 
   /**
    * Gets list of task types from the server

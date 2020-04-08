@@ -18,6 +18,8 @@ import { User } from 'src/app/shared/models/serverModels/user.model';
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
+
 
 @Component({
   selector: 'app-tasks-to-complete',
@@ -48,7 +50,7 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    private taskToCompleteFacadeService: TasksToCompleteFacadeService
+    private taskToCompleteFacadeService: TasksToCompleteFacadeService,
   ) {
     this.isCompleted = false;
     this.pageSize = 15;
@@ -162,13 +164,16 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * Loads image and redirect the user on the Editor
+    /**
+   * Load Task and redirect the user on the Editor
+   * @param task: task loaded in the editor
    * @param imageId: image annotation attributed for a task
    */
-  loadImage(imageId: string): void {
+  loadTaskAnnotation(task: Task, imageId:string): void {
+    console.log(task);
     this.taskToCompleteFacadeService.appService.localEditing = false;
     localStorage.setItem('previousPage', 'tasks');
+    this.taskToCompleteFacadeService.setCurrentTask(task);
     this.taskToCompleteFacadeService.loadImageFromServer(imageId);
   }
 }
