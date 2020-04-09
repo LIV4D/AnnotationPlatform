@@ -79,7 +79,7 @@ export class EditorService {
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;
       }
-    }, 30000);
+    }, 10000);
   }
 
   init(
