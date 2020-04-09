@@ -34,11 +34,6 @@ export class WidgetRepository {
         return await repository.findByIds(ids);
     }
 
-    public async findByAnnotation(): Promise<Widget[]> {
-        const repository =  (await this.connectionProvider()).getRepository(Widget);
-        return await repository.find();
-    }
-
     public async delete(task: Widget): Promise<DeleteResult> {
         const repository =  (await this.connectionProvider()).getRepository(Widget);
         return await repository.delete(task);

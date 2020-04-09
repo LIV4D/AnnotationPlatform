@@ -120,11 +120,6 @@ export class AnnotationService {
         return annotation;
     }
 
-    public async getAnnotationWidgets(id: number): Promise<Widget[]> {
-        // todo specifiy annotation id
-        return await this.widgetRepository.findByAnnotation();
-    }
-
     /**
      * Finds all the annotations within the proper repository.
      * @param ids annotation ids for all the annotation that need to be retrieved
