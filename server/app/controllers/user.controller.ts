@@ -34,7 +34,7 @@ export class UserController implements IController {
             lastName: req.body.lastName,
             email: req.body.email,
             password: req.body.password,
-            isAdmin: req.body.isAdmin,
+            role: req.body.role,
         };
         this.userService.createUser(newUser)
             .then(user => {
