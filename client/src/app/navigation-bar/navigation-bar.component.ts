@@ -53,8 +53,6 @@ export class NavigationBarComponent implements OnInit {
     });
   }
 
-
-
   toggleFullScreen(): void {
     const sreenfullEntity = screenfull as Screenfull;
 
