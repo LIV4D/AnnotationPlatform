@@ -29,6 +29,9 @@ export class ManagementCreationService {
         if (this.determineCheck(eventName)) {
             const observable = this.chooseAppropriateObservable(eventName);
 
+            console.log(this.properties);
+            console.log(this.propertyValues);
+            console.log(this.instantiatedModel);
             observable.pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
             return 'Event Successfully Sent!';
@@ -61,7 +64,7 @@ export class ManagementCreationService {
             case 'delete':
                 return this.checkPropertyValues(1);
             case 'create':
-                return this.checkPropertyValues(undefined, [0]);
+                return this.checkPropertyValues();
             case 'update':
                 return this.checkPropertyValues();
             default:
@@ -72,15 +75,11 @@ export class ManagementCreationService {
     /**
      * Assigns the different property values to the instantiatedModel if they are appropriate.
      * @param maxIndex is the maximum index to which items must be checked
-     * @param skipIndex is an array of indexes that must be skipped
      * @returns true if all values were properperly assigned, false otherwise.
      */
-    private checkPropertyValues(maxIndex = this.propertyValues.length, skipIndex: number[] = []): boolean {
+    private checkPropertyValues(maxIndex = this.propertyValues.length): boolean {
         let propertyValue: any;
         for (let index = 0; index < maxIndex; index++) {
-            if(skipIndex.indexOf(index) >= -1) {
-                continue;
-            }
             propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
             if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
                 return false;

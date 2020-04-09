@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from 'util';
 import { StorageService } from './../shared/services/storage.service';
 import { Component, OnInit } from '@angular/core';
 import { NavigationBarFacadeService } from './navigation-bar.facade.service';
@@ -44,8 +45,11 @@ export class NavigationBarComponent implements OnInit {
       }
     };
 
-    this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
-    console.log(this.userRole);
+    if (!isNullOrUndefined(JSON.parse(localStorage.getItem('currentUser')))){
+      this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
+      console.log(this.userRole);
+    }
+    
 
     
   }
