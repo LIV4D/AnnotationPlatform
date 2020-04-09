@@ -1,14 +1,18 @@
-import { Widget } from 'src/app/shared/models/serverModels/widget.model';
+import { Widget } from './../../../models/serverModels/widget.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({
     providedIn: 'root',
   })
   export class widgetStorageService {
-  
-    constructor(private widgets: Widget[]) {
 
+    private widgets: Widget[] = [];
+
+    constructor() {
     }
 
+    public setWidgets(widgets: Widget[]){
+        this.widgets = widgets;
+    }
+    
   }
-}
