@@ -73,7 +73,7 @@ export class ManagementComponent implements OnInit, IRoutable {
     }
 
     public inputType(index: number): string {
-        if (index < this.attributeTypes.length) {
+        if (!isNullOrUndefined(this.attributeTypes) && index < this.attributeTypes.length) {
             return 'Input value of type ' + this.attributeTypes[index];
         }
     }
