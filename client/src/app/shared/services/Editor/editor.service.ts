@@ -259,7 +259,6 @@ export class EditorService {
         (res) => {
           console.log('res');
                 console.log(res);
-                this.s
 
                 this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
                 this.biomarkerService.initJsonRecursive(res.data);
