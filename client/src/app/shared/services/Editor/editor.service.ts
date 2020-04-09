@@ -259,13 +259,13 @@ export class EditorService {
         (res) => {
           console.log('res');
                 console.log(res);
+                this.storageService.setItem('widgets', res.widgets)
+                console.log(localStorage.getItem('widgets'));
+
                 this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
                 this.biomarkerService.initJsonRecursive(res.data);
                 this.biomarkerService.buildTreeRecursive(res.data);
-                this.storageService.setItem('widgets', res.widgets)
-                console.log('widgets');
-                console.log(localStorage.getItem('widgets'));
-
+                
           // this.svgBox.innerHTML = res.svg;
           // const parser = new DOMParser();
           // const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');

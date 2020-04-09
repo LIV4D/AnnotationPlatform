@@ -38,7 +38,7 @@ export class Widget {
     public validationRegex: string;
 
     @ManyToOne(type => Annotation, annotation => annotation.widgets)
-    public assignedAnnotation: Annotation;
+    public annotation: Annotation;
 
     public static fromInterface(iWidget: IWidget): Widget {
         const u = new Widget();
