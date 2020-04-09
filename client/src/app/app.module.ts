@@ -83,7 +83,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
 import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
-import { widgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
 
 @NgModule({
    declarations: [
@@ -139,7 +139,7 @@ import { widgetStorageService } from './shared/services/Editor/Data-Persistence/
       BugtrackerFacadeService,
       AuthorizationService,
       StorageService,
-      widgetStorageService,
+      WidgetStorageService,
       ManagementFacadeService,
       ModelFinderService,
       NavigationBarFacadeService,

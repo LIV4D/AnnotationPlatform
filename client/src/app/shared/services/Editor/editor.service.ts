@@ -1,4 +1,4 @@
-import { widgetStorageService } from './Data-Persistence/widgetStorage.service';
+import { WidgetStorageService } from './Data-Persistence/widgetStorage.service';
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
@@ -66,7 +66,7 @@ export class EditorService {
     private appService: AppService,
     private headerService: HeaderService,
     private biomarkerService: BiomarkerService,
-    private widgetService: widgetStorageService
+    private widgetService: WidgetStorageService
   ) {
     this.scaleX = 1;
     this.imageLoaded = false;
