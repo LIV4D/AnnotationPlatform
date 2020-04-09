@@ -244,7 +244,10 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(draw: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    const currentAnnotationId:string = this.bridgeSingleton.getCurrentTask().annotationId.toString();
+    let currentAnnotationId = 'getEmpty';
+    if ( this.bridgeSingleton.getCurrentTask() !== null && this.bridgeSingleton.getCurrentTask() !== undefined ){
+      currentAnnotationId = this.bridgeSingleton.getCurrentTask().annotationId.toString();
+    }
 
     const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {
       headers: new HttpHeaders(),
@@ -292,7 +295,7 @@ export class EditorService {
           if (error.status === 404 || error.status === 500) {
             console.log('ca passe pas');
             this.layersService.biomarkerCanvas = [];
-            const reqBase = this.http.get(`/api/annotations/getEmpty/`, {
+            const reqBase = this.http.get(`/api/annotations/get/getEmpty/`, {
               headers: new HttpHeaders(),
               observe: 'events',
               reportProgress: true,
