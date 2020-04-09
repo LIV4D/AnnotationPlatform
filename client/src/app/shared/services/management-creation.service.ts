@@ -77,11 +77,7 @@ export class ManagementCreationService {
      */
     private checkPropertyValues(maxIndex = this.propertyValues.length, skipIndex: number[] = []): boolean {
         let propertyValue: any;
-        console.log(skipIndex)
-        console.log(maxIndex)
         for (let index = 0; index < maxIndex; index++) {
-            console.log('TEST')
-            console.log(skipIndex.indexOf(index));
             if(skipIndex.indexOf(index) >= -1) {
                 continue;
             }
