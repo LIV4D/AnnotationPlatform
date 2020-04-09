@@ -1,23 +1,36 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild,
-        OnDestroy, ElementRef, AfterViewInit, Renderer2,
-        ViewContainerRef,
-        ComponentFactoryResolver} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  OnDestroy,
+  ElementRef,
+  AfterViewInit,
+  ComponentFactoryResolver,
+  ViewContainerRef,
+} from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
+import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
+import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-editor-content',
   templateUrl: './editor-content.component.html',
-  styleUrls: ['./editor-content.component.scss']
+  styleUrls: ['./editor-content.component.scss'],
 })
-
-export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit {
-
-  constructor(public editorFacadeService: EditorFacadeService,
-              public appService: AppService,
-              private resolver: ComponentFactoryResolver) {
+export class EditorContentComponent
+  implements OnInit, OnDestroy, AfterViewInit {
+  constructor(
+    public editorFacadeService: EditorFacadeService,
+    public appService: AppService,
+    private resolver: ComponentFactoryResolver,
+    private toolBoxService: ToolboxService
+  ) {
     this.delayEventTimer = null;
   }
 
@@ -32,28 +45,34 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   zoomInitFactor: number;
   delayEventTimer: any;
   delayedEventHandler: Function;
-  // Comment-box array
-  commentBoxes = [];
-  commentBoxCreated = false;
+  commentBoxes: CommentBoxSingleton;
+  commentClickObservable: Subscription;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
   @ViewChild('mainCanvas') mainCanvas: ElementRef;
-  @ViewChild('commentBox', {read: ViewContainerRef}) commentBox: ViewContainerRef;
+  @ViewChild('commentBox', { read: ViewContainerRef })
+  commentBox: ViewContainerRef;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
+    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
+    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
+    this.commentBoxes = CommentBoxSingleton.getInstance();
+    this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe(
+      (hasBeenClicked) => {
+        if (hasBeenClicked) {
+          this.createCommentBox();
+        }
+      }
+    );
   }
 
   ngAfterViewInit() {
-    // console.log('EditorContent::ngOnInit()');
-    // console.log('%c editorBox: ' + this.viewPort, 'color: black; background: yellow;');
-    // console.log('%c svgBox: ' + this.svgBox, 'color: black; background: yellow;');
-
     this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
     this.svgLoaded.emit();
-    // this.editorFacadeService.load(imageId); // I don't know why this is here
+    // this.editorFacadeService.load(imageId);
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
@@ -63,45 +82,61 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     this.cursorDown = false;
     this.middleMouseDown = false;
     this.zoomInitFactor = null;
+    // closed::boolean is a flag to indicate whether this Subscription has already been unsubscribed
+    if (!this.commentClickObservable.closed) {
+      this.commentClickObservable.unsubscribe();
+    }
   }
 
   onMouseWheel(event: WheelEvent): void {
     // console.log('EditorContent::onMouseWheel()');
-
-    const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
+    const position = this.getMousePositionInCanvasSpace(
+      new Point(event.clientX, event.clientY)
+    );
     // delta is used to lower the zooming speed
-    const delta = - event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 500;
+    const delta =
+      (-event.deltaY *
+        (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25)) /
+      500;
 
-    if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
+    if (
+      !this.cursorDown &&
+      !this.editorFacadeService.firstPoint &&
+      event.ctrlKey === false
+    ) {
       this.editorFacadeService.zoom(delta, position);
     }
   }
 
   onMouseDown(event: MouseEvent): void {
-
-    // Dynamically create new comment-box
-    if (!this.commentBoxCreated) {
-      this.createCommentBox();
-      this.commentBoxCreated = true;
-    }
-
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      panTool.onCursorDown(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
       this.middleMouseDown = true;
-    } else if (event.which === 1 && !this.editorFacadeService.menuState && !this.middleMouseDown) {
-      this.editorFacadeService.onCursorDownToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    } else if (
+      event.which === 1 &&
+      !this.editorFacadeService.menuState &&
+      !this.middleMouseDown
+    ) {
+      this.editorFacadeService.onCursorDownToolbox(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
     }
     // this.enableKeyEvents(false);
   }
 
   createCommentBox() {
-    this.commentBox.clear();
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
-    console.log('Comment box created!');
+    this.commentBoxes.comments.push(componentRef.instance);
   }
 
   onMouseUp(event: MouseEvent): void {
@@ -121,9 +156,17 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     if (this.middleMouseDown) {
       // const panTool = this.editorFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      panTool.onCursorMove(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
     } else {
-      this.editorFacadeService.onCursorMoveToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      this.editorFacadeService.onCursorMoveToolbox(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
     }
   }
 
@@ -131,14 +174,21 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      panTool.onCursorOut(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
       this.middleMouseDown = false;
     }
     this.cursorDown = false;
-    this.editorFacadeService.onCursorOutToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    this.editorFacadeService.onCursorOutToolbox(
+      this.getMousePositionInCanvasSpace(
+        new Point(event.clientX, event.clientY)
+      )
+    );
     // this.enableKeyEvents(true);
   }
-
 
   // onPointerDown(event: PointerEvent): void {
   //     this.delayEventHandling(() => {
@@ -299,28 +349,38 @@ export class EditorContentComponent implements OnInit, OnDestroy, AfterViewInit 
   //     }
   // }
 
-  // flip(): void {
-  //     this.editorService.scaleX *= -1;
-  // }
-
   onResize(): void {
-      this.editorFacadeService.resize();
+    this.editorFacadeService.resize();
   }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    if (!this.editorFacadeService.backgroundCanvas) { return undefined; }
+    if (!this.editorFacadeService.backgroundCanvas) {
+      return undefined;
+    }
     let clientX: number;
     let clientY: number;
     // X coordinate is adjusted if the image is flipped horizontally.
-    clientX = this.editorFacadeService.scaleX === 1
-      ? clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left
-      : this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
+    clientX =
+      this.editorFacadeService.scaleX === 1
+        ? clientPosition.x -
+          this.viewPort.nativeElement.getBoundingClientRect().left
+        : this.viewPort.nativeElement.clientWidth -
+          clientPosition.x +
+          this.viewPort.nativeElement.getBoundingClientRect().left;
 
-    clientY = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
-    const canvasX = clientX * this.editorFacadeService.backgroundCanvas.displayCanvas.width /
-      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-    const canvasY = clientY * this.editorFacadeService.backgroundCanvas.displayCanvas.height /
-      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+    clientY =
+      clientPosition.y -
+      this.viewPort.nativeElement.getBoundingClientRect().top;
+    const canvasX =
+      (clientX *
+        this.editorFacadeService.backgroundCanvas.displayCanvas.width) /
+      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
+        .width;
+    const canvasY =
+      (clientY *
+        this.editorFacadeService.backgroundCanvas.displayCanvas.height) /
+      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
+        .height;
     return new Point(canvasX, canvasY);
   }
 

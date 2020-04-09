@@ -12,7 +12,7 @@ import { CommentTool } from './Tools/comment-tool.service';
 
 import { TOOL_NAMES } from './../../constants/tools';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { LayersService } from './layers.service';
 import { EditorService } from './editor.service';
@@ -20,77 +20,141 @@ import { ToolPropertiesService } from './tool-properties.service';
 import { BiomarkerService } from './biomarker.service';
 import { ImageBorderService } from './image-border.service';
 
-
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class ToolboxService {
-
   selectedTool: BehaviorSubject<Tool>;
+  commentBoxClicked: Subject<any>;
   listOfTools: Tool[];
 
-    constructor(private layersService: LayersService, private editorService: EditorService,
-                private toolPropertiesService: ToolPropertiesService, private biomarkerService: BiomarkerService,
-                private imageBorderService: ImageBorderService) {
-
+  constructor(
+    private layersService: LayersService,
+    private editorService: EditorService,
+    private toolPropertiesService: ToolPropertiesService,
+    private biomarkerService: BiomarkerService,
+    private imageBorderService: ImageBorderService
+  ) {
     this.listOfTools = [
-      new Hand(TOOL_NAMES.PAN, '../assets/icons/hand.svg', 'Pan (P)',
-        editorService, layersService),
-      new Brush(TOOL_NAMES.BRUSH, '../assets/icons/brush.svg', 'Brush (B)',
-        editorService, layersService, toolPropertiesService),
+      new Hand(
+        TOOL_NAMES.PAN,
+        '../assets/icons/hand.svg',
+        'Pan (P)',
+        editorService,
+        layersService
+      ),
+      new Brush(
+        TOOL_NAMES.BRUSH,
+        '../assets/icons/brush.svg',
+        'Brush (B)',
+        editorService,
+        layersService,
+        toolPropertiesService
+      ),
       // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
-      new FillBrush(TOOL_NAMES.FILL_BRUSH, '../assets/icons/brush-fill.svg', 'Fill Brush (F)',
-        editorService, layersService, toolPropertiesService),
+      new FillBrush(
+        TOOL_NAMES.FILL_BRUSH,
+        '../assets/icons/brush-fill.svg',
+        'Fill Brush (F)',
+        editorService,
+        layersService,
+        toolPropertiesService
+      ),
       // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
-      new Eraser(TOOL_NAMES.ERASER, '../assets/icons/eraser.svg', 'Eraser (E)',
-        editorService, layersService, toolPropertiesService),
-      new LassoEraser(TOOL_NAMES.LASSO_ERASER, '../assets/icons/lasso-eraser.svg', 'Lasso Eraser (G)',
-        editorService, layersService, toolPropertiesService),
-      new BioPicker(TOOL_NAMES.BIO_PICKER, '../assets/icons/picker.svg', 'Pick Biomarker (K)',
-        editorService, layersService, biomarkerService),
+      new Eraser(
+        TOOL_NAMES.ERASER,
+        '../assets/icons/eraser.svg',
+        'Eraser (E)',
+        editorService,
+        layersService,
+        toolPropertiesService
+      ),
+      new LassoEraser(
+        TOOL_NAMES.LASSO_ERASER,
+        '../assets/icons/lasso-eraser.svg',
+        'Lasso Eraser (G)',
+        editorService,
+        layersService,
+        toolPropertiesService
+      ),
+      new BioPicker(
+        TOOL_NAMES.BIO_PICKER,
+        '../assets/icons/picker.svg',
+        'Pick Biomarker (K)',
+        editorService,
+        layersService,
+        biomarkerService
+      ),
 
-      new CommentTool(TOOL_NAMES.COMMENT_TOOL, '../assets/icons/comment-box.png', 'Add comment',
-        editorService, layersService, biomarkerService),
+      new CommentTool(
+        TOOL_NAMES.COMMENT_TOOL,
+        '../assets/icons/comment-box.png',
+        'Add comment',
+        editorService,
+        layersService,
+        biomarkerService
+      ),
 
-      new Tool(TOOL_NAMES.UNDO, '../assets/icons/undo.svg',
-        navigator.platform.indexOf('Mac') === -1 ? 'Undo (Ctrl + Z)' : 'Undo (Cmd + Z)',
-        editorService, layersService),
-      new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
-        navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)',
-        editorService, layersService)
+      new Tool(
+        TOOL_NAMES.UNDO,
+        '../assets/icons/undo.svg',
+        navigator.platform.indexOf('Mac') === -1
+          ? 'Undo (Ctrl + Z)'
+          : 'Undo (Cmd + Z)',
+        editorService,
+        layersService
+      ),
+      new Tool(
+        TOOL_NAMES.REDO,
+        '../assets/icons/redo.svg',
+        navigator.platform.indexOf('Mac') === -1
+          ? 'Redo (Ctrl + Y)'
+          : 'Redo (Cmd + Y)',
+        editorService,
+        layersService
+      ),
     ];
 
     this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
+    this.commentBoxClicked = new Subject<any>();
   }
 
   setSelectedTool(newSelectedTool: string): void {
-    const tool: Tool = this.listOfTools.filter((toolToFilter) => toolToFilter.name === newSelectedTool)[0];
-    this.selectedTool.next(tool);
+    if (newSelectedTool === TOOL_NAMES.UNDO) {
+      this.layersService.undo();
+  } else if (newSelectedTool === TOOL_NAMES.REDO) {
+      this.layersService.redo();
+  } else {
+      const tool: Tool = this.listOfTools.filter((toolToFilter) => toolToFilter.name === newSelectedTool)[0];
+      this.selectedTool.next(tool);
   }
 
+  }
   setUndo() {
-    // this.layersService.undo();
+    this.layersService.undo();
   }
 
   setRedo() {
-    // this.layersService.redo();
+    this.layersService.redo();
   }
 
-    public onCursorDown(point: Point): void {
-        if (this.imageBorderService.showBorders && this.selectedTool.getValue().name !== TOOL_NAMES.PAN) {
-            this.imageBorderService.showBorders = false;
-            this.layersService.toggleBorders(false);
-        }
-        if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-            console.log('SHOW')
-        }
-        this.selectedTool.getValue().onCursorDown(point);
+  public onCursorDown(point: Point): void {
+    if (
+      this.imageBorderService.showBorders &&
+      this.selectedTool.getValue().name !== TOOL_NAMES.PAN
+    ) {
+      this.imageBorderService.showBorders = false;
+      this.layersService.toggleBorders(false);
     }
+    if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
+      // console.log('SHOW')
+    }
+    this.selectedTool.getValue().onCursorDown(point);
+  }
 
   public onCursorUp(): void {
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-      console.log('STIK TIK TIK TIK L7ALWA L7ALWA');
-      // Notify comment add here
+      this.commentBoxClicked.next({ commentClicked: true });
     }
     this.selectedTool.getValue().onCursorUp();
   }
@@ -106,5 +170,4 @@ export class ToolboxService {
   public onCancel(): void {
     this.selectedTool.getValue().onCancel();
   }
-
 }

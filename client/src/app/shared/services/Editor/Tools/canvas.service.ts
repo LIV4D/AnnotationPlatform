@@ -82,7 +82,6 @@ export class Canvas {
             w, // Destination width
             h // Destination height
         );
-
     }
 
     getDisplayContext(): CanvasRenderingContext2D {

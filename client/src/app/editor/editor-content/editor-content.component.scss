@@ -1,8 +1,14 @@
 @import './../../../../src/colorVariables.scss';
 
+.nothing {
+  background-color: transparent;
+}
+
 #template {
-  z-index: 1;
   position: absolute;
+  float: right;
+  top: 22px;
+  z-index: 500;
 }
 
 canvas {
@@ -19,8 +25,8 @@ canvas {
     right: 0%;
 }
 
-  #editor-box {
-    touch-action: none;
+#editor-box {
+  touch-action: none;
 }
 
 div {

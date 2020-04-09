@@ -73,6 +73,7 @@ import { EditorContentComponent } from './editor/editor-content/editor-content.c
 import { LayersComponent } from './editor/editor-content/layers/layers.component';
 import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
 import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
+import { BiomarkersDialogComponent } from './editor/right-menu/biomarkers/biomarkers-dialog/biomarkers-dialog.component';
 
 // Directives
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
@@ -80,10 +81,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
-
-
-
-
+import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
 
 @NgModule({
    declarations: [
@@ -121,6 +119,7 @@ import { ErrorComponent } from './error/error.component';
       WidgetMultipleLinesComponent,
       BugtrackerComponent,
       ErrorComponent
+      BiomarkersDialogComponent
    ],
    imports: [
       BrowserModule,
@@ -156,6 +155,7 @@ import { ErrorComponent } from './error/error.component';
       LayersFacadeService,
       GalleryFacadeService,
       ToolPropertiesService,
+      VisualizationService,
       ImageBorderService,
       CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,

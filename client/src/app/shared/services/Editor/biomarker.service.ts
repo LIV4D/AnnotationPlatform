@@ -46,7 +46,9 @@ export class BiomarkerService {
             if (value[biomarkersString]) {
                 this.initJsonRecursive(value as object);
             }
-            this.dataSourceJson.push(new Biomarker(type, color));
+            if (this.getBiomarkerOfType(type) == null) {
+                this.dataSourceJson.push(new Biomarker(type, color));
+            }
         }
 
         this.onlyEnabledBiomarkers = Array.from(this.dataSourceJson);
@@ -80,54 +82,23 @@ export class BiomarkerService {
 
         }
         this.tree = tree;
-        console.log(tree);
+
         return this.tree
     }
 
-    // public flatten(tree: SVGGElement[]): HTMLElement[] {
-    //     const flat = new Array<HTMLElement>();
-    //     tree.forEach(t => {
-    //         for (let i = 0; i < t.children.length; i++) {
-    //             this.flattenRecursive(t.children[i] as HTMLElement, flat);
-    //         }
-    //     });
-    //     return flat;
-    // }
-
-    // public flattenRecursive(elem: HTMLElement, list: HTMLElement[]): void {
-    //     if (elem.tagName === 'image') {
-    //         list.push(elem);
-    //     } else {
-    //         for (let i = 0; i < elem.children.length; i++) {
-    //             this.flattenRecursive(elem.children[i] as HTMLElement, list);
-    //         }
-    //     }
-    // }
+    get dataSourceSimpleView() {
+        const data = [];
+        for (const node of this.dataSourceJson) {
+            if (node.color != null){
+                data.push(node);
+            }
+        }
+        return data;
+    }
 
     public isBiomarkerEnabled(bio: Biomarker): boolean {
         return this.onlyEnabledBiomarkers.length === 0 || this.onlyEnabledBiomarkers.indexOf(bio) !== -1;
     }
-
-    // private disable_recursive(elem: HTMLElement): void {
-    //     if (this.isBiomarkerEnabled(elem.id)) {
-    //         elem.classList.remove('disabledBiomarker');
-    //     } else {
-    //         elem.classList.add('disabledBiomarker');
-    //         if (this.layersService.selectedBiomarkerId === elem.id) {
-    //             for (let i = 0; i < this.flat.length; i++) {
-    //                 if (this.onlyEnabledBiomarkers.indexOf(this.flat[i].id) !== -1) {
-    //                     this.setFocusBiomarker(this.flat[i]);
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     if (elem.children.length > 0) {
-    //         Array.from(elem.children).forEach((child: HTMLElement) => {
-    //             this.disable_recursive(child);
-    //         });
-    //     }
-    // }
 
     public setFocusBiomarker(node: Biomarker): void {
         const biomarker: Biomarker = this.getBiomarkerOfType(node.type);
@@ -151,49 +122,9 @@ export class BiomarkerService {
         }
     }
 
-    // public expandToBiomarker(biomarkerId: string): void {
-    //     this.nestedTreeControl.dataNodes.forEach((n) => {
-    //         this.nestedTreeControl.getDescendants(n).forEach((d) => {
-    //             if (this.isBiomarkerEnabled(d.id)) {
-    //                 let p = d.parentElement;
-    //                 while (p !== null && p.tagName === 'g') {
-    //                     this.nestedTreeControl.expand(p);
-    //                     p = p.parentElement;
-    //                 }
-    //             }
-    //         });
-    //     });
-    // }
-
-    // public getAllElements(elem: HTMLElement): Array<string> {
-    //     elem.removeAttribute('xlink:href');
-    //     let allElement = new Array<string>();
-    //     if (elem.children.length > 0) {
-    //         Array.from(elem.children).forEach((child: HTMLElement) => {
-    //             allElement = allElement.concat(this.getAllElements(child));
-    //         });
-    //     } else {
-    //         return new Array<string>(elem.id);
-    //     }
-    //     return allElement;
-    // }
-
-    // public deleteElements(elem: HTMLElement): void {
-    //     this.layersService.resetBiomarkerCanvas(this.getAllElements(elem));
-    // }
-
-    // public getCssClass(elem: HTMLElement): string {
-    //     let classes = '';
-    //     if (this.currentElement !== undefined && this.currentElement === elem) {
-    //         classes += 'selected ';
-    //     }
-
-    //     if (!this.isBiomarkerEnabled(elem.id)) {
-    //         classes += 'disabledBiomarker ';
-    //     }
-
-    //     return classes;
-    // }
+    public deleteElements(type: string): void {
+        this.layersService.resetBiomarkerCanvas([type]);
+    }
 
     public getVisibility(node: Biomarker): string {
         return this.getBiomarkerOfType(node.type).isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
@@ -209,96 +140,34 @@ export class BiomarkerService {
     }
 
     public toggleVisibility(node: Biomarker, visibility?: string): void {
-        // const elem: HTMLElement = document.getElementById(id);
-        // if (visibility === undefined) {
-        //     visibility = elem.style.visibility === 'hidden' ? 'visible' : 'hidden';
-        // } else if (visibility === elem.style.visibility) {
-        //     return;
-        // }
-        // this.toggleVisibilityRecursive(elem, visibility);
-        // this.setParentVisibility(elem);
-        // this.applyVisibility();
-
         if (visibility === undefined){
             this.getBiomarkerOfType(node.type).isVisible = !this.getBiomarkerOfType(node.type).isVisible;
-        } else if (visibility === this.VISIBILITY) {
+        } else if (visibility === 'visible') {
             this.getBiomarkerOfType(node.type).isVisible = true;
-        } else if (visibility === this.VISIBILITY_OFF) {
+        } else if (visibility === 'hidden') {
             this.getBiomarkerOfType(node.type).isVisible = false;
         }
 
-        // console.log(node.type)
-
-        // const index = this.dataSourceJson.indexOf(node);
-
-        // if (index != -1) {
-        //     this.dataSourceJson[index].isVisible = !this.dataSourceJson[index].isVisible;
-        // }
+        this.applyVisibility(this.getBiomarkerOfType(node.type));
     }
 
     public toggleSoloVisibility(node: Biomarker): void {
-        // this.toggleAllBiomarkers('hidden');
-        // this.toggleVisibility(node);
+        this.toggleAllBiomarkers('hidden');
+        this.toggleVisibility(this.getBiomarkerOfType(node.type));
     }
 
     public toggleAllBiomarkers(visibility: string): void {
-        // if (this.onlyEnabledBiomarkers === null) {
-        //     this.tree.forEach((e) => {
-        //         const elem = document.getElementById(e.id);
-        //         this.toggleVisibilityRecursive(elem, visibility);
-        //     });
-        // } else {
-        //     this.tree.forEach((e) => {
-        //         const elem = document.getElementById(e.id);
-        //         this.toggleVisibilityRecursive(elem, 'hidden');
-        //     });
-        //     if (visibility === 'visible') {
-        //         this.flat.forEach((e) => {
-        //             if (this.isBiomarkerEnabled(e)) {
-        //                 const elem = document.getElementById(e.id);
-        //                 this.toggleVisibility(e.id, 'visible');
-        //             }
-        //         });
-        //     }
-        // }
-
-        this.applyVisibility();
+        for (const item of this.layersService.biomarkerCanvas) {
+            this.toggleVisibility(this.getBiomarkerOfType(item.id.replace('annotation-', '')), visibility)
+        }
     }
 
-    // public hideOtherBiomarkers(): void {
-    //     if (this.currentElement !== undefined) {
-    //         const elemSelected = document.getElementById(this.currentElement.id);
-    //         const visibility = elemSelected.style.visibility;
-    //         let everythingHidden = true;
-    //         for (let i = 0; i < this.flat.length; i++) {
-    //             const b = this.flat[i];
-    //             if (b.id === this.currentElement.id) {
-    //                 continue;
-    //             }
-    //             const elem = document.getElementById(b.id);
-    //             if (elem.style.visibility === 'visible') {
-    //                 everythingHidden = false;
-    //                 break;
-    //             }
-    //         }
-
-    //         this.toggleAllBiomarkers('hidden');
-
-    //         if ((!everythingHidden) || visibility === 'hidden') {
-    //             elemSelected.style.visibility = 'visible';
-    //             this.toggleVisibilityRecursive(elemSelected, 'visible');
-    //         }
-
-    //         this.applyVisibility();
-    //     }
-    // }
-
-    private applyVisibility(): void {
-        // HACK...
-        // this.layersService.biomarkerCanvas.forEach((b: BiomarkerCanvas) => {
-        //     const svgElem = document.getElementById(b.id.replace(ANNOTATION_PREFIX, ''));
-        //     b.displayCanvas.style.visibility = svgElem.style.visibility;
-        // });
+    private applyVisibility(node: Biomarker): void {
+        for (const item of this.layersService.biomarkerCanvas) {
+            if (item.id === 'annotation-'+node.type){
+                item.setVisibility(this.getBiomarkerOfType(node.type).isVisible);
+            }
+        }
     }
 
     private setParentVisibility(elem: HTMLElement): void {
@@ -337,7 +206,6 @@ export class BiomarkerService {
         if (visibility === 'visible') {
             this.resetParentVisibilityRecursive(elem);
         }
-
     }
 
     // We reset the parent opacity to 1 when a child becomes visible.
@@ -356,7 +224,11 @@ export class BiomarkerService {
         });
     }
 
-    // get serviceHasNestedChild() {
-    //     return this.hasNestedChild;
-    // }
+    shortenedTypeOf(node: BioNode){
+        const MAX_LENGTH = 10;
+        if (node.type.length <= MAX_LENGTH) {
+            return node.type
+        }
+        return node.type.slice(0,MAX_LENGTH) + '...'
+    }
 }

@@ -52,7 +52,6 @@ export class AnnotationService {
             description: isNullOrUndefined(eventInfo.description) ? 'Annotation update' : eventInfo.description,
             timestamp: isNullOrUndefined(eventInfo.timestamp) ? 0 : eventInfo.timestamp,
         });
-
         newAnnotation.submitEventId = event.id;
         originalAnnotation.update(newAnnotation);
         return await this.annotationRepository.create(originalAnnotation);

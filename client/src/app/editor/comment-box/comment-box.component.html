@@ -25,10 +25,10 @@
     </mat-expansion-panel-header>
 
     <mat-form-field (click)="onFormClick($event)">
-      <textarea cdkTextareaAutosize matInput></textarea>
+      <textarea cdkTextareaAutosize matInput #textArea [(ngModel)]="textAreaValue"></textarea>
     </mat-form-field>
 
-    <button mat-button>Click me!</button>
+    <button mat-button>Save</button>
   </mat-expansion-panel>
 </mat-accordion>
 

@@ -2,14 +2,17 @@ import { Injectable, Injector } from '@angular/core';
 import { TasksService } from '../../shared/services/tasks/tasks.service';
 import { TaskTypeService } from '../../shared/services/Tasks/taskType.service';
 import { AppService} from '../../shared/services/app.service';
-import { EditorService } from '../../shared/services/Editor/editor.service';
+import { LoadingService } from '../../shared/services/Editor/Data-Persistence/loading.service';
+import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Injectable()
 export class TasksCompletedFacadeService {
 
   constructor(private taskService: TasksService,
               private taskTypeService: TaskTypeService,
-              private editorService: EditorService,
+              private loadingService: LoadingService,
+              private submitService: SubmitService,
               public appService: AppService) {}
 
   getTasks(page: number, pageSize: number, isCompleted: boolean) {
@@ -29,6 +32,10 @@ export class TasksCompletedFacadeService {
   }
 
   loadImageFromServer(imageId: string) {
-    this.editorService.loadImageFromServer(imageId);
+    this.loadingService.loadImageFromServer(imageId);
+  }
+
+  setCurrentTask(task: Task) {
+    this.submitService.setCurrentTask(task);
   }
 }

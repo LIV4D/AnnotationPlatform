@@ -68,13 +68,13 @@
 
         <!-- SIMPLIFIED BIOMARKERS VIEW-->
         <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
-            <mat-list-item *ngFor="let node of dataSource">
+            <mat-list-item *ngFor="let node of dataSourceSimpleView">
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
                 </svg>
                 <span class="cursorPointer" (click)="setFocusBiomarker(node)"  (dblclick)="toggleSoloVisibility(node)"
                         matTooltip="Hide Others (H)" matTooltipShowDelay="1000" matTooltipPosition="right" >
-                    {{node.type | camelCaseToText}}</span>
+                    {{this.shortenedTypeOf(node) | camelCaseToText}}</span>
                 <div class="align-right">
                     <mat-icon class="button left" (click)="toggleVisibility(node)"  (dblclick)="toggleSoloVisibility(node)"
                         [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">

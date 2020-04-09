@@ -1,15 +1,19 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { EditorService } from './../shared/services/Editor/editor.service';
+import { LoadingService } from './../shared/services/Editor/Data-Persistence/loading.service';
 import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
 
-@Injectable()
+@Injectable({
+  providedIn:'root',
+})
+
 export class EditorFacadeService {
 
-  constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService) { }
+  constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService, private loadingService: LoadingService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
     // console.log('EditorFacadeService::init()');
@@ -97,7 +101,7 @@ export class EditorFacadeService {
 
   loadImageFromServer(imageId: string) {
 
-    this.editorService.loadImageFromServer(imageId);
+    this.loadingService.loadImageFromServer(imageId);
   }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {

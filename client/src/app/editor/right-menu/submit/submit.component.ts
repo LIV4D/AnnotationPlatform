@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SubmitFacadeService } from './submit.facade.service';
-import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskDialogSubmissionComponent } from './task-dialog-submission/task-dialog-submission.component';
 
@@ -18,16 +17,19 @@ export class SubmitComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadTask();
+    this.loadTaskType();
 
   }
 
-  // load the tasks matching with the current user and the image loaded in Editor
+  // load the task matching with the current user and the image loaded in Editor
   async loadTask(){
-      //const imageId = await this.submitFacadeService.editorService.imageId;
-      //this.tasks = await this.submitFacadeService.getTasks(imageId);
       await this.submitFacadeService.loadTask();
     }
+
+  // load the taskType matching with the current TaskType
+  async loadTaskType(){
+    await this.submitFacadeService.loadTaskTypeById();
+  }
 
   // save on local editing
   public saveLocal(): void {
@@ -40,25 +42,26 @@ export class SubmitComponent implements OnInit {
 
   public openTaskDialog(): void {
     const currentTask = this.submitFacadeService.getCurrentTask();
+    const currentTaskType = this.submitFacadeService.getCurrentTaskType();
 
     // Checkbox checked by default with the task set as completed in local
-    if (Object.keys(currentTask).length > 0) {
+    if (currentTask !== null && currentTask !== undefined) {
         this.submitFacadeService.completeTask(currentTask);
 
         // Save taskDialog pops out
         const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
-            data: { task: currentTask },
+            data: { task: currentTask, taskType:currentTaskType }, 
             width: '600px',
         });
 
         // Action after the dialog has been closed
         this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
-        this.saveRevision();
+      this.saveAnnotation();
     }
   }
 
-  public saveRevision(loadNext= false): void {
-	this.submitFacadeService.saveRevision(loadNext);
+  public saveAnnotation(loadNextHasBeenSelected= false): void {
+	this.submitFacadeService.saveAnnotation(loadNextHasBeenSelected);
   }
 }

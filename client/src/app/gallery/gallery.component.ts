@@ -59,7 +59,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   getImages(): void {
-    console.log('GalleryComponent::getImage()');
+    // console.log('GalleryComponent::getImage()');
 
     // Create filters
     // WARNING : key must correspond to valid column in model
@@ -142,7 +142,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
     this.appService.localEditing = false;
     localStorage.setItem('previousPage', 'gallery');
-
     console.log('imageID :' + imageId);
     this.editorFacadeService.loadImageFromServer(imageId);
   }

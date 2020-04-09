@@ -3,6 +3,7 @@ import { LayersService } from './../../../shared/services/Editor/layers.service'
 import { ImageBorderService } from 'src/app/shared/services/Editor/image-border.service';
 import { BiomarkerService } from 'src/app/shared/services/Editor/biomarker.service';
 import { Biomarker } from 'src/app/shared/models/biomarker.model';
+import { BioNode } from 'src/app/shared/models/bionode.model';
 
 @Injectable({
     providedIn: 'root'
@@ -46,9 +47,9 @@ export class BiomarkersFacadeService {
         this.biomarkerService.setFocusBiomarker(node);
     }
 
-    // deleteElements(elem) {
-    //     this.biomarkerService.deleteElements(elem);
-    // }
+    deleteElements(type: string) {
+        this.biomarkerService.deleteElements(type);
+    }
 
     toggleVisibility(node, visibility?: string) {
         this.biomarkerService.toggleVisibility(node, visibility);
@@ -100,5 +101,13 @@ export class BiomarkersFacadeService {
 
     public getVisibility(node: Biomarker): string {
         return this.biomarkerService.getVisibility(node);
+    }
+
+    get dataSourceSimpleView(){
+        return this.biomarkerService.dataSourceSimpleView;
+    }
+
+    shortenedTypeOf(node: BioNode){
+        return this.biomarkerService.shortenedTypeOf(node);
     }
 }

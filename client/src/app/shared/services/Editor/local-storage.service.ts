@@ -27,21 +27,23 @@ export class LocalStorage {
   }
 
   static save(editorService: EditorService, layersService: LayersService): void {
+
+
     // No save for local files or if nothing is loaded
     if (!editorService.imageId || editorService.imageId === 'local') {
       return;
     }
-    // const biomarkers = layersService.biomarkerCanvas;
+    const biomarkers = layersService.biomarkerCanvas;
 
     // Convert values to strings
     const encodedBiomarkers: [string, string, string][] = []; // [image, id, color]
-    // biomarkers.forEach(element => {
-    //     encodedBiomarkers.push([
-    //         element.currentCanvas.toDataURL('image/png'),
-    //         element.id.substr(11), // remove 'annotation-' from the id
-    //         element.color
-    //     ]);
-    // });
+    biomarkers.forEach(element => {
+         encodedBiomarkers.push([
+             element.currentCanvas.toDataURL('image/png'),
+             element.id.substr(11), // remove 'annotation-' from the id
+             element.color
+         ]);
+     });
 
     // Save string values in json
     const json = {
@@ -49,14 +51,21 @@ export class LocalStorage {
     };
 
     // Save json as string
+
     const str = JSON.stringify(json);
+    console.log("save");
+    console.log(biomarkers.length);
+    localStorage.removeItem(LocalStorageKeys.AllCanvasInfo);
     window.localStorage.setItem(LocalStorageKeys.AllCanvasInfo, str);
+
     window.localStorage.setItem(LocalStorageKeys.ImageId, editorService.imageId);
   }
 
   static load(editorService: EditorService, layersService: LayersService): void {
-    // Read local storage
+    // Read local storage\\
+
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
+
     const json = JSON.parse(str);
     if (!json) {
         editorService.loadRevision(true);
@@ -71,6 +80,8 @@ export class LocalStorage {
         canvas.clear();
     });
     layersService.biomarkerCanvas = [];
+    console.log('json');
+    console.log(json);
     json.biomarkers.forEach(element => {
         const imageString = element[0];
         const id = element[1];
@@ -85,8 +96,10 @@ export class LocalStorage {
         };
         biomarkerImage.src = imageString;
     });
+
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.draw();
     });
   }
+
 }

@@ -21,19 +21,21 @@
     <span id="svg-box"></span>
 </div> -->
 
-<ng-template id="template" #commentBox></ng-template>
 <div id="editor-box" appMousewheel #editorBox
-  (wheel)="onMouseWheel($event)"
-  (window:resize)="onResize()"
-  (mousemove)="onMouseMove($event)"
-  (mousedown)="onMouseDown($event)"
-  (mouseup)="onMouseUp($event)"
-  (mouseleave)="onMouseLeave($event)"
+(wheel)="onMouseWheel($event)"
+(window:resize)="onResize()"
+(mousemove)="onMouseMove($event)"
+(mousedown)="onMouseDown($event)"
+(mouseup)="onMouseUp($event)"
+(mouseleave)="onMouseLeave($event)"
+[ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
 
-  [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
+<div class="nothing" style="width:85%; left: 100px;
+  position: absolute; opacity: 1; z-index: 300;">
+  <ng-template id="template" #commentBox></ng-template>
+</div>
 
   <canvas #mainCanvas id="main-canvas"></canvas>
   <app-layers id="app-layers"></app-layers>
   <span #svgBox id="svg-box"></span>
-
 </div>

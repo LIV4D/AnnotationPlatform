@@ -10,6 +10,7 @@ import { CdkAccordion } from '@angular/cdk/accordion';
 import { BioNode } from './../../../shared/models/bionode.model';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
+import { BiomarkersDialogComponent } from './biomarkers-dialog/biomarkers-dialog.component';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -34,7 +35,6 @@ export class BiomarkersComponent implements OnInit {
   opacity: number;
   shadowsChecked: boolean;
 
-  dataSource: Array<Biomarker> = [];
   tree: BioNode[];
 
   treeControl = new NestedTreeControl<BioNode>(node => node.biomarkers);
@@ -49,7 +49,6 @@ export class BiomarkersComponent implements OnInit {
     this.visibilityAll = 'visible';
     this.shadowsChecked = false;
     this.simplifiedView = true;
-    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.tree = this.biomarkersFacadeService.tree;
     this.treeDataSource.data = this.tree;
   }
@@ -70,6 +69,14 @@ export class BiomarkersComponent implements OnInit {
   //   return this.biomarkersFacadeService.getCssClass(elem);
   // }
 
+  get dataSource() {
+    return this.biomarkersFacadeService.dataSourceJson;
+  }
+
+  get dataSourceSimpleView(){
+    return this.biomarkersFacadeService.dataSourceSimpleView;
+  }
+
   // Makes a biomarker the currently selected biomarker
   public setFocusBiomarker(node: Biomarker): void {
     this.biomarkersFacadeService.setFocusBiomarker(node);
@@ -81,37 +88,37 @@ export class BiomarkersComponent implements OnInit {
   }
 
   // Opens a popup to confirm deletion of biomarkers
-  public openConfirmDelete(node: HTMLElement, event: MouseEvent): void {
-    // const dialogPosition = {
-    //   top: (event.y + 10) + 'px',
-    //   left: (event.x - 70) + 'px'
-    // };
+  public openConfirmDelete(node: BioNode, event: MouseEvent): void {
+    const dialogPosition = {
+      top: (event.y + 10) + 'px',
+      left: (event.x - 70) + 'px'
+    };
 
-    // const dialogRef = this.dialog.open(BiomarkersDialogComponent, {
-    //   data: { confirm: this.confirmDelete },
-    //   position: dialogPosition
-    // });
+    const dialogRef = this.dialog.open(BiomarkersDialogComponent, {
+      data: { confirm: this.confirmDelete },
+      position: dialogPosition
+    });
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.deleteElement(node);
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteElement(node.type);
+      }
+    });
   }
 
-  // public deleteElement(elem: HTMLElement): void {
-  //   this.biomarkersFacadeService.deleteElements(elem);
-  // }
+  public deleteElement(type: string): void {
+    this.biomarkersFacadeService.deleteElements(type);
+  }
 
   toggleVisibility(node: any): void {
     this.biomarkersFacadeService.toggleVisibility(node);
-    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 
   public toggleSoloVisibility(node: Biomarker): void {
     this.biomarkersFacadeService.toggleSoloVisibility(node);
-    this.dataSource = this.biomarkersFacadeService.dataSourceJson;
+    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 
@@ -210,6 +217,10 @@ export class BiomarkersComponent implements OnInit {
     //     }
     //   }
     // }
+  }
+
+  shortenedTypeOf(node: BioNode){
+    return this.biomarkersFacadeService.shortenedTypeOf(node);
   }
 
 }
