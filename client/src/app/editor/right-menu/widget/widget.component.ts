@@ -42,7 +42,7 @@ export class WidgetComponent implements OnInit, AfterViewInit {
   constructor(private facadeService: WidgetFacadeService) { }
 
   ngOnInit(): void {
-        // this.widgets = YOUR METHOD HERE
+        this.widgets = this.facadeService.getWidgets();
 
   }
 

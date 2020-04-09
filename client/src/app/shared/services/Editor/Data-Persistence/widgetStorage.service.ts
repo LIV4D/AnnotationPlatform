@@ -15,4 +15,8 @@ import { Injectable } from '@angular/core';
         this.widgets = widgets;
     }
     
+    public getWidgets(): Widget[] {
+        return this.widgets;
+    }
+
   }
