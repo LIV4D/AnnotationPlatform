@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 
 // Models
 import { Task } from '../../../models/serverModels/task.model';
-import { AnnotationData } from '../../../models/serverModels/annotationData.model';
 
 // rxjs
 import { tap } from 'rxjs/operators';
@@ -28,8 +27,8 @@ import { BridgeSingleton} from './bridge.service';
 		providedIn: 'root'
 })
 export class SubmitService {
-    private currentTask: Task;
-    private currentTaskType: TaskType
+    private submitedTask: Task;
+    private submitedTaskType: TaskType
     bridgeSingleton: BridgeSingleton;
 
 	constructor(
@@ -44,21 +43,21 @@ export class SubmitService {
       this.bridgeSingleton = BridgeSingleton.getInstance();
     }
 
-	public getCurrentTask(): Task{
-		return this.currentTask;
+	public getSubmitedTask(): Task{
+		return this.submitedTask;
 	}
 
-	public setCurrentTask(currentTask:Task): void{
-    this.currentTask = currentTask;
-    this.bridgeSingleton.setCurrentTask(this.currentTask);
+	public setSubmitedTask(submitedTask:Task): void{
+    this.submitedTask = submitedTask;
+    this.bridgeSingleton.setCurrentTask(this.submitedTask);
   }
 
-  public getCurrentTaskType(): TaskType{
-		return this.currentTaskType;
+  public getSubmitedTaskType(): TaskType{
+		return this.submitedTaskType;
 	}
 
-	public setCurrentTaskType(currentTaskType:TaskType): void{
-    this.currentTaskType = currentTaskType;
+	public setSubmitedTaskType(submitedTaskType:TaskType): void{
+    this.submitedTaskType = submitedTaskType;
 	}
 
 	// Return the shortcut command depending on the OS of the user's system
@@ -95,7 +94,7 @@ export class SubmitService {
 					// The next task is loaded on the editor
 					this.tasksService.getNextTask().subscribe((data: any) => {
 							if (data && data.annotation) {
-                  this.setCurrentTask(data)
+                  this.setSubmitedTask(data)
 									const imageId = data.annotation.image.id.toString();
 									LocalStorage.resetImageId(imageId);
 									setTimeout(() => { window.location.reload(); }, 10);
@@ -135,14 +134,14 @@ export class SubmitService {
     }
 
     // Param
-    const taskId = this.getCurrentTask().id;
+    const taskId = this.getSubmitedTask().id;
 
     // Body
     const annotationData:string = JSON.stringify(this.layersService.getAnnotationDatas());
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const body = {
       data: annotationData,
-      isComplete: this.getCurrentTask().isComplete,
+      isComplete: this.getSubmitedTask().isComplete,
       user: currentUser
     };
 

@@ -43,12 +43,13 @@ export class WidgetComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
         //   this.task = this.facadeService.getCurrentTask();
-        this.widgets = this.task.widgets;
+        // this.widgets = this.task.widgets;
 
   }
 
   ngAfterViewInit(): void {
 
+    /*
     const sortedWidgets = _.groupBy(this.widgets, 'type');
     this.singleLineWidgets = sortedWidgets['singleLine'];
     this.singleLineWidgets = sortedWidgets['multiLine'];
@@ -56,6 +57,7 @@ export class WidgetComponent implements OnInit, AfterViewInit {
     this.grouped = _.groupBy(this.test, 'Name');
     this.kim = this.grouped['Kim'];
     console.log(this.kim);
+    */
   }
 
 }
