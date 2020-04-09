@@ -1,5 +1,10 @@
 @import './../../../../src/colorVariables.scss';
 
+.example-boundary {
+  max-width: 100%;
+  border: dotted #ccc 10px;
+}
+
 .nothing {
   background-color: transparent;
 }

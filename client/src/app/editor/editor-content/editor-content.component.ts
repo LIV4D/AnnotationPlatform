@@ -47,6 +47,9 @@ export class EditorContentComponent
   delayedEventHandler: Function;
   commentBoxes: CommentBoxSingleton;
   commentClickObservable: Subscription;
+  isCommentBoxExists = 0;
+  canvasWidth = 0;
+  canvasHeight = 0;
 
   @ViewChild('editorBox') viewPort: ElementRef;
   @ViewChild('svgBox') svgBox: ElementRef;
@@ -55,15 +58,19 @@ export class EditorContentComponent
   commentBox: ViewContainerRef;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
+  editorMousePos: Point;
 
   ngOnInit(): void {
     // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
     // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
+    this.editorMousePos = new Point(0, 0);
     this.commentBoxes = CommentBoxSingleton.getInstance();
     this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe(
       (hasBeenClicked) => {
         if (hasBeenClicked) {
+          console.log('hasBeenClicked === true');
           this.createCommentBox();
+          this.isCommentBoxExists = 1;
         }
       }
     );
@@ -137,6 +144,11 @@ export class EditorContentComponent
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
     this.commentBoxes.comments.push(componentRef.instance);
+
+    this.canvasWidth = this.viewPort.nativeElement.clientWidth;
+    this.canvasHeight = this.viewPort.nativeElement.clientHeight;
+
+    componentRef.instance.mousePosition = this.editorMousePos;
   }
 
   onMouseUp(event: MouseEvent): void {
@@ -381,6 +393,10 @@ export class EditorContentComponent
         this.editorFacadeService.backgroundCanvas.displayCanvas.height) /
       this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
         .height;
+
+    this.editorMousePos.x = canvasX;
+    this.editorMousePos.y = canvasY;
+    // console.log('%c putting value to this.editorMousePos: ' + this.editorMousePos.x + ' ' + this.editorMousePos.y, 'color:white;background:red;');
     return new Point(canvasX, canvasY);
   }
 

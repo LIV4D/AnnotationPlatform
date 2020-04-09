@@ -3,9 +3,9 @@ import {
   OnInit,
   OnChanges,
   SimpleChanges,
-  ViewChild,
-  ViewContainerRef,
+  Input,
 } from '@angular/core';
+import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 
 @Component({
   selector: 'app-comment-box',
@@ -19,8 +19,9 @@ export class CommentBoxComponent implements OnInit, OnChanges {
   down = false;
   moving = false;
   pointFormat = 'example-box2';
-  // @ViewChild('textArea', {read: ViewContainerRef}) textArea: ViewContainerRef;
   textAreaValue: string;
+
+  @Input () mousePosition: Point;
 
   constructor() {}
 
@@ -30,12 +31,15 @@ export class CommentBoxComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('Event Changes' + changes);
+    console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
+    console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
+    console.log(changes);
     // console.log(this.textArea.element.nativeElement);
   }
 
   onMouseUp(e: Event) {
-    // console.log('commentBox -- mouse up');
     // e.preventDefault();
+    // console.log('commentBox -- mouse up');
     if (this.moving) {
       setTimeout(() => {
         this.isDisabled = false;
@@ -56,11 +60,13 @@ export class CommentBoxComponent implements OnInit, OnChanges {
   }
 
   onMouseMove(e: Event) {
-    // console.log('commentBox -- mouse move');
+    console.log('commentBox -- mouse move');
     if (this.down) {
       this.isDisabled = true;
       this.moving = true;
     }
+    console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
+    console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
   }
 
   onFormClick(e: Event) {

@@ -30,10 +30,10 @@
 (mouseleave)="onMouseLeave($event)"
 [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
 
-<div class="nothing" style="width:85%; left: 100px;
-  position: absolute; opacity: 1; z-index: 300;">
-  <ng-template id="template" #commentBox></ng-template>
-</div>
+  <div class="nothing" class="example-boundary" [style.width.px]="canvasWidth" [style.height.px]="canvasHeight"
+    style="left: 0px; position: absolute; z-index: 300; background-color: transparent;" [style.opacity]="isCommentBoxExists">
+  <ng-template id="template" #commentBox ></ng-template> <!-- [mousePosition]="editorMousePos" -->
+  </div>
 
   <canvas #mainCanvas id="main-canvas"></canvas>
   <app-layers id="app-layers"></app-layers>
