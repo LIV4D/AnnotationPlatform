@@ -177,6 +177,10 @@ export class LayersService {
       if (value['color']) {
         color = value['color'];
       }
+      let dataImage = null;
+      if (value['dataImage']) {
+        dataImage = value['dataImage'];
+      }
       if (value['biomarkers']) {
         this.createFlatCanvasRecursiveJson(value as object, width, height);
       }
@@ -186,12 +190,16 @@ export class LayersService {
         image.width = width;
         image.height = height;
       }
+      const biomarker = document.createElement('canvas') as HTMLCanvasElement;
       image.onload = () => {
-        console.log("create flat canvas recursive json");
+        biomarker.width = image.width;
+        biomarker.height = image.height;
+        biomarker.getContext('2d').drawImage(image, 0, 0);
         this.newBiomarker(image, type, color);
       };
 
       // console.log("%c "+type, 'color: black; background: yellow;');
+      image.src = dataImage;
 
       image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
     }
@@ -231,7 +239,7 @@ export class LayersService {
 
   // Get annotationDatas meant to be send on the server
   public getAnnotationDatas(): AnnotationData {
-      const annotationData: AnnotationData = {
+      let annotationData: AnnotationData = {
         biomarker: {},
         hierarchy: {},
         nongraphic:{}

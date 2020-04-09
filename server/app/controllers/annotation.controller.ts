@@ -68,7 +68,7 @@ export class AnnotationController implements IController {
 
         // Get
         app.get('/api/annotations/getBase', this.getBaseAnnotation);
-        app.get('/api/annotations/getEmpty', this.getEmptyAnnotation);
+        app.get('/api/annotations/get/getEmpty', this.getEmptyAnnotation);
         app.get('/api/annotations/get/:annotationId([0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get/:annotationId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get', this.getMultipleAnnotations);

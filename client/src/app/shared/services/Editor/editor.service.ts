@@ -220,20 +220,19 @@ export class EditorService {
     // TODO: Gotta understand how to make this work with the server.
     // console.log('EMPTY');
     this.http
-      .get(`/api/annotations/getEmpty/`, {
+      .get(`/api/annotations/get/getEmpty/`, {
         headers: new HttpHeaders(),
-        responseType: 'json',
       })
       .pipe()
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         // Replace
         this.layersService.biomarkerCanvas = [];
-        this.layersService.createFlatCanvasRecursiveJson(res, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-        this.biomarkerService.initJsonRecursive(res);
+        this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+        this.biomarkerService.initJsonRecursive(res.data);
       });
 
     const res = await this.http
-      .get<any>(`/api/annotations/getEmpty/`, {
+      .get<any>(`/api/annotations/get/getEmpty/`, {
         headers: new HttpHeaders(),
         responseType: 'json',
       })
@@ -246,8 +245,11 @@ export class EditorService {
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(draw: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    const currentAnnotationId:string = this.bridgeSingleton.getCurrentTask().annotationId.toString();
-
+    let currentAnnotationId = 'getEmpty';
+    if ( this.bridgeSingleton.getCurrentTask() !== null && this.bridgeSingleton.getCurrentTask() !== undefined ){
+      currentAnnotationId = this.bridgeSingleton.getCurrentTask().annotationId.toString();
+    }
+    this.layersService.biomarkerCanvas = [];
     const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {
       headers: new HttpHeaders(),
       reportProgress: true,
@@ -257,13 +259,15 @@ export class EditorService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          console.log('res');
-                this.widgetService.setWidgets(res.widgets);
+        this.widgetService.setWidgets(res.widgets);  
+        if (draw) {
+            this.layersService.biomarkerCanvas = [];
+            this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+            this.biomarkerService.initJsonRecursive(res.data);
+            this.biomarkerService.buildTreeRecursive(res.data);
+            setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
+        }
 
-                this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-                this.biomarkerService.initJsonRecursive(res.data);
-                this.biomarkerService.buildTreeRecursive(res.data);
-                
           // this.svgBox.innerHTML = res.svg;
           // const parser = new DOMParser();
           // const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
@@ -295,7 +299,7 @@ export class EditorService {
           if (error.status === 404 || error.status === 500) {
             console.log('ca passe pas');
             this.layersService.biomarkerCanvas = [];
-            const reqBase = this.http.get(`/api/annotations/getEmpty/`, {
+            const reqBase = this.http.get(`/api/annotations/get/getEmpty/`, {
               headers: new HttpHeaders(),
               observe: 'events',
               reportProgress: true,
@@ -303,9 +307,13 @@ export class EditorService {
             this.headerService
               .display_progress(reqBase, 'Downloading Preannotations')
               .subscribe((res) => {
-                this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-                this.biomarkerService.initJsonRecursive(res.data);
-                this.biomarkerService.buildTreeRecursive(res.data);
+                if (draw) {
+                  this.layersService.biomarkerCanvas = [];
+                  this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+                  this.biomarkerService.initJsonRecursive(res.data);
+                  this.biomarkerService.buildTreeRecursive(res.data);
+                  setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
+              }
               });
           }
         }
@@ -413,7 +421,7 @@ export class EditorService {
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
       this.getMainImage();
-      this.loadRevision(true);
+      this.loadRevision(false);
       LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
       return;
