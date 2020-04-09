@@ -54,10 +54,6 @@ export class LoginService {
   }
 
   loginAppService(email: string, password: string) {
-    // Bypass credentials for the time being (using dev-prod mode) until a fix for the server has been found
-    // if (isDevMode()) {
-      // this.router.navigate(['/dashboard']);
-    // } else {
       this.appService.loading = true;
       this.login(email, password)
         .subscribe(
@@ -69,7 +65,6 @@ export class LoginService {
             this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
             this.appService.loading = false;
           });
-    // }
   }
 
   isAuthenticated(): boolean {

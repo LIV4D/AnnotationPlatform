@@ -1,4 +1,4 @@
 <p>widget works!</p>
 
-<app-widget-single-line *ngFor="let widget of singleLineWidgets" [widget]="widget" (newItemEvent)="saveEntry($event)"></app-widget-single-line>
+<app-widget-single-line *ngFor="let widget of singleLineWidgets" [widget]="widget" (saveEntryEvent)="saveEntry($event)"></app-widget-single-line>
 <app-widget-multiple-lines *ngFor="let widget of multiLineWidgets" ></app-widget-multiple-lines>
