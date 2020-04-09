@@ -26,15 +26,18 @@ export class ManagementCreationService {
         this.properties = properties;
         this.propertyValues = propertyValues;
 
-        if (this.checkPropertyValues()) {
+        if (this.determineCheck(eventName)) {
             const observable = this.chooseAppropriateObservable(eventName);
 
+            console.log(this.properties);
+            console.log(this.propertyValues);
+            console.log(this.instantiatedModel);
             observable.pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
-            return 'Event Success!';
+            return 'Event Successfully Sent!';
         }
 
-        return 'Event Failure!';
+        return 'Event failed to send! Please check if all fields have correct types.';
     }
 
     private chooseAppropriateObservable(eventName: string): Observable<any> {
@@ -56,14 +59,27 @@ export class ManagementCreationService {
         return observable;
     }
 
+    private determineCheck(eventName: string): boolean {
+        switch(eventName) {
+            case 'delete':
+                return this.checkPropertyValues(1);
+            case 'create':
+                return this.checkPropertyValues();
+            case 'update':
+                return this.checkPropertyValues();
+            default:
+                return this.checkPropertyValues();
+        }
+    }
+
     /**
      * Assigns the different property values to the instantiatedModel if they are appropriate.
+     * @param maxIndex is the maximum index to which items must be checked
      * @returns true if all values were properperly assigned, false otherwise.
      */
-    private checkPropertyValues(): boolean {
+    private checkPropertyValues(maxIndex = this.propertyValues.length): boolean {
         let propertyValue: any;
-
-        for (let index = 0; index < this.propertyValues.length; index++) {
+        for (let index = 0; index < maxIndex; index++) {
             propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
             if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
                 return false;
@@ -85,12 +101,17 @@ export class ManagementCreationService {
     }
 
     /**
-     * Creates the appropriate model.
+     * Launches a post event to the server with the intended event name.
+     * @param event is a post event on the modelName's controller.
      */
     public eventModelFromManagement(event: string): Observable<any> {
         return this.http.post<any>(`/api/${this.modelName}s/${event}`, this.instantiatedModel);
     }
 
+    /**
+     * 
+     * @param idToDelete an id corresponding to an entity of type modelName.
+     */
     public deleteEvent(idToDelete): Observable<any> {
         return this.http.delete<any>(`/api/${this.modelName}s/delete/${idToDelete}`, this.instantiatedModel);
     }

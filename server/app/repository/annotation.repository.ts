@@ -49,7 +49,7 @@ export class AnnotationRepository {
      */
     public async find(id: number): Promise<Annotation> {
         const repository =  (await this.connectionProvider()).getRepository(Annotation);
-        return await repository.findOne(id);
+        return await repository.findOne(id, { relations: ['widgets'] });
     }
 
     /**

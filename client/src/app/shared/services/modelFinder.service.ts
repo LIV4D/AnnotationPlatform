@@ -30,13 +30,27 @@ export class ModelFinderService {
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
             returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
             returnValue.set('instantiatedModel', instantiatedModel);
+            returnValue.set('propertyTypes', this.getAllPropertyTypes(instantiatedModel))
 
         } catch (error) {
             console.error('There was a problem while retrieving the requested model : ' + error);
             returnValue.set('propertyNames', ['error']);
             returnValue.set('instantiatedModel', null);
+            returnValue.set('propertyTypes', ['error']);
         }
         return returnValue;
+    }
+
+    public getAllPropertyTypes(object: any): Array<any> {
+        const propertyTypes = new Array();
+        Object.getOwnPropertyNames(object).forEach(propertyName => {
+            propertyTypes.push(this.getPropertyType(object, propertyName));
+        });
+        return propertyTypes;
+    }
+
+    public getPropertyType(object: any, name: any) {
+        return typeof object[name];
     }
 
     public async getModelNames(): Promise<string[]> {

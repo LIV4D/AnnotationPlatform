@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { isNullOrUndefined } from 'util';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 import { IWidget } from '../interfaces/IWidget.interface';
 import { IProtoWidget } from '../prototype interfaces/IProtoWidget.interface';
@@ -38,7 +38,8 @@ export class Widget {
     public validationRegex: string;
 
     @ManyToOne(type => Annotation, annotation => annotation.widgets)
-    public assignedAnnotation: Annotation;
+    @JoinColumn()
+    public annotation: Annotation;
 
     public static fromInterface(iWidget: IWidget): Widget {
         const u = new Widget();

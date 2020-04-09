@@ -1,6 +1,6 @@
 export class Widget {
     id = 0;
-    taskId = 0;
+    annotationId = 0;
     label = '';
     type = '';
     defaultEntryValue = '';

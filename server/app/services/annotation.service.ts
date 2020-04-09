@@ -1,3 +1,4 @@
+
 import 'reflect-metadata';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
@@ -16,6 +17,7 @@ import { User } from '../models/user.model';
 export class AnnotationService {
     @inject(TYPES.AnnotationRepository)
     private annotationRepository: AnnotationRepository;
+
     @inject(TYPES.SubmissionEventService)
     private submissionEventService: SubmissionEventService;
 

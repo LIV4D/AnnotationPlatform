@@ -5,6 +5,7 @@ import { WidgetFacadeService } from './widget.facade.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
 import * as _ from 'underscore';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-widget',
@@ -14,50 +15,37 @@ import * as _ from 'underscore';
 export class WidgetComponent implements OnInit, AfterViewInit {
 
   taskId = 0;
-  label = '';
+  label = 'TESTTTT';
   type = '';
   defaultEntryValue = '';
   validationRegex = '';
   entryField = 'allo';
-  private task : Task;
   private widgets: Widget[];
   public singleLineWidgets: Widget[];
   public multiLineWidgets: Widget[];
 
-  // this would be the array of all widgets that we receive from t he server
-  private test = [
-    {    date:'30-60-90 Day', Name:'Kim', amount:415     },
-    {   date:'30-60-90 Day', Name:'Kelly', amount:175     },
-    {   date:'30 Day', Name:'Shelly', amount:400     },
-    {   date:'30 Day', Name:'Sarvesh', amount:180     }
-  ];
-
-  // sort them by widget type
-  private grouped: any;
-
-  // this would be an array of only single line widgets for example
-  public kim: any;
-
-
   constructor(private facadeService: WidgetFacadeService) { }
 
-  ngOnInit(): void {
-        //   this.task = this.facadeService.getCurrentTask();
-        // this.widgets = this.task.widgets;
+    ngOnInit(): void {
+        this.facadeService.getWidgets().subscribe(widgets =>{
+            this.widgets = widgets;
+            this.initWidgets();
+        })
+    }
 
-  }
+    public initWidgets(): void {
+        if (!isNullOrUndefined(this.widgets) && this.widgets.length > 0) {
+            const sortedWidgets = _.groupBy(this.widgets, 'type');
+            this.singleLineWidgets = sortedWidgets['singleLine'];
+            this.multiLineWidgets = sortedWidgets['multiLine'];
+        }
+    }
 
-  ngAfterViewInit(): void {
+    ngAfterViewInit(): void {
+        this.initWidgets();
+    }
 
-    /*
-    const sortedWidgets = _.groupBy(this.widgets, 'type');
-    this.singleLineWidgets = sortedWidgets['singleLine'];
-    this.singleLineWidgets = sortedWidgets['multiLine'];
-
-    this.grouped = _.groupBy(this.test, 'Name');
-    this.kim = this.grouped['Kim'];
-    console.log(this.kim);
-    */
-  }
-
+    async saveEntry(widgetToUpdate: Widget) {
+        await this.facadeService.saveEntry(widgetToUpdate.entryField, widgetToUpdate.id);
+    }
 }
