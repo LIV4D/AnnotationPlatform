@@ -29,14 +29,15 @@ export class ErrorMessageService {
                 case 304:
                     severity = ErrorSeverity.benign;
                     break;
+                case 403:
+                    severity = ErrorSeverity.critical;
+                    break;
                 case 401:
                 case 404:
+                case 409:
                 case 500:
-                    severity = ErrorSeverity.noticeable;
-                    break;
-                case 403:
                 default:
-                    severity = ErrorSeverity.critical;
+                    severity = ErrorSeverity.noticeable;
             }
         }
 
