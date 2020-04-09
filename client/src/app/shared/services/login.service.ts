@@ -63,7 +63,7 @@ export class LoginService {
         .subscribe(
           data => {
             this.appService.loading = false;
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/tasks']);
           },
           error => {
             this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
