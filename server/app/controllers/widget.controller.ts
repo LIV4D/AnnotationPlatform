@@ -15,8 +15,8 @@ export class WidgetController implements IController {
 
     public setRoutes(app: express.Application): void {
         app.post('/api/widgets/create', this.createWidget);
-        app.put('/api/widgets/update/:taskId', this.updateTask);
-        app.delete('/api/widgets/delete/:taskId', this.deleteTask);
+        app.put('/api/widgets/update/;widgetId', this.updateWidget);
+        app.delete('/api/widgets/delete/:widgetId', this.deleteWidget);
     }
 
     private createWidget = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -34,10 +34,10 @@ export class WidgetController implements IController {
     }
 
     /**
-     * Update a task from the taskId given in params
+     * Update a widget from the widgetId given in params
      * The visibility, completness and last modified time are updated
      */
-    private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private updateWidget = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedWidget: IWidget = {
             id: req.params.widgetId,
             entryField: isNullOrUndefined(req.body.entryField) ? undefined : req.body.entryField,
@@ -45,13 +45,13 @@ export class WidgetController implements IController {
         };
 
         this.widgetService.updateWidget(updatedWidget)
-            .then(task => res.send(task))
+            .then(widget => res.send(widget))
             .catch(next);
     }
 
-    private deleteTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    private deleteWidget = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        this.widgetService.deleteWidget(req.params.taskId)
+        this.widgetService.deleteWidget(req.params.widgetId)
             .then(() => res.sendStatus(204))
             .catch(next);
     }
