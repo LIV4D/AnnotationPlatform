@@ -18,6 +18,7 @@ import { saveAs } from 'file-saver';
 import { Task } from '../../models/serverModels/task.model';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { BridgeSingleton } from './Data-Persistence/bridge.service';
+import { StorageService } from '../storage.service';
 declare const Buffer;
 
 // Min and max values for zooming
@@ -64,7 +65,8 @@ export class EditorService {
     public router: Router,
     private appService: AppService,
     private headerService: HeaderService,
-    private biomarkerService: BiomarkerService
+    private biomarkerService: BiomarkerService,
+    private storageService: StorageService
   ) {
     this.scaleX = 1;
     this.imageLoaded = false;
@@ -255,11 +257,14 @@ export class EditorService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          console.log("res");
+          console.log('res');
                 console.log(res);
                 this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
                 this.biomarkerService.initJsonRecursive(res.data);
                 this.biomarkerService.buildTreeRecursive(res.data);
+                this.storageService.setItem('widgets', res.widgets)
+                console.log('widgets');
+                console.log(localStorage.getItem('widgets'));
 
           // this.svgBox.innerHTML = res.svg;
           // const parser = new DOMParser();
