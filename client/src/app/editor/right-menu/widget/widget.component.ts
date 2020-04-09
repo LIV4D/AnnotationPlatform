@@ -45,4 +45,8 @@ export class WidgetComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(): void {
         this.initWidgets();
     }
+
+    addItem(newItem: string) {
+      console.log(newItem);
+    }
 }
