@@ -49,9 +49,7 @@ export class NavigationBarComponent implements OnInit {
       this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
       console.log(this.userRole);
     }
-    
 
-    
   }
 
   ngOnInit() {

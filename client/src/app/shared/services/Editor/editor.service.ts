@@ -260,6 +260,7 @@ export class EditorService {
           console.log('res');
                 console.log(res);
                 this.storageService.setItem('widgets', res.widgets)
+                console.log(res.widgets);
                 console.log(localStorage.getItem('widgets'));
 
                 this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);

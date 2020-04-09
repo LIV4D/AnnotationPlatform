@@ -1,3 +1,4 @@
+
 import 'reflect-metadata';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
@@ -11,13 +12,20 @@ import { createError } from '../utils/error';
 import { SubmissionEvent } from '../models/submissionEvent.model';
 import { SubmissionEventService } from './submissionEvent.service';
 import { User } from '../models/user.model';
+import { WidgetRepository } from './../repository/widget.repository';
+import { Widget } from '../models/widget.model';
 
 @injectable()
 export class AnnotationService {
     @inject(TYPES.AnnotationRepository)
     private annotationRepository: AnnotationRepository;
+
     @inject(TYPES.SubmissionEventService)
     private submissionEventService: SubmissionEventService;
+
+    @inject(TYPES.WidgetRepository)
+    private widgetRepository: WidgetRepository;
+
 
     /**
      * Creates a submission event for the annotation to be created and then sends it to the proper repository so it can create it.
@@ -110,6 +118,11 @@ export class AnnotationService {
             throw createError('This annotation does not exist.', 404);
         }
         return annotation;
+    }
+
+    public async getAnnotationWidgets(id: number): Promise<Widget[]> {
+        // todo specifiy annotation id
+        return await this.widgetRepository.findByAnnotation();
     }
 
     /**
