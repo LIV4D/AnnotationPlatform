@@ -4,6 +4,7 @@ export class CommentBoxSingleton {
 
   private static instance: CommentBoxSingleton;
   comments: CommentBoxComponent[] = [];
+  comment_Id: string;
 
   /**
    * The Singleton's constructor should always be private to prevent direct
@@ -31,5 +32,13 @@ export class CommentBoxSingleton {
    */
   getTextAreaValues(): string[] {
     return this.comments.map( value => value.textAreaValue );
+  }
+
+  setUUID(userId: string) {
+    this.comment_Id = userId;
+  }
+
+  getUUID(): string {
+    return this.comment_Id;
   }
 }

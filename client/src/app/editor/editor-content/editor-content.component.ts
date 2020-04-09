@@ -17,6 +17,8 @@ import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription } from 'rxjs';
+import { StorageService } from '../../shared/services/storage.service';
+import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -29,7 +31,8 @@ export class EditorContentComponent
     public editorFacadeService: EditorFacadeService,
     public appService: AppService,
     private resolver: ComponentFactoryResolver,
-    private toolBoxService: ToolboxService
+    private toolBoxService: ToolboxService,
+    private storageService: StorageService
   ) {
     this.delayEventTimer = null;
   }
@@ -141,6 +144,8 @@ export class EditorContentComponent
   }
 
   createCommentBox() {
+    console.log('creating comment box');
+
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
     this.commentBoxes.comments.push(componentRef.instance);
@@ -149,6 +154,12 @@ export class EditorContentComponent
     this.canvasHeight = this.viewPort.nativeElement.clientHeight;
 
     componentRef.instance.mousePosition = this.editorMousePos;
+
+    const comment = JSON.parse(localStorage.getItem('currentUser'));
+    if(!this.commentBoxes.getUUID()) {
+      this.commentBoxes.setUUID(comment.token);
+      // console.log('comment UUID: ' + this.commentBoxes.getUUID());
+    }
   }
 
   onMouseUp(event: MouseEvent): void {
