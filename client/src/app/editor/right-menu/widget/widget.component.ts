@@ -15,12 +15,11 @@ import { isNullOrUndefined } from 'util';
 export class WidgetComponent implements OnInit, AfterViewInit {
 
   taskId = 0;
-  label = '';
+  label = 'TESTTTT';
   type = '';
   defaultEntryValue = '';
   validationRegex = '';
   entryField = 'allo';
-  private task : Task;
   private widgets: Widget[];
   public singleLineWidgets: Widget[];
   public multiLineWidgets: Widget[];

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
+import { Widget } from 'src/app/shared/models/serverModels/widget.model';
 
 @Component({
   selector: 'app-widget-single-line',
@@ -6,13 +7,15 @@ import { Component, OnInit, Input, Output } from '@angular/core';
   styleUrls: ['./widget-single-line.component.scss']
 })
 export class WidgetSingleLineComponent implements OnInit {
-  @Input() label: string;
-  @Input() defaultEntryValue: string;
-  // @Output() entryField: string;
-  constructor() { }
+    @Input() widget: Widget;
+    public labelText: string;
+    public entryField: string;
+    // @Output() entryField: string;
+    constructor() { }
 
-  ngOnInit(): void {
-    console.log(this.label);
-  }
+    ngOnInit(): void {
+        this.labelText = this.widget.label;
+        this.entryField = this.widget.entryField;
+    }
 
 }
