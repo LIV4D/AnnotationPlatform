@@ -72,7 +72,7 @@ export class UserController implements IController {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             password: req.body.password,
-            isAdmin: req.body.isAdmin,
+            role: req.body.role,
         };
         this.userService.updateUser(newUser)
             .then(user => {

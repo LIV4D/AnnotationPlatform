@@ -57,6 +57,7 @@ import { CommentBoxComponent } from './editor/comment-box/comment-box.component'
 import { BugtrackerService } from './shared/services/bugtracker.service';
 import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
 import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
+import { StorageService } from './shared/services/storage.service';
 
 
 // Pipes
@@ -136,6 +137,7 @@ import { VisualizationService } from './editor/right-menu/visualization/visualiz
       BugtrackerService,
       BugtrackerFacadeService,
       AuthorizationService,
+      StorageService,
       ManagementFacadeService,
       ModelFinderService,
       NavigationBarFacadeService,

@@ -1,9 +1,9 @@
 <mat-toolbar color="primary" *ngIf="router.url != '/'">
   <span routerLinkActive="active" routerLink="/tasks" style="margin-right: 10px" >Tasks</span>
   <span routerLinkActive="active" routerLink="/dashboard" style="margin-right: 10px" >Dashboard</span>
-  <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" >Gallery</span>
+  <span routerLinkActive="active" routerLink="/gallery" style="margin-right: 10px" *ngIf="userRole==='admin' || userRole==='researcher'" >Gallery</span>
   <span routerLinkActive="active" routerLink="/editor" style="margin-right: 10px" >Editor</span>
-  <span routerLinkActive="active" routerLink="/management" style="margin-right: 10px" >Management</span>
+  <span routerLinkActive="active" routerLink="/management" style="margin-right: 10px" *ngIf="userRole==='admin' || userRole==='researcher'" >Management</span>
 
   <div id="loadingDiv" *ngIf='showLoading'>
     <span id="loadingLabel"> <mat-icon id="loadingIcon">{{loadingDownload?"cloud_download":"cloud_upload"}}</mat-icon> {{loadingLabel}}</span>
