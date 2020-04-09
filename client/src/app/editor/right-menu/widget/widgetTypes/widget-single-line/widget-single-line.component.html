@@ -1,4 +1,7 @@
-<label [(ngModel)]="label"></label>
-<form>
-    <input type="text">
-</form>
+<label>{{labelText}}</label>
+<div>
+    <input type="text" [(ngModel)]="entryField" [value]="defaultEntryValue" >
+</div>
+    <input type="text" [(ngModel)]="entryField">
+</div>
+<button type="button" (click)= "sendValue()" >send</button>

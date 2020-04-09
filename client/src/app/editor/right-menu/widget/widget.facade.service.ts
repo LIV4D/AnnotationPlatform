@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Task } from 'src/app/shared/models/serverModels/task.model';
+import { Widget } from 'src/app/shared/models/serverModels/widget.model';
+import { WidgetStorageService } from 'src/app/shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,9 +9,9 @@ import { Task } from 'src/app/shared/models/serverModels/task.model';
 export class WidgetFacadeService {
 
 
-    constructor() { }
+    constructor(private widgetStorage: WidgetStorageService) { }
 
-    // public getCurrentTask() : Task {
-    //     return this.submitService.getCurrentTask();
-    // }
+    public getWidgets() : Observable<Widget[]> {
+        return this.widgetStorage.getWidgets();
+    }
 }
