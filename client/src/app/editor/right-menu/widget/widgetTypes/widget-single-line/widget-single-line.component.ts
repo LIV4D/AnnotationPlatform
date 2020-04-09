@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
 
 @Component({
@@ -13,6 +13,8 @@ export class WidgetSingleLineComponent implements OnInit {
     public defaultEntryValue: string;
     private regexp: RegExp;
     // @Output() entryField: string;
+    @Output() newItemEvent = new EventEmitter<string>();
+
     constructor() { }
 
     ngOnInit(): void {
@@ -21,6 +23,10 @@ export class WidgetSingleLineComponent implements OnInit {
         this.defaultEntryValue = this.widget.defaultEntryValue;
         // this.regexp = (!isNullOrUndefined(this.widget.validationRegex) && this.widget.validationRegex !== '' ? null : new RegExp(this.widget.validationRegex));
         // if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField))
+    }
+
+    sendValue() {
+      this.newItemEvent.emit(this.entryField);
     }
 
 }
