@@ -29,7 +29,6 @@ export class WidgetComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.facadeService.getWidgets().subscribe(widgets =>{
             this.widgets = widgets;
-            console.log(this.widgets);
             this.initWidgets();
         })
     }

@@ -258,7 +258,6 @@ export class EditorService {
       .subscribe(
         (res) => {
           console.log('res');
-                console.log(res);
                 this.widgetService.setWidgets(res.widgets);
 
                 this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
