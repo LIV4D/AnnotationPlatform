@@ -1,4 +1,4 @@
-<mat-accordion >
+<mat-accordion #matAccordElement >
   <mat-expansion-panel cdkDrag [disabled]="isDisabled" [ngClass]="pointFormat" cdkDragBoundary=".example-boundary"
     (opened)="panelOpenState = true"
     (closed)="panelOpenState = false"

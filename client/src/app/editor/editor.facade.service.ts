@@ -6,6 +6,7 @@ import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
+import { Tool } from '../shared/services/Editor/Tools/tool.service';
 
 @Injectable({
   providedIn:'root',
@@ -40,6 +41,10 @@ export class EditorFacadeService {
 
   get panTool() {
     return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+  }
+
+  setPanToolByString(tool: string) {
+    this.toolboxService.setSelectedTool(tool);
   }
 
   get menuState() {

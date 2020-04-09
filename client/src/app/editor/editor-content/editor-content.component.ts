@@ -51,6 +51,7 @@ export class EditorContentComponent
   commentBoxes: CommentBoxSingleton;
   commentClickObservable: Subscription;
   isCommentBoxExists = 0;
+  // okToCreateCommentBox = false;
   canvasWidth = 0;
   canvasHeight = 0;
 
@@ -72,6 +73,7 @@ export class EditorContentComponent
       (hasBeenClicked) => {
         if (hasBeenClicked) {
           console.log('hasBeenClicked === true');
+          // this.okToCreateCommentBox = true;
           this.createCommentBox();
           this.isCommentBoxExists = 1;
         }
@@ -160,6 +162,8 @@ export class EditorContentComponent
       this.commentBoxes.setUUID(comment.token);
       // console.log('comment UUID: ' + this.commentBoxes.getUUID());
     }
+
+    this.editorFacadeService.setPanToolByString('pan');
   }
 
   onMouseUp(event: MouseEvent): void {

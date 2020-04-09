@@ -1,9 +1,11 @@
 import {
   Component,
   OnInit,
-  OnChanges,
-  SimpleChanges,
   Input,
+  ViewChild,
+  ElementRef,
+  Renderer2,
+  AfterViewInit,
 } from '@angular/core';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 
@@ -12,7 +14,7 @@ import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
   templateUrl: './comment-box.component.html',
   styleUrls: ['./comment-box.component.scss'],
 })
-export class CommentBoxComponent implements OnInit, OnChanges {
+export class CommentBoxComponent implements OnInit, AfterViewInit {
   panelOpenState = false;
   isDisabled = false;
   up = false;
@@ -22,20 +24,28 @@ export class CommentBoxComponent implements OnInit, OnChanges {
   textAreaValue: string;
 
   @Input () mousePosition: Point;
+  @ViewChild ('matAccordElement') matAccordElement: ElementRef;
 
-  constructor() {}
+  constructor(private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.textAreaValue = 'This is a test';
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('Event Changes' + changes);
-    console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
-    console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
-    console.log(changes);
-    // console.log(this.textArea.element.nativeElement);
+  ngAfterViewInit(): void {
+    console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
+
+    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (this.mousePosition.x).toString()+'px');
+    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (this.mousePosition.y).toString()+'px');
   }
+
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   console.log('Event Changes' + changes);
+  //   console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
+  //   console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
+  //   console.log(changes);
+  //   // console.log(this.textArea.element.nativeElement);
+  // }
 
   onMouseUp(e: Event) {
     // e.preventDefault();
@@ -65,12 +75,16 @@ export class CommentBoxComponent implements OnInit, OnChanges {
       this.isDisabled = true;
       this.moving = true;
     }
-    console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
-    console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
+    // console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
+    // console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
   }
 
   onFormClick(e: Event) {
     // console.log('commentBox -- textarea clicked');
     this.pointFormat = 'nothing';
+  }
+
+  getMousePosition(): Point {
+    return this.mousePosition;
   }
 }

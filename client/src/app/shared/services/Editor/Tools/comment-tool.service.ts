@@ -22,8 +22,8 @@ export class CommentTool extends Tool {
     }
   }
 
-    onCursorUp(): void {
-        const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
-        let commentModel = new Comment();
-    }
+  onCursorUp(): void {
+    console.log('%c ONCURSOR_UP: ', 'color:black;background:yellow;');
+    const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
+  }
 }
