@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-widget-single-line',
@@ -13,7 +14,7 @@ export class WidgetSingleLineComponent implements OnInit {
     public defaultEntryValue: string;
     private regexp: RegExp;
     // @Output() entryField: string;
-    @Output() newItemEvent = new EventEmitter<string>();
+    @Output() saveEntryEvent = new EventEmitter<Widget>();
 
     constructor() { }
 
@@ -21,12 +22,13 @@ export class WidgetSingleLineComponent implements OnInit {
         this.labelText = this.widget.label;
         this.entryField = this.widget.entryField;
         this.defaultEntryValue = this.widget.defaultEntryValue;
-        // this.regexp = (!isNullOrUndefined(this.widget.validationRegex) && this.widget.validationRegex !== '' ? null : new RegExp(this.widget.validationRegex));
-        // if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField))
+        this.regexp = (!isNullOrUndefined(this.widget.validationRegex) && this.widget.validationRegex !== '' ? null : new RegExp(this.widget.validationRegex));
     }
 
     sendValue() {
-      this.newItemEvent.emit(this.entryField);
+        if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField)){
+            this.saveEntryEvent.emit(this.widget);
+        }
     }
 
 }

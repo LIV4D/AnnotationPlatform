@@ -46,7 +46,7 @@ export class WidgetComponent implements OnInit, AfterViewInit {
         this.initWidgets();
     }
 
-    addItem(newItem: string) {
-      console.log(newItem);
+    async saveEntry(widgetToUpdate: Widget) {
+        await this.facadeService.saveEntry(widgetToUpdate.entryField, widgetToUpdate.id);
     }
 }

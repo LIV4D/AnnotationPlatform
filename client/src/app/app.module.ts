@@ -84,6 +84,7 @@ import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
 import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
 import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
 
 @NgModule({
    declarations: [
@@ -154,6 +155,7 @@ import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/
       TasksBundlesService,
       ManagementCreationService,
       WidgetFacadeService,
+      WidgetEventService,
       HeaderService,
       EditorFacadeService,
       LayersFacadeService,
