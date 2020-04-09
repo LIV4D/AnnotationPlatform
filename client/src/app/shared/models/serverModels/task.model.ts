@@ -2,6 +2,7 @@ import { TaskType } from './taskType.model';
 import { TaskPriority } from './taskPriority.model';
 import { User } from './user.model';
 import { Annotation } from './annotation.model';
+import { Widget } from './widget.model';
 
 export class Task {
     public id = 0;
@@ -12,4 +13,5 @@ export class Task {
     public projectTitle = '';
     public comment = '';
     public assignedUserId = 0;
+    public widgets: Widget[];
 }

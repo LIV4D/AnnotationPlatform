@@ -11,6 +11,12 @@ import { IUser } from '../interfaces/IUser.interface';
 import { IProtoUser } from '../prototype interfaces/IProtoUser.interface';
 import { TaskPriority } from './taskPriority.model';
 
+export enum UserRole {
+    clinician = 'clinician',
+    researcher = 'researcher',
+    admin = 'admin'
+}
+
 @Entity()
 export class User {
     // TODO: get rid of this column and put email column as Primary key
@@ -33,8 +39,8 @@ export class User {
     @Column({ type: 'bytea', select: true })
     public salt: Buffer;
 
-    @Column({ default : false })
-    isAdmin: boolean;
+    @Column({ type: 'text', default : UserRole.clinician })
+    public role: UserRole;
 
     @OneToMany(type => Task, task => task.assignedUser)
     public assignedTasks: Task[];
@@ -86,7 +92,7 @@ export class User {
             firstName: this.firstName,
             lastName: this.lastName,
             email: this.email,
-            isAdmin: this.isAdmin,
+            role: this.role,
         };
     }
 
@@ -94,7 +100,7 @@ export class User {
         if (!isNullOrUndefined(iuser.id)) { this.id = iuser.id; }
         if (!isNullOrUndefined(iuser.firstName)) { this.firstName = iuser.firstName; }
         if (!isNullOrUndefined(iuser.lastName)) { this.lastName = iuser.lastName; }
-        if (!isNullOrUndefined(iuser.isAdmin)) { this.isAdmin = iuser.isAdmin; }
+        if (!isNullOrUndefined(iuser.role)) { this.role = iuser.role; }
         if (!isNullOrUndefined(iuser.password)) {
             const hash = User.hashPassword(iuser.password);
             this.password = hash.hash;
@@ -111,7 +117,7 @@ export class User {
             firstName: this.firstName,
             lastName: this.lastName,
             email: this.email,
-            isAdmin: this.isAdmin,
+            role: this.role,
         };
     }
 }

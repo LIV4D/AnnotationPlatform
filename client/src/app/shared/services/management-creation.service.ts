@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { isNullOrUndefined } from 'util';
+import { catchError } from 'rxjs/operators';
+import { ErrorMessageService } from './errorMessage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class ManagementCreationService {
     private properties: string[];
     private instantiatedModel: object;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private errorMessage: ErrorMessageService) { }
 
     /**
      * Checks to see if the values are appropriate for they types and sends an event to the server
@@ -20,17 +22,38 @@ export class ManagementCreationService {
      * @param propertyValues values of the properties that have already been determined
      * @returns string of whether the event was succesful or not
      */
-    public sendCreationEvent(properties: string[], propertyValues: string[]): string {
+    public sendHttpEvent(eventName: string, properties: string[], propertyValues: string[]): string {
         this.properties = properties;
         this.propertyValues = propertyValues;
 
         if (this.checkPropertyValues()) {
-            this.eventModelFromManagement('create').subscribe();
+            const observable = this.chooseAppropriateObservable(eventName);
+
+            observable.pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
             return 'Event Success!';
         }
 
         return 'Event Failure!';
+    }
+
+    private chooseAppropriateObservable(eventName: string): Observable<any> {
+        let observable : Observable<any>;
+        switch(eventName) {
+            case 'delete':
+                observable = this.deleteEvent(this.propertyValues[0]);
+                break;
+            case 'create':
+                observable = this.eventModelFromManagement(eventName);
+                break;
+            case 'update':
+                observable = this.updateEvent(this.propertyValues[0]);
+                break;
+            default:
+                observable = this.eventModelFromManagement(eventName);
+        }
+
+        return observable;
     }
 
     /**
@@ -66,6 +89,14 @@ export class ManagementCreationService {
      */
     public eventModelFromManagement(event: string): Observable<any> {
         return this.http.post<any>(`/api/${this.modelName}s/${event}`, this.instantiatedModel);
+    }
+
+    public deleteEvent(idToDelete): Observable<any> {
+        return this.http.delete<any>(`/api/${this.modelName}s/delete/${idToDelete}`, this.instantiatedModel);
+    }
+
+    public updateEvent(idToUpdate): Observable<any> {
+        return this.http.put<any>(`/api/${this.modelName}s/update/${idToUpdate}`, this.instantiatedModel);
     }
 
     public setInstantiatedModel(instantiatedModel: object): void {

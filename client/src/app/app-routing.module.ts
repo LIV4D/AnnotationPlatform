@@ -1,3 +1,4 @@
+import { AuthorizationGuard } from './shared/guard/authorization.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -7,6 +8,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditorComponent } from './editor/editor.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ManagementComponent } from './management/management.component';
+import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
+import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
 import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 
@@ -15,15 +18,16 @@ const routes: Routes = [
   // TODO: empty route redirect to ? for others if is login
   // TODO: empty route redirect to loginPage if is not login
   // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: '', component: LoginComponent,  pathMatch: 'full'  },
-  { path: 'gallery', component: GalleryComponent },
-  { path: 'editor', component: EditorComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'tasks', component: TasksComponent },
-  { path: 'management', component: ManagementComponent },
-  { path: 'zoomtest', component: ZoomngxComponent },
-  { path: 'comment', component: CommentBoxComponent },
-  { path: '**', redirectTo: '/editor' },
+  { path: '', component: LoginComponent,  pathMatch: 'full', data: {authorizedRoles: []}  },
+  { path: 'gallery', component: GalleryComponent, data: {authorizedRoles: []}  },
+  { path: 'editor', component: EditorComponent, data: {authorizedRoles: []}  },
+  { path: 'dashboard', component: DashboardComponent, data: {authorizedRoles: []}  },
+  { path: 'tasks', component: TasksComponent, data: {authorizedRoles: []} },
+  { path: 'management', canActivate: [AuthorizationGuard], component: ManagementComponent, data: {authorizedRoles: ['admin']} },
+  { path: 'zoomtest', component: ZoomngxComponent, data: {authorizedRoles: []} },
+  { path: 'comment', component: CommentBoxComponent, data: {authorizedRoles: []} },
+  { path: 'accessdenied', component: AccessDeniedComponent },
+  { path: '**', component: NonExistentPageComponent },
 ];
 
 @NgModule({

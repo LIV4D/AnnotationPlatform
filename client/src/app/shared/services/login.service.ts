@@ -88,7 +88,4 @@ export class LoginService {
     this.router.navigate(['/']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
   }
 
-  // isAuthenticated() {
-  //   return true;
-  // }
 }

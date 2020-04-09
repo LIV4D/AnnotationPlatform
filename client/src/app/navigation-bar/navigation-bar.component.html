@@ -11,6 +11,6 @@
   </div>
 
   <span style="right: 70px; position: absolute;" (click)="logout()" > Logout</span>
-  <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" src="../../assets/icons/bug.svg"/>
+  <img id="bugtrackerIcon" style="right: 40px; position: absolute; width: 17px;" matTooltip="Report a bug" (click)="toggleBugtracker()" src="../../assets/icons/bug.svg"/>
   <mat-icon id="fullscreenIcon" style="right: 10px; position: absolute;" matTooltip="Fullscreen" (click)="toggleFullScreen()" >fullscreen</mat-icon>
 </mat-toolbar>

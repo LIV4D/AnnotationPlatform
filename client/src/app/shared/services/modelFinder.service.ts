@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ErrorMessageService } from './errorMessage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModelFinderService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private errorMessage: ErrorMessageService) { }
     /**
      * Gets the attributes and instantiates the stated model.
      * @param model a name of a model/interface within the common folder
@@ -38,7 +40,7 @@ export class ModelFinderService {
     }
 
     public async getModelNames(): Promise<string[]> {
-        return await this.getModelNamesCall().toPromise();
+        return await this.getModelNamesCall().pipe(catchError(x => this.errorMessage.handleServerError(x))).toPromise();
     }
 
     private getModelNamesCall(): Observable<string[]> {

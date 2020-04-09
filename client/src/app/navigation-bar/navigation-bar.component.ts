@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { NavigationBarFacadeService } from './navigation-bar.facade.service';
 import { Router } from '@angular/router';
-
 import * as screenfull from 'screenfull';
 import {Screenfull} from 'screenfull';
-import { HeaderService } from '../shared/services/header.service';
+import { MatDialog } from '@angular/material/dialog';
+import { BugtrackerComponent } from '../bugtracker/bugtracker.component';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -19,24 +19,16 @@ export class NavigationBarComponent {
   loadingProgress = 0;
   loadingDownload = true;
 
-  constructor(private headerService: HeaderService, private navigationBarFacadeService: NavigationBarFacadeService,
-              public router: Router) {
+  constructor(private navigationBarFacadeService: NavigationBarFacadeService, public router: Router,
+    public bugtrackerDialog: MatDialog) {
 
-    this.headerService.cbProgress = (progress: number) => { this.loadingProgress = progress; };
-    this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
-      if (show) {
-        this.showLoading = true;
-        this.loadingLabel = name;
-        this.loadingProgress = 0;
-        this.loadingDownload = download;
-      } else {
-        this.showLoading = false;
-        this.loadingLabel = '';
-        this.loadingProgress = 0;
-      }
-    };
+    this.navigationBarFacadeService.initProgress(this.loadingProgress, this.showLoading, this.loadingLabel, this.loadingDownload);
+
   }
 
+  /**
+   * Enters or exits fullscreen mode
+   */
   toggleFullScreen(): void {
     const sreenfullEntity = screenfull as Screenfull;
 
@@ -47,6 +39,20 @@ export class NavigationBarComponent {
       fullscreenIcon.innerHTML =  'fullscreen';
     }
     sreenfullEntity.toggle();
+  }
+
+  /**
+   * Opens Bugtracker component in an ngMaterial dialog
+   */
+  toggleBugtracker(): void {
+    const dialogRef = this.bugtrackerDialog.open(BugtrackerComponent, {
+       hasBackdrop: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+
   }
 
   logout(): void {

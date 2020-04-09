@@ -21,8 +21,8 @@ export class ManagementFacadeService {
         this.managementCreation.setModelName(model);
     }
 
-    public sendCreationEvent(properties: string[], propertyValues: string[]): string {
-        return this.managementCreation.sendCreationEvent(properties, propertyValues);
+    public sendHttpEvent(eventName: string, properties: string[], propertyValues: string[]): string {
+        return this.managementCreation.sendHttpEvent(eventName, properties, propertyValues);
     }
 
     public async getModelNames(): Promise<string[]> {

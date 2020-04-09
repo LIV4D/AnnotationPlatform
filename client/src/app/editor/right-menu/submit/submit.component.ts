@@ -44,19 +44,18 @@ export class SubmitComponent implements OnInit {
     const currentTask = this.submitFacadeService.getCurrentTask();
     const currentTaskType = this.submitFacadeService.getCurrentTaskType();
 
-
     // Checkbox checked by default with the task set as completed in local
     if (currentTask !== null && currentTask !== undefined) {
-      this.submitFacadeService.completeTask(currentTask);
+        this.submitFacadeService.completeTask(currentTask);
 
-    // Save taskDialog pops out
-    const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
-	    data: { task: currentTask, taskType:currentTaskType },
-      width: '600px',
-    });
+        // Save taskDialog pops out
+        const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
+            data: { task: currentTask, taskType:currentTaskType }, 
+            width: '600px',
+        });
 
-    // Action after the dialog has been closed
-    this.submitFacadeService.afterClosedTaskDialog(dialogRef);
+        // Action after the dialog has been closed
+        this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
       this.saveAnnotation();
     }
