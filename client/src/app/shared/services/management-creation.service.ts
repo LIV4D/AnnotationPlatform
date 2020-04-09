@@ -26,15 +26,15 @@ export class ManagementCreationService {
         this.properties = properties;
         this.propertyValues = propertyValues;
 
-        if (this.checkPropertyValues()) {
+        if (this.determineCheck(eventName)) {
             const observable = this.chooseAppropriateObservable(eventName);
 
             observable.pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
-            return 'Event Success!';
+            return 'Event Successfully Sent!';
         }
 
-        return 'Event Failure!';
+        return 'Event failed to send! Please check if all fields have correct types.';
     }
 
     private chooseAppropriateObservable(eventName: string): Observable<any> {
@@ -56,19 +56,36 @@ export class ManagementCreationService {
         return observable;
     }
 
+    private determineCheck(eventName: string): boolean {
+        switch(eventName) {
+            case 'delete':
+                return this.checkPropertyValues(1);
+            case 'create':
+                return this.checkPropertyValues(undefined, [0]);
+            case 'update':
+                return this.checkPropertyValues();
+            default:
+                return this.checkPropertyValues();
+        }
+    }
+
     /**
      * Assigns the different property values to the instantiatedModel if they are appropriate.
+     * @param maxIndex is the maximum index to which items must be checked
+     * @param skipIndex is an array of indexes that must be skipped
      * @returns true if all values were properperly assigned, false otherwise.
      */
-    private checkPropertyValues(): boolean {
+    private checkPropertyValues(maxIndex = this.propertyValues.length, skipIndex: number[] = []): boolean {
         let propertyValue: any;
 
-        for (let index = 0; index < this.propertyValues.length; index++) {
-            propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
-            if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
-                return false;
-            } else {
-                this.instantiatedModel[this.properties[index]] = propertyValue;
+        for (let index = 0; index < maxIndex; index++) {
+            if(skipIndex.indexOf(index) > -1){
+                propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
+                if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
+                    return false;
+                } else {
+                    this.instantiatedModel[this.properties[index]] = propertyValue;
+                }
             }
         }
         return true;
