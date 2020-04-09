@@ -248,7 +248,7 @@ export class EditorService {
     if ( this.bridgeSingleton.getCurrentTask() !== null && this.bridgeSingleton.getCurrentTask() !== undefined ){
       currentAnnotationId = this.bridgeSingleton.getCurrentTask().annotationId.toString();
     }
-
+    this.layersService.biomarkerCanvas = [];
     const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {
       headers: new HttpHeaders(),
       reportProgress: true,
@@ -295,7 +295,7 @@ export class EditorService {
           if (error.status === 404 || error.status === 500) {
             console.log('ca passe pas');
             this.layersService.biomarkerCanvas = [];
-            const reqBase = this.http.get(`/api/annotations/get/getEmpty/`, {
+            const reqBase = this.http.get(`/api/annotations/GET/getEmpty/`, {
               headers: new HttpHeaders(),
               observe: 'events',
               reportProgress: true,
