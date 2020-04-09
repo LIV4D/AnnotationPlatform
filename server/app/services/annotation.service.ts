@@ -12,8 +12,6 @@ import { createError } from '../utils/error';
 import { SubmissionEvent } from '../models/submissionEvent.model';
 import { SubmissionEventService } from './submissionEvent.service';
 import { User } from '../models/user.model';
-import { WidgetRepository } from './../repository/widget.repository';
-import { Widget } from '../models/widget.model';
 
 @injectable()
 export class AnnotationService {
@@ -22,10 +20,6 @@ export class AnnotationService {
 
     @inject(TYPES.SubmissionEventService)
     private submissionEventService: SubmissionEventService;
-
-    @inject(TYPES.WidgetRepository)
-    private widgetRepository: WidgetRepository;
-
 
     /**
      * Creates a submission event for the annotation to be created and then sends it to the proper repository so it can create it.
