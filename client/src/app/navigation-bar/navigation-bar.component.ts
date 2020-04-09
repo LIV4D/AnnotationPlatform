@@ -43,6 +43,11 @@ export class NavigationBarComponent implements OnInit {
         this.loadingProgress = 0;
       }
     };
+
+    this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
+    console.log(this.userRole);
+
+    
   }
 
   ngOnInit() {
