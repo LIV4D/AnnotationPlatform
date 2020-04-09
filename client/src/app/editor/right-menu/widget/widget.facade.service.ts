@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
-import { widgetStorageService } from 'src/app/shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetStorageService } from 'src/app/shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,9 @@ import { widgetStorageService } from 'src/app/shared/services/Editor/Data-Persis
 export class WidgetFacadeService {
 
 
-    constructor(private widgetStorage: widgetStorageService) { }
+    constructor(private widgetStorage: WidgetStorageService) { }
 
-    public getWidgets() : Widget[] {
+    public getWidgets() : Observable<Widget[]> {
         return this.widgetStorage.getWidgets();
     }
 }

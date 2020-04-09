@@ -5,6 +5,7 @@ import { WidgetFacadeService } from './widget.facade.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
 import * as _ from 'underscore';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-widget',
@@ -41,20 +42,27 @@ export class WidgetComponent implements OnInit, AfterViewInit {
 
   constructor(private facadeService: WidgetFacadeService) { }
 
-  ngOnInit(): void {
-        this.widgets = this.facadeService.getWidgets();
+    ngOnInit(): void {
+        this.facadeService.getWidgets().subscribe(widgets =>{
+            this.widgets = widgets;
+            console.log(this.widgets);
+            this.initWidgets();
+        })
+    }
 
-  }
+    public initWidgets(): void {
+        if (!isNullOrUndefined(this.widgets) && this.widgets.length > 0) {
+            const sortedWidgets = _.groupBy(this.widgets, 'type');
+            this.singleLineWidgets = sortedWidgets['singleLine'];
+            this.singleLineWidgets = sortedWidgets['multiLine'];
+    
+            this.grouped = _.groupBy(this.test, 'Name');
+            this.kim = this.grouped['Kim'];
+            console.log(this.kim);
+        }
+    }
 
-  ngAfterViewInit(): void {
-
-    const sortedWidgets = _.groupBy(this.widgets, 'type');
-    this.singleLineWidgets = sortedWidgets['singleLine'];
-    this.singleLineWidgets = sortedWidgets['multiLine'];
-
-    this.grouped = _.groupBy(this.test, 'Name');
-    this.kim = this.grouped['Kim'];
-    console.log(this.kim);
-  }
-
+    ngAfterViewInit(): void {
+        this.initWidgets();
+    }
 }
