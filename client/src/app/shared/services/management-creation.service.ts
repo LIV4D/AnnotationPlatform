@@ -77,15 +77,19 @@ export class ManagementCreationService {
      */
     private checkPropertyValues(maxIndex = this.propertyValues.length, skipIndex: number[] = []): boolean {
         let propertyValue: any;
-
+        console.log(skipIndex)
+        console.log(maxIndex)
         for (let index = 0; index < maxIndex; index++) {
-            if(skipIndex.indexOf(index) > -1){
-                propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
-                if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
-                    return false;
-                } else {
-                    this.instantiatedModel[this.properties[index]] = propertyValue;
-                }
+            console.log('TEST')
+            console.log(skipIndex.indexOf(index));
+            if(skipIndex.indexOf(index) >= -1) {
+                continue;
+            }
+            propertyValue = this.convertToType(this.instantiatedModel[this.properties[index]], this.propertyValues[index]);
+            if (isNullOrUndefined(propertyValue) || Number.isNaN(propertyValue)) {
+                return false;
+            } else {
+                this.instantiatedModel[this.properties[index]] = propertyValue;
             }
         }
         return true;
@@ -102,12 +106,17 @@ export class ManagementCreationService {
     }
 
     /**
-     * Creates the appropriate model.
+     * Launches a post event to the server with the intended event name.
+     * @param event is a post event on the modelName's controller.
      */
     public eventModelFromManagement(event: string): Observable<any> {
         return this.http.post<any>(`/api/${this.modelName}s/${event}`, this.instantiatedModel);
     }
 
+    /**
+     * 
+     * @param idToDelete an id corresponding to an entity of type modelName.
+     */
     public deleteEvent(idToDelete): Observable<any> {
         return this.http.delete<any>(`/api/${this.modelName}s/delete/${idToDelete}`, this.instantiatedModel);
     }
