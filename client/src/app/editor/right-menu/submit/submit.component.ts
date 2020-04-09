@@ -44,7 +44,6 @@ export class SubmitComponent implements OnInit {
     const submitedTask = this.submitFacadeService.getSubmitedTask();
     const submitedTaskType = this.submitFacadeService.getSubmitedTaskType();
 
-
     // Checkbox checked by default with the task set as completed in local
     if (submitedTask !== null && submitedTask !== undefined) {
       this.submitFacadeService.completeTask(submitedTask);
@@ -55,8 +54,8 @@ export class SubmitComponent implements OnInit {
       width: '600px',
     });
 
-    // Action after the dialog has been closed
-    this.submitFacadeService.afterClosedTaskDialog(dialogRef);
+        // Action after the dialog has been closed
+        this.submitFacadeService.afterClosedTaskDialog(dialogRef);
     } else {
       this.saveAnnotation();
     }

@@ -1,3 +1,4 @@
+import { WidgetComponent } from './widget/widget.component';
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
 import { BiomarkersComponent } from './biomarkers/biomarkers.component';

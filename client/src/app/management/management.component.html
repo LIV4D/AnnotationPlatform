@@ -1,7 +1,8 @@
 <p>management works!</p>
+<button (click) = "clearValues()">Clear Fields</button>
 <div>
   <label>Please choose your desired model name here: </label>
-  <select name="Model Name" placeholder="Input Model Name Here" [(ngModel)]="modelName" (change)="generateTextFields()">
+  <select name="Model Name" placeholder="Input Model Name Here" [(ngModel)]="modelName" (change)="generateTextFields(); changeUrlParams();">
     <option *ngFor = "let model of availableModels;" >{{model}}</option>
   </select>
 </div>
@@ -10,9 +11,15 @@
   <input cdkTextareaAutosize [(ngModel)]="attributeValues[i]" placeholder="Input values">
 </div>
 <div>
-  <button (click) = "createModel()" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+  <button matTooltip="All fields must be filled. Id is not used." (click) = "createModel('create')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
     Create
   </button>
-  <p></p>
+  <button matTooltip="All fields must be filled. Id is used." (click) = "createModel('update')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+    Update
+  </button>
+  <button matTooltip="All fields must be filled. Only id is used." (click) = "createModel('delete')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">
+    Delete
+  </button>
+  <p>{{successText}}</p>
 </div>
 

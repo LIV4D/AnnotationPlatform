@@ -1,27 +1,35 @@
-import { Component } from '@angular/core';
+import { StorageService } from './../shared/services/storage.service';
+import { Component, OnInit } from '@angular/core';
 import { NavigationBarFacadeService } from './navigation-bar.facade.service';
 import { Router } from '@angular/router';
-
 import * as screenfull from 'screenfull';
 import {Screenfull} from 'screenfull';
+import { MatDialog } from '@angular/material/dialog';
+import { BugtrackerComponent } from '../bugtracker/bugtracker.component';
 import { HeaderService } from '../shared/services/header.service';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-navigation-bar',
   templateUrl: './navigation-bar.component.html',
   styleUrls: ['./navigation-bar.component.scss']
 })
-export class NavigationBarComponent {
-
+export class NavigationBarComponent implements OnInit {
+ 
   collapsed = true;
   showLoading = false;
   loadingLabel = '';
   loadingProgress = 0;
   loadingDownload = true;
+  isAdmin = false;
+  isResearcher = false;
+  userRole = '';
+  storageSub = new Subject<string>();
 
   constructor(private headerService: HeaderService, private navigationBarFacadeService: NavigationBarFacadeService,
-              public router: Router) {
+        public bugtrackerDialog: MatDialog, public router: Router, private storageService: StorageService) {
 
+    this.navigationBarFacadeService.initProgress(this.loadingProgress, this.showLoading, this.loadingLabel, this.loadingDownload);
     this.headerService.cbProgress = (progress: number) => { this.loadingProgress = progress; };
     this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
       if (show) {
@@ -37,6 +45,16 @@ export class NavigationBarComponent {
     };
   }
 
+  ngOnInit() {
+    this.storageService.watchStorage().subscribe((data: string) => {
+      // this will call whenever your localStorage data changes
+      this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
+      console.log(this.userRole);
+    });
+  }
+
+
+
   toggleFullScreen(): void {
     const sreenfullEntity = screenfull as Screenfull;
 
@@ -47,6 +65,20 @@ export class NavigationBarComponent {
       fullscreenIcon.innerHTML =  'fullscreen';
     }
     sreenfullEntity.toggle();
+  }
+
+  /**
+   * Opens Bugtracker component in an ngMaterial dialog
+   */
+  toggleBugtracker(): void {
+    const dialogRef = this.bugtrackerDialog.open(BugtrackerComponent, {
+       hasBackdrop: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+
   }
 
   logout(): void {
