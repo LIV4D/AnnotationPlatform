@@ -8,7 +8,7 @@
 </div>
 <div *ngFor = "let attribute of attributesForCreation; let i = index">
   <label>{{attribute}}: </label>
-  <input cdkTextareaAutosize [(ngModel)]="attributeValues[i]" placeholder="Input values">
+  <input cdkTextareaAutosize [(ngModel)]="attributeValues[i]" placeholder="Input values" matTooltip = "inputType(i)">
 </div>
 <div>
   <button matTooltip="All fields must be filled. Id is not used." (click) = "createModel('create')" *ngIf="attributesForCreation !== undefined && attributesForCreation.length !== 0">

@@ -14,6 +14,7 @@ export class ManagementComponent implements OnInit, IRoutable {
 
     public attributesForCreation: string[];
     public attributeValues: Array<string>;
+    public attributeTypes: Array<string>;
     public modelName = '';
     public successText = '';
     public availableModels: string[];
@@ -65,11 +66,19 @@ export class ManagementComponent implements OnInit, IRoutable {
 
     public async generateTextFields(): Promise<void> {
         if (!isNullOrUndefined(this.modelName) && this.modelName !== '') {
-            this.attributesForCreation = await this.facadeService.getAttributesForCreating(this.modelName);
+            const properties = await this.facadeService.getAttributesForCreating(this.modelName);
+            this.attributesForCreation = properties.get('propertyNames') as string[];
+            this.attributeTypes = properties.get('propertyTypes') as string[];
         }
     }
 
-    public clearValues() {
+    public inputType(index: number): string {
+        if (index < this.attributeTypes.length) {
+            return 'Input value of type ' + this.attributeTypes[index];
+        }
+    }
+
+    public clearValues(): void {
         this.attributeValues = [];
         this.modelName = '';
     }
