@@ -15,7 +15,7 @@ export class WidgetController implements IController {
 
     public setRoutes(app: express.Application): void {
         app.post('/api/widgets/create', this.createWidget);
-        app.put('/api/widgets/update/;widgetId', this.updateWidget);
+        app.put('/api/widgets/update/:widgetId', this.updateWidget);
         app.delete('/api/widgets/delete/:widgetId', this.deleteWidget);
     }
 
