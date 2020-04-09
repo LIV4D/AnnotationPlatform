@@ -76,7 +76,12 @@ export class AnnotationController implements IController {
     }
 
     private getEmptyAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        res.send(JSON.stringify(EMPTY_REVISION));
+        const newAnnotation: IAnnotation = {
+            data: EMPTY_REVISION,
+            imageId: req.body.imageId,
+            comment: req.body.comment,
+        };
+        res.send(newAnnotation);
     }
 
     private getBaseAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -93,9 +98,13 @@ export class AnnotationController implements IController {
      * @param next is the following function in the express application
      */
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if(req.body.data === 'undefined'){
+            req.body.data = EMPTY_REVISION;
+        }
+        console.log(req.body.data);
 
         const newAnnotation: IAnnotation = {
-            data: EMPTY_REVISION,
+            data: req.body.data,
             imageId: req.body.imageId,
             comment: req.body.comment,
         };

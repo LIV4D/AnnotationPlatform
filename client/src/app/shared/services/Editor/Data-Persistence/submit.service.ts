@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 
 // Models
 import { Task } from '../../../models/serverModels/task.model';
-import { AnnotationData } from '../../../models/serverModels/annotationData.model';
 
 // rxjs
 import { tap } from 'rxjs/operators';

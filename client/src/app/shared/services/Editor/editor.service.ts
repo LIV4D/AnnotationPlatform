@@ -255,34 +255,38 @@ export class EditorService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          console.log('ca passe');
-          this.layersService.biomarkerCanvas = [];
-          this.svgBox.innerHTML = res.svg;
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
-          const arbre: SVGGElement[] = [];
-          Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-            const elems = e.getElementsByTagName('g');
-            for (let j = 0; j < elems.length; j++) {
-              if (elems[j].parentElement.tagName !== 'g') {
-                arbre.push(elems[j]);
-              }
-            }
-          });
+          console.log("res");
+                console.log(res);
+                this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+                this.biomarkerService.initJsonRecursive(res.data);
+                this.biomarkerService.buildTreeRecursive(res.data);
 
-          // this.commentService.comment = res.diagnostic;
+          // this.svgBox.innerHTML = res.svg;
+          // const parser = new DOMParser();
+          // const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
+          // const arbre: SVGGElement[] = [];
+          // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+          //   const elems = e.getElementsByTagName('g');
+          //   for (let j = 0; j < elems.length; j++) {
+          //     if (elems[j].parentElement.tagName !== 'g') {
+          //       arbre.push(elems[j]);
+          //     }
+          //   }
+          // });
 
-          if (draw) {
-            this.layersService.biomarkerCanvas = [];
-            arbre.forEach((e: SVGGElement) => {
-            this.layersService.createFlatCanvasRecursiveJson(e, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-            });
+          // // this.commentService.comment = res.diagnostic;
 
-            setTimeout(() => {
-              //LocalStorage.save(this, this.layersService);
-            }, 1000);
-          }
-          this.svgLoaded.emit(arbre);
+          // if (draw) {
+          //   this.layersService.biomarkerCanvas = [];
+          //   arbre.forEach((e: SVGGElement) => {
+          //   this.layersService.createFlatCanvasRecursiveJson(e, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+          //   });
+
+          //   setTimeout(() => {
+          //     //LocalStorage.save(this, this.layersService);
+          //   }, 1000);
+          // }
+          // this.svgLoaded.emit(arbre);
         },
         async (error) => {
           if (error.status === 404 || error.status === 500) {
@@ -296,9 +300,9 @@ export class EditorService {
             this.headerService
               .display_progress(reqBase, 'Downloading Preannotations')
               .subscribe((res) => {
-                this.layersService.createFlatCanvasRecursiveJson(res, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-                this.biomarkerService.initJsonRecursive(res);
-                this.biomarkerService.buildTreeRecursive(res);
+                this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+                this.biomarkerService.initJsonRecursive(res.data);
+                this.biomarkerService.buildTreeRecursive(res.data);
               });
           }
         }
