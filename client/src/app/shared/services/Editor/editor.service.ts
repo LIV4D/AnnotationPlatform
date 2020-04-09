@@ -75,7 +75,7 @@ export class EditorService {
     this.bridgeSingleton = BridgeSingleton.getInstance();
     // Check if a change was made to save to localStorage every 30 seconds.
     setInterval(() => {
-      console.log(this.commentBoxes.getTextAreaValues());
+      // console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
         LocalStorage.clear();
         LocalStorage.save(this, this.layersService);
