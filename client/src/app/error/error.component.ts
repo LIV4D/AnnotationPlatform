@@ -34,7 +34,6 @@ export class ErrorComponent implements OnInit {
 
     logout() {
         this.facadeService.logout();
-        this.dialogRef.close();
     }
 
     close(): void {

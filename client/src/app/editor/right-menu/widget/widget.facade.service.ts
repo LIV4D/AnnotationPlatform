@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SubmitService } from 'src/app/shared/services/Editor/submit.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Injectable({
@@ -8,9 +7,9 @@ import { Task } from 'src/app/shared/models/serverModels/task.model';
 export class WidgetFacadeService {
 
 
-    constructor(private submitService: SubmitService) { }
+    constructor() { }
 
-    public getCurrentTask() : Task {
-        return this.submitService.getCurrentTask();
-    }
+    // public getCurrentTask() : Task {
+    //     return this.submitService.getCurrentTask();
+    // }
 }

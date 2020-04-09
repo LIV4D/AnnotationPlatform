@@ -118,8 +118,8 @@ import { VisualizationService } from './editor/right-menu/visualization/visualiz
       WidgetSingleLineComponent,
       WidgetMultipleLinesComponent,
       BugtrackerComponent,
-      ErrorComponent
-      BiomarkersDialogComponent
+      ErrorComponent,
+      BiomarkersDialogComponent,
    ],
    imports: [
       BrowserModule,

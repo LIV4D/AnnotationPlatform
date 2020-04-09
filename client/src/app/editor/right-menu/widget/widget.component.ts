@@ -42,8 +42,8 @@ export class WidgetComponent implements OnInit, AfterViewInit {
   constructor(private facadeService: WidgetFacadeService) { }
 
   ngOnInit(): void {
-      this.task = this.facadeService.getCurrentTask();
-      this.widgets = this.task.widgets;
+        //   this.task = this.facadeService.getCurrentTask();
+        this.widgets = this.task.widgets;
 
   }
 
