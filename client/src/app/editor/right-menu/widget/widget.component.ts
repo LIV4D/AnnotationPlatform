@@ -25,21 +25,6 @@ export class WidgetComponent implements OnInit, AfterViewInit {
   public singleLineWidgets: Widget[];
   public multiLineWidgets: Widget[];
 
-  // this would be the array of all widgets that we receive from t he server
-  private test = [
-    {    date:'30-60-90 Day', Name:'Kim', amount:415     },
-    {   date:'30-60-90 Day', Name:'Kelly', amount:175     },
-    {   date:'30 Day', Name:'Shelly', amount:400     },
-    {   date:'30 Day', Name:'Sarvesh', amount:180     }
-  ];
-
-  // sort them by widget type
-  private grouped: any;
-
-  // this would be an array of only single line widgets for example
-  public kim: any;
-
-
   constructor(private facadeService: WidgetFacadeService) { }
 
     ngOnInit(): void {
@@ -54,11 +39,7 @@ export class WidgetComponent implements OnInit, AfterViewInit {
         if (!isNullOrUndefined(this.widgets) && this.widgets.length > 0) {
             const sortedWidgets = _.groupBy(this.widgets, 'type');
             this.singleLineWidgets = sortedWidgets['singleLine'];
-            this.singleLineWidgets = sortedWidgets['multiLine'];
-    
-            this.grouped = _.groupBy(this.test, 'Name');
-            this.kim = this.grouped['Kim'];
-            console.log(this.kim);
+            this.multiLineWidgets = sortedWidgets['multiLine'];
         }
     }
 
