@@ -1,3 +1,4 @@
+import { WidgetStorageService } from './Data-Persistence/widgetStorage.service';
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
@@ -64,7 +65,8 @@ export class EditorService {
     public router: Router,
     private appService: AppService,
     private headerService: HeaderService,
-    private biomarkerService: BiomarkerService
+    private biomarkerService: BiomarkerService,
+    private widgetService: WidgetStorageService
   ) {
     this.scaleX = 1;
     this.imageLoaded = false;
@@ -73,7 +75,7 @@ export class EditorService {
     this.bridgeSingleton = BridgeSingleton.getInstance();
     // Check if a change was made to save to localStorage every 30 seconds.
     setInterval(() => {
-      console.log(this.commentBoxes.getTextAreaValues());
+      // console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
         LocalStorage.clear();
         LocalStorage.save(this, this.layersService);
@@ -257,14 +259,14 @@ export class EditorService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          if (draw) {
+        this.widgetService.setWidgets(res.widgets);  
+        if (draw) {
             this.layersService.biomarkerCanvas = [];
             this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
             this.biomarkerService.initJsonRecursive(res.data);
             this.biomarkerService.buildTreeRecursive(res.data);
             setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
         }
-
 
           // this.svgBox.innerHTML = res.svg;
           // const parser = new DOMParser();

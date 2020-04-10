@@ -91,7 +91,7 @@ export class ImageRepository {
 
     public async findWithForeignKeys(id: number): Promise<Image> {
         const repository =  (await this.connectionProvider()).getRepository(Image);
-        return await repository.findOne({ where: { id }, relations: ['tasks', 'annotations'] });
+        return await repository.findOne({ where: { id }, relations: ['annotations'] });
     }
 
     public async delete(image: Image): Promise<DeleteResult> {

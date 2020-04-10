@@ -43,7 +43,7 @@ export class Annotation {
     @Column()
     public submitEventId: number;
 
-    @OneToMany(type => Widget, widget => widget.assignedAnnotation, { eager: false, nullable: true })
+    @OneToMany(type => Widget, widget => widget.annotation, { eager: false, nullable: true })
     public widgets: Widget;
 
     @OneToMany(type => Task, tasks => tasks.annotation)
