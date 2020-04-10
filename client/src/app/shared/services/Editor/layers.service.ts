@@ -190,11 +190,8 @@ export class LayersService {
         image.width = width;
         image.height = height;
       }
-      const biomarker = document.createElement('canvas') as HTMLCanvasElement;
       image.onload = () => {
-        biomarker.width = image.width;
-        biomarker.height = image.height;
-        biomarker.getContext('2d').drawImage(image, 0, 0);
+        console.log("create flat canvas recursive json");
         this.newBiomarker(image, type, color);
       };
 
