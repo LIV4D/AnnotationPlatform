@@ -30,7 +30,7 @@ class ImageTable(EntityTable):
             files['preprocessing'] = preprocessing
         payload = {'metadata': metadata if metadata else {},
                    'type': type}
-        return server.send_files('/api/images/create', files, payload=payload)
+        return server.send_files('/api/images/createCLI', files, payload=payload)
 
     @cli_method
     @format_entity()

@@ -414,7 +414,7 @@ class JSONClass(ClassAttrHandler):
 
     def __repr__(self):
         attributes = [k+': '+repr(v) for k, v in self.attributes(JSONAttribute).items()]
-        return type(self).__name__ + '\n\t' + attributes.join('\n\t')
+        return type(self).__name__ + '\n\t' + '\n\t'.join(attributes)
 
     class InvalidTemplateException(Exception):
         def __init__(self, jsonclass, *msg):

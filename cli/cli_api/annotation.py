@@ -43,7 +43,7 @@ class Annotation(Entity):
     submitEvent = JSONAttr(SubmissionEvent, read_only=True)
 
     def get_data(self):
-        data = server.get('/api/annotations/%i/data' % self.id)
+        data = server.get('/api/annotations/get/%i/data' % self.id).json()
         return AnnotationData.from_json(data)
 
     @classmethod
@@ -62,11 +62,10 @@ class AnnotationTable(EntityTable):
     def create(self, image: int, comment: str = None, data: AnnotationData = None):
         if isinstance(image, Image):
             image = image.id
-        if data is None:
-            data = AnnotationData.create()
         comment = if_none(comment, "")
-        payload = dict(comment=comment, imageId=image,
-                       data=data.to_json(to_str=False))
+        payload = dict(comment=comment, imageId=image)
+        if data is not None:
+            payload['data'] = data.to_json(to_str=False)
         return server.post("/api/annotations/create", payload=payload)
 
     @cli_method
