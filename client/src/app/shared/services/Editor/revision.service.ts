@@ -25,7 +25,7 @@ export class RevisionService {
      * @param type a type to be searched for within all of the revision.
      * @param dataImage the image's data to be set.
      */
-    public setDataImageRecursive(revision: Revision, type: string, dataImage: string) {
+    private setDataImageRecursive(revision: Revision, type: string, dataImage: string) {
         if (!isNullOrUndefined(revision.type) && revision.type === type) {
             revision.dataImage = dataImage;
         }

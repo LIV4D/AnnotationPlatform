@@ -6,6 +6,8 @@ import { ImageBorderService } from './image-border.service';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { Stack } from './Tools/stack.service';
 import { LocalStorage } from './local-storage.service';
+import { RevisionService } from './revision.service';
+import { EMPTY_REVISION } from '../../constants/emptyrevision';
 export const ANNOTATION_PREFIX = 'annotation-';
 
 
@@ -33,7 +35,7 @@ export class LayersService {
   unsavedChange = false;
 
   // private deviceService: DeviceDetectorService, , private borderService: ImageBorderService
-  constructor(private appService: AppService, private imageBorderService: ImageBorderService) { }
+  constructor(private appService: AppService, private imageBorderService: ImageBorderService, public revision: RevisionService) { }
 
   init(): void {
     this.appLayers = document.getElementById('app-layers') as HTMLElement;
@@ -61,6 +63,7 @@ export class LayersService {
 
   undo(): void {
     console.log(this.biomarkerCanvas);
+    this.getAnnotationDatas();
       if (this.undoStack.getLength() > 0) {
           this.unsavedChange = true;
           const canvas = this.undoStack.pop();
@@ -242,6 +245,15 @@ export class LayersService {
         nongraphic:{}
       };
 
+      let biomarkerId: Array<string> = [];
+      let imageData: Array<string> = [];
+      this.biomarkerCanvas.forEach(biomarker => {
+        biomarkerId.push(biomarker.id.toString().substr(11));
+        imageData.push(biomarker.currentCanvas.toDataURL('image/png'));
+      })
+
+      this.revision.setDataImages(biomarkerId, imageData);
+      console.log(this.revision.revision);
       // Each biomarker datas are formated in Base64
       // and then added in the dictionary
       this.biomarkerCanvas.forEach(biomarker => {

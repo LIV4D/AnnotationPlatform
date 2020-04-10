@@ -264,7 +264,7 @@ export class EditorService {
         this.widgetService.setWidgets(res.widgets);  
         if (draw) {
             // Store the revision within the revision service.
-            this.revisionService.revision = JSON.parse(res.data);
+            this.revisionService.revision = res.data;
 
             this.layersService.biomarkerCanvas = [];
             this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
@@ -427,7 +427,7 @@ export class EditorService {
       this.imageId = lastImageId;
       this.getMainImage();
       this.loadRevision(true);
-      LocalStorage.load(this, this.layersService);
+      //LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
       return;
     }
