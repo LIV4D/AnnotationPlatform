@@ -36,7 +36,7 @@ export class BiomarkersComponent implements OnInit {
   opacity: number;
   shadowsChecked: boolean;
   activatedCommentBox = false;
-  stateCheckCommentBox = true;
+  stateCheckCommentBox: boolean;
 
   @Output() fireCommentEvent = new EventEmitter<boolean>();
 
@@ -56,6 +56,7 @@ export class BiomarkersComponent implements OnInit {
     this.simplifiedView = true;
     this.tree = this.biomarkersFacadeService.tree;
     this.treeDataSource.data = this.tree;
+    this.stateCheckCommentBox = true;
   }
 
   ngOnInit(): void {
@@ -229,9 +230,8 @@ export class BiomarkersComponent implements OnInit {
   }
 
   toggleCommentBox() {
-
-    this.stateCheckCommentBox = false;
-    console.log('FIREDDDD ' + this.stateCheckCommentBox);
+    this.stateCheckCommentBox = !this.stateCheckCommentBox;
+    // console.log('FIREDDDD ' + this.stateCheckCommentBox);
     this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
   }
 }
