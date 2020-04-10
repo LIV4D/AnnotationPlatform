@@ -11,8 +11,11 @@
         </span>
       </div>
 
+    <p>
+      Show Comment
       <mat-checkbox [disableRipple]="true" (change)="toggleCommentBox()" [checked]="activatedCommentBox" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
-      matTooltipPosition="left"></mat-checkbox>
+        matTooltipPosition="left"></mat-checkbox>
+    </p>
 
     <div id="biomarkers-container" (window:keydown)="onKeyDown($event)">
 
