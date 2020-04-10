@@ -19,6 +19,7 @@ import { saveAs } from 'file-saver';
 import { Task } from '../../models/serverModels/task.model';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { BridgeSingleton } from './Data-Persistence/bridge.service';
+import { RevisionService } from './revision.service';
 declare const Buffer;
 
 // Min and max values for zooming
@@ -66,7 +67,8 @@ export class EditorService {
     private appService: AppService,
     private headerService: HeaderService,
     private biomarkerService: BiomarkerService,
-    private widgetService: WidgetStorageService
+    private widgetService: WidgetStorageService,
+    private revisionService: RevisionService
   ) {
     this.scaleX = 1;
     this.imageLoaded = false;
@@ -261,6 +263,9 @@ export class EditorService {
         (res) => {
         this.widgetService.setWidgets(res.widgets);  
         if (draw) {
+            // Store the revision within the revision service.
+            this.revisionService.revision = JSON.parse(res.data);
+
             this.layersService.biomarkerCanvas = [];
             this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
             this.biomarkerService.initJsonRecursive(res.data);
