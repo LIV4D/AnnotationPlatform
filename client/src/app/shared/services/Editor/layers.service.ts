@@ -198,7 +198,7 @@ export class LayersService {
       // console.log("%c "+type, 'color: black; background: yellow;');
       image.src = dataImage;
 
-      //image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+      image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
     }
 
   }
