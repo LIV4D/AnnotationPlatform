@@ -79,7 +79,6 @@ export class EditorService {
     setInterval(() => {
       // console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
-        LocalStorage.clear();
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;
       }
