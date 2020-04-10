@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -15,4 +16,6 @@ export class CommentBoxService {
   sendStateCommentBox(checkBoxCommentBox: boolean) {
     this.commentBoxCheckBoxClicked.next(checkBoxCommentBox);
   }
+
+ 
 }

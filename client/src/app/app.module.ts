@@ -58,6 +58,7 @@ import { BugtrackerService } from './shared/services/bugtracker.service';
 import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
 import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
 import { StorageService } from './shared/services/storage.service';
+import { CommentBoxService } from './shared/services/comment-box.service';
 
 
 // Pipes
@@ -139,6 +140,7 @@ import { RevisionService } from './shared/services/Editor/revision.service';
       LoginService,
       BugtrackerService,
       BugtrackerFacadeService,
+      CommentBoxService,
       AuthorizationService,
       StorageService,
       WidgetStorageService,

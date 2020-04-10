@@ -16,7 +16,7 @@ import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
 import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
@@ -63,6 +63,7 @@ export class EditorContentComponent
   @ViewChild('mainCanvas') mainCanvas: ElementRef;
   @ViewChild('commentBox', { read: ViewContainerRef })
   commentBox: ViewContainerRef;
+  commentBoxCheck = false;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
   editorMousePos: Point;
@@ -78,6 +79,10 @@ export class EditorContentComponent
           console.log('hasBeenClicked === true');
           // this.okToCreateCommentBox = true;
           this.createCommentBox();
+          // checked
+          // if(!this.commentBoxCheck) {
+          //   document.getElementById('boundary').style.zIndex = '300';
+          // }
           this.isCommentBoxExists = 1;
         }
       }
@@ -86,7 +91,12 @@ export class EditorContentComponent
     this.commentFiredObservable = this.commentBoxService.commentBoxCheckBoxClicked.subscribe(
       (checkBoxClicked) => {
         console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
-
+        this.commentBoxCheck = checkBoxClicked;
+        if(!this.commentBoxCheck) {
+          document.getElementById('boundary').style.zIndex = '300';
+        } else {
+          document.getElementById('boundary').style.zIndex = '0';
+        }
       }
     );
   }
@@ -174,6 +184,16 @@ export class EditorContentComponent
     }
 
     this.editorFacadeService.setPanToolByString('pan');
+  }
+
+  toggleCommentMode() {
+    console.log('TEST ON TOGGLE');
+
+    if (document.getElementById('boundary').style.zIndex === '0') {
+      document.getElementById('boundary').style.zIndex = '300';
+    } else {
+      document.getElementById('boundary').style.zIndex = '0';
+    }
   }
 
   onMouseUp(event: MouseEvent): void {
