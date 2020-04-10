@@ -177,9 +177,9 @@ export class ImageService {
         const prePath = config.get('storageFolders.image') as string;
         const filename = searchFileByName(imageId.toString(), prePath);
 
-        console.log('\nprePath : ' + prePath + ' and filename : ' + filename + '\n');
+        // console.log('\nprePath : ' + prePath + ' and filename : ' + filename + '\n');
 
-        console.log(filename! == null ? path.join(prePath, 'filename') : null);
+        // console.log(filename! == null ? path.join(prePath, 'filename') : null);
 
         // return filename! == null ? path.join(prePath, 'filename') : null;
         return path.join(prePath, filename);
@@ -243,7 +243,7 @@ export class ImageService {
 
     // public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string): Promise<Image[]> {
     public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string): Promise<any> {
-        console.log('Server::ImageService::getImagesWithCount ');
+        // console.log('Server::ImageService::getImagesWithCount ');
 
         return await this.imageRepository.findAllWithCount(sort, order, page, pageSize, filters);
     }

@@ -1,3 +1,4 @@
+import { StorageService } from './storage.service';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
@@ -25,7 +26,7 @@ export class LoginService {
   // tslint:disable-next-line:variable-name
   private _name: string;
 
-  constructor(private http: HttpClient, private appService: AppService, private router: Router) { }
+  constructor(private http: HttpClient, private appService: AppService, private router: Router, private storageService: StorageService) { }
 
   get email(): string {
     return this._user ? this._user.user.email : null;
@@ -44,7 +45,8 @@ export class LoginService {
           // login successful if there's a jwt token in the response
           if (user && user.token) {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', JSON.stringify(user));
+            this.storageService.setItem('currentUser', JSON.stringify(user));
+
           }
           this._user = user;
           return user;
@@ -52,22 +54,17 @@ export class LoginService {
   }
 
   loginAppService(email: string, password: string) {
-    // Bypass credentials for the time being (using dev-prod mode) until a fix for the server has been found
-    // if (isDevMode()) {
-      // this.router.navigate(['/dashboard']);
-    // } else {
       this.appService.loading = true;
       this.login(email, password)
         .subscribe(
           data => {
             this.appService.loading = false;
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/tasks']);
           },
           error => {
             this.formErrors.server = error.error.message ? error.error.message : 'Unable to connect to server.';
             this.appService.loading = false;
           });
-    // }
   }
 
   isAuthenticated(): boolean {
@@ -83,12 +80,10 @@ export class LoginService {
 
   logout(): void {
     // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
+    this.storageService.removeItem('currentUser');
+
     this._user = null;
     this.router.navigate(['/']).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
   }
 
-  // isAuthenticated() {
-  //   return true;
-  // }
 }

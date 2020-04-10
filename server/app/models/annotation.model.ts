@@ -6,14 +6,16 @@ import { SubmissionEvent } from './submissionEvent.model';
 import { Task } from './task.model';
 import { IProtoAnnotation } from '../prototype interfaces/IProtoAnnotation.interface';
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
+import { Widget } from './widget.model';
 
 export class StringHierarchy { [key: string]: StringHierarchy | string}
 
 // tslint:disable-next-line:max-classes-per-file
 export class AnnotationData {
-    biomarker: {[key: string]: Buffer};
-    hierarchy: StringHierarchy;
-    nongraphic: {[key: string]: string | boolean | Buffer | number};
+    biomarkers?: AnnotationData[];
+    type?: string;
+    color?: string;
+    dataImage?: string; // ou string
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -41,6 +43,9 @@ export class Annotation {
 
     @Column()
     public submitEventId: number;
+
+    @OneToMany(type => Widget, widget => widget.annotation, { eager: false, nullable: true })
+    public widgets: Widget;
 
     @OneToMany(type => Task, tasks => tasks.annotation)
     public tasks: Task[];

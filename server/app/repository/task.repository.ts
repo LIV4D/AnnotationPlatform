@@ -6,7 +6,7 @@ import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
 import { ITaskGallery } from '../interfaces/gallery.interface';
 import { ImageService } from '../services/image.service';
-import {AnnotationService } from '../services/annotation.service';
+import { AnnotationService } from '../services/annotation.service';
 import { DeleteResult } from 'typeorm';
 
 @injectable()
@@ -46,13 +46,14 @@ export class TaskRepository {
     public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
         const whereConditions = [];
         if (filter.imageId !== undefined) {
-            whereConditions.push('task.annotation.image.id = ' + filter.imageId.toString());
+            // This does not work because of cross-referencing within PostgreSQL.
+            // whereConditions.push('task.annotation.imageId = ' + filter.imageId.toString());
         }
         if (filter.userId !== undefined) {
             whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
         }
         if (filter.isComplete !== undefined) {
-            whereConditions.push('task.isComplete.value = ' + filter.isComplete.toString());
+            whereConditions.push('task.isComplete = ' + filter.isComplete.toString());
         }
 
         const repository =  (await this.connectionProvider()).getRepository(Task);
@@ -68,6 +69,40 @@ export class TaskRepository {
                      .where(whereConditions.join(' AND '))
                      .getMany();
     }
+
+    // public async findManyByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}) {
+    //     return await (await this.getQuery(filter)).getMany();
+    // }
+
+    // public async findOneByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}) {
+    //     return await (await this.getQuery(filter)).getOne();
+    // }
+
+    // private async getQuery(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<SelectQueryBuilder<Task>>{
+    //     const whereConditions = [];
+    //     if (filter.imageId !== undefined) {
+    //         // This does not work because of cross-referencing within PostgreSQL.
+    //         // whereConditions.push('task.annotation.imageId = ' + filter.imageId.toString());
+    //     }
+    //     if (filter.userId !== undefined) {
+    //         whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
+    //     }
+    //     if (filter.isComplete !== undefined) {
+    //         whereConditions.push('task.isComplete = ' + filter.isComplete.toString());
+    //     }
+
+    //     const repository =  (await this.connectionProvider()).getRepository(Task);
+    //     return await repository
+    //                  .createQueryBuilder('task')
+    //                  .leftJoinAndSelect('task.taskType', 'taskType')
+    //                  .leftJoinAndSelect('task.annotation', 'annotation')
+    //                     .leftJoinAndSelect('annotation.image', 'image')
+    //                     .leftJoinAndSelect('annotation.submitEvent', 'submitEvent')
+    //                         .leftJoinAndSelect('submitEvent.user', 'lastSubmittedBy')
+    //                  .leftJoinAndSelect('task.assignedUser', 'assignedUser')
+    //                  .leftJoinAndSelect('task.creator', 'creator')
+    //                  .where(whereConditions.join(' AND '));
+    // }
 
     public async findTaskListByUser(userId: string, page: number = 0,
                                     pageSize: number = 0, completed: boolean): Promise<ITaskGallery[]> {

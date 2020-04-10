@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Tool } from '../../../shared/models/tool.model';
+import { Tool } from '../../../shared/services/Editor/Tools/tool.service';
 import { ToolboxFacadeService } from './../toolbox.facade.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class ToolElementComponent implements OnInit {
   }
 
   selectTool(): void {
+
     this.toolboxFacadeService.setSelectedTool(this.tool.name);
   }
 

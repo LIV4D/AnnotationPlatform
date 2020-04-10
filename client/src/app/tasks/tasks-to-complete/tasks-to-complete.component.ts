@@ -18,29 +18,40 @@ import { User } from 'src/app/shared/models/serverModels/user.model';
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
+
 
 @Component({
   selector: 'app-tasks-to-complete',
   templateUrl: './tasks-to-complete.html',
-  styleUrls: ['./tasks-to-complete.scss']
+  styleUrls: ['./tasks-to-complete.scss'],
 })
 export class TasksToCompleteComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['imageSrc', 'imageId', 'projectTitle', 'creatorId', 'time'];
-  length: number;         // Number of tasks
-  pageSize: number;       // Number of tasks per page
-  isCompleted: boolean;   // Choose weither to display completed or uncompleted tasks
-  isDataEmpty: boolean;   // Notify when all tasks have been completed
+  displayedColumns = [
+    'imageSrc',
+    'imageId',
+    'projectTitle',
+    'creatorId',
+    'time',
+  ];
+  length: number; // Number of tasks
+  pageSize: number; // Number of tasks per page
+  isCompleted: boolean; // Choose weither to display completed or uncompleted tasks
+  isDataEmpty: boolean; // Notify when all tasks have been completed
 
   // List of tasks, taskTypes and Users
-  dataSource: any = [];         // List of tasks
-  taskTypes: TaskType[] = [];   // List of taskTypes
-  selectedTaskType: string;     // TaskType selected for the filtering
-  users: User[] = [];           // List of users
+  dataSource: any = []; // List of tasks
+  taskTypes: TaskType[] = []; // List of taskTypes
+  selectedTaskType: string; // TaskType selected for the filtering
+  users: User[] = []; // List of users
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private router: Router, private taskToCompleteFacadeService: TasksToCompleteFacadeService) {
+  constructor(
+    private router: Router,
+    private taskToCompleteFacadeService: TasksToCompleteFacadeService,
+  ) {
     this.isCompleted = false;
     this.pageSize = 15;
     this.isDataEmpty = false;
@@ -51,14 +62,14 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     this.dataSource.filterPredicate = this.configureFilterPredicate();
 
     this.loadTaskTypes(); // Load the list of TaskTypes
-    this.loadUsers();     // Load the list of Users
+    this.loadUsers(); // Load the list of Users
   }
 
   ngAfterViewInit() {
-    this.loadData();      // Load dataSource with uncompleted tasks
+    this.loadData(); // Load dataSource with uncompleted tasks
 
     this.dataSource.paginator = this.paginator; // Set pagination on tasks List
-    this.dataSource.sort = this.sort;           // Set sorting on tasks List
+    this.dataSource.sort = this.sort; // Set sorting on tasks List
   }
 
   /**
@@ -88,37 +99,47 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     this.isDataEmpty = false;
 
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
     // Observable: Converts sortChange and page Observables into a single Observable
     // The new observable emits all of the items emitted by all of those Observables.
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
-      // BehaviorSubject: emmiting empty at the begining
-      startWith({}),
-      // Observable: Switch to a new observable each time the request change
-      switchMap(() => {
-        setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = true)); // Enable loading bar
-        // getTasks from the server
-        return this.taskToCompleteFacadeService.getTasks(
-                             this.paginator.pageIndex,
-                             this.paginator.pageSize,
-                             this.isCompleted);
-          }),
-          // Observable: Return an empty observable in the case of an error
-          catchError(() => {
-              console.log('there is an Error');
-              setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar
-              return observableOf([]);
-          })
-          // Observer: Data emited from the server are added on data
-          ).subscribe((data: ITaskGroup) => {
-              this.dataSource.data = data;
-              this.length = this.dataSource.length;
-              if (this.length === 0) { this.isDataEmpty = true; } // Notify when all tasks are completed
-              setTimeout(() => (this.taskToCompleteFacadeService.appService.loading = false)); // Disable loading bar
-          });
-    }
+        // BehaviorSubject: emmiting empty at the begining
+        startWith({}),
+        // Observable: Switch to a new observable each time the request change
+        switchMap(() => {
+          setTimeout(
+            () => (this.taskToCompleteFacadeService.appService.loading = true)
+          ); // Enable loading bar
+          // getTasks from the server
+          return this.taskToCompleteFacadeService.getTasks(
+            this.paginator.pageIndex,
+            this.paginator.pageSize,
+            this.isCompleted
+          );
+        }),
+        // Observable: Return an empty observable in the case of an error
+        catchError(() => {
+          console.log('there is an Error');
+          setTimeout(
+            () => (this.taskToCompleteFacadeService.appService.loading = false)
+          ); // Disable loading bar
+          return observableOf([]);
+        })
+        // Observer: Data emited from the server are added on data
+      )
+      .subscribe((data: ITaskGroup) => {
+        this.dataSource.data = data;
+        this.length = this.dataSource.length;
+        if (this.length === 0) {
+          this.isDataEmpty = true;
+        } // Notify when all tasks are completed
+        setTimeout(
+          () => (this.taskToCompleteFacadeService.appService.loading = false)
+        ); // Disable loading bar
+      });
+  }
 
   /**
    * Configures the task filter for being able to match with the taskTypeId
@@ -143,15 +164,16 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * Loads image and redirect the user on the Editor
+    /**
+   * Load Task and redirect the user on the Editor
+   * @param task: task loaded in the editor
    * @param imageId: image annotation attributed for a task
    */
-  loadImage(imageId: string): void {
+  loadTaskAnnotation(task: Task, imageId:string): void {
+    console.log(task);
     this.taskToCompleteFacadeService.appService.localEditing = false;
     localStorage.setItem('previousPage', 'tasks');
+    this.taskToCompleteFacadeService.setCurrentTask(task);
     this.taskToCompleteFacadeService.loadImageFromServer(imageId);
   }
 }
-
-

@@ -27,15 +27,22 @@ export class TasksBundlesComponent implements OnInit {
     this.loadBundles();
   }
 
+  /**
+   * Get task bundles from server
+   */
   async loadBundles() {
     this.bundles = await this.facadeService.loadBundles();
-    console.log(this.bundles);
+    // console.log(this.bundles);
   }
 
   areBundlesEmpty() {
     return isNullOrUndefined(this.bundles.length === 0);
   }
 
+  /**
+   * Assign all tasks in bundle to user
+   * @param tasks: all tasks in bundle
+   */
   async assignBundleTasks(tasks: ITasks[]) {
     const taskIds = [];
     tasks.forEach(task => {

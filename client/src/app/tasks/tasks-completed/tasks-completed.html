@@ -29,7 +29,7 @@
     <!--Image Preview -->
     <ng-container matColumnDef="imageSrc">
         <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
-        <mat-cell *matCellDef="let task" (mouseup)="loadImage(task.imageId.toString())" > <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
+        <mat-cell *matCellDef="let task" (mouseup)="loadTaskAnnotation(task, task.imageId.toString())" > <img matTooltip="Click for loading the image" [src]="task.thumbnail | safeImage" height="64px" /> </mat-cell>
     </ng-container>
 
     <!-- Image Id -->

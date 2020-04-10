@@ -9,6 +9,9 @@ import { Task } from '../models/task.model';
 import { ITask } from '../interfaces/ITask.interface';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
+import { AnnotationData } from '../models/annotation.model';
+import { User } from '../models/user.model';
+import { IUser } from '../interfaces/IUser.interface';
 
 @injectable()
 export class TaskController implements IController {
@@ -19,7 +22,7 @@ export class TaskController implements IController {
         app.post('/api/tasks/create', this.createTask);
         app.put('/api/tasks/update/:taskId', this.updateTask);
         app.delete('/api/tasks/delete/:taskId', this.deleteTask);
-        app.post('api/tasks/submit/:taskId', this.submitTask);
+        app.post('/api/tasks/submit/:taskId', this.submitTask);
 
         // Get
         app.get('/api/tasks/get/:taskId([0-9]+)', this.getTask);
@@ -67,7 +70,15 @@ export class TaskController implements IController {
     }
 
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const filter = isNullOrUndefined(req.body.filter) ? {} : req.body.filter;
+
+        // Make sure the filter is in type Number
+        const radix = 10;
+        const parseIntParams = {
+            userId: parseInt(req.query.userId, radix),
+            imageId: parseInt(req.query.imageId, radix),
+        };
+
+        const filter = (isNaN(parseIntParams.userId) || isNaN(parseIntParams.imageId)) ? {} : parseIntParams;
         this.taskService.getTasksByFilter(filter)
             .then(tasks => res.send(tasks.map(task => this.export_task(task, req.params.attr))))
             .catch(next);
@@ -93,17 +104,27 @@ export class TaskController implements IController {
             .catch(next);
     }
 
-    private async submitTask(req: express.Request, res: express.Response, next: express.NextFunction) {
+    private submitTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const submission: ISubmission = {
             taskId: req.params.taskId as number,
-            data: req.body.data,
-            uptime: req.body.uptime,
+            data: req.body.data as AnnotationData,
+            uptime: Math.round(process.uptime()),
             isComplete: req.body.isComplete,
         };
+        const currentUser: IUser = {
+            id: req.body.user.id,
+            email: req.body.user.email,
+            firstName: req.body.user.firstName,
+            lastName: req.body.user.lastName,
+            isAdmin: req.body.user.isAdmin
+        };
+        const user:User = new User();
+        user.update(currentUser);
 
         try {
-            await this.taskService.submitTask(submission, req.user);
-            res.sendStatus(204);
+            this.taskService.submitTask(submission, user as User).then(
+                () =>
+                res.sendStatus(204));
         } catch (error) {
             next(error);
         }
@@ -131,12 +152,13 @@ export class TaskController implements IController {
         if (req.user.id !== req.params.userId) {
             throwIfNotAdmin(req.user);
         }
+
         this.taskService.getTasksByFilter({ userId: req.params.userId })
             .then(tasks => {
                 tasks.forEach((task) => {
-                    if (!task.isComplete && !task.isVisible) {
+                    if (!task.isComplete && task.isVisible) {
                         res.send(task.proto());
-                        return;
+                        return true;
                     }
                 });
                 res.send(null);

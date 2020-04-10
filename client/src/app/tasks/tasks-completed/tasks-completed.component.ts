@@ -20,6 +20,8 @@ import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
+import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Component({
   selector: 'app-tasks-completed',
@@ -42,7 +44,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort , {static: true}) sort: MatSort;
 
-  constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
+  constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService, private submitService: SubmitService) {
     this.isCompleted = true;
     this.pageSize = 15;
   }
@@ -85,7 +87,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
-              console.log('there is an Error');
+              // // console.log('there is an Error');
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
               return observableOf([]);
           })
@@ -107,12 +109,13 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Loads image and redirect the user on the Editor
+   * Load Task and redirect the user on the Editor
    * @param imageId: image annotation attributed for a task
    */
-  loadImage(imageId: string): void {
+  loadTaskAnnotation(task: Task, imageId:string): void {
     this.tasksCompletedFacadeService.appService.localEditing = false;
     localStorage.setItem('previousPage', 'tasks');
+    this.tasksCompletedFacadeService.setCurrentTask(task);
     this.tasksCompletedFacadeService.loadImageFromServer(imageId);
   }
 

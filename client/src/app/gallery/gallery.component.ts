@@ -7,7 +7,7 @@ import { merge } from 'rxjs';
 import { of as observableOf } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { IGallery } from '../shared/services/Gallery/gallery.interface';
-import { LocalStorage } from '../shared/models/local-storage.model';
+import { LocalStorage } from './../shared/services/Editor/local-storage.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { GalleryFacadeService } from './gallery.facade.service';
 import { EditorFacadeService } from '../editor/editor.facade.service';
@@ -59,7 +59,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   getImages(): void {
-    console.log('GalleryComponent::getImage()');
+    // console.log('GalleryComponent::getImage()');
 
     // Create filters
     // WARNING : key must correspond to valid column in model
@@ -78,7 +78,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
       startWith({}),
       switchMap(
         () => {
-          console.log('%c here? ', 'color: red; background: yellow;');
+          // console.log('%c here? ', 'color: red; background: yellow;');
 
           setTimeout(() => this.appService.loading = true);
 
@@ -131,9 +131,7 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
   // Retrieves the image types from the server
   getImageTypes(): void {
-    // this.galleryService.getImageTypes().subscribe(res => {
     this.galleryFacadeService.getImageTypes().subscribe(res => {
-
       this.galleryFacadeService.selected = res[0];
       this.imageTypes = res;
     });
@@ -144,7 +142,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
     this.appService.localEditing = false;
     localStorage.setItem('previousPage', 'gallery');
-
     console.log('imageID :' + imageId);
     this.editorFacadeService.loadImageFromServer(imageId);
   }

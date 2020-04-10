@@ -1,17 +1,41 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  OnDestroy,
+  ElementRef,
+  AfterViewInit,
+  ComponentFactoryResolver,
+  ViewContainerRef,
+} from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
-import { Point } from 'src/app/shared/models/point.model';
+import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
+import { CommentBoxComponent } from '../comment-box/comment-box.component';
+import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
+import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
+import { Subscription, Observable } from 'rxjs';
+import { StorageService } from '../../shared/services/storage.service';
+import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
+import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 
 @Component({
   selector: 'app-editor-content',
   templateUrl: './editor-content.component.html',
-  styleUrls: ['./editor-content.component.scss']
+  styleUrls: ['./editor-content.component.scss'],
 })
-
-export class EditorContentComponent implements OnInit, OnDestroy {
-
-  constructor(public editorFacadeService: EditorFacadeService, public appService: AppService, ) {
+export class EditorContentComponent
+  implements OnInit, OnDestroy, AfterViewInit {
+  constructor(
+    public editorFacadeService: EditorFacadeService,
+    public appService: AppService,
+    private resolver: ComponentFactoryResolver,
+    private toolBoxService: ToolboxService,
+    private storageService: StorageService,
+    private commentBoxService: CommentBoxService
+  ) {
     this.delayEventTimer = null;
   }
 
@@ -19,7 +43,6 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   zoomFactor: number;
   offsetX: number;
   offsetY: number;
-  @ViewChild('editorBox') viewPort: any;
   cursorDown = false;
   middleMouseDown = false;
   touchFreeze = false;
@@ -27,15 +50,61 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   zoomInitFactor: number;
   delayEventTimer: any;
   delayedEventHandler: Function;
+  commentBoxes: CommentBoxSingleton;
+  commentClickObservable: Subscription;
+  commentFiredObservable: Subscription;
+  isCommentBoxExists = 0;
+  // okToCreateCommentBox = false;
+  canvasWidth = 0;
+  canvasHeight = 0;
+
+  @ViewChild('editorBox') viewPort: ElementRef;
+  @ViewChild('svgBox') svgBox: ElementRef;
+  @ViewChild('mainCanvas') mainCanvas: ElementRef;
+  @ViewChild('commentBox', { read: ViewContainerRef })
+  commentBox: ViewContainerRef;
+  commentBoxCheck = false;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
+  editorMousePos: Point;
 
   ngOnInit(): void {
-    console.log('EditorContent::ngOnInit()');
+    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
+    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
+    this.editorMousePos = new Point(0, 0);
+    this.commentBoxes = CommentBoxSingleton.getInstance();
+    this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe(
+      (hasBeenClicked) => {
+        if (hasBeenClicked) {
+          console.log('hasBeenClicked === true');
+          // this.okToCreateCommentBox = true;
+          this.createCommentBox();
+          // checked
+          // if(!this.commentBoxCheck) {
+          //   document.getElementById('boundary').style.zIndex = '300';
+          // }
+          this.isCommentBoxExists = 1;
+        }
+      }
+    );
 
-    this.editorFacadeService.init(this.svgLoaded);
-    // this.editorFacadeService.load(imageId); // I don't know why this is here
+    this.commentFiredObservable = this.commentBoxService.commentBoxCheckBoxClicked.subscribe(
+      (checkBoxClicked) => {
+        console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
+        this.commentBoxCheck = checkBoxClicked;
+        if(!this.commentBoxCheck) {
+          document.getElementById('boundary').style.zIndex = '300';
+        } else {
+          document.getElementById('boundary').style.zIndex = '0';
+        }
+      }
+    );
+  }
 
+  ngAfterViewInit() {
+    this.editorFacadeService.init(this.svgLoaded, this.viewPort, this.svgBox);
+    this.svgLoaded.emit();
+    // this.editorFacadeService.load(imageId);
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
@@ -45,42 +114,86 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     this.cursorDown = false;
     this.middleMouseDown = false;
     this.zoomInitFactor = null;
+    // closed::boolean is a flag to indicate whether this Subscription has already been unsubscribed
+    if (!this.commentClickObservable.closed) {
+      this.commentClickObservable.unsubscribe();
+    }
   }
 
   onMouseWheel(event: WheelEvent): void {
-    console.log('EditorContent::onMouseWheel()');
+    // console.log('EditorContent::onMouseWheel()');
+    const position = this.getMousePositionInCanvasSpace(
+      new Point(event.clientX, event.clientY)
+    );
+    // delta is used to lower the zooming speed
+    const delta =
+      (-event.deltaY *
+        (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25)) /
+      500;
 
-    const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
-    const delta = -event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25) / 300;
-
-    if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
+    if (
+      !this.cursorDown &&
+      !this.editorFacadeService.firstPoint &&
+      event.ctrlKey === false
+    ) {
       this.editorFacadeService.zoom(delta, position);
-    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-    } else if (!this.cursorDown && !this.editorFacadeService.firstPoint) {
-      console.log('inside else-if');
-
-      // let brushWidth =  this.toolPropertiesService.brushWidth;
-      // const brushInc = delta > 0 ? 1 : -1;
-      // if (brushWidth < 20) {
-      //     brushWidth += brushInc;
-      // } else {
-      //     brushWidth += brushInc * brushWidth / 10;
-      // }
-      // brushWidth = Math.round(brushWidth);
-      // this.toolPropertiesService.setBrushWidth(brushWidth);
     }
   }
+
   onMouseDown(event: MouseEvent): void {
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      panTool.onCursorDown(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
       this.middleMouseDown = true;
-    } else if (event.which === 1 && !this.editorFacadeService.menuState && !this.middleMouseDown) {
-      this.editorFacadeService.onCursorDownToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    } else if (
+      event.which === 1 &&
+      !this.editorFacadeService.menuState &&
+      !this.middleMouseDown
+    ) {
+      this.editorFacadeService.onCursorDownToolbox(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
     }
     // this.enableKeyEvents(false);
+  }
+
+  createCommentBox() {
+    console.log('creating comment box');
+
+    const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
+    const componentRef = this.commentBox.createComponent(factory);
+    this.commentBoxes.comments.push(componentRef.instance);
+
+    this.canvasWidth = this.viewPort.nativeElement.clientWidth;
+    this.canvasHeight = this.viewPort.nativeElement.clientHeight;
+
+    componentRef.instance.mousePosition = this.editorMousePos;
+
+    const comment = JSON.parse(localStorage.getItem('currentUser'));
+    if(!this.commentBoxes.getUUID()) {
+      this.commentBoxes.setUUID(comment.token);
+      // console.log('comment UUID: ' + this.commentBoxes.getUUID());
+    }
+
+    this.editorFacadeService.setPanToolByString('pan');
+  }
+
+  toggleCommentMode() {
+    console.log('TEST ON TOGGLE');
+
+    if (document.getElementById('boundary').style.zIndex === '0') {
+      document.getElementById('boundary').style.zIndex = '300';
+    } else {
+      document.getElementById('boundary').style.zIndex = '0';
+    }
   }
 
   onMouseUp(event: MouseEvent): void {
@@ -100,9 +213,17 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     if (this.middleMouseDown) {
       // const panTool = this.editorFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      panTool.onCursorMove(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
     } else {
-      this.editorFacadeService.onCursorMoveToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      this.editorFacadeService.onCursorMoveToolbox(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
     }
   }
 
@@ -110,14 +231,21 @@ export class EditorContentComponent implements OnInit, OnDestroy {
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       // const panTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+      panTool.onCursorOut(
+        this.getMousePositionInCanvasSpace(
+          new Point(event.clientX, event.clientY)
+        )
+      );
       this.middleMouseDown = false;
     }
     this.cursorDown = false;
-    this.editorFacadeService.onCursorOutToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
+    this.editorFacadeService.onCursorOutToolbox(
+      this.getMousePositionInCanvasSpace(
+        new Point(event.clientX, event.clientY)
+      )
+    );
     // this.enableKeyEvents(true);
   }
-
 
   // onPointerDown(event: PointerEvent): void {
   //     this.delayEventHandling(() => {
@@ -278,28 +406,42 @@ export class EditorContentComponent implements OnInit, OnDestroy {
   //     }
   // }
 
-  // flip(): void {
-  //     this.editorService.scaleX *= -1;
-  // }
-
   onResize(): void {
-      this.editorFacadeService.resize();
+    this.editorFacadeService.resize();
   }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    if (!this.editorFacadeService.backgroundCanvas) { return undefined; }
+    if (!this.editorFacadeService.backgroundCanvas) {
+      return undefined;
+    }
     let clientX: number;
     let clientY: number;
     // X coordinate is adjusted if the image is flipped horizontally.
-    clientX = this.editorFacadeService.scaleX === 1
-      ? clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left
-      : this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
+    clientX =
+      this.editorFacadeService.scaleX === 1
+        ? clientPosition.x -
+          this.viewPort.nativeElement.getBoundingClientRect().left
+        : this.viewPort.nativeElement.clientWidth -
+          clientPosition.x +
+          this.viewPort.nativeElement.getBoundingClientRect().left;
 
-    clientY = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
-    const canvasX = clientX * this.editorFacadeService.backgroundCanvas.displayCanvas.width /
-      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-    const canvasY = clientY * this.editorFacadeService.backgroundCanvas.displayCanvas.height /
-      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+    clientY =
+      clientPosition.y -
+      this.viewPort.nativeElement.getBoundingClientRect().top;
+    const canvasX =
+      (clientX *
+        this.editorFacadeService.backgroundCanvas.displayCanvas.width) /
+      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
+        .width;
+    const canvasY =
+      (clientY *
+        this.editorFacadeService.backgroundCanvas.displayCanvas.height) /
+      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
+        .height;
+
+    this.editorMousePos.x = canvasX;
+    this.editorMousePos.y = canvasY;
+    // console.log('%c putting value to this.editorMousePos: ' + this.editorMousePos.x + ' ' + this.editorMousePos.y, 'color:white;background:red;');
     return new Point(canvasX, canvasY);
   }
 

@@ -7,9 +7,53 @@ import { IController } from './abstractController.controller';
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
 import { AnnotationService } from '../services/annotation.service';
 
+const EMPTY_REVISION: any = {
+    biomarkers: [
+        {type: 'Lesions',
+         biomarkers: [
+             { type: 'Others', color: '#fff4ee', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+             { type: 'Pigmented lesions', color: '#5bffb7', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+             {type: 'Bright',
+              biomarkers: [
+                  { type: 'Cotton Wool Spots', color: '#7a9d32', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Drusen', color: '#3cb371', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Exudates', color: '#85ffa6', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Uncertain - Bright', color: '#a9ff84', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' }
+              ]},
+             {type: 'Red',
+              biomarkers: [
+                  { type: 'Hemorrhages', color: '#4b18ff', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Microaneurysms', color: '#2a63fd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Sub-retinal hemorrhage', color: '#7a2afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Pre-retinal hemorrhage', color: '#a12afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Neovascularization', color: '#ba2afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Uncertain - Red', color: '#d62afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' }
+              ]}
+         ]
+        },
+        {type: 'Normal',
+         biomarkers: [
+             { type: 'Macula', color: '#be3c1b', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+             {type: 'Optic Nerve',
+              biomarkers: [
+                  { type: 'Disk', color: '#ddc81c', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Cup', color: '#dda61c', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' }
+              ]},
+             {type: 'Vasculature',
+              biomarkers: [
+                  { type: 'Arteries', color: '#dd1c1c', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Veins', color: '#6d13b2', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  { type: 'Vessels', color: '#770067', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' }
+              ]},
+         ],
+        }
+    ]
+}
+
 @injectable()
 export class AnnotationController implements IController {
     @inject(TYPES.AnnotationService)
+
     private annotationService: AnnotationService;
 
     public setRoutes(app: express.Application) {
@@ -23,10 +67,26 @@ export class AnnotationController implements IController {
         app.get('/api/annotations/list/:attr([a-zA-Z][a-zA-Z0-9]+)', this.list);
 
         // Get
+        app.get('/api/annotations/getBase', this.getBaseAnnotation);
+        app.get('/api/annotations/get/getEmpty', this.getEmptyAnnotation);
         app.get('/api/annotations/get/:annotationId([0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get/:annotationId([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getAnnotation);
         app.get('/api/annotations/get', this.getMultipleAnnotations);
         app.get('/api/annotations/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleAnnotations);
+    }
+
+    private getEmptyAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const newAnnotation: IAnnotation = {
+            data: EMPTY_REVISION,
+            imageId: req.body.imageId,
+            comment: req.body.comment,
+        };
+        res.send(newAnnotation);
+    }
+
+    private getBaseAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const base_revision = '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'no\'?><svg><g></g></svg>';
+        res.send({ svg: base_revision });
     }
 
     /**
@@ -38,6 +98,10 @@ export class AnnotationController implements IController {
      * @param next is the following function in the express application
      */
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if(req.body.data === 'undefined'){
+            req.body.data = EMPTY_REVISION;
+        }
+        console.log(req.body.data);
 
         const newAnnotation: IAnnotation = {
             data: req.body.data,

@@ -7,7 +7,7 @@ import * as filesystem from 'fs';
  * @returns the path of the specified file or null if the file doesn't exist
  */
 export function searchFileByName(name: string, folderPath: string): string {
-    console.log('searchFileByName()');
+    // console.log('searchFileByName()');
 
     let filename = null;
     const files = filesystem.readdirSync(folderPath);

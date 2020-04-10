@@ -1,3 +1,4 @@
+
 import 'reflect-metadata';
 import TYPES from '../types';
 import { inject, injectable } from 'inversify';
@@ -16,6 +17,7 @@ import { User } from '../models/user.model';
 export class AnnotationService {
     @inject(TYPES.AnnotationRepository)
     private annotationRepository: AnnotationRepository;
+
     @inject(TYPES.SubmissionEventService)
     private submissionEventService: SubmissionEventService;
 
@@ -52,7 +54,6 @@ export class AnnotationService {
             description: isNullOrUndefined(eventInfo.description) ? 'Annotation update' : eventInfo.description,
             timestamp: isNullOrUndefined(eventInfo.timestamp) ? 0 : eventInfo.timestamp,
         });
-
         newAnnotation.submitEventId = event.id;
         originalAnnotation.update(newAnnotation);
         return await this.annotationRepository.create(originalAnnotation);

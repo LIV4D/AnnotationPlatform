@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
-import { BiomarkerCanvas } from '../../models/biomarker-canvas.model';
-import { Point } from '../../models/point.model';
+import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
+import { Point } from './Tools/point.service';
 import { ImageBorderService } from './image-border.service';
+import { AnnotationData } from '../../models/serverModels/annotationData.model';
+import { Stack } from './Tools/stack.service';
+import { LocalStorage } from './local-storage.service';
+import { RevisionService } from './revision.service';
+import { EMPTY_REVISION } from '../../constants/emptyrevision';
 export const ANNOTATION_PREFIX = 'annotation-';
 
 
@@ -18,10 +23,10 @@ export class LayersService {
   tempDrawCanvas: HTMLCanvasElement;
   biomarkerCanvas: BiomarkerCanvas[] = [];
 
-  // undoStack: Stack<[number[], ImageData[]]>;
-  // redoStack: Stack<[number[], ImageData[]]>;
+  undoStack: Stack<[number[], ImageData[]]>;
+  redoStack: Stack<[number[], ImageData[]]>;
 
-  selectedBiomarkerId: string;
+  selectedBiomarkerId ='Others';
 
   mousePositionInDisplayCoordinates: Point;
   lastPoint: Point = null;
@@ -30,7 +35,7 @@ export class LayersService {
   unsavedChange = false;
 
   // private deviceService: DeviceDetectorService, , private borderService: ImageBorderService
-  constructor(private appService: AppService, private imageBorderService: ImageBorderService) { }
+  constructor(private appService: AppService, private imageBorderService: ImageBorderService, public revision: RevisionService) { }
 
   init(): void {
     this.appLayers = document.getElementById('app-layers') as HTMLElement;
@@ -49,64 +54,65 @@ export class LayersService {
     drawCtx.imageSmoothingEnabled = false;
 
     // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
-    this.MAX_CAPACITY = 15;
-    // this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
-    // this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+
+    this.MAX_CAPACITY = 20;
+    this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
+    this.undoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
     this.biomarkerCanvas = [];
   }
 
-  // undo(): void {
-  //     if (this.undoStack.getLength() > 0) {
-  //         this.unsavedChange = true;
-  //         const canvas = this.undoStack.pop();
-  //         const imageDatas = new Array<ImageData>();
+  undo(): void {
+      if (this.undoStack.getLength() > 0) {
+          this.unsavedChange = true;
+          const canvas = this.undoStack.pop();
+          const imageDatas = new Array<ImageData>();
 
-  //         canvas[0].forEach( (canvasIndex, arrayIndex) => {
-  //             const biomarker = this.biomarkerCanvas[canvasIndex];
-  //             imageDatas.push(biomarker.getCurrentImageData());
-  //             biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
-  //             biomarker.draw();
-  //         });
+          canvas[0].forEach( (canvasIndex, arrayIndex) => {
+              const biomarker = this.biomarkerCanvas[canvasIndex];
+              imageDatas.push(biomarker.getCurrentImageData());
+              biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
+              biomarker.draw();
+          });
 
-  //         this.redoStack.push([canvas[0], imageDatas]);
-  //     }
-  // }
+          this.redoStack.push([canvas[0], imageDatas]);
+      }
+  }
 
-  // redo(): void {
-  //     if (this.redoStack.getLength() > 0) {
-  //         this.unsavedChange = true;
-  //         const canvas = this.redoStack.pop();
-  //         const imageDatas = new Array<ImageData>();
+  redo(): void {
+      if (this.redoStack.getLength() > 0) {
+          this.unsavedChange = true;
+          const canvas = this.redoStack.pop();
+          const imageDatas = new Array<ImageData>();
 
-  //         canvas[0].forEach( (canvasIndex, arrayIndex) => {
-  //             const biomarker = this.biomarkerCanvas[canvasIndex];
-  //             imageDatas.push(biomarker.getCurrentImageData());
+          canvas[0].forEach( (canvasIndex, arrayIndex) => {
+              const biomarker = this.biomarkerCanvas[canvasIndex];
+              imageDatas.push(biomarker.getCurrentImageData());
 
-  //             biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
-  //             biomarker.draw();
-  //         });
-  //         this.undoStack.push([canvas[0], imageDatas]);
-  //     }
-  // }
+              biomarker.putImageData(canvas[1][arrayIndex], 0, 0);
+              biomarker.draw();
+          });
+          this.undoStack.push([canvas[0], imageDatas]);
+      }
+  }
 
-  // addToUndoStack(biomarkerCanvas: BiomarkerCanvas[]): void {
-  //     this.unsavedChange = true;
-  //     const indices = new Array<number>();
-  //     const imageDatas = new Array<ImageData>();
-  //     biomarkerCanvas.forEach((b) => {
-  //         indices.push(b.index);
-  //         imageDatas.push(b.getCurrentImageData());
-  //     });
-  //     this.undoStack.push([
-  //         indices,
-  //         imageDatas
-  //     ]);
-  //     this.redoStack.clear();
-  // }
+  addToUndoStack(biomarkerCanvas: BiomarkerCanvas[]): void {
+      this.unsavedChange = true;
+      const indices = new Array<number>();
+      const imageDatas = new Array<ImageData>();
+      biomarkerCanvas.forEach((b) => {
+          indices.push(b.index);
+          imageDatas.push(b.getCurrentImageData());
+      });
+      this.undoStack.push([
+          indices,
+          imageDatas
+      ]);
+      this.redoStack.clear();
+  }
 
-  // popUndoStack(): void {
-  //     this.undoStack.pop();
-  // }
+  popUndoStack(): void {
+      this.undoStack.pop();
+  }
 
   newBiomarker(image: HTMLImageElement, id: string, color: string): void {
     const canvas = document.createElement('canvas');
@@ -147,6 +153,7 @@ export class LayersService {
         image.height = height;
       }
       image.onload = () => {
+        console.log("push createFlatCanvasRecursive");
         this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
       };
       if (!node.hasAttribute('xlink:href')) {
@@ -160,6 +167,40 @@ export class LayersService {
         this.createFlatCanvasRecursive(child, width, height);
       });
     }
+  }
+
+  createFlatCanvasRecursiveJson(data: object, width: number = 0, height: number = 0): void {
+    const topLevelBiomarkers = data['biomarkers'];
+    for (let [key, value] of Object.entries(topLevelBiomarkers)) {
+      const type = value['type']
+      let color = null;
+      if (value['color']) {
+        color = value['color'];
+      }
+      let dataImage = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // transparent image
+      if (value['dataImage']) {
+        dataImage = value['dataImage'];
+      }
+      if (value['biomarkers']) {
+        this.createFlatCanvasRecursiveJson(value as object, width, height);
+      }
+
+      const image = new Image();
+      if (height !== 0 && width !== 0) {
+        image.width = width;
+        image.height = height;
+      }
+      image.onload = () => {
+        console.log("create flat canvas recursive json");
+        this.newBiomarker(image, type, color);
+      };
+
+      // console.log("%c "+type, 'color: black; background: yellow;');
+      image.src = dataImage;
+
+      //image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+    }
+
   }
 
   public setCanvasStyle(canvas: HTMLCanvasElement): void {
@@ -182,19 +223,45 @@ export class LayersService {
   }
 
   public getCurrentBiomarkerCanvas(): BiomarkerCanvas {
+
     const currentBiomarkerCanvas = this.getBiomarkerCanvasById(this.selectedBiomarkerId);
     if (currentBiomarkerCanvas == null) {
-      console.log(this.selectedBiomarkerId, this.biomarkerCanvas);
     }
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
-  }
+}
 
   public getBiomarkerCanvas(): BiomarkerCanvas[] {
     return this.biomarkerCanvas.filter(element => element.isVisible());
   }
 
+  // Get annotationDatas meant to be send on the server
+  public getAnnotationDatas(): AnnotationData {
+
+
+      let biomarkerId: Array<string> = [];
+      let imageData: Array<string> = [];
+      this.biomarkerCanvas.forEach(biomarker => {
+        biomarkerId.push(biomarker.id.toString().substr(11));
+        imageData.push(biomarker.currentCanvas.toDataURL('image/png'));
+      })
+
+      this.revision.setDataImages(biomarkerId, imageData);
+      const annotationData:AnnotationData = this.revision.revision;
+      // Each biomarker datas are formated in Base64
+      // and then added in the dictionary
+      // this.biomarkerCanvas.forEach(biomarker => {
+      //   const key = biomarker.id.toString(); // you might have to do a subtr(11) to remove annotation-
+      //   const url: string = biomarker.currentCanvas.toDataURL();
+		  //   const index: string = biomarker.index.toString();
+
+      //   annotationData.biomarker[key] = url;
+      //   annotationData.hierarchy[key] = index;
+      // });
+    return annotationData;
+  }
+
   public resetBiomarkerCanvas(ids: Array<string>): void {
-      // this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
+      this.addToUndoStack(ids.map(id => this.getBiomarkerCanvasById(id)));
       ids.forEach(id => {
           const biomarker = this.getBiomarkerCanvasById(id);
           biomarker.reset();
@@ -214,24 +281,24 @@ export class LayersService {
   }
 
   toggleBorders(showBorders: boolean): void {
-      this.appService.loading = true;
-      this.biomarkerCanvas.forEach((b) => {
-          if (showBorders) {
-              this.imageBorderService.erode(b.borderCanvas, b.currentCanvas);
-          }
-          b.drawBorders = showBorders;
-          b.draw();
-      });
-      this.appService.loading = false;
+    this.appService.loading = true;
+    this.biomarkerCanvas.forEach((b) => {
+      if (showBorders) {
+        this.imageBorderService.erode(b.borderCanvas, b.currentCanvas);
+      }
+      b.drawBorders = showBorders;
+      b.draw();
+    });
+    this.appService.loading = false;
   }
 
   toggleShadows(showShadows: boolean): void {
-      this.appService.loading = true;
-      this.biomarkerCanvas.forEach((b) => {
-          b.drawShadows = showShadows;
-          b.draw();
-      });
-      this.appService.loading = false;
+    this.appService.loading = true;
+    this.biomarkerCanvas.forEach((b) => {
+      b.drawShadows = showShadows;
+      b.draw();
+    });
+    this.appService.loading = false;
   }
 
   public resize(width: number, height: number): void {
@@ -249,40 +316,40 @@ export class LayersService {
   }
 
   // Add a point on the canvas to indicate the first point
-  // public addFirstPoint(): void {
-  //     this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
-  //     this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
-  //     this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
-  //     this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
-  // }
+  public addFirstPoint(): void {
+      this.firstPoint = document.getElementById('firstPoint') as HTMLElement;
+      this.lastPoint = new Point(this.mousePositionInDisplayCoordinates.x, this.mousePositionInDisplayCoordinates.y);
+      this.firstPoint.setAttribute('cx', this.lastPoint.x.toString());
+      this.firstPoint.setAttribute('cy', this.lastPoint.y.toString());
+  }
 
-  // public updateDashStroke(): void {
-  //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+  public updateDashStroke(): void {
+    const dashStroke = document.getElementById('dashStroke') as HTMLElement;
 
-  //     dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
-  //     dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
-  //     dashStroke.setAttribute('x2', this.lastPoint.x.toString());
-  //     dashStroke.setAttribute('y2', this.lastPoint.y.toString());
-  // }
+    dashStroke.setAttribute('x1', this.mousePositionInDisplayCoordinates.x.toString());
+    dashStroke.setAttribute('y1', this.mousePositionInDisplayCoordinates.y.toString());
+    dashStroke.setAttribute('x2', this.lastPoint.x.toString());
+    dashStroke.setAttribute('y2', this.lastPoint.y.toString());
+  }
 
-  // public removeFirstPoint(): void {
-  //     this.lastPoint = null;
-  //     this.firstPoint.setAttribute('cx', '-10');
-  //     this.firstPoint.setAttribute('cy', '-10');
-  //     this.firstPoint = null;
+  public removeFirstPoint(): void {
+      this.lastPoint = null;
+      this.firstPoint.setAttribute('cx', '-10');
+      this.firstPoint.setAttribute('cy', '-10');
+      this.firstPoint = null;
 
-  //     const dashStroke = document.getElementById('dashStroke') as HTMLElement;
-  //     dashStroke.setAttribute('x1', '-10');
-  //     dashStroke.setAttribute('y1', '-10');
-  //     dashStroke.setAttribute('x2', '-10');
-  //     dashStroke.setAttribute('y2', '-10');
-  // }
+      const dashStroke = document.getElementById('dashStroke') as HTMLElement;
+      dashStroke.setAttribute('x1', '-10');
+      dashStroke.setAttribute('y1', '-10');
+      dashStroke.setAttribute('x2', '-10');
+      dashStroke.setAttribute('y2', '-10');
+  }
 
-  // public nearFirstPoint(): void {
-  //     this.firstPoint.setAttribute('fill', 'white');
-  // }
+  public nearFirstPoint(): void {
+      this.firstPoint.setAttribute('fill', 'white');
+  }
 
-  // public farFirstPoint(): void {
-  //     this.firstPoint.setAttribute('fill', 'grey');
-  // }
+  public farFirstPoint(): void {
+      this.firstPoint.setAttribute('fill', 'grey');
+  }
 }

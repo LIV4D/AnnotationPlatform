@@ -34,7 +34,7 @@ export class ImageRepository {
             queryBuilder.orderBy(sort, 'DESC');
         }
         const queryResult = await this.filterImages(queryBuilder, filters);
-        console.log('QUERY RESULT : ' + queryResult[1]);
+        // console.log('QUERY RESULT : ' + queryResult[1]);
 
         return queryResult;
     }
@@ -91,7 +91,7 @@ export class ImageRepository {
 
     public async findWithForeignKeys(id: number): Promise<Image> {
         const repository =  (await this.connectionProvider()).getRepository(Image);
-        return await repository.findOne({ where: { id }, relations: ['tasks', 'annotations'] });
+        return await repository.findOne({ where: { id }, relations: ['annotations'] });
     }
 
     public async delete(image: Image): Promise<DeleteResult> {

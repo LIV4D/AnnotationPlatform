@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ErrorMessageService } from './errorMessage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModelFinderService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private errorMessage: ErrorMessageService) { }
     /**
      * Gets the attributes and instantiates the stated model.
      * @param model a name of a model/interface within the common folder
@@ -28,17 +30,31 @@ export class ModelFinderService {
             const instantiatedModel = new (modelImport as any)[modelCapitalized]();
             returnValue.set('propertyNames', Object.getOwnPropertyNames(instantiatedModel));
             returnValue.set('instantiatedModel', instantiatedModel);
+            returnValue.set('propertyTypes', this.getAllPropertyTypes(instantiatedModel))
 
         } catch (error) {
             console.error('There was a problem while retrieving the requested model : ' + error);
             returnValue.set('propertyNames', ['error']);
             returnValue.set('instantiatedModel', null);
+            returnValue.set('propertyTypes', ['error']);
         }
         return returnValue;
     }
 
+    public getAllPropertyTypes(object: any): Array<any> {
+        const propertyTypes = new Array();
+        Object.getOwnPropertyNames(object).forEach(propertyName => {
+            propertyTypes.push(this.getPropertyType(object, propertyName));
+        });
+        return propertyTypes;
+    }
+
+    public getPropertyType(object: any, name: any) {
+        return typeof object[name];
+    }
+
     public async getModelNames(): Promise<string[]> {
-        return await this.getModelNamesCall().toPromise();
+        return await this.getModelNamesCall().pipe(catchError(x => this.errorMessage.handleServerError(x))).toPromise();
     }
 
     private getModelNamesCall(): Observable<string[]> {
