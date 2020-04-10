@@ -92,7 +92,11 @@ export class EditorContentComponent
       (checkBoxClicked) => {
         console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
         this.commentBoxCheck = checkBoxClicked;
-        this.toggleCommentMode();
+        if(!this.commentBoxCheck) {
+          document.getElementById('boundary').style.zIndex = '300';
+        } else {
+          document.getElementById('boundary').style.zIndex = '0';
+        }
       }
     );
   }
