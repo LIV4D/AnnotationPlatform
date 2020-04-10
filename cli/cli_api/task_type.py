@@ -7,11 +7,11 @@ class TaskType(Entity):
     title = JSONAttr.String()
     description = JSONAttr.String()
 
-    tasks = JSONAttr.Int(list=True)
+    #tasks = JSONAttr.Int(list=True)
 
-    def get_tasks(self):
-        from .task import tasks
-        return tasks.getById(self.tasks)
+    #def get_tasks(self):
+    #    from .task import tasks
+    #    return tasks.getById(self.tasks)
 
     @classmethod
     def table(cls):

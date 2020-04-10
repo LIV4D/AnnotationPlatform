@@ -14,6 +14,7 @@ class Task(Entity):
     isComplete = JSONAttr.Bool()
     isVisible = JSONAttr.Bool()
     comment = JSONAttr.String()
+    projectTitle = JSONAttr.String()
     assignedUser = JSONAttr(User)
     creator = JSONAttr(User)
 

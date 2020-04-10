@@ -7,14 +7,14 @@ class User(Entity):
     email = JSONAttr.String()
     firstName = JSONAttr.String()
     lastName = JSONAttr.String()
-    isAdmin = JSONAttr.Bool()
+    role = JSONAttr.String()
 
     @classmethod
     def table(cls):
         return users
 
     def __str__(self):
-        return self.firstName + ' ' + self.lastName
+        return '['+self.role+'] '+self.firstName + ' ' + self.lastName
 
 
 class UserTable(EntityTable):

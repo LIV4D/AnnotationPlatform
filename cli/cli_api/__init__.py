@@ -5,6 +5,7 @@ from .task_type import taskTypes
 from .task import tasks
 from .user import users
 from .server import server
+from .widget import widgets
 from . import config
 
 
@@ -17,3 +18,4 @@ class cli:
     users = users
     server = server
     config = config
+    widgets = widgets
