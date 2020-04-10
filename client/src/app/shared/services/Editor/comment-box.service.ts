@@ -17,11 +17,5 @@ export class CommentBoxService {
     this.commentBoxCheckBoxClicked.next(checkBoxCommentBox);
   }
 
-  public setIsCommentModeActive(isActive: boolean): void{
-    this.isCommentModeActive.next(isActive);
-  }
-
-  public getIsCommentModeActives(): Observable<Boolean> {
-      return this.isCommentModeActive.asObservable();
-  }  
+ 
 }

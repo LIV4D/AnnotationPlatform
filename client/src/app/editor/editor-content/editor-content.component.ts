@@ -184,8 +184,6 @@ export class EditorContentComponent
     }
   }
 
-    
-
   onMouseUp(event: MouseEvent): void {
     this.cursorDown = false;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
