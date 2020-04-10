@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TasksService } from '../../../../shared/services/tasks/tasks.service';
+import { TasksService } from '../../../../shared/services/Tasks/tasks.service';
 import { Task } from '../../../../shared/models/serverModels/task.model';
 
 @Injectable({

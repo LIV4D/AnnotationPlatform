@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 
 // Services
 import { EditorService } from '../editor.service';
-import { TasksService } from '../../tasks/tasks.service';
+import { TasksService } from '../../Tasks/tasks.service';
 import { LayersService } from '../layers.service';
 import { AppService } from '../../app.service';
 import { HeaderService } from '../../header.service';

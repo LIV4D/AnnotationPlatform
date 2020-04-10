@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 // Facade Service
-import { TasksToCompleteFacadeService } from './tasks-to-Complete.facade.service';
+import { TasksToCompleteFacadeService } from './tasks-to-complete.facade.service';
 
 // Ng Material
 import { MatTableDataSource } from '@angular/material/table';
