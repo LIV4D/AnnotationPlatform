@@ -16,9 +16,10 @@ import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
 import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
+import { CommentBoxService } from './../../shared/services/comment-box.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -32,7 +33,8 @@ export class EditorContentComponent
     public appService: AppService,
     private resolver: ComponentFactoryResolver,
     private toolBoxService: ToolboxService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private commentBoxService: CommentBoxService
   ) {
     this.delayEventTimer = null;
   }
@@ -165,6 +167,19 @@ export class EditorContentComponent
 
     this.editorFacadeService.setPanToolByString('pan');
   }
+
+  toggleCommentMode() {
+    if (document.getElementById('boundary').style.zIndex === '0') {
+      document.getElementById('boundary').style.zIndex = '300';
+    } else {
+      document.getElementById('boundary').style.zIndex = '0';
+    }
+  }
+
+  public getIsCommentModeActive() : Observable<boolean> {
+    return this.commentBoxService
+}
+    
 
   onMouseUp(event: MouseEvent): void {
     this.cursorDown = false;
