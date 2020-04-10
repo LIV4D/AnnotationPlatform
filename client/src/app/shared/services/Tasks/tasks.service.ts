@@ -89,7 +89,7 @@ export class TasksService {
         isComplete: task.isComplete ? 'true' : 'false',
       };
 
-    this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
+    this.http.put<Task[]>(`/api/tasks/update/${task.taskId}`, body).subscribe();
     });
   }
 
@@ -100,7 +100,7 @@ export class TasksService {
         isComplete: task.isComplete ? 'true' : 'false',
       };
 
-    this.http.put<Task[]>(`/api/tasks/update/${task.id}`, body).subscribe();
+    this.http.put<Task[]>(`/api/tasks/update/${task.taskId}`, body).subscribe();
   }
 
   /**
