@@ -85,6 +85,7 @@ import { ErrorComponent } from './error/error.component';
 import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
 import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
 import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
+import { RevisionService } from './shared/services/Editor/revision.service';
 
 @NgModule({
    declarations: [
@@ -162,6 +163,7 @@ import { WidgetEventService } from './shared/services/Editor/widgetEvent.service
       GalleryFacadeService,
       ToolPropertiesService,
       VisualizationService,
+      RevisionService,
       ImageBorderService,
       CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,

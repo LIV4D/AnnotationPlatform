@@ -29,10 +29,10 @@
 (mouseup)="onMouseUp($event)"
 (mouseleave)="onMouseLeave($event)"
 [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
-
+<!-- 300 -->
   <div class="nothing" class="example-boundary" [style.width.px]="canvasWidth" [style.height.px]="canvasHeight"
     style="left: 0px; position: absolute; z-index: 300; background-color: transparent;" [style.opacity]="isCommentBoxExists">
-    <ng-template id="template" #commentBox ></ng-template>
+    <ng-template id="template" #commentBox class="nothing" class="example-boundary"></ng-template>
   </div>
 
   <canvas #mainCanvas id="main-canvas"></canvas>
