@@ -4,7 +4,8 @@
     (closed)="panelOpenState = false"
     (mouseup)="onMouseUp($event)"
     (mousedown)="onMouseDown($event)"
-    (mousemove)="onMouseMove($event)">
+    (mousemove)="onMouseMove($event)"
+    (mouseleave)="onMouseLeave($event)">
 
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -16,7 +17,7 @@
     </mat-expansion-panel-header>
 
     <mat-form-field (click)="onFormClick($event)">
-      <textarea cdkTextareaAutosize matInput #textArea [(ngModel)]="textAreaValue"></textarea>
+      <textarea cdkTextareaAutosize matInput #textArea [(ngModel)]="textAreaValue" (ngModelChange)="onChange($event)"></textarea>
     </mat-form-field>
 
     <!-- <button mat-button>Save</button> -->

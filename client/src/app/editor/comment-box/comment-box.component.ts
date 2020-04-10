@@ -6,15 +6,18 @@ import {
   ElementRef,
   Renderer2,
   AfterViewInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
+import { AppService } from 'src/app/shared/services/app.service';
 
 @Component({
   selector: 'app-comment-box',
   templateUrl: './comment-box.component.html',
   styleUrls: ['./comment-box.component.scss'],
 })
-export class CommentBoxComponent implements OnInit, AfterViewInit {
+export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   panelOpenState = false;
   isDisabled = false;
   up = false;
@@ -26,26 +29,27 @@ export class CommentBoxComponent implements OnInit, AfterViewInit {
   @Input () mousePosition: Point;
   @ViewChild ('matAccordElement') matAccordElement: ElementRef;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, public appService: AppService) {}
 
   ngOnInit(): void {
     this.textAreaValue = 'This is a test';
   }
 
   ngAfterViewInit(): void {
-    console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
+    // console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
 
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (this.mousePosition.x).toString()+'px');
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (this.mousePosition.y).toString()+'px');
   }
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   console.log('Event Changes' + changes);
-  //   console.log('%c value of pos_xy : ' + this.mousePosition.x, 'color:black;background:red;');
-  //   console.log('%c value of pos_xy : ' + this.mousePosition.y, 'color:black;background:red;');
-  //   console.log(changes);
-  //   // console.log(this.textArea.element.nativeElement);
-  // }
+  onChange(newValue) {
+    console.log('%c Event Changes : ' + newValue, 'color:black;background:yellow;');
+    this.appService.keyEventsEnabled = false;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
 
   onMouseUp(e: Event) {
     // e.preventDefault();
@@ -70,7 +74,7 @@ export class CommentBoxComponent implements OnInit, AfterViewInit {
   }
 
   onMouseMove(e: Event) {
-    console.log('commentBox -- mouse move');
+    // console.log('commentBox -- mouse move');
     if (this.down) {
       this.isDisabled = true;
       this.moving = true;
@@ -82,6 +86,10 @@ export class CommentBoxComponent implements OnInit, AfterViewInit {
   onFormClick(e: Event) {
     // console.log('commentBox -- textarea clicked');
     this.pointFormat = 'nothing';
+  }
+
+  onMouseLeave(e: Event) {
+    this.appService.keyEventsEnabled = true;
   }
 
   getMousePosition(): Point {
