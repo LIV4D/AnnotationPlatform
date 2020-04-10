@@ -5,7 +5,7 @@ import { Annotation } from './annotation.model';
 import { Widget } from './widget.model';
 
 export class Task {
-    public id = 0;
+    public taskId = 0;
     public taskTypeId = 0;
     public annotationId = 0;
     public isComplete = false;

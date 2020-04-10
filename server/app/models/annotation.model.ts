@@ -12,9 +12,10 @@ export class StringHierarchy { [key: string]: StringHierarchy | string}
 
 // tslint:disable-next-line:max-classes-per-file
 export class AnnotationData {
-    biomarker: {[key: string]: Buffer};
-    hierarchy: StringHierarchy;
-    nongraphic: {[key: string]: string | boolean | Buffer | number};
+    biomarkers?: AnnotationData[];
+    type?: string;
+    color?: string;
+    dataImage?: string; // ou string
 }
 
 // tslint:disable-next-line:max-classes-per-file

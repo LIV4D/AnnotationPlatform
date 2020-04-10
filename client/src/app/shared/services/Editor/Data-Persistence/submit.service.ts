@@ -22,6 +22,7 @@ import { LocalStorage } from '../local-storage.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskType } from '../../../models/serverModels/taskType.model';
 import { BridgeSingleton} from './bridge.service';
+import { AnnotationData } from 'src/app/shared/models/serverModels/annotationData.model';
 
 @Injectable({
 		providedIn: 'root'
@@ -134,10 +135,12 @@ export class SubmitService {
     }
 
     // Param
-    const taskId = this.getSubmitedTask().id;
+    const currentTask:Task = this.getSubmitedTask();
+    const taskId = currentTask.taskId;
+    console.log(taskId);
 
     // Body
-    const annotationData:string = JSON.stringify(this.layersService.getAnnotationDatas());
+    const annotationData:AnnotationData = this.layersService.getAnnotationDatas();
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const body = {
       data: annotationData,

@@ -62,8 +62,6 @@ export class LayersService {
   }
 
   undo(): void {
-    console.log(this.biomarkerCanvas);
-    this.getAnnotationDatas();
       if (this.undoStack.getLength() > 0) {
           this.unsavedChange = true;
           const canvas = this.undoStack.pop();
@@ -81,7 +79,6 @@ export class LayersService {
   }
 
   redo(): void {
-    LocalStorage.clear();
       if (this.redoStack.getLength() > 0) {
           this.unsavedChange = true;
           const canvas = this.redoStack.pop();
@@ -239,11 +236,7 @@ export class LayersService {
 
   // Get annotationDatas meant to be send on the server
   public getAnnotationDatas(): AnnotationData {
-      let annotationData: AnnotationData = {
-        biomarker: {},
-        hierarchy: {},
-        nongraphic:{}
-      };
+
 
       let biomarkerId: Array<string> = [];
       let imageData: Array<string> = [];
@@ -253,17 +246,17 @@ export class LayersService {
       })
 
       this.revision.setDataImages(biomarkerId, imageData);
-      console.log(this.revision.revision);
+      const annotationData:AnnotationData = this.revision.revision;
       // Each biomarker datas are formated in Base64
       // and then added in the dictionary
-      this.biomarkerCanvas.forEach(biomarker => {
-        const key = biomarker.id.toString(); // you might have to do a subtr(11) to remove annotation-
-        const url: string = biomarker.currentCanvas.toDataURL();
-		    const index: string = biomarker.index.toString();
+      // this.biomarkerCanvas.forEach(biomarker => {
+      //   const key = biomarker.id.toString(); // you might have to do a subtr(11) to remove annotation-
+      //   const url: string = biomarker.currentCanvas.toDataURL();
+		  //   const index: string = biomarker.index.toString();
 
-        annotationData.biomarker[key] = url;
-        annotationData.hierarchy[key] = index;
-      });
+      //   annotationData.biomarker[key] = url;
+      //   annotationData.hierarchy[key] = index;
+      // });
     return annotationData;
   }
 
