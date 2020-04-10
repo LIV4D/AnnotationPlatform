@@ -1,4 +1,6 @@
-export const EMPTY_REVISION: any = {
+import { Revision } from '../models/revision'
+
+export const EMPTY_REVISION: Revision = {
     biomarkers: [
         {type: 'Lesions',
          biomarkers: [
@@ -40,4 +42,4 @@ export const EMPTY_REVISION: any = {
         }
     ]
 }
-};
+
