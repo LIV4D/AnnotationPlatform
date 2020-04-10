@@ -1,6 +1,7 @@
 <div id="biomarkersDiv">
   <app-biomarkers *ngIf="loaded" app-biomarkers #biomarkers></app-biomarkers>
   <app-visualization (flip)="flipHorizontal()" [canvas]="canvas"></app-visualization>
+
   <div class="spacer"></div>
   <app-widget></app-widget>
   <app-timer *ngIf="!appService.localEditing"></app-timer>
