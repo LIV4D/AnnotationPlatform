@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import TYPES from '../types';
 
+import { isNullOrUndefined } from 'util';
 import { IController } from './abstractController.controller';
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
 import { AnnotationService } from '../services/annotation.service';
@@ -98,7 +99,7 @@ export class AnnotationController implements IController {
      * @param next is the following function in the express application
      */
     private createAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if(req.body.data === 'undefined'){
+        if(isNullOrUndefined(req.body.data) || req.body.data === 'undefined'){
             req.body.data = EMPTY_REVISION;
         }
         console.log(req.body.data);
@@ -170,7 +171,7 @@ export class AnnotationController implements IController {
         this.annotationService.getAllAnnotations()
             .then(annotations => {
                 res.send(annotations.map(annotation => {
-                    switch (req.params.field) {
+                    switch (req.params.attr) {
                         case undefined: return annotation;
                         case 'comment': return annotation.comment;
                         case 'proto': return annotation.proto;
@@ -191,7 +192,7 @@ export class AnnotationController implements IController {
     private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.annotationService.getAnnotation(parseInt(req.params.annotationId))
         .then(annotation => {
-            switch (req.params.field) {
+            switch (req.params.attr) {
                 case undefined: res.send(annotation); break;
                 case 'comment': res.send({ comment: annotation.comment }); break;
                 case 'proto': res.send(annotation.proto); break;

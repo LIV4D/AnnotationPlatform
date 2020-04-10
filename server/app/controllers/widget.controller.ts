@@ -39,7 +39,7 @@ export class WidgetController implements IController {
      */
     private updateWidget = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedWidget: IWidget = {
-            id: req.params.widgetId,
+            id: parseInt(req.params.widgetId),
             entryField: isNullOrUndefined(req.body.entryField) ? undefined : req.body.entryField,
             label: isNullOrUndefined(req.body.label) ? undefined : req.body.label,
         };

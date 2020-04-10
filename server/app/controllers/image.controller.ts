@@ -39,8 +39,11 @@ export class ImageController implements IController {
                     this.upload.fields([{ name: 'image', maxCount: 1 }, { name: 'preprocessing', maxCount: 1 }]),
                     this.createImage);
         app.post('/api/images/createNew',
-        this.upload.fields([{ name: 'image', maxCount: 1 }, { name: 'preprocessing', maxCount: 1 }]),
-        this.createImageNew);
+                    this.upload.fields([{ name: 'image', maxCount: 1 }, { name: 'preprocessing', maxCount: 1 }]),
+                    this.createImageNew);
+        app.post('/api/images/createCLI',
+                    this.upload.fields([{ name: 'image', maxCount: 1 }, { name: 'preprocessing', maxCount: 1 }]),
+                    this.createImageCLI);
         app.put('/api/images/update/:imageId', this.updateImage);
         app.put('/api/images/updateFile/:imageId',
                     this.upload.single('image'),
@@ -103,6 +106,29 @@ export class ImageController implements IController {
         newImage.metadata['filename'] = imageFile.originalname;
 
         const preprocessingFile = newImage.preprocessing ? req.body.files['preprocessing'][0] : undefined;
+        let preprocessingPath = null;
+        if (preprocessingFile !== undefined) {
+            newImage.metadata['preprocessingFilename'] = preprocessingFile.originalname;
+            preprocessingPath = preprocessingFile.path;
+        }
+
+        this.imageService.createImage(newImage, imageFile.path, preprocessingPath)
+            .then(image => res.send(image.proto()))
+            .catch(next);
+    }
+
+    private createImageCLI =  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        // throwIfNotAdmin executes in this.upload
+        const newImage: IImage = {
+            type: req.body.type,
+            metadata: !isNullOrUndefined(req.body.metadata) ? req.body.metadata : {},
+            preprocessing: !isNullOrUndefined(req.files['preprocessing']),
+        };
+
+        const imageFile = req.files['image'][0];
+        newImage.metadata['filename'] = imageFile.originalname;
+
+        const preprocessingFile = newImage.preprocessing ? req.files['preprocessing'][0] : undefined;
         let preprocessingPath = null;
         if (preprocessingFile !== undefined) {
             newImage.metadata['preprocessingFilename'] = preprocessingFile.originalname;
