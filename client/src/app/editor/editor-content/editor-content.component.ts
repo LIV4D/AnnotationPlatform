@@ -19,7 +19,7 @@ import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton
 import { Subscription, Observable } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
 import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
-import { CommentBoxService } from './../../shared/services/comment-box.service';
+import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -52,6 +52,7 @@ export class EditorContentComponent
   delayedEventHandler: Function;
   commentBoxes: CommentBoxSingleton;
   commentClickObservable: Subscription;
+  commentFiredObservable: Subscription;
   isCommentBoxExists = 0;
   // okToCreateCommentBox = false;
   canvasWidth = 0;
@@ -79,6 +80,13 @@ export class EditorContentComponent
           this.createCommentBox();
           this.isCommentBoxExists = 1;
         }
+      }
+    );
+
+    this.commentFiredObservable = this.commentBoxService.commentBoxCheckBoxClicked.subscribe(
+      (checkBoxClicked) => {
+        console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
+
       }
     );
   }
@@ -176,9 +184,6 @@ export class EditorContentComponent
     }
   }
 
-  public getIsCommentModeActive() : Observable<boolean> {
-    return this.commentBoxService
-}
     
 
   onMouseUp(event: MouseEvent): void {

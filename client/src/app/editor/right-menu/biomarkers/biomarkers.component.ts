@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { BiomarkersFacadeService } from './biomarkers.facade.service';
 import { AppService } from './../../../shared/services/app.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { BioNode } from './../../../shared/models/bionode.model';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import { BiomarkersDialogComponent } from './biomarkers-dialog/biomarkers-dialog.component';
+import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -34,6 +35,10 @@ export class BiomarkersComponent implements OnInit {
   readonly BORDERS_OFF = 'border_clear';
   opacity: number;
   shadowsChecked: boolean;
+  activatedCommentBox = false;
+  stateCheckCommentBox = true;
+
+  @Output() fireCommentEvent = new EventEmitter<boolean>();
 
   tree: BioNode[];
 
@@ -42,7 +47,7 @@ export class BiomarkersComponent implements OnInit {
 
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
               public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
-              private changeDetector: ChangeDetectorRef) {
+              private changeDetector: ChangeDetectorRef, private commentBoxService: CommentBoxService) {
 
     this.biomarkersFacadeService.showBorders = false;
     this.opacity = 65;
@@ -223,4 +228,10 @@ export class BiomarkersComponent implements OnInit {
     return this.biomarkersFacadeService.shortenedTypeOf(node);
   }
 
+  toggleCommentBox() {
+
+    this.stateCheckCommentBox = false;
+    console.log('FIREDDDD ' + this.stateCheckCommentBox);
+    this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
+  }
 }
