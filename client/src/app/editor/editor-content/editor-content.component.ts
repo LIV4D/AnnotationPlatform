@@ -63,6 +63,7 @@ export class EditorContentComponent
   @ViewChild('mainCanvas') mainCanvas: ElementRef;
   @ViewChild('commentBox', { read: ViewContainerRef })
   commentBox: ViewContainerRef;
+  commentBoxCheck = false;
 
   @Output() svgLoaded: EventEmitter<any> = new EventEmitter();
   editorMousePos: Point;
@@ -78,6 +79,10 @@ export class EditorContentComponent
           console.log('hasBeenClicked === true');
           // this.okToCreateCommentBox = true;
           this.createCommentBox();
+          // checked
+          // if(!this.commentBoxCheck) {
+          //   document.getElementById('boundary').style.zIndex = '300';
+          // }
           this.isCommentBoxExists = 1;
         }
       }
@@ -86,7 +91,8 @@ export class EditorContentComponent
     this.commentFiredObservable = this.commentBoxService.commentBoxCheckBoxClicked.subscribe(
       (checkBoxClicked) => {
         console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
-
+        this.commentBoxCheck = checkBoxClicked;
+        this.toggleCommentMode();
       }
     );
   }
@@ -177,6 +183,8 @@ export class EditorContentComponent
   }
 
   toggleCommentMode() {
+    console.log('TEST ON TOGGLE');
+
     if (document.getElementById('boundary').style.zIndex === '0') {
       document.getElementById('boundary').style.zIndex = '300';
     } else {
