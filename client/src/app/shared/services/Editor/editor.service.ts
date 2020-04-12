@@ -3,23 +3,15 @@ import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
+import { CanvasDimensionService } from './canvas-dimension.service';
 import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LocalStorage } from './local-storage.service';
 import { Point } from './Tools/point.service';
-import { Image as ImageServer } from '../../models/serverModels/image.model';
-import { tap } from 'rxjs/operators';
-import { AppService } from '../app.service';
-import { HeaderService } from '../header.service';
 import { GalleryService } from '../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
-import { BioNode } from './../../models/bionode.model';
 import { saveAs } from 'file-saver';
-import { Task } from '../../models/serverModels/task.model';
-import { AnnotationData } from '../../models/serverModels/annotationData.model';
-import { BridgeSingleton } from './Data-Persistence/bridge.service';
-import { RevisionService } from './revision.service';
+import { LoadingService } from './Data-Persistence/loading.service';
 declare const Buffer;
 
 // Min and max values for zooming
@@ -34,8 +26,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
   providedIn: 'root',
 })
 export class EditorService {
-  imageLocal: HTMLImageElement;
-  imageServer: ImageServer;
+  backgroundCanvas: BackgroundCanvas;
   zoomFactor: number;
   offsetX: number;
   offsetY: number;
@@ -46,16 +37,14 @@ export class EditorService {
   fullCanvasWidth: number;
   fullCanvasHeight: number;
   scaleX: number;
-  backgroundCanvas: BackgroundCanvas;
   canvasDisplayRatio: BehaviorSubject<number>;
-  imageId: string;
   svgLoaded: EventEmitter<any>;
   localSVGName: string;
   menuState: boolean;
 
   canRedraw = true;
   commentBoxes: CommentBoxSingleton;
-  bridgeSingleton: BridgeSingleton;
+
 
   // public biomarkersService: BiomarkersService,
 
@@ -64,25 +53,15 @@ export class EditorService {
     public layersService: LayersService,
     public galleryService: GalleryService,
     public router: Router,
-    private appService: AppService,
-    private headerService: HeaderService,
+    private canvasDimensionService: CanvasDimensionService,
     private biomarkerService: BiomarkerService,
-    private widgetService: WidgetStorageService,
-    private revisionService: RevisionService
+    private loadingService: LoadingService
   ) {
     this.scaleX = 1;
     this.imageLoaded = false;
     this.canvasDisplayRatio = new BehaviorSubject<number>(1);
     this.commentBoxes = CommentBoxSingleton.getInstance();
-    this.bridgeSingleton = BridgeSingleton.getInstance();
-    // Check if a change was made to save to localStorage every 30 seconds.
-    setInterval(() => {
-      // console.log(this.commentBoxes.getTextAreaValues());
-      if (this.layersService.unsavedChange) {
-        LocalStorage.save(this, this.layersService);
-        this.layersService.unsavedChange = false;
-      }
-    }, 10000);
+    this.backgroundCanvas = this.canvasDimensionService.backgroundCanvas;
   }
 
   init(
@@ -102,9 +81,9 @@ export class EditorService {
     this.svgBox = svgBox.nativeElement;
 
     this.svgLoaded = svgLoaded;
-    if (this.imageLocal) {
+    if (this.loadingService.getImageLocal()) {
       this.setImageId('local');
-      this.loadAllLocal(this.imageLocal, this.svgLoaded);
+      this.loadAllLocal(this.loadingService.getImageLocal(), this.svgLoaded);
     } else {
       this.loadAll();
     }
@@ -114,24 +93,24 @@ export class EditorService {
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
   updateCanvasDisplayRatio(): void {
     const ratio =
-      this.backgroundCanvas.displayCanvas.getBoundingClientRect().width /
-      this.backgroundCanvas.displayCanvas.width;
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().width /
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
     this.canvasDisplayRatio.next(ratio);
   }
 
   // Resizes the canvases to the current window size.
   resize(): void {
-    if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
+    if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) {
       return;
     }
     const viewportRatio = this.viewportRatio();
     let H: number;
     let W: number;
     if (this.originalImageRatio() > viewportRatio) {
-      W = this.backgroundCanvas.originalCanvas.width;
+      W = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
       H = W * (1 / viewportRatio);
     } else {
-      H = this.backgroundCanvas.originalCanvas.height;
+      H = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
       W = H * viewportRatio;
     }
     const h = H / this.zoomFactor;
@@ -140,8 +119,8 @@ export class EditorService {
     // Resize main image.
     this.fullCanvasWidth = W;
     this.fullCanvasHeight = H;
-    this.backgroundCanvas.displayCanvas.width = w;
-    this.backgroundCanvas.displayCanvas.height = h;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = w;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = h;
 
     // Resize layers.
     this.layersService.resize(w, h);
@@ -160,9 +139,9 @@ export class EditorService {
   ): Promise<void> {
     // console.log("Load all local");
     this.imageLoaded = true;
-    this.backgroundCanvas = new BackgroundCanvas(
+    this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
-      this.imageLocal
+      this.loadingService.getImageLocal()
     );
 
     // Load the main canvas.
@@ -170,37 +149,37 @@ export class EditorService {
     const imageRatio = this.originalImageRatio();
 
     if (imageRatio > viewportRatio) {
-      this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
+      this.fullCanvasWidth = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
       this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
     } else {
-      this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
+      this.fullCanvasHeight = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
       this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
     }
 
-    this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
-    this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
-    const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
+    const context: CanvasRenderingContext2D = this.canvasDimensionService.backgroundCanvas.getDisplayContext();
     let x = 0;
     let y = 0;
 
     if (imageRatio > viewportRatio) {
       y =
-        (this.backgroundCanvas.displayCanvas.height -
-          this.backgroundCanvas.originalCanvas.height) /
+        (this.canvasDimensionService.backgroundCanvas.displayCanvas.height -
+          this.canvasDimensionService.backgroundCanvas.originalCanvas.height) /
         2;
     } else {
       x =
-        (this.backgroundCanvas.displayCanvas.width -
-          this.backgroundCanvas.originalCanvas.width) /
+        (this.canvasDimensionService.backgroundCanvas.displayCanvas.width -
+          this.canvasDimensionService.backgroundCanvas.originalCanvas.width) /
         2;
     }
 
     context.drawImage(
-      this.backgroundCanvas.originalCanvas,
+      this.canvasDimensionService.backgroundCanvas.originalCanvas,
       x,
       y,
-      this.backgroundCanvas.originalCanvas.width,
-      this.backgroundCanvas.originalCanvas.height
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
     );
 
     // Load the zoom canvas.
@@ -211,10 +190,10 @@ export class EditorService {
       const zoomCanvas: HTMLCanvasElement = document.getElementById(
         'zoom-canvas'
       ) as HTMLCanvasElement;
-      zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
-      zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
+      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
+      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
       const zoomContext = zoomCanvas.getContext('2d');
-      zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
     }, 0);
     this.updateCanvasDisplayRatio();
 
@@ -228,7 +207,7 @@ export class EditorService {
       .subscribe((res:any) => {
         // Replace
         this.layersService.biomarkerCanvas = [];
-        this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
+        this.layersService.createFlatCanvasRecursiveJson(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
         this.biomarkerService.initJsonRecursive(res.data);
       });
 
@@ -239,94 +218,16 @@ export class EditorService {
       })
       .pipe()
       .toPromise();
-
-    console.log(JSON.parse(res));
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
-  public async loadRevision(draw: boolean): Promise<void> {
-    const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    let currentAnnotationId = 'getEmpty';
-    if ( this.bridgeSingleton.getCurrentTask() !== null && this.bridgeSingleton.getCurrentTask() !== undefined ){
-      currentAnnotationId = this.bridgeSingleton.getCurrentTask().annotationId.toString();
-    }
-    this.layersService.biomarkerCanvas = [];
-    const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {
-      headers: new HttpHeaders(),
-      reportProgress: true,
-      observe: 'events',
-    });
-    this.headerService
-      .display_progress(req, 'Downloading Preannotations')
-      .subscribe(
-        (res) => {
-        this.widgetService.setWidgets(res.widgets);  
-        if (draw) {
-            // Store the revision within the revision service.
-            this.revisionService.revision = res.data;
-
-            this.layersService.biomarkerCanvas = [];
-            this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-            this.biomarkerService.initJsonRecursive(res.data);
-            this.biomarkerService.buildTreeRecursive(res.data);
-            setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
-        }
-
-          // this.svgBox.innerHTML = res.svg;
-          // const parser = new DOMParser();
-          // const xmlDoc = parser.parseFromString(res.svg, 'image/svg+xml');
-          // const arbre: SVGGElement[] = [];
-          // Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-          //   const elems = e.getElementsByTagName('g');
-          //   for (let j = 0; j < elems.length; j++) {
-          //     if (elems[j].parentElement.tagName !== 'g') {
-          //       arbre.push(elems[j]);
-          //     }
-          //   }
-          // });
-
-          // // this.commentService.comment = res.diagnostic;
-
-          // if (draw) {
-          //   this.layersService.biomarkerCanvas = [];
-          //   arbre.forEach((e: SVGGElement) => {
-          //   this.layersService.createFlatCanvasRecursiveJson(e, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-          //   });
-
-          //   setTimeout(() => {
-          //     //LocalStorage.save(this, this.layersService);
-          //   }, 1000);
-          // }
-          // this.svgLoaded.emit(arbre);
-        },
-        async (error) => {
-          if (error.status === 404 || error.status === 500) {
-            console.log('ca passe pas');
-            this.layersService.biomarkerCanvas = [];
-            const reqBase = this.http.get(`/api/annotations/get/getEmpty/`, {
-              headers: new HttpHeaders(),
-              observe: 'events',
-              reportProgress: true,
-            });
-            this.headerService
-              .display_progress(reqBase, 'Downloading Preannotations')
-              .subscribe((res) => {
-                if (draw) {
-                  this.layersService.biomarkerCanvas = [];
-                  this.layersService.createFlatCanvasRecursiveJson(res.data, this.backgroundCanvas.originalCanvas.width, this.backgroundCanvas.originalCanvas.height);
-                  this.biomarkerService.initJsonRecursive(res.data);
-                  this.biomarkerService.buildTreeRecursive(res.data);
-                  setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
-              }
-              });
-          }
-        }
-      );
+  public async loadRevision(drawTheAnnotation: boolean): Promise<void> {
+    this.loadingService.loadRevision(drawTheAnnotation, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
   }
 
   // Load the main image in the background canvas.
   public loadMainImage(image: HTMLImageElement): void {
-    this.backgroundCanvas = new BackgroundCanvas(
+    this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
       image
     );
@@ -334,34 +235,34 @@ export class EditorService {
     const viewportRatio = this.viewportRatio();
     const imageRatio = this.originalImageRatio();
     if (imageRatio > viewportRatio) {
-      this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
+      this.fullCanvasWidth = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
       this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
     } else {
-      this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
+      this.fullCanvasHeight = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
       this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
     }
-    this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
-    this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
-    const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
+    const context: CanvasRenderingContext2D = this.canvasDimensionService.backgroundCanvas.getDisplayContext();
     let x = 0,
       y = 0;
     if (imageRatio > viewportRatio) {
       y =
-        (this.backgroundCanvas.displayCanvas.height -
-          this.backgroundCanvas.originalCanvas.height) /
+        (this.canvasDimensionService.backgroundCanvas.displayCanvas.height -
+          this.canvasDimensionService.backgroundCanvas.originalCanvas.height) /
         2;
     } else {
       x =
-        (this.backgroundCanvas.displayCanvas.width -
-          this.backgroundCanvas.originalCanvas.width) /
+        (this.canvasDimensionService.backgroundCanvas.displayCanvas.width -
+          this.canvasDimensionService.backgroundCanvas.originalCanvas.width) /
         2;
     }
     context.drawImage(
-      this.backgroundCanvas.originalCanvas,
+      this.canvasDimensionService.backgroundCanvas.originalCanvas,
       x,
       y,
-      this.backgroundCanvas.originalCanvas.width,
-      this.backgroundCanvas.originalCanvas.height
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
     );
     // Load the zoom canvas.
     // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
@@ -372,71 +273,28 @@ export class EditorService {
       const zoomCanvas: HTMLCanvasElement = document.getElementById(
         'zoom-canvas'
       ) as HTMLCanvasElement;
-      zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
-      zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
+      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
+      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
       const zoomContext = zoomCanvas.getContext('2d');
-      zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
       this.resize();
     }, 0);
     this.updateCanvasDisplayRatio();
   }
 
   getMainImage(): void {
-    // console.log('EditorService::getMainImage()');
-    const req = this.http.get(`/api/images/download/${this.imageId}/raw`, {
-      responseType: 'blob',
-      observe: 'events',
-      reportProgress: true,
-    });
-
-    this.headerService
-      .display_progress(req, 'Downloading: Image')
-      .subscribe((res) => {
-        const reader: FileReader = new FileReader();
-        reader.onload = () => {
-          const image = new Image();
-          image.onload = () => {
-            this.loadMainImage(image);
-            // TODO
-            // this.loadPretreatmentImage();
-          };
-          image.src = reader.result as string;
-        };
-        reader.readAsDataURL(res);
-      });
+    this.loadingService.getMainImage();
   }
 
   // Check if the browser's local storage contains a usable revision
   // that should be loaded.
   shouldLoadLocalStorage(lastImageId: string): boolean {
-    return (
-      lastImageId && // Load if there is an imageId in the localStorage...
-      (!this.imageId || // ... and there is no currently selected imageId ... // .. or that selected image is the same one as localStorage and
-        //    not a local file system image
-        (this.imageId === lastImageId && this.imageId !== 'local'))
-    );
+    return this.loadingService.shouldLoadLocalStorage(lastImageId);
   }
 
   // Load everything in the editor.
   public loadAll(): void {
-    // Check if a an image is saved in localStorage
-    const lastImageId = LocalStorage.lastSavedImageId();
-
-    if (this.shouldLoadLocalStorage(lastImageId)) {
-      this.imageId = lastImageId;
-      this.getMainImage();
-      this.loadRevision(true);
-      //LocalStorage.load(this, this.layersService);
-      this.loadMetadata(this.imageId);
-      return;
-    }
-    // Check if imageId is set
-    if (!this.imageId) {
-      return;
-    }
-
-    this.getMainImage();
-    this.loadRevision(true);
+    this.loadingService.loadAll(this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
   }
 
   // public loadPretreatmentImage(): void {
@@ -499,15 +357,15 @@ export class EditorService {
       zoomContext.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
 
       // Redraw the image.
-      zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
 
       // Redraw the rectangle (unless completely zoomed out).
       if (this.zoomFactor === 1.0) {
         return;
       }
-      const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect()
+      const realHeight = this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect()
         .height;
-      const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect()
+      const realWidth = this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect()
         .width;
       let h: number;
       let w: number;
@@ -518,8 +376,8 @@ export class EditorService {
         h = zoomCanvas.height / this.zoomFactor;
         w = Math.min(h * (realWidth / realHeight), zoomCanvas.width);
       }
-      const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
-      const y = (this.offsetY / this.backgroundCanvas.displayCanvas.height) * h;
+      const x = (this.offsetX / this.canvasDimensionService.backgroundCanvas.displayCanvas.width) * w;
+      const y = (this.offsetY / this.canvasDimensionService.backgroundCanvas.displayCanvas.height) * h;
 
       zoomContext.strokeStyle = 'white';
       zoomContext.lineWidth = 20;
@@ -539,12 +397,12 @@ export class EditorService {
 
     // The offsets must not be too large as to create empty space.
     if (
-      this.backgroundCanvas.originalCanvas.width >
-      this.backgroundCanvas.displayCanvas.width
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width >
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.width
     ) {
       this.offsetX = Math.min(
-        this.backgroundCanvas.originalCanvas.width -
-          this.backgroundCanvas.displayCanvas.width,
+        this.canvasDimensionService.backgroundCanvas.originalCanvas.width -
+          this.canvasDimensionService.backgroundCanvas.displayCanvas.width,
         this.offsetX
       );
     } else {
@@ -552,12 +410,12 @@ export class EditorService {
     }
 
     if (
-      this.backgroundCanvas.originalCanvas.height >
-      this.backgroundCanvas.displayCanvas.height
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height >
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.height
     ) {
       this.offsetY = Math.min(
-        this.backgroundCanvas.originalCanvas.height -
-          this.backgroundCanvas.displayCanvas.height,
+        this.canvasDimensionService.backgroundCanvas.originalCanvas.height -
+          this.canvasDimensionService.backgroundCanvas.displayCanvas.height,
         this.offsetY
       );
     } else {
@@ -575,15 +433,15 @@ export class EditorService {
     const zoomFactor = this.zoomFactor;
 
     // Adjust canvas sizes.
-    const oldWidth = this.backgroundCanvas.displayCanvas.width;
+    const oldWidth = this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
     // divide by the zoom factor in order to get the new selection's width to zoom at
     const newWidth = this.fullCanvasWidth / zoomFactor;
     // // console.log('%c newWidth : ' + newWidth , 'color: black; background:yellow;');
-    this.backgroundCanvas.displayCanvas.width = newWidth;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = newWidth;
 
     const newHeight = this.fullCanvasHeight / zoomFactor;
-    const oldHeight = this.backgroundCanvas.displayCanvas.height;
-    this.backgroundCanvas.displayCanvas.height = newHeight;
+    const oldHeight = this.canvasDimensionService.backgroundCanvas.displayCanvas.height;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = newHeight;
 
      this.layersService.resize(newWidth, newHeight);
 
@@ -658,12 +516,12 @@ export class EditorService {
       zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
 
       // Adjust canvas sizes.
-      const oldWidth = this.backgroundCanvas.displayCanvas.width;
-      const oldHeight = this.backgroundCanvas.displayCanvas.height;
+      const oldWidth = this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
+      const oldHeight = this.canvasDimensionService.backgroundCanvas.displayCanvas.height;
       const newWidth = this.fullCanvasWidth / zoomFactor;
       const newHeight = this.fullCanvasHeight / zoomFactor;
-      this.backgroundCanvas.displayCanvas.width = newWidth;
-      this.backgroundCanvas.displayCanvas.height = newHeight;
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.width = newWidth;
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.height = newHeight;
       this.layersService.resize(newWidth, newHeight);
 
       if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
@@ -687,31 +545,31 @@ export class EditorService {
   // Function to change the offsets to match a new center.
   moveCenter(percentX: number, percentY: number): void {
     const displayW =
-      this.backgroundCanvas.displayCanvas.width <
-      this.backgroundCanvas.originalCanvas.width
-        ? this.backgroundCanvas.originalCanvas.width
-        : this.backgroundCanvas.displayCanvas.width;
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.width <
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width
+        ? this.canvasDimensionService.backgroundCanvas.originalCanvas.width
+        : this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
     const displayH =
-      this.backgroundCanvas.displayCanvas.height <
-      this.backgroundCanvas.originalCanvas.height
-        ? this.backgroundCanvas.originalCanvas.height
-        : this.backgroundCanvas.displayCanvas.height;
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.height <
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
+        ? this.canvasDimensionService.backgroundCanvas.originalCanvas.height
+        : this.canvasDimensionService.backgroundCanvas.displayCanvas.height;
     this.offsetX =
-      this.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
     this.offsetY =
-      this.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
     this.adjustOffsets();
     this.transform();
   }
 
   // Function that transforms the editor view according to the zoomFactor and offsets properties.
   transform(): void {
-    if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
+    if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) {
       return;
     }
-    this.backgroundCanvas.setOffset(this.offsetX, this.offsetY);
+    this.canvasDimensionService.backgroundCanvas.setOffset(this.offsetX, this.offsetY);
 
-    this.backgroundCanvas.draw();
+    this.canvasDimensionService.backgroundCanvas.draw();
 
     this.layersService.biomarkerCanvas.forEach(layer => {
       layer.setOffset(this.offsetX, this.offsetY);
@@ -733,8 +591,8 @@ export class EditorService {
   // Return the width/height ratio of the original image.
   originalImageRatio(): number {
     return (
-      this.backgroundCanvas.originalCanvas.width /
-      this.backgroundCanvas.originalCanvas.height
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width /
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
     );
   }
 
@@ -750,11 +608,11 @@ export class EditorService {
 
     clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
     const canvasX =
-      (clientX * this.backgroundCanvas.displayCanvas.width) /
-      this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+      (clientX * this.canvasDimensionService.backgroundCanvas.displayCanvas.width) /
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
     const canvasY =
-      (clientY * this.backgroundCanvas.displayCanvas.height) /
-      this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+      (clientY * this.canvasDimensionService.backgroundCanvas.displayCanvas.height) /
+      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
     return new Point(canvasX, canvasY);
   }
 
@@ -765,25 +623,12 @@ export class EditorService {
     return new Point(x, y);
   }
 
-  // getTasks(display_progress= false): Observable<Task[]> {
-  //     if (display_progress) {
-  //         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  //         const req = this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`, {observe: 'events', reportProgress: true});
-  //         return this.headerService.display_progress(req, 'Downloading: Tasks List');
-  //     } else {
-  //         const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  //         return this.http.get<Task[]>(`/api/tasks/${userId}/${this.imageId}/`);
-  //     }
-  // }
-
   loadMetadata(imageId: string): void {
-    // this.http.get<ImageServer>(`/api/images/${imageId}/`).subscribe(res => {
-    //     this.imageServer = res;
-    // });
+    this.loadingService.loadMetadata(imageId);
   }
 
   saveSVGFile(): void {
-    if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
+    if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) {
       return;
     }
     this.layersService.biomarkerCanvas.forEach((b) => {
@@ -804,6 +649,6 @@ export class EditorService {
   cancel() {}
 
   setImageId(id: string): void {
-    this.imageId = id;
+    this.loadingService.setImageId(id);
   }
 }

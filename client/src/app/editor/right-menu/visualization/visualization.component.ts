@@ -5,6 +5,7 @@ import { HOTKEYS } from 'src/app/shared/constants/hotkeys';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
+import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-dimension.service';
 
 @Component({
     selector: 'app-visualization',
@@ -23,7 +24,10 @@ import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/backgroun
     @Input() canvas: BackgroundCanvas;
     @Output() flip: EventEmitter<any> = new EventEmitter();
 
-    constructor(private visualizationService: VisualizationService, public appService: AppService, public editorService: EditorService) {
+    constructor(private visualizationService: VisualizationService,
+                private canvasDimensionService: CanvasDimensionService,
+                public appService: AppService,
+                public editorService: EditorService) {
         this.minContrast = -255;
         this.maxContrast = 255;
         this.minBrightness = -100;
@@ -74,14 +78,14 @@ import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/backgroun
     public togglePreprocessing(): void {
         this.preprocessingChecked = !this.preprocessingChecked;
         this.visualizationService.tooglePretreatments(this.preprocessingChecked);
-        this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,
+        this.visualizationService.applyChanges(this.canvasDimensionService.backgroundCanvas, this.brightness, this.contrast,
                                                this.autoContrastChecked);
     }
 
 
     public toggleAutoContrast(): void {
         this.autoContrastChecked = !this.autoContrastChecked;
-        this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,
+        this.visualizationService.applyChanges(this.canvasDimensionService.backgroundCanvas, this.brightness, this.contrast,
                                                this.autoContrastChecked);
     }
 
@@ -92,7 +96,7 @@ import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/backgroun
         if (this.preprocessingChecked) {
             this.togglePreprocessing();
         } else {
-            this.visualizationService.applyChanges(this.editorService.backgroundCanvas, this.brightness, this.contrast,
+            this.visualizationService.applyChanges(this.canvasDimensionService.backgroundCanvas, this.brightness, this.contrast,
                                                    this.autoContrastChecked);
         }
     }

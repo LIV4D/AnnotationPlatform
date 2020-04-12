@@ -1,5 +1,6 @@
 import { EditorService } from './editor.service';
 import { LayersService } from './layers.service';
+import { LoadingService } from './Data-Persistence/loading.service';
 
 enum LocalStorageKeys {
   ImageId = 'imageId',
@@ -26,11 +27,11 @@ export class LocalStorage {
     window.localStorage.setItem(LocalStorageKeys.ImageId, imageId);
   }
 
-  static save(editorService: EditorService, layersService: LayersService): void {
+  static save(loadingService: LoadingService, layersService: LayersService): void {
 
 
     // No save for local files or if nothing is loaded
-    if (!editorService.imageId || editorService.imageId === 'local') {
+    if (!loadingService.getImageId() || loadingService.getImageId() === 'local') {
       return;
     }
     const biomarkers = layersService.biomarkerCanvas;
@@ -53,22 +54,20 @@ export class LocalStorage {
     // Save json as string
 
     const str = JSON.stringify(json);
-    console.log("save");
-    console.log(biomarkers.length);
     localStorage.removeItem(LocalStorageKeys.AllCanvasInfo);
     window.localStorage.setItem(LocalStorageKeys.AllCanvasInfo, str);
 
-    window.localStorage.setItem(LocalStorageKeys.ImageId, editorService.imageId);
+    window.localStorage.setItem(LocalStorageKeys.ImageId, loadingService.getImageId());
   }
 
-  static load(editorService: EditorService, layersService: LayersService): void {
+  static load(loadingService: LoadingService, layersService: LayersService, width: number, height: number): void {
     // Read local storage\\
 
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
 
     const json = JSON.parse(str);
     if (!json) {
-        editorService.loadRevision(true);
+        loadingService.loadRevision(true, width, height);
         return;
     }
     if (!json.biomarkers) {
@@ -80,8 +79,6 @@ export class LocalStorage {
         canvas.clear();
     });
     layersService.biomarkerCanvas = [];
-    console.log('json');
-    console.log(json);
     json.biomarkers.forEach(element => {
         const imageString = element[0];
         const id = element[1];

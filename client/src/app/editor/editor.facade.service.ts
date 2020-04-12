@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { EditorService } from './../shared/services/Editor/editor.service';
 import { LoadingService } from './../shared/services/Editor/Data-Persistence/loading.service';
+import { CanvasDimensionService } from './../shared/services/Editor/canvas-dimension.service';
 import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
@@ -14,7 +15,11 @@ import { Tool } from '../shared/services/Editor/Tools/tool.service';
 
 export class EditorFacadeService {
 
-  constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService, private loadingService: LoadingService) { }
+  constructor(private editorService: EditorService,
+              private toolboxService: ToolboxService,
+              private canvasDimensionService: CanvasDimensionService,
+              private biomarkerService: BiomarkerService,
+              private loadingService: LoadingService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
     // console.log('EditorFacadeService::init()');
@@ -32,7 +37,7 @@ export class EditorFacadeService {
   }
 
   get backgroundCanvas() {
-    return this.editorService.backgroundCanvas;
+    return this.canvasDimensionService.backgroundCanvas;
   }
 
   get scaleX() {
@@ -89,19 +94,19 @@ export class EditorFacadeService {
   }
 
   // TODO: Verify the path of this and its type
-  set imageServer(image: Image) {
+  set imageServer(imageServer: Image) {
 
-    this.editorService.imageServer = image;
+    this.loadingService.setImageServer(imageServer);
   }
 
-  set imageLocal(image: HTMLImageElement) {
+  set imageLocal(imageLocal: HTMLImageElement) {
 
-    this.editorService.imageLocal = image;
+    this.loadingService.setImageLocal(imageLocal);
   }
 
   set imageId(imageId: string) {
 
-    this.editorService.imageId = imageId;
+    this.loadingService.getImageId
   }
 
   loadImageFromServer(imageId: string) {

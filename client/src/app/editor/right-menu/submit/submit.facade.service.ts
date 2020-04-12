@@ -7,6 +7,7 @@ import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 import { TaskTypeService } from 'src/app/shared/services/Tasks/taskType.service';
+import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,7 @@ export class SubmitFacadeService {
                  public appService: AppService,
                  public editorService: EditorService,
                  private tasksService: TasksService,
+                 private loadingService: LoadingService,
                  private taskTypeService: TaskTypeService ) {}
 
     getSaveShortCutToolTipText(): string{
@@ -35,14 +37,14 @@ export class SubmitFacadeService {
     }
 
     async loadTask(): Promise<void> {
-      if (!this.editorService.imageLocal) {
+      if (!this.loadingService.getImageLocal()) {
         const currentTask: Task = await this.tasksService.getNextTaskApp();
         await this.submitService.setSubmitedTask(currentTask);
       }
     }
 
     async loadTaskTypeById(): Promise<void> {
-      if (!this.editorService.imageLocal && this.submitService.getSubmitedTask() !== null && this.submitService.getSubmitedTask() !== undefined) {
+      if (!this.loadingService.getImageLocal() && this.submitService.getSubmitedTask() !== null && this.submitService.getSubmitedTask() !== undefined) {
         const currentTaskType: TaskType = await this.taskTypeService.getTaskTypeApp(this.submitService.getSubmitedTask().taskTypeId);
         await this.submitService.setSubmitedTaskType(currentTaskType);
       }

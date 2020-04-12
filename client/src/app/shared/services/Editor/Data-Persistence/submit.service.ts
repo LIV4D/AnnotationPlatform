@@ -17,12 +17,14 @@ import { LayersService } from '../layers.service';
 import { AppService } from '../../app.service';
 import { HeaderService } from '../../header.service';
 import { LocalStorage } from '../local-storage.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskType } from '../../../models/serverModels/taskType.model';
 import { BridgeSingleton} from './bridge.service';
 import { AnnotationData } from 'src/app/shared/models/serverModels/annotationData.model';
+import { LoadingService } from './loading.service';
 
 @Injectable({
 		providedIn: 'root'
@@ -38,7 +40,9 @@ export class SubmitService {
 		private appService: AppService,
 		private headerService: HeaderService,
     private tasksService: TasksService,
+    private loadingService: LoadingService,
     public editorService: EditorService,
+    private canvasDimensionService: CanvasDimensionService,
 		private router: Router
 		){
       this.bridgeSingleton = BridgeSingleton.getInstance();
@@ -71,7 +75,7 @@ export class SubmitService {
 		dialogRef.afterClosed().subscribe(result => {
 			if (result) {
         LocalStorage.clear();
-				LocalStorage.save(this.editorService, this.layersService);
+				LocalStorage.save(this.loadingService, this.layersService);
 				// Load the next task when the user clicks << Save & load Next >>
 				this.saveAnnotation(result === 'next');
 			}
@@ -124,13 +128,13 @@ export class SubmitService {
   */
   public saveToDB(): Observable<any> {
     // The background canvases has to exist
-    if (!this.editorService.backgroundCanvas || !this.editorService.backgroundCanvas.originalCanvas) { return; }
+    if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) { return; }
         this.appService.loading = true;
 
     // The ophtalmologist work is saved
     if (this.layersService.unsavedChange) {
       LocalStorage.clear();
-      LocalStorage.save(this.editorService, this.layersService);
+      LocalStorage.save(this.loadingService, this.layersService);
       this.layersService.unsavedChange = false;
     }
 

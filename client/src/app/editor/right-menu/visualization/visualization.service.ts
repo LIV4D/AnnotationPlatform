@@ -3,12 +3,16 @@
 import { Injectable } from '@angular/core';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
+import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-dimension.service';
 
 const BRIGHTNESS_FACTOR = 33.0;
 const CONTRAST_FACTOR = 50.0;
-@Injectable()
+
+@Injectable({
+  providedIn: 'root'
+})
 export class VisualizationService {
-    constructor(public editorService: EditorService) {}
+    constructor(public editorService: EditorService, private canvasDimensionService:CanvasDimensionService) {}
 
     applyChanges(canvas: BackgroundCanvas, brightness: number, contrast: number, autoContrast= false): void {
         const image = canvas.getOriginalImageData();
@@ -62,6 +66,6 @@ export class VisualizationService {
     }
 
     tooglePretreatments(showPretreatments: boolean): void {
-        this.editorService.backgroundCanvas.tooglePretreatments(showPretreatments);
+        this.canvasDimensionService.backgroundCanvas.tooglePretreatments(showPretreatments);
     }
 }
