@@ -25,7 +25,7 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
     @Output() flip: EventEmitter<any> = new EventEmitter();
 
     constructor(private visualizationService: VisualizationService,
-                private canvasDimensionService: CanvasDimensionService,
+                public canvasDimensionService: CanvasDimensionService,
                 public appService: AppService,
                 public editorService: EditorService) {
         this.minContrast = -255;

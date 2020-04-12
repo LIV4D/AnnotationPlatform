@@ -17,7 +17,7 @@ export class EditorFacadeService {
 
   constructor(private editorService: EditorService,
               private toolboxService: ToolboxService,
-              private canvasDimensionService: CanvasDimensionService,
+              public canvasDimensionService: CanvasDimensionService,
               private biomarkerService: BiomarkerService,
               private loadingService: LoadingService) { }
 
@@ -86,11 +86,11 @@ export class EditorFacadeService {
 
   set imageLoaded(boolValue: boolean) {
 
-    this.editorService.imageLoaded = boolValue;
+    this.loadingService.setImageLoaded(boolValue);
   }
 
   get imageLoaded(){
-    return this.editorService.imageLoaded;
+    return this.loadingService.getImageLoaded();
   }
 
   // TODO: Verify the path of this and its type
@@ -110,7 +110,6 @@ export class EditorFacadeService {
   }
 
   loadImageFromServer(imageId: string) {
-
     this.loadingService.loadImageFromServer(imageId);
   }
 

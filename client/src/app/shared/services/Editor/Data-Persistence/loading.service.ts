@@ -9,15 +9,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LayersService } from '../layers.service';
 import { HeaderService } from '../../header.service';
 import { BridgeSingleton } from './bridge.service';
-import { WidgetEventService } from '../widgetEvent.service';
 import { WidgetStorageService } from './widgetStorage.service';
 
 // Material
-import { MatDialogRef } from '@angular/material/dialog';
 import { RevisionService } from '../revision.service';
 import { BiomarkerService } from '../biomarker.service';
 import { LocalStorage } from '../local-storage.service';
-import { EditorService } from '../editor.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
+import { BackgroundCanvas } from '../Tools/background-canvas.service';
 
 @Injectable({
 		providedIn: 'root'
@@ -27,6 +26,7 @@ export class LoadingService {
   private imageId: string;
   private imageLocal: HTMLImageElement;
   private imageServer: ImageServer;
+  private imageLoaded: boolean;
   bridgeSingleton: BridgeSingleton;
 
 	constructor(
@@ -36,7 +36,7 @@ export class LoadingService {
     private biomarkerService: BiomarkerService,
     private widgetService: WidgetStorageService,
     private revisionService: RevisionService,
-    public editorService: EditorService,
+    public canvasDimensionService: CanvasDimensionService,
     public router: Router,
     ){
       this.bridgeSingleton = BridgeSingleton.getInstance();
@@ -73,6 +73,14 @@ export class LoadingService {
     this.imageServer = imageServer
   }
 
+  public getImageLoaded(): boolean{
+    return this.imageLoaded;
+  }
+
+  public setImageLoaded(imageLoaded: boolean): void{
+    this.imageLoaded = imageLoaded
+  }
+
   // Function called from gallery/tasks to load a new image and redirect to editor
   loadImageFromServer(imageId: string): void {
     const req = this.http.get<ImageServer>(`/api/images/get/${imageId}/`, {
@@ -83,8 +91,8 @@ export class LoadingService {
       .display_progress(req, 'Downloading: Image')
       .subscribe(res => {
         this.setImageLocal(null);
-        this.setImageId(imageId);
         this.setImageServer(res);
+        this.setImageId(imageId);
         this.router.navigate(['/' + 'editor']);
       });
   }
@@ -142,6 +150,63 @@ export class LoadingService {
       );
   }
 
+  // Load the main image in the background canvas.
+  public loadMainImage(image: HTMLImageElement): void {
+    this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
+      document.getElementById('main-canvas') as HTMLCanvasElement,
+      image
+    );
+    // Load the main canvas.
+    const viewportRatio = this.canvasDimensionService.viewportRatio();
+    const imageRatio = this.canvasDimensionService.originalImageRatio();
+    if (imageRatio > viewportRatio) {
+      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
+      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.fullCanvasWidth * (1 / viewportRatio);
+    } else {
+      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
+      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.fullCanvasHeight * viewportRatio;
+    }
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = this.canvasDimensionService.fullCanvasWidth;
+    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = this.canvasDimensionService.fullCanvasHeight;
+    const context: CanvasRenderingContext2D = this.canvasDimensionService.backgroundCanvas.getDisplayContext();
+    let x = 0,
+      y = 0;
+    if (imageRatio > viewportRatio) {
+      y =
+        (this.canvasDimensionService.backgroundCanvas.displayCanvas.height -
+          this.canvasDimensionService.backgroundCanvas.originalCanvas.height) /
+        2;
+    } else {
+      x =
+        (this.canvasDimensionService.backgroundCanvas.displayCanvas.width -
+          this.canvasDimensionService.backgroundCanvas.originalCanvas.width) /
+        2;
+    }
+    context.drawImage(
+      this.canvasDimensionService.backgroundCanvas.originalCanvas,
+      x,
+      y,
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
+      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
+    );
+    // Load the zoom canvas.
+    // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
+    // Without this zoomCanvas is still undefined because of ngIf in template
+    this.setImageLoaded(true);
+    setTimeout(() => {
+      // We use setTimeout
+      const zoomCanvas: HTMLCanvasElement = document.getElementById(
+        'zoom-canvas'
+      ) as HTMLCanvasElement;
+      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
+      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
+      const zoomContext = zoomCanvas.getContext('2d');
+      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
+      this.canvasDimensionService.resize();
+    }, 0);
+    this.canvasDimensionService.updateCanvasDisplayRatio();
+  }
+
   getMainImage(): void {
     const req = this.http.get(`/api/images/download/${this.imageId}/raw`, {
       responseType: 'blob',
@@ -156,7 +221,7 @@ export class LoadingService {
         reader.onload = () => {
           const image = new Image();
           image.onload = () => {
-            this.editorService.loadMainImage(image);
+            this.loadMainImage(image);
             // TODO
             // this.loadPretreatmentImage();
           };

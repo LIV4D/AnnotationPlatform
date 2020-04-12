@@ -12,7 +12,7 @@ const CONTRAST_FACTOR = 50.0;
   providedIn: 'root'
 })
 export class VisualizationService {
-    constructor(public editorService: EditorService, private canvasDimensionService:CanvasDimensionService) {}
+    constructor(public editorService: EditorService, public canvasDimensionService:CanvasDimensionService) {}
 
     applyChanges(canvas: BackgroundCanvas, brightness: number, contrast: number, autoContrast= false): void {
         const image = canvas.getOriginalImageData();
