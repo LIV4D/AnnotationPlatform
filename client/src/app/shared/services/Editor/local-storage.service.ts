@@ -67,7 +67,7 @@ export class LocalStorage {
 
     const json = JSON.parse(str);
     if (!json) {
-        loadingService.loadRevision(true, width, height);
+        loadingService.loadRevision(true);
         return;
     }
     if (!json.biomarkers) {

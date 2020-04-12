@@ -98,7 +98,7 @@ export class LoadingService {
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
-  public async loadRevision(drawTheAnnotation: boolean, width, height): Promise<void> {
+  public async loadRevision(drawTheAnnotation: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
     let currentAnnotationId = 'getEmpty';
     if ( this.bridgeSingleton.getCurrentTask() !== null && this.bridgeSingleton.getCurrentTask() !== undefined ){
@@ -120,7 +120,7 @@ export class LoadingService {
               this.revisionService.revision = res.data;
 
               this.layersService.biomarkerCanvas = [];
-              this.layersService.createFlatCanvasRecursiveJson(res.data, width, height);
+              this.layersService.createFlatCanvasRecursiveJson(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
               this.biomarkerService.initJsonRecursive(res.data);
               this.biomarkerService.buildTreeRecursive(res.data);
               setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
@@ -139,7 +139,7 @@ export class LoadingService {
               .subscribe((res) => {
                 if (drawTheAnnotation) {
                   this.layersService.biomarkerCanvas = [];
-                  this.layersService.createFlatCanvasRecursiveJson(res.data, width, height);
+                  this.layersService.createFlatCanvasRecursiveJson(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
                   this.biomarkerService.initJsonRecursive(res.data);
                   this.biomarkerService.buildTreeRecursive(res.data);
                   setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
@@ -240,14 +240,14 @@ export class LoadingService {
     );
   }
 
-  public loadAll(width, height): void {
+  public loadAll(): void {
     // Check if a an image is saved in localStorage
     const lastImageId = LocalStorage.lastSavedImageId();
 
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
       this.getMainImage();
-      this.loadRevision(true, width, height);
+      this.loadRevision(true);
       //LocalStorage.load(this, this.layersService);
       this.loadMetadata(this.imageId);
       return;

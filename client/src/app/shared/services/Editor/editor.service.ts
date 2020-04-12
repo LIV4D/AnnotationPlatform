@@ -180,7 +180,7 @@ export class EditorService {
 
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(drawTheAnnotation: boolean): Promise<void> {
-    this.loadingService.loadRevision(drawTheAnnotation, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
+    this.loadingService.loadRevision(drawTheAnnotation);
   }
 
   // Load the main image in the background canvas.
@@ -200,7 +200,7 @@ export class EditorService {
 
   // Load everything in the editor.
   public loadAll(): void {
-    this.loadingService.loadAll(this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
+    this.loadingService.loadAll();
   }
 
   // public loadPretreatmentImage(): void {
