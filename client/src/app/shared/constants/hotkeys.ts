@@ -12,7 +12,6 @@ export const HOTKEYS = {
     KEY_CTRL_Z_UNDO: 90,
     KEY_CTRL_Y_REDO: 89,
     KEY_K_PICKKER: 75,
-    KEY_M_FLIP: 77,
     KEY_O_VIEW_ALL: 79,
     KEY_T_PRETREATMENTS: 84,
     KEY_CTRL_S_SAVE: 83,

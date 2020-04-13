@@ -22,7 +22,6 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
     preprocessingChecked: boolean;
     autoContrastChecked: boolean;
     @Input() canvas: BackgroundCanvas;
-    @Output() flip: EventEmitter<any> = new EventEmitter();
 
     constructor(private visualizationService: VisualizationService,
                 public canvasDimensionService: CanvasDimensionService,
@@ -59,10 +58,6 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
             this.contrast = Number(event.value);
             this.visualizationService.applyChanges(this.canvas, this.brightness, Number(event.value));
         }
-    }
-
-    public flipHorizontal(): void {
-        this.flip.emit(null);
     }
 
     public resetBrightness(): void {
@@ -112,10 +107,6 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
     public onKeyDown(event: KeyboardEvent): void {
         if (this.appService.keyEventsEnabled) {
             switch (event.keyCode) {
-                case HOTKEYS.KEY_M_FLIP: {
-                    this.flipHorizontal();
-                    break;
-                }
                 case HOTKEYS.KEY_T_PRETREATMENTS: {
                     this.togglePreprocessing();
                     break;

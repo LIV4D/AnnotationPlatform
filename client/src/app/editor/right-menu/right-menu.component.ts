@@ -17,7 +17,6 @@ export class RightMenuComponent implements OnInit {
   saveText: string;
   // tasks: Task[] = [];
   @Input() canvas: BackgroundCanvas;
-  @Output() flip: EventEmitter<any> = new EventEmitter();
   @ViewChild('biomarkers') biomarkers: BiomarkersComponent;
   // @ViewChild(CommentsComponent) comments: CommentsComponent;
 
@@ -37,11 +36,6 @@ export class RightMenuComponent implements OnInit {
           this.biomarkers.init(arbre);
       }, 0);
   }
-
-  public flipHorizontal(): void {
-      this.flip.emit(null);
-  }
-
 
   // public onKeyDown(event: KeyboardEvent): void {
   //     if (this.appService.keyEventsEnabled) {
