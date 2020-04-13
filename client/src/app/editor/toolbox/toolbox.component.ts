@@ -49,15 +49,17 @@ export class ToolboxComponent implements OnInit {
         }
         case HOTKEYS.KEY_CTRL_Z_UNDO: {
           if (this.commandOrCtrlPressed(event)) {
-            this.toolboxFacadeService.setUndo();
-          }
-          break;
+            this.toolboxFacadeService.setSelectedTool(TOOL_NAMES.UNDO);
+            this.toolboxFacadeService.setUndoRedoState();
+        }
+        break;
         }
         case HOTKEYS.KEY_CTRL_Y_REDO: {
           if (this.commandOrCtrlPressed(event)) {
-            this.toolboxFacadeService.setRedo();
-          }
-          break;
+            this.toolboxFacadeService.setSelectedTool(TOOL_NAMES.REDO);
+            this.toolboxFacadeService.setUndoRedoState();
+        }
+        break;
         }
       }
     }

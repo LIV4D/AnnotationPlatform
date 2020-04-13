@@ -142,7 +142,7 @@ export class LoadingService {
         (res) => {
         this.widgetService.setWidgets(res.widgets);
           if (drawTheAnnotation) {
-            this.loadAnnotationDatas(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
+            this.loadAnnotationDatas(res.data);
           }},
         async (error) => {
           if (error.status === 404 || error.status === 500) {
@@ -153,17 +153,17 @@ export class LoadingService {
               .display_progress(reqBase, 'Downloading Preannotations')
               .subscribe((res) => {
                 if (drawTheAnnotation) {
-                  this.loadAnnotationDatas(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
+                  this.loadAnnotationDatas(res.data);
                 }});
           }}
       );
   }
 
   // Add loaded annotation on some EditorTools
-  public loadAnnotationDatas(data: any, originalCanvasWidth: number, originalCanvasHeight: number){
+  public loadAnnotationDatas(data: object){
     this.revisionService.revision = data; // Store the loaded annotations within the revision service.
     this.layersService.biomarkerCanvas = [];
-    this.layersService.createFlatCanvasRecursiveJson(data, originalCanvasWidth, originalCanvasHeight); // Add Annotation datas on the of the serveur the biomarkerCanvas
+    this.layersService.createFlatCanvasRecursiveJson(data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height); // Add Annotation datas on the of the serveur the biomarkerCanvas
     this.biomarkerService.initJsonRecursive(data);  // Add Annotation datas on Annotation selection right box
     this.biomarkerService.buildTreeRecursive(data); // Build the annotation tree right box
     setTimeout(() => {LocalStorage.save(this, this.layersService); }, 1000);
