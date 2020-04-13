@@ -1,5 +1,5 @@
 // Angular
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Image as ImageServer } from '../../../models/serverModels/image.model';
 import { Router } from '@angular/router';
 
@@ -193,6 +193,37 @@ export class LoadingService {
       this.canvasDimensionService.resize();
     }, 0);
     this.canvasDimensionService.updateCanvasDisplayRatio();
+  }
+
+  // Load canvases and local variables when opening a local image.
+  public async loadAllLocal(image: HTMLImageElement, svgLoaded: EventEmitter<any>): Promise<void> {
+    this.setImageLoaded(true);
+    this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
+      document.getElementById('main-canvas') as HTMLCanvasElement,
+      this.getImageLocal()
+    );
+
+    // Load the main canvas.
+    this.canvasDimensionService.loadMainCanvas();
+    // Load the zoom canvas.
+    // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
+    // Without this zoomCanvas is still undefined because of ngIf in template
+    setTimeout(() => {
+      const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
+      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
+      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
+      const zoomContext = zoomCanvas.getContext('2d');
+      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
+    }, 0);
+    this.canvasDimensionService.updateCanvasDisplayRatio();
+
+    this.http.get(`/api/annotations/get/getEmpty/`, {
+        headers: new HttpHeaders(),
+      })
+      .pipe()
+      .subscribe((res:any) => {
+        this.loadAnnotationDatas(res.data);
+      });
   }
 
   getMainImage(): void {
