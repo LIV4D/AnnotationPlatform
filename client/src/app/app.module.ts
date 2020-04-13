@@ -59,6 +59,12 @@ import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service'
 import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
 import { StorageService } from './shared/services/storage.service';
 import { CommentBoxService } from './shared/services/comment-box.service';
+import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
+import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
+import { RevisionService } from './shared/services/Editor/revision.service';
+import { LoadingService } from './shared/services/Editor/Data-Persistence/loading.service';
+import { CanvasDimensionService } from './shared/services/Editor/canvas-dimension.service';
 
 
 // Pipes
@@ -83,10 +89,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
-import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
-import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
-import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
-import { RevisionService } from './shared/services/Editor/revision.service';
+
 
 @NgModule({
    declarations: [
@@ -166,6 +169,8 @@ import { RevisionService } from './shared/services/Editor/revision.service';
       ToolPropertiesService,
       VisualizationService,
       RevisionService,
+      LoadingService,
+      CanvasDimensionService,
       ImageBorderService,
       CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
