@@ -39,9 +39,9 @@ export class BiomarkersFacadeService {
 
     }
 
-    // getCssClass(elem: HTMLElement) {
-    //     return this.biomarkerService.getCssClass(elem);
-    // }
+    getCssClass(node: Biomarker) {
+        return this.biomarkerService.getCssClass(node);
+    }
 
     setFocusBiomarker(node: Biomarker) {
         this.biomarkerService.setFocusBiomarker(node);

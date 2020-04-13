@@ -264,4 +264,17 @@ export class BiomarkerService {
         }
         return node.type.slice(0,MAX_LENGTH) + '...'
     }
+
+    public getCssClass(node: Biomarker): string {
+        let classes = '';
+        if (this.currentElement !== undefined && this.currentElement.type === node.type) {
+            classes += 'selected ';
+        }
+
+        if (!this.isBiomarkerEnabled(node)) {
+            classes += 'disabledBiomarker ';
+        }
+
+        return classes;
+    }
 }
