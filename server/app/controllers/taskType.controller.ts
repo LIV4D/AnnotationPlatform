@@ -39,7 +39,7 @@ export class TaskTypeController implements IController {
 
     private updateTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedTaskType: ITaskType = {
-            id: req.params.taskTypeId,
+            id: +req.params.taskTypeId,
             title: req.body.title,
             description: req.body.description,
         };
@@ -49,7 +49,7 @@ export class TaskTypeController implements IController {
             .catch(next);
     }
     private deleteTaskType = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.taskTypeService.deleteTaskType(req.params.taskTypeId).then(() => {
+        this.taskTypeService.deleteTaskType(+req.params.taskTypeId).then(() => {
             res.sendStatus(204);
         }).catch(next);
     }

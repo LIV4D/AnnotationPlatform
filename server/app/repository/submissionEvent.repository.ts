@@ -47,17 +47,19 @@ export class SubmissionEventRepository {
     }
 
     public async findByFilter(filter: {userId?:number, imageId?:number}): Promise<SubmissionEvent[]>{
-        let whereConditions = [];
-        if(filter.imageId!==undefined) 
+        const whereConditions = [];
+        if(filter.imageId!==undefined) {
             whereConditions.push('event.annotation.image.id = '+filter.imageId.toString());
-        if(filter.userId!==undefined) 
+        }
+        if(filter.userId!==undefined) {
             whereConditions.push('event.user.id = '+filter.userId.toString());
+        }
 
         const repository =  (await this.connectionProvider()).getRepository(SubmissionEvent);
         return await repository
                     .createQueryBuilder('event')
                     .leftJoinAndSelect('event.user', 'user')
-                    .where(whereConditions.join(" AND "))
+                    .where(whereConditions.join(' AND '))
                     .getMany()
     }
 

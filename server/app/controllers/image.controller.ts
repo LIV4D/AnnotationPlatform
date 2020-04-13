@@ -143,8 +143,8 @@ export class ImageController implements IController {
     private uploadImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in this.upload
         const imageId = req.params.imageId;
-        this.imageService.updateImageFile(imageId, req.file.path)
-            .then(() => this.imageService.updateMetadata(imageId, { filename: req.file.originalname })
+        this.imageService.updateImageFile(+imageId, req.file.path)
+            .then(() => this.imageService.updateMetadata(+imageId, { filename: req.file.originalname })
                             .then(image => res.send(image)))
                             .catch(next)
             .catch(next);
@@ -153,8 +153,8 @@ export class ImageController implements IController {
     private uploadPreprocessing = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in this.upload
         const imageId = req.params.imageId;
-        this.imageService.updatePreprocessingFile(imageId, req.file.path)
-            .then(() => this.imageService.updateMetadata(imageId, { preprocessingFilename: req.file.originalname })
+        this.imageService.updatePreprocessingFile(+imageId, req.file.path)
+            .then(() => this.imageService.updateMetadata(+imageId, { preprocessingFilename: req.file.originalname })
                             .then(image => res.send(image)))
                             .catch(next)
             .catch(next);
@@ -166,7 +166,7 @@ export class ImageController implements IController {
             type: req.body.type,
             metadata: req.body.metadata,
         };
-        newImage.id = req.params.imageId as number;
+        newImage.id = +req.params.imageId;
         this.imageService.updateImage(newImage)
             .then(image => res.send(image))
             .catch(next);
@@ -174,7 +174,7 @@ export class ImageController implements IController {
 
     private deleteImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        const imageId = req.params.imageId as number;
+        const imageId = +req.params.imageId;
         this.imageService.deleteImage(imageId)
             .then(() => res.sendStatus(204))
             .catch(next);
@@ -238,7 +238,7 @@ export class ImageController implements IController {
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // // // // console.log('ImageController::getTask() -- Which should be named getImage()...');
 
-        this.imageService.getImage(req.params.imageId)
+        this.imageService.getImage(+req.params.imageId)
             .then(image => {
                 switch (req.params.attr) {
                     case undefined: res.send(image); break;
@@ -266,7 +266,7 @@ export class ImageController implements IController {
     private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // // // console.log('\nImageController::getImageFile() with id : ' + req.params.imageId + '\n');
 
-        this.imageService.getImagePath(req.params.imageId)
+        this.imageService.getImagePath(+req.params.imageId)
             .then(imgPath => {
                 // // // // console.log('imgPath : ' + imgPath.metadata);
 
@@ -276,14 +276,14 @@ export class ImageController implements IController {
     }
 
     private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getPrepocessingPath(req.params.imageId)
+        this.imageService.getPrepocessingPath(+req.params.imageId)
             .then(prePath => {
                 res.sendFile(path.resolve(prePath));
             })
             .catch(next);
     }
     private getThumbnailFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getThumbnailPath(req.params.imageId)
+        this.imageService.getThumbnailPath(+req.params.imageId)
             .then(thumbPath => {
                 res.sendFile(path.resolve(thumbPath));
             })

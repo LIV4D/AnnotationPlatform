@@ -48,7 +48,7 @@ export class TaskController implements IController {
             comment: req.body.comment,
             projectTitle: req.body.projectTitle,
             assignedUserId: req.body.assignedUserId,
-            creatorId: req.user.id,
+            creatorId: (req.user as User).id,
             lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
         };
         this.taskService.createTask(newTask)
@@ -57,7 +57,7 @@ export class TaskController implements IController {
     }
 
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.taskService.getTask(req.params.taskId, req.user)
+        this.taskService.getTask(+req.params.taskId, req.user as User)
             .then(task => res.send(this.export_task(task, req.params.attr)))
             .catch(next);
     }
@@ -106,7 +106,7 @@ export class TaskController implements IController {
 
     private submitTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const submission: ISubmission = {
-            taskId: req.params.taskId as number,
+            taskId: +req.params.taskId,
             data: req.body.data as AnnotationData,
             uptime: Math.round(process.uptime()),
             isComplete: req.body.isComplete,
@@ -116,7 +116,7 @@ export class TaskController implements IController {
             email: req.body.user.email,
             firstName: req.body.user.firstName,
             lastName: req.body.user.lastName,
-            isAdmin: req.body.user.isAdmin
+            role: req.body.user.role
         };
         const user:User = new User();
         user.update(currentUser);
@@ -149,16 +149,16 @@ export class TaskController implements IController {
     }
 
     private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if (req.user.id !== req.params.userId) {
+        if ((req.user as User).id !== +req.params.userId) {
             throwIfNotAdmin(req.user);
         }
 
-        this.taskService.getTasksByFilter({ userId: req.params.userId })
+        this.taskService.getTasksByFilter({ userId: +req.params.userId })
             .then(tasks => {
                 tasks.forEach((task) => {
                     if (!task.isComplete && task.isVisible) {
                         res.send(task.proto());
-                        return true;
+                        return;
                     }
                 });
                 res.send(null);
@@ -172,20 +172,20 @@ export class TaskController implements IController {
      */
     private updateTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedTask: ITask = {
-            id: req.params.taskId,
+            id: +req.params.taskId,
             isVisible: isNullOrUndefined(req.body.isVisible) ? false : req.body.isVisible,
             isComplete: isNullOrUndefined(req.body.isComplete) ? false : req.body.isComplete,
             lastModifiedTime: isNullOrUndefined(req.body.lastModifiedTime) ? new Date() : req.body.lastModifiedTime,
         };
 
-        this.taskService.updateTask(updatedTask, req.user)
+        this.taskService.updateTask(updatedTask, req.user as User)
             .then(task => res.send(task))
             .catch(next);
     }
 
     private deleteTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        this.taskService.deleteTask(req.params.taskId, req.user)
+        this.taskService.deleteTask(+req.params.taskId, req.user as User)
             .then(() => res.sendStatus(204))
             .catch(next);
     }

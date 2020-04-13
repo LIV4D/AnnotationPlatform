@@ -35,7 +35,7 @@ export class SubmissionEventController implements IController {
     }
 
     private getEvent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.submissionService.getEvent(parseInt(req.params.annotationId))
+        this.submissionService.getEvent(+req.params.annotationId)
         .then(event => {
             switch (req.params.attr) {
                 case undefined: res.send(event); break;

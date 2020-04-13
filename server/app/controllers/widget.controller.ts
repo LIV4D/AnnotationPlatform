@@ -39,7 +39,7 @@ export class WidgetController implements IController {
      */
     private updateWidget = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const updatedWidget: IWidget = {
-            id: parseInt(req.params.widgetId),
+            id: +req.params.widgetId,
             entryField: isNullOrUndefined(req.body.entryField) ? undefined : req.body.entryField,
             label: isNullOrUndefined(req.body.label) ? undefined : req.body.label,
         };
@@ -51,7 +51,7 @@ export class WidgetController implements IController {
 
     private deleteWidget = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        this.widgetService.deleteWidget(req.params.widgetId)
+        this.widgetService.deleteWidget(+req.params.widgetId)
             .then(() => res.sendStatus(204))
             .catch(next);
     }

@@ -5,6 +5,7 @@ import TYPES from '../types';
 import { IController } from './abstractController.controller';
 import { TaskBundleService } from '../services/taskBundle.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
+import { User } from '../models/user.model';
 
 @injectable()
 export class TaskPriorityController implements IController {
@@ -40,7 +41,7 @@ export class TaskPriorityController implements IController {
 
     private assignTaskPriority = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const ids = req.body.ids;
-        this.taskBundleService.assignTasks(ids, req.user)
+        this.taskBundleService.assignTasks(ids, req.user as User)
             .then(() => res.sendStatus(204))
             .catch(next);
     }

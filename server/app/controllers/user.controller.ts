@@ -68,7 +68,7 @@ export class UserController implements IController {
     private updateUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newUser: IUser = {
-            id: req.params.userId,
+            id: +req.params.userId,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             password: req.body.password,
@@ -85,13 +85,13 @@ export class UserController implements IController {
 
     private deleteUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        this.userService.deleteUser(req.params.userId)
+        this.userService.deleteUser(+req.params.userId)
             .then(() => res.sendStatus(204))
             .catch(next);
     }
 
     private getUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.userService.getUser(req.params.userId).then(user => {
+        this.userService.getUser(+req.params.userId).then(user => {
             delete user.password;
             delete user.salt;
             res.send(user);
