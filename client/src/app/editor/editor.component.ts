@@ -60,10 +60,6 @@ export class EditorComponent implements OnInit {
     this.rightMenu.svgLoaded(arbre);
   }
 
-  // public flip(): void {
-  //     this.editorComponent.flip();
-  // }
-
   public openBiomarkers(event: MouseEvent): void {
       // if (! this.deviceService.isDesktop()) {
       //     return;
