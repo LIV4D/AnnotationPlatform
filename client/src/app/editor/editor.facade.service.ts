@@ -53,7 +53,7 @@ export class EditorFacadeService {
   }
 
   get redoTool() {
-    return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0];
+    return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0];
   }
 
   setPanToolByString(tool: string) {
