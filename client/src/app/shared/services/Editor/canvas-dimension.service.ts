@@ -64,44 +64,31 @@ export class CanvasDimensionService {
     const oldYOffset = this.offsetY;
 
     // The offsets are always positive.
+
     this.offsetX = Math.max(0, this.offsetX);
     this.offsetY = Math.max(0, this.offsetY);
-
     // The offsets must not be too large as to create empty space.
-    if (
-      this.backgroundCanvas.originalCanvas.width >
-      this.backgroundCanvas.displayCanvas.width
-    ) {
-      this.offsetX = Math.min(
-        this.backgroundCanvas.originalCanvas.width -
-          this.backgroundCanvas.displayCanvas.width,
-        this.offsetX
-      );
+    if (this.backgroundCanvas.originalCanvas.width > this.backgroundCanvas.displayCanvas.width) {
+      this.offsetX = Math.min(this.backgroundCanvas.originalCanvas.width - this.backgroundCanvas.displayCanvas.width,
+        this.offsetX);
     } else {
       this.offsetX = 0;
     }
 
-    if (
-      this.backgroundCanvas.originalCanvas.height >
-      this.backgroundCanvas.displayCanvas.height
+    if (this.backgroundCanvas.originalCanvas.height > this.backgroundCanvas.displayCanvas.height
     ) {
-      this.offsetY = Math.min(
-        this.backgroundCanvas.originalCanvas.height -
-          this.backgroundCanvas.displayCanvas.height,
-        this.offsetY
-      );
+      this.offsetY = Math.min(this.backgroundCanvas.originalCanvas.height - this.backgroundCanvas.displayCanvas.height,
+                              this.offsetY);
     } else {
       this.offsetY = 0;
     }
-
     // Turn the offsets to integers to avoid problems with pixel math.
     this.offsetX = Math.floor(this.offsetX);
     this.offsetY = Math.floor(this.offsetY);
-
     return oldXOffset !== this.offsetX || oldYOffset !== this.offsetY;
   }
 
-    // Function to update the zoom rectangle.
+  // Function to update the zoom rectangle.
   // TODO: Move this to zoom.service.ts if it gets enough logic, otherwise keep here.
   updateZoomRect(): void {
     const zoomCanvas: HTMLCanvasElement = document.getElementById(
@@ -297,5 +284,32 @@ export class CanvasDimensionService {
 
     // Call zoom to redraw everything.
     this.zoom(-100, new Point(0, 0));
+  }
+
+  // Load the main canvas.
+  public loadMainCanvas(){
+    const viewportRatio = this.viewportRatio();
+    const imageRatio = this.originalImageRatio();
+    if (imageRatio > viewportRatio) {
+      this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
+      this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
+    } else {
+      this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
+      this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
+    }
+    this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
+    this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
+    const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
+    let x = 0, y = 0;
+    if (imageRatio > viewportRatio) {
+      y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) /2;
+    } else {
+      x = (this.backgroundCanvas.displayCanvas.width - this.backgroundCanvas.originalCanvas.width) / 2;
+    }
+    context.drawImage(
+      this.backgroundCanvas.originalCanvas, x, y,
+      this.backgroundCanvas.originalCanvas.width,
+      this.backgroundCanvas.originalCanvas.height
+    );
   }
 }

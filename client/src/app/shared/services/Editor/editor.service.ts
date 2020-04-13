@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { BackgroundCanvas } from './Tools/background-canvas.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Point } from './Tools/point.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
@@ -83,89 +83,8 @@ export class EditorService {
   }
 
   // Load canvases and local variables when opening a local image.
-  public async loadAllLocal(
-    image: HTMLImageElement,
-    svgLoaded: EventEmitter<any>
-  ): Promise<void> {
-    this.loadingService.setImageLoaded(true);
-    this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
-      document.getElementById('main-canvas') as HTMLCanvasElement,
-      this.loadingService.getImageLocal()
-    );
-
-    // Load the main canvas.
-    const viewportRatio = this.viewportRatio();
-    const imageRatio = this.originalImageRatio();
-
-    if (imageRatio > viewportRatio) {
-      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
-      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.fullCanvasWidth * (1 / viewportRatio);
-    } else {
-      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
-      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.fullCanvasHeight * viewportRatio;
-    }
-
-    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = this.canvasDimensionService.fullCanvasWidth;
-    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = this.canvasDimensionService.fullCanvasHeight;
-    const context: CanvasRenderingContext2D = this.canvasDimensionService.backgroundCanvas.getDisplayContext();
-    let x = 0;
-    let y = 0;
-
-    if (imageRatio > viewportRatio) {
-      y =
-        (this.canvasDimensionService.backgroundCanvas.displayCanvas.height -
-          this.canvasDimensionService.backgroundCanvas.originalCanvas.height) /
-        2;
-    } else {
-      x =
-        (this.canvasDimensionService.backgroundCanvas.displayCanvas.width -
-          this.canvasDimensionService.backgroundCanvas.originalCanvas.width) /
-        2;
-    }
-
-    context.drawImage(
-      this.canvasDimensionService.backgroundCanvas.originalCanvas,
-      x,
-      y,
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
-    );
-
-    // Load the zoom canvas.
-    // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
-    // Without this zoomCanvas is still undefined because of ngIf in template
-    setTimeout(() => {
-      // We use setTimeout
-      const zoomCanvas: HTMLCanvasElement = document.getElementById(
-        'zoom-canvas'
-      ) as HTMLCanvasElement;
-      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
-      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
-      const zoomContext = zoomCanvas.getContext('2d');
-      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
-    }, 0);
-    this.updateCanvasDisplayRatio();
-
-    // TODO: Gotta understand how to make this work with the server.
-    this.http
-      .get(`/api/annotations/get/getEmpty/`, {
-        headers: new HttpHeaders(),
-      })
-      .pipe()
-      .subscribe((res:any) => {
-        // Replace
-        this.layersService.biomarkerCanvas = [];
-        this.layersService.createFlatCanvasRecursiveJson(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
-        this.biomarkerService.initJsonRecursive(res.data);
-      });
-
-    const res = await this.http
-      .get<any>(`/api/annotations/get/getEmpty/`, {
-        headers: new HttpHeaders(),
-        responseType: 'json',
-      })
-      .pipe()
-      .toPromise();
+  public async loadAllLocal(image: HTMLImageElement,svgLoaded: EventEmitter<any>): Promise<void> {
+    this.loadingService.loadAllLocal(image, svgLoaded);
   }
 
   // Loads a revision from the server. Draws that revision optionnaly.
