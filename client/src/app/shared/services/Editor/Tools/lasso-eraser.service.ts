@@ -52,7 +52,7 @@ export class LassoEraser extends Tool {
 
     onCursorUp(): void {
         if (this.isMouseDown) {
-            // this.layersService.addToUndoStack(this.getBiomarkerCanvas());
+            this.layersService.addToUndoStack(this.getBiomarkerCanvas());
 
             const overlay = this.layersService.biomarkerOverlayCanvas;
             const overlayCtx = overlay.getContext('2d');

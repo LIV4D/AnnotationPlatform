@@ -150,6 +150,7 @@ export class ToolboxService {
       // console.log('SHOW')
     }
     this.selectedTool.getValue().onCursorDown(point);
+    this.setUndoRedoState();
   }
 
   public onCursorUp(): void {
@@ -169,6 +170,7 @@ export class ToolboxService {
 
   public onCancel(): void {
     this.selectedTool.getValue().onCancel();
+    this.setUndoRedoState();
   }
 
   setUndoRedoState(): void {

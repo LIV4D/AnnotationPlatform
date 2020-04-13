@@ -63,7 +63,7 @@ export class Eraser extends Tool {
         if (this.isMouseDown) {
             const mask = this.maskCanvas;
             const biomarkers = this.getBiomarkerCanvas();
-            // this.layersService.addToUndoStack(biomarkers);
+            this.layersService.addToUndoStack(biomarkers);
 
             biomarkers.forEach((biomarker) => {
                 const ctx = biomarker.getCurrentContext();
