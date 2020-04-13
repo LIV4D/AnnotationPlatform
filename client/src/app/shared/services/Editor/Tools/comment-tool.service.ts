@@ -1,17 +1,17 @@
 import { Tool } from './tool.service';
 import { Point } from './point.service';
-import { EditorService } from '../editor.service';
 import { LayersService } from '../layers.service';
 import { BiomarkerService } from '../biomarker.service';
 import { Comment } from './../../../models/comment.model';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class CommentTool extends Tool {
 
   private position: Point;
 
   constructor(name: string, iconPath: string, tooltip: string,
-              editorService: EditorService, layersService: LayersService, biomarkerService: BiomarkerService) {
-      super(name, iconPath, tooltip, editorService, layersService);
+              canvasDimensionService: CanvasDimensionService, layersService: LayersService, biomarkerService: BiomarkerService) {
+      super(name, iconPath, tooltip, canvasDimensionService, layersService);
   }
 
   onCursorDown(point: Point): void {

@@ -300,10 +300,7 @@ export class EditorService {
 
   // Function to translate the view in the editor.
   translate(deltaX: number, deltaY: number): void {
-    this.canvasDimensionService.offsetX += deltaX;
-    this.canvasDimensionService.offsetY += deltaY;
-    this.adjustOffsets();
-    this.transform();
+    this.canvasDimensionService.translate(deltaX, deltaY);
   }
 
   // Function to change the offsets to match a new center.

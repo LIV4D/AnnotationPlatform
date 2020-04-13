@@ -239,6 +239,14 @@ export class CanvasDimensionService {
     // return pointToTranslate;
   }
 
+  // Function to translate the view in the editor.
+  translate(deltaX: number, deltaY: number): void {
+    this.offsetX += deltaX;
+    this.offsetY += deltaY;
+    this.adjustOffsets();
+    this.transform();
+  }
+
   // Resizes the canvases to the current window size.
   resize(): void {
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {

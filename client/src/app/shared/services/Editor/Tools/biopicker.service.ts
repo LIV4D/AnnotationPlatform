@@ -1,12 +1,12 @@
 import { Tool } from './tool.service';
 import { Point } from './point.service';
-import { EditorService } from './../editor.service';
 import { LayersService } from './../layers.service';
 import { BiomarkerService } from './../biomarker.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class BioPicker extends Tool {
-    constructor(name: string, imagePath: string, tooltip: string, editorService: EditorService, layersService: LayersService, private biomarkerService: BiomarkerService) {
-        super(name, imagePath, tooltip, editorService, layersService);
+    constructor(name: string, imagePath: string, tooltip: string, canvaDimensionService: CanvasDimensionService, layersService: LayersService, private biomarkerService: BiomarkerService) {
+        super(name, imagePath, tooltip, canvaDimensionService, layersService);
     }
 
     onCursorDown(point: Point): void {

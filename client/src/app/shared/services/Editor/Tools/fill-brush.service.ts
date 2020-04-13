@@ -1,16 +1,16 @@
 import { Tool } from './tool.service';
-import { EditorService } from './../editor.service';
 import { LayersService } from './../layers.service';
 import { ToolPropertiesService } from './../tool-properties.service';
 import { Point } from './point.service';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 // import { _MatSelectMixinBase } from '@angular/material';
 
 
 export class FillBrush extends Tool {
-    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService,
+    constructor(name: string, iconPath: string, tooltip: string, canvasDimensionService: CanvasDimensionService,
                 layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
-        super(name, iconPath, tooltip, editorService, layersService);
+        super(name, iconPath, tooltip, canvasDimensionService, layersService);
     }
 
     isMouseDown = false;

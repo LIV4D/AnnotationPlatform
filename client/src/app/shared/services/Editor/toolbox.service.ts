@@ -15,10 +15,10 @@ import { TOOL_NAMES } from './../../constants/tools';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { LayersService } from './layers.service';
-import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
 import { BiomarkerService } from './biomarker.service';
 import { ImageBorderService } from './image-border.service';
+import { CanvasDimensionService } from './canvas-dimension.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +30,7 @@ export class ToolboxService {
 
   constructor(
     private layersService: LayersService,
-    private editorService: EditorService,
+    private canvasDimensionService: CanvasDimensionService,
     private toolPropertiesService: ToolPropertiesService,
     private biomarkerService: BiomarkerService,
     private imageBorderService: ImageBorderService
@@ -40,14 +40,14 @@ export class ToolboxService {
         TOOL_NAMES.PAN,
         '../assets/icons/hand.svg',
         'Pan (P)',
-        editorService,
+        canvasDimensionService,
         layersService
       ),
       new Brush(
         TOOL_NAMES.BRUSH,
         '../assets/icons/brush.svg',
         'Brush (B)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
@@ -56,7 +56,7 @@ export class ToolboxService {
         TOOL_NAMES.FILL_BRUSH,
         '../assets/icons/brush-fill.svg',
         'Fill Brush (F)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
@@ -65,7 +65,7 @@ export class ToolboxService {
         TOOL_NAMES.ERASER,
         '../assets/icons/eraser.svg',
         'Eraser (E)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
@@ -73,7 +73,7 @@ export class ToolboxService {
         TOOL_NAMES.LASSO_ERASER,
         '../assets/icons/lasso-eraser.svg',
         'Lasso Eraser (G)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
@@ -81,7 +81,7 @@ export class ToolboxService {
         TOOL_NAMES.BIO_PICKER,
         '../assets/icons/picker.svg',
         'Pick Biomarker (K)',
-        editorService,
+        canvasDimensionService,
         layersService,
         biomarkerService
       ),
@@ -90,7 +90,7 @@ export class ToolboxService {
         TOOL_NAMES.COMMENT_TOOL,
         '../assets/icons/comment-box.png',
         'Add comment',
-        editorService,
+        canvasDimensionService,
         layersService,
         biomarkerService
       ),
@@ -101,7 +101,7 @@ export class ToolboxService {
         navigator.platform.indexOf('Mac') === -1
           ? 'Undo (Ctrl + Z)'
           : 'Undo (Cmd + Z)',
-        editorService,
+        canvasDimensionService,
         layersService
       ),
       new Tool(
@@ -110,7 +110,7 @@ export class ToolboxService {
         navigator.platform.indexOf('Mac') === -1
           ? 'Redo (Ctrl + Y)'
           : 'Redo (Cmd + Y)',
-        editorService,
+        canvasDimensionService,
         layersService
       ),
     ];
