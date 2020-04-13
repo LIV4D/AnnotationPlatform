@@ -61,7 +61,7 @@ export class FillBrush extends Tool {
             overlayCtx.closePath();
 
             if (this.toolPropertiesService.smartMask) {
-                // this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
+                this.layersService.addToUndoStack(this.layersService.getBiomarkerCanvas());
 
                 const mask = this.layersService.tempMaskCanvas;
                 const maskCtx = mask.getContext('2d');
@@ -106,8 +106,8 @@ export class FillBrush extends Tool {
             this.resetChangeBoundedBox();
 
             this.layersService.removeFirstPoint();
-            // const overlay = this.layersService.biomarkerOverlayCanvas;
-            // this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
+            const overlay = this.layersService.biomarkerOverlayCanvas;
+            this.layersService.biomarkerOverlayContext.clearRect(0, 0, overlay.width, overlay.height);
         }
     }
 

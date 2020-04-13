@@ -153,14 +153,14 @@ export class LoadingService {
               .display_progress(reqBase, 'Downloading Preannotations')
               .subscribe((res) => {
                 if (drawTheAnnotation) {
-                  this.loadAnnotationDatas(res.data);
+                 this.loadAnnotationDatas(res.data);
                 }});
           }}
       );
   }
 
   // Add loaded annotation on some EditorTools
-  public loadAnnotationDatas(data: object){
+  loadAnnotationDatas(data: object){
     this.revisionService.revision = data; // Store the loaded annotations within the revision service.
     this.layersService.biomarkerCanvas = [];
     this.layersService.createFlatCanvasRecursiveJson(data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height); // Add Annotation datas on the of the serveur the biomarkerCanvas
