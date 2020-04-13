@@ -8,5 +8,5 @@ export const TOOL_NAMES = {
     REDO: 'redo',
     LASSO_ERASER: 'lassoEraser',
     BIO_PICKER: 'bioPicker',
-    COMMENT_TOOL: 'commentTool'
+    COMMENT_TOOL: 'commentBox'
 };

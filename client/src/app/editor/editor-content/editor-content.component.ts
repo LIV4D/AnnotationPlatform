@@ -34,7 +34,7 @@ export class EditorContentComponent
     private resolver: ComponentFactoryResolver,
     private toolBoxService: ToolboxService,
     private storageService: StorageService,
-    private commentBoxService: CommentBoxService
+    // private commentBoxService: CommentBoxService
   ) {
     this.delayEventTimer = null;
   }
@@ -88,7 +88,11 @@ export class EditorContentComponent
       }
     );
 
-    this.commentFiredObservable = this.commentBoxService.commentBoxCheckBoxClicked.subscribe(
+    console.log('%c toolBoxService: ', 'color:black;background:yellow;');
+    console.log(this.toolBoxService.listOfTools[6]);
+
+    const commentBoxService: CommentBoxService = this.toolBoxService.listOfTools[6] as CommentBoxService;
+    this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
       (checkBoxClicked) => {
         console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
         this.commentBoxCheck = checkBoxClicked;

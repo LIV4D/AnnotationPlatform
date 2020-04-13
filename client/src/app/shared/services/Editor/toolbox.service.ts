@@ -19,6 +19,7 @@ import { ToolPropertiesService } from './tool-properties.service';
 import { BiomarkerService } from './biomarker.service';
 import { ImageBorderService } from './image-border.service';
 import { CanvasDimensionService } from './canvas-dimension.service';
+import { CommentBoxService } from './comment-box.service';
 
 @Injectable({
   providedIn: 'root',
@@ -86,7 +87,7 @@ export class ToolboxService {
         biomarkerService
       ),
 
-      new CommentTool(
+      new CommentBoxService(
         TOOL_NAMES.COMMENT_TOOL,
         '../assets/icons/comment-box.png',
         'Add comment',

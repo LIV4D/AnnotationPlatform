@@ -71,9 +71,9 @@ export class BiomarkersComponent implements OnInit {
 
   hasChild = (_: number, node: BioNode) => !!node.biomarkers && node.biomarkers.length > 0;
 
-  // public getCssClass(elem: HTMLElement): string {
-  //   return this.biomarkersFacadeService.getCssClass(elem);
-  // }
+  public getCssClass(elem: HTMLElement): string {
+    return this.biomarkersFacadeService.getCssClass(elem);
+  }
 
   get dataSource() {
     return this.biomarkersFacadeService.dataSourceJson;

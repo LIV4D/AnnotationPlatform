@@ -21,7 +21,7 @@
 
         <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" class="example-tree" *ngIf="!simplifiedView" class="example-tree">
             <!-- This is the tree node template for leaf nodes -->
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [ngClass]="getCssClass(node)">
             <li class="mat-tree-node">
                 <!-- Padding for tree leaf -->
                 <button mat-icon-button disabled></button>
@@ -76,7 +76,7 @@
 
         <!-- SIMPLIFIED BIOMARKERS VIEW-->
         <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
-            <mat-list-item *ngFor="let node of dataSourceSimpleView">
+            <mat-list-item *ngFor="let node of dataSourceSimpleView"  [ngClass]="getCssClass(node)">
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
                 </svg>
