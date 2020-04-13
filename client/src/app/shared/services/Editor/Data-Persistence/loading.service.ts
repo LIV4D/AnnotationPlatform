@@ -8,7 +8,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 // Services
 import { LayersService } from '../layers.service';
 import { HeaderService } from '../../header.service';
-import { BridgeSingleton } from './bridge.service';
 import { WidgetStorageService } from './widgetStorage.service';
 
 // Material
@@ -17,6 +16,8 @@ import { BiomarkerService } from '../biomarker.service';
 import { LocalStorage } from '../local-storage.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 import { BackgroundCanvas } from '../Tools/background-canvas.service';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
+import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 
 @Injectable({
 		providedIn: 'root'
@@ -27,7 +28,8 @@ export class LoadingService {
   private imageLocal: HTMLImageElement;
   private imageServer: ImageServer;
   private imageLoaded: boolean;
-  bridgeSingleton: BridgeSingleton;
+  private taskLoaded: Task;
+  private taskTypeLoaded: TaskType
 
 	constructor(
     private http: HttpClient,
@@ -39,7 +41,6 @@ export class LoadingService {
     public canvasDimensionService: CanvasDimensionService,
     public router: Router,
     ){
-      this.bridgeSingleton = BridgeSingleton.getInstance();
     // Check if a change was made to save to localStorage every 30 seconds.
       setInterval(() => {
         if (this.layersService.unsavedChange) {
@@ -81,6 +82,22 @@ export class LoadingService {
     this.imageLoaded = imageLoaded
   }
 
+  public getTaskLoaded(): Task{
+		return this.taskLoaded;
+	}
+
+	public setTaskLoaded(taskLoaded:Task): void{
+    this.taskLoaded = taskLoaded;
+  }
+
+  public getTaskTypeLoaded(): TaskType{
+		return this.taskTypeLoaded;
+	}
+
+	public setTaskTypeLoaded(taskTypeLoaded:TaskType): void{
+    this.taskTypeLoaded = taskTypeLoaded;
+	}
+
   // Function called from gallery/tasks to load a new image and redirect to editor
   loadImageFromServer(imageId: string): void {
     const req = this.http.get<ImageServer>(`/api/images/get/${imageId}/`, {
@@ -101,8 +118,8 @@ export class LoadingService {
   public async loadRevision(drawTheAnnotation: boolean): Promise<void> {
     const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
     let currentAnnotationId = 'getEmpty';
-    if ( this.bridgeSingleton.getCurrentTask() !== null && this.bridgeSingleton.getCurrentTask() !== undefined ){
-      currentAnnotationId = this.bridgeSingleton.getCurrentTask().annotationId.toString();
+    if ( this.getTaskLoaded() !== null && this.getTaskLoaded() !== undefined ){
+      currentAnnotationId = this.getTaskLoaded().annotationId.toString();
     }
     this.layersService.biomarkerCanvas = [];
     const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {

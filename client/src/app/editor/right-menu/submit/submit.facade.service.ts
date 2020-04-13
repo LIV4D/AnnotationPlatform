@@ -39,23 +39,23 @@ export class SubmitFacadeService {
     async loadTask(): Promise<void> {
       if (!this.loadingService.getImageLocal()) {
         const currentTask: Task = await this.tasksService.getNextTaskApp();
-        await this.submitService.setSubmitedTask(currentTask);
+        await this.loadingService.setTaskLoaded(currentTask);
       }
     }
 
     async loadTaskTypeById(): Promise<void> {
-      if (!this.loadingService.getImageLocal() && this.submitService.getSubmitedTask() !== null && this.submitService.getSubmitedTask() !== undefined) {
-        const currentTaskType: TaskType = await this.taskTypeService.getTaskTypeApp(this.submitService.getSubmitedTask().taskTypeId);
-        await this.submitService.setSubmitedTaskType(currentTaskType);
+      if (!this.loadingService.getImageLocal() && this.loadingService.getTaskLoaded() !== null && this.loadingService.getTaskLoaded() !== undefined) {
+        const currentTaskType: TaskType = await this.taskTypeService.getTaskTypeApp(this.loadingService.getTaskLoaded().taskTypeId);
+        await this.loadingService.setTaskTypeLoaded(currentTaskType);
       }
     }
 
-    getSubmitedTaskType(): TaskType{
-      return this.submitService.getSubmitedTaskType();
+    getLoadedTaskType(): TaskType{
+      return this.loadingService.getTaskTypeLoaded();
     }
 
-    getSubmitedTask(): Task{
-      return this.submitService.getSubmitedTask();
+    getLoadedTask(): Task{
+      return this.loadingService.getTaskLoaded();
     }
 
     completeTask(tasks: Task): void{

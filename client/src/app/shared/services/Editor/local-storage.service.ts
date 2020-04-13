@@ -28,8 +28,6 @@ export class LocalStorage {
   }
 
   static save(loadingService: LoadingService, layersService: LayersService): void {
-
-
     // No save for local files or if nothing is loaded
     if (!loadingService.getImageId() || loadingService.getImageId() === 'local') {
       return;

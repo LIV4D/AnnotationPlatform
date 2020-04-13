@@ -21,8 +21,6 @@ import { CanvasDimensionService } from '../canvas-dimension.service';
 
 // Material
 import { MatDialogRef } from '@angular/material/dialog';
-import { TaskType } from '../../../models/serverModels/taskType.model';
-import { BridgeSingleton} from './bridge.service';
 import { AnnotationData } from 'src/app/shared/models/serverModels/annotationData.model';
 import { LoadingService } from './loading.service';
 
@@ -30,9 +28,6 @@ import { LoadingService } from './loading.service';
 		providedIn: 'root'
 })
 export class SubmitService {
-    private submitedTask: Task;
-    private submitedTaskType: TaskType
-    bridgeSingleton: BridgeSingleton;
 
 	constructor(
 		private http: HttpClient,
@@ -44,26 +39,7 @@ export class SubmitService {
     public editorService: EditorService,
     private canvasDimensionService: CanvasDimensionService,
 		private router: Router
-		){
-      this.bridgeSingleton = BridgeSingleton.getInstance();
-    }
-
-	public getSubmitedTask(): Task{
-		return this.submitedTask;
-	}
-
-	public setSubmitedTask(submitedTask:Task): void{
-    this.submitedTask = submitedTask;
-    this.bridgeSingleton.setCurrentTask(this.submitedTask);
-  }
-
-  public getSubmitedTaskType(): TaskType{
-		return this.submitedTaskType;
-	}
-
-	public setSubmitedTaskType(submitedTaskType:TaskType): void{
-    this.submitedTaskType = submitedTaskType;
-	}
+		){}
 
 	// Return the shortcut command depending on the OS of the user's system
 	getSaveShortCutToolTipText(): string{
@@ -99,7 +75,7 @@ export class SubmitService {
 					// The next task is loaded on the editor
 					this.tasksService.getNextTask().subscribe((data: any) => {
 							if (data && data.annotation) {
-                  this.setSubmitedTask(data)
+                  this.loadingService.setTaskLoaded(data);
 									const imageId = data.annotation.image.id.toString();
 									LocalStorage.resetImageId(imageId);
 									setTimeout(() => { window.location.reload(); }, 10);
@@ -139,7 +115,7 @@ export class SubmitService {
     }
 
     // Param
-    const currentTask:Task = this.getSubmitedTask();
+    const currentTask:Task = this.loadingService.getTaskLoaded()
     const taskId = currentTask.taskId;
     console.log(taskId);
 
@@ -148,7 +124,7 @@ export class SubmitService {
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const body = {
       data: annotationData,
-      isComplete: this.getSubmitedTask().isComplete,
+      isComplete: this.loadingService.getTaskLoaded().isComplete,
       user: currentUser
     };
 

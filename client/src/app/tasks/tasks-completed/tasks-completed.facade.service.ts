@@ -36,6 +36,6 @@ export class TasksCompletedFacadeService {
   }
 
   setCurrentTask(task: Task) {
-    this.submitService.setSubmitedTask(task);
+    this.loadingService.setTaskLoaded(task);
   }
 }

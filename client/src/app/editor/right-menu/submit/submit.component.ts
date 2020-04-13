@@ -41,8 +41,8 @@ export class SubmitComponent implements OnInit {
   }
 
   public openTaskDialog(): void {
-    const submitedTask = this.submitFacadeService.getSubmitedTask();
-    const submitedTaskType = this.submitFacadeService.getSubmitedTaskType();
+    const submitedTask = this.submitFacadeService.getLoadedTask();
+    const submitedTaskType = this.submitFacadeService.getLoadedTaskType();
 
     // Checkbox checked by default with the task set as completed in local
     if (submitedTask !== null && submitedTask !== undefined) {

@@ -54,6 +54,7 @@ export class EditorService {
     this.canvasDimensionService.canvasDisplayRatio = new BehaviorSubject<number>(1);
     this.commentBoxes = CommentBoxSingleton.getInstance();
     this.backgroundCanvas = this.canvasDimensionService.backgroundCanvas;
+
   }
 
   init(
