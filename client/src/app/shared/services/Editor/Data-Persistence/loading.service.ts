@@ -171,43 +171,12 @@ export class LoadingService {
 
   // Load the main image in the background canvas.
   public loadMainImage(image: HTMLImageElement): void {
-    this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
+     // Load the main canvas.
+     this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
       image
     );
-    // Load the main canvas.
-    const viewportRatio = this.canvasDimensionService.viewportRatio();
-    const imageRatio = this.canvasDimensionService.originalImageRatio();
-    if (imageRatio > viewportRatio) {
-      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
-      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.fullCanvasWidth * (1 / viewportRatio);
-    } else {
-      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
-      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.fullCanvasHeight * viewportRatio;
-    }
-    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = this.canvasDimensionService.fullCanvasWidth;
-    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = this.canvasDimensionService.fullCanvasHeight;
-    const context: CanvasRenderingContext2D = this.canvasDimensionService.backgroundCanvas.getDisplayContext();
-    let x = 0,
-      y = 0;
-    if (imageRatio > viewportRatio) {
-      y =
-        (this.canvasDimensionService.backgroundCanvas.displayCanvas.height -
-          this.canvasDimensionService.backgroundCanvas.originalCanvas.height) /
-        2;
-    } else {
-      x =
-        (this.canvasDimensionService.backgroundCanvas.displayCanvas.width -
-          this.canvasDimensionService.backgroundCanvas.originalCanvas.width) /
-        2;
-    }
-    context.drawImage(
-      this.canvasDimensionService.backgroundCanvas.originalCanvas,
-      x,
-      y,
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
-    );
+    this.canvasDimensionService.loadMainCanvas();
     // Load the zoom canvas.
     // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
     // Without this zoomCanvas is still undefined because of ngIf in template

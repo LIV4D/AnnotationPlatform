@@ -83,10 +83,7 @@ export class EditorService {
   }
 
   // Load canvases and local variables when opening a local image.
-  public async loadAllLocal(
-    image: HTMLImageElement,
-    svgLoaded: EventEmitter<any>
-  ): Promise<void> {
+  public async loadAllLocal(image: HTMLImageElement,svgLoaded: EventEmitter<any>): Promise<void> {
     this.loadingService.setImageLoaded(true);
     this.canvasDimensionService.backgroundCanvas = new BackgroundCanvas(
       document.getElementById('main-canvas') as HTMLCanvasElement,
@@ -94,42 +91,7 @@ export class EditorService {
     );
 
     // Load the main canvas.
-    const viewportRatio = this.viewportRatio();
-    const imageRatio = this.originalImageRatio();
-
-    if (imageRatio > viewportRatio) {
-      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
-      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.fullCanvasWidth * (1 / viewportRatio);
-    } else {
-      this.canvasDimensionService.fullCanvasHeight = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
-      this.canvasDimensionService.fullCanvasWidth = this.canvasDimensionService.fullCanvasHeight * viewportRatio;
-    }
-
-    this.canvasDimensionService.backgroundCanvas.displayCanvas.width = this.canvasDimensionService.fullCanvasWidth;
-    this.canvasDimensionService.backgroundCanvas.displayCanvas.height = this.canvasDimensionService.fullCanvasHeight;
-    const context: CanvasRenderingContext2D = this.canvasDimensionService.backgroundCanvas.getDisplayContext();
-    let x = 0;
-    let y = 0;
-
-    if (imageRatio > viewportRatio) {
-      y =
-        (this.canvasDimensionService.backgroundCanvas.displayCanvas.height -
-          this.canvasDimensionService.backgroundCanvas.originalCanvas.height) /
-        2;
-    } else {
-      x =
-        (this.canvasDimensionService.backgroundCanvas.displayCanvas.width -
-          this.canvasDimensionService.backgroundCanvas.originalCanvas.width) /
-        2;
-    }
-
-    context.drawImage(
-      this.canvasDimensionService.backgroundCanvas.originalCanvas,
-      x,
-      y,
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
-    );
+    this.canvasDimensionService.loadMainCanvas();
 
     // Load the zoom canvas.
     // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
