@@ -1,18 +1,14 @@
-import { WidgetStorageService } from './Data-Persistence/widgetStorage.service';
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { LayersService } from './layers.service';
-import { Router } from '@angular/router';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Point } from './Tools/point.service';
-import { GalleryService } from '../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
 import { LoadingService } from './Data-Persistence/loading.service';
 import { SubmitService } from './Data-Persistence/submit.service';
-declare const Buffer;
 
 // Min and max values for zooming
 const ZOOM = {
@@ -41,8 +37,6 @@ export class EditorService {
   constructor(
     private http: HttpClient,
     public layersService: LayersService,
-    public galleryService: GalleryService,
-    public router: Router,
     public canvasDimensionService: CanvasDimensionService,
     private biomarkerService: BiomarkerService,
     private loadingService: LoadingService,
@@ -56,31 +50,27 @@ export class EditorService {
 
   }
 
-  init(
-    svgLoaded: EventEmitter<any>,
-    viewPort: ElementRef,
-    svgBox: ElementRef
-  ): void {
-    this.biomarkerService.dataSource = null;
-    this.canvasDimensionService.zoomFactor = 1.0;
-    this.canvasDimensionService.offsetX = 0;
-    this.canvasDimensionService.offsetY = 0;
-    this.loadingService.setImageLoaded(false);
+  init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void
+    {
+      this.biomarkerService.dataSource = null;
+      this.canvasDimensionService.zoomFactor = 1.0;
+      this.canvasDimensionService.offsetX = 0;
+      this.canvasDimensionService.offsetY = 0;
+      this.loadingService.setImageLoaded(false);
 
-    // this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
-    this.canvasDimensionService.viewPort = viewPort.nativeElement;
-    // this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
-    this.submitService.svgBox = svgBox.nativeElement;
-
-    this.svgLoaded = svgLoaded;
-    if (this.loadingService.getImageLocal()) {
-      this.setImageId('local');
-      this.loadAllLocal(this.loadingService.getImageLocal(), this.svgLoaded);
-    } else {
-      this.loadAll();
+      // this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
+      this.canvasDimensionService.viewPort = viewPort.nativeElement;
+      // this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
+      this.submitService.svgBox = svgBox.nativeElement;
+      this.svgLoaded = svgLoaded;
+      if (this.loadingService.getImageLocal()) {
+        this.setImageId('local');
+        this.loadAllLocal(this.loadingService.getImageLocal(), this.svgLoaded);
+      } else {
+        this.loadAll();
+      }
+      this.resize();
     }
-    this.resize();
-  }
 
   // Reads the current display canvas dimensions and update canvasDisplayRatio.
   updateCanvasDisplayRatio(): void {

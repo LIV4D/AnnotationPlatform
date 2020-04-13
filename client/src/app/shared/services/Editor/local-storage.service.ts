@@ -50,11 +50,8 @@ export class LocalStorage {
     };
 
     // Save json as string
-
     const str = JSON.stringify(json);
-    localStorage.removeItem(LocalStorageKeys.AllCanvasInfo);
     window.localStorage.setItem(LocalStorageKeys.AllCanvasInfo, str);
-
     window.localStorage.setItem(LocalStorageKeys.ImageId, loadingService.getImageId());
   }
 

@@ -19,9 +19,13 @@ import { BackgroundCanvas } from '../Tools/background-canvas.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 
+
+const SAVE_TIME_INTERVAL = 10000; // 1 second
+
 @Injectable({
 		providedIn: 'root'
 })
+
 export class LoadingService {
 
   private imageId: string;
@@ -34,20 +38,24 @@ export class LoadingService {
 	constructor(
     private http: HttpClient,
     private headerService: HeaderService,
-    public layersService: LayersService,
     private biomarkerService: BiomarkerService,
     private widgetService: WidgetStorageService,
     private revisionService: RevisionService,
-    public canvasDimensionService: CanvasDimensionService,
+    private canvasDimensionService: CanvasDimensionService,
+    public layersService: LayersService,
     public router: Router,
     ){
-    // Check if a change was made to save to localStorage every 30 seconds.
-      setInterval(() => {
-        if (this.layersService.unsavedChange) {
-          LocalStorage.save(this, this.layersService);
-          this.layersService.unsavedChange = false;
-        }
-      }, 10000);
+      this.saveFromInterval(SAVE_TIME_INTERVAL);
+  }
+
+  // Check if a change was made to save to localStorage every 10 seconds.
+  public saveFromInterval(timeInterval: number){
+    setInterval(() => {
+      if (this.layersService.unsavedChange) {
+        LocalStorage.save(this, this.layersService);
+        this.layersService.unsavedChange = false;
+      }
+    }, timeInterval);
   }
 
   public getImageId(): string{
@@ -64,10 +72,6 @@ export class LoadingService {
 
   public setImageLocal(imageLocal: HTMLImageElement): void {
     this.imageLocal = imageLocal;
-  }
-
-  public getImageServer(): ImageServer{
-    return this.imageServer;
   }
 
   public setImageServer(imageServer: ImageServer): void{
@@ -96,7 +100,18 @@ export class LoadingService {
 
 	public setTaskTypeLoaded(taskTypeLoaded:TaskType): void{
     this.taskTypeLoaded = taskTypeLoaded;
-	}
+  }
+
+  // Get AnnotationId sent for a request
+  public getAnnotationId(){
+    let currentAnnotationId = '';
+    if ( this.getTaskLoaded() === null || this.getTaskLoaded() === undefined ){
+      currentAnnotationId = 'getEmpty'; // blank Workspace loaded when no id is found
+    }else{
+      currentAnnotationId = this.getTaskLoaded().annotationId.toString();
+    }
+    return currentAnnotationId;
+  }
 
   // Function called from gallery/tasks to load a new image and redirect to editor
   loadImageFromServer(imageId: string): void {
@@ -116,16 +131,10 @@ export class LoadingService {
 
   // Loads a revision from the server. Draws that revision optionnaly.
   public async loadRevision(drawTheAnnotation: boolean): Promise<void> {
-    const userId = JSON.parse(localStorage.getItem('currentUser')).user.id;
-    let currentAnnotationId = 'getEmpty';
-    if ( this.getTaskLoaded() !== null && this.getTaskLoaded() !== undefined ){
-      currentAnnotationId = this.getTaskLoaded().annotationId.toString();
-    }
+    const currentAnnotationId = this.getAnnotationId();
     this.layersService.biomarkerCanvas = [];
     const req = this.http.get(`/api/annotations/get/${currentAnnotationId}`, {
-      headers: new HttpHeaders(),
-      reportProgress: true,
-      observe: 'events',
+      headers: new HttpHeaders(),reportProgress: true, observe: 'events',
     });
     this.headerService
       .display_progress(req, 'Downloading Preannotations')
@@ -133,38 +142,31 @@ export class LoadingService {
         (res) => {
         this.widgetService.setWidgets(res.widgets);
           if (drawTheAnnotation) {
-              // Store the revision within the revision service.
-              this.revisionService.revision = res.data;
-
-              this.layersService.biomarkerCanvas = [];
-              this.layersService.createFlatCanvasRecursiveJson(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
-              this.biomarkerService.initJsonRecursive(res.data);
-              this.biomarkerService.buildTreeRecursive(res.data);
-              setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
-          }
-        },
+            this.loadAnnotationDatas(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
+          }},
         async (error) => {
           if (error.status === 404 || error.status === 500) {
-            this.layersService.biomarkerCanvas = [];
             const reqBase = this.http.get(`/api/annotations/get/getEmpty/`, {
-              headers: new HttpHeaders(),
-              observe: 'events',
-              reportProgress: true,
+              headers: new HttpHeaders(),observe: 'events',reportProgress: true,
             });
             this.headerService
               .display_progress(reqBase, 'Downloading Preannotations')
               .subscribe((res) => {
                 if (drawTheAnnotation) {
-                  this.layersService.biomarkerCanvas = [];
-                  this.layersService.createFlatCanvasRecursiveJson(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
-                  this.biomarkerService.initJsonRecursive(res.data);
-                  this.biomarkerService.buildTreeRecursive(res.data);
-                  setTimeout(() => { LocalStorage.clear(); LocalStorage.save(this, this.layersService); }, 1000);
-              }
-              });
-          }
-        }
+                  this.loadAnnotationDatas(res.data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height);
+                }});
+          }}
       );
+  }
+
+  // Add loaded annotation on some EditorTools
+  public loadAnnotationDatas(data: any, originalCanvasWidth: number, originalCanvasHeight: number){
+    this.revisionService.revision = data; // Store the loaded annotations within the revision service.
+    this.layersService.biomarkerCanvas = [];
+    this.layersService.createFlatCanvasRecursiveJson(data, originalCanvasWidth, originalCanvasHeight); // Add Annotation datas on the of the serveur the biomarkerCanvas
+    this.biomarkerService.initJsonRecursive(data);  // Add Annotation datas on Annotation selection right box
+    this.biomarkerService.buildTreeRecursive(data); // Build the annotation tree right box
+    setTimeout(() => {LocalStorage.save(this, this.layersService); }, 1000);
   }
 
   // Load the main image in the background canvas.
