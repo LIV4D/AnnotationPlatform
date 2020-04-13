@@ -55,6 +55,10 @@ export class BiomarkersFacadeService {
         this.biomarkerService.toggleVisibility(node, visibility);
     }
 
+    toggleVisibilityParent(node, tree){
+        this.biomarkerService.toggleVisibilityParent(node, tree);
+    }
+
     toggleSoloVisibility(node) {
         this.biomarkerService.toggleSoloVisibility(node);
     }

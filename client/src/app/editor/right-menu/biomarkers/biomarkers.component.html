@@ -57,7 +57,7 @@
                 <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node)">{{node.type | camelCaseToText}}</span>
 
                 <div class="align-right">
-                    <mat-icon class="button left" (click)="toggleVisibility(node)" (dblclick)="toggleSoloVisibility(node)"
+                    <mat-icon class="button left" (click)="toggleVisibilityParent(node)" (dblclick)="toggleSoloVisibility(node)"
                     [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                         {{getVisibility(node)}}
                     </mat-icon>

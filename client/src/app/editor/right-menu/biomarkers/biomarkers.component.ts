@@ -122,6 +122,10 @@ export class BiomarkersComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
+  toggleVisibilityParent(node: any) {
+    this.biomarkersFacadeService.toggleVisibilityParent(node, this.tree);
+  }
+
   public toggleSoloVisibility(node: Biomarker): void {
     this.biomarkersFacadeService.toggleSoloVisibility(node);
     // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
@@ -129,16 +133,7 @@ export class BiomarkersComponent implements OnInit {
   }
 
   public getVisibility(node: Biomarker): string {
-    // const node = document.getElementById(elem.id);
-    // if (node) {
-    //   return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
-    // } else {
-    //   return '';
-    // }
-    // console.log(type.isVisible)
     return this.biomarkersFacadeService.getVisibility(node);
-
-    // return node.isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
   }
 
   public getVisibilityAll(): string {
@@ -231,7 +226,6 @@ export class BiomarkersComponent implements OnInit {
 
   toggleCommentBox() {
     this.stateCheckCommentBox = !this.stateCheckCommentBox;
-    // console.log('FIREDDDD ' + this.stateCheckCommentBox);
     this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
   }
 }
