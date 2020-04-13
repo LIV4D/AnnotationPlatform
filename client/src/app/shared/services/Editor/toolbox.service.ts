@@ -171,5 +171,18 @@ export class ToolboxService {
     this.selectedTool.getValue().onCancel();
   }
 
+  setUndoRedoState(): void {
+    if (this.layersService.undoStack.getLength() === 0) {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
+    } else {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = false;
+    }
+
+    if (this.layersService.redoStack.getLength() === 0) {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
+    } else {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = false;
+    }
+  }
 
 }

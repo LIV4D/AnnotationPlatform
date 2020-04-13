@@ -28,5 +28,7 @@ export class ToolboxFacadeService {
     this.toolboxService.setRedo();
   }
 
-  public setUndoRedoState() {}
+  public setUndoRedoState() {
+    this.toolboxService.setUndoRedoState();
+  }
 }
