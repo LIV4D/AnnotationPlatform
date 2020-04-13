@@ -48,6 +48,14 @@ export class EditorFacadeService {
     return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
   }
 
+  get undoTool() {
+    return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0];
+  }
+
+  get redoTool() {
+    return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0];
+  }
+
   setPanToolByString(tool: string) {
     this.toolboxService.setSelectedTool(tool);
   }
