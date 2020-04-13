@@ -124,9 +124,9 @@ export class EditorComponent implements OnInit {
   //     document.getElementById('bodyblack').style.opacity = '0';
   // }
 
-  loadSVG(event: any): void {
-      this.editorFacadeService.loadSVGLocal(event);
-  }
+  //loadSVG(event: any): void {
+  //    this.editorFacadeService.loadSVGLocal(event);
+  //}
 
    onMouseUp(event: MouseEvent): void {
        this.toolboxFacadeService.setUndoRedoState();

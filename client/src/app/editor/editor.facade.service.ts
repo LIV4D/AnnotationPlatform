@@ -117,9 +117,9 @@ export class EditorFacadeService {
     return this.editorService.getMousePositionInCanvasSpace(clientPosition);
   }
 
-  loadSVGLocal(event: any) {
-    this.editorService.loadSVGLocal(event);
-  }
+  //loadSVGLocal(event: any) {
+  //  this.editorService.loadSVGLocal(event);
+  //}
 
   get commentBoxVisible() {
     // return this.editorService.commentBoxVisible;

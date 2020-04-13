@@ -10,8 +10,8 @@ import { Point } from './Tools/point.service';
 import { GalleryService } from '../Gallery/gallery.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
-import { saveAs } from 'file-saver';
 import { LoadingService } from './Data-Persistence/loading.service';
+import { SubmitService } from './Data-Persistence/submit.service';
 declare const Buffer;
 
 // Min and max values for zooming
@@ -29,10 +29,8 @@ export class EditorService {
   backgroundCanvas: BackgroundCanvas;
   offsetY: number;
   mouseDown = false;
-  svgBox: HTMLDivElement;
   scaleX: number;
   svgLoaded: EventEmitter<any>;
-  localSVGName: string;
   menuState: boolean;
 
   commentBoxes: CommentBoxSingleton;
@@ -47,7 +45,8 @@ export class EditorService {
     public router: Router,
     public canvasDimensionService: CanvasDimensionService,
     private biomarkerService: BiomarkerService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private submitService: SubmitService,
   ) {
     this.scaleX = 1;
     this.loadingService.setImageLoaded(false);
@@ -71,7 +70,7 @@ export class EditorService {
     // this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
     this.canvasDimensionService.viewPort = viewPort.nativeElement;
     // this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
-    this.svgBox = svgBox.nativeElement;
+    this.submitService.svgBox = svgBox.nativeElement;
 
     this.svgLoaded = svgLoaded;
     if (this.loadingService.getImageLocal()) {
@@ -226,30 +225,30 @@ export class EditorService {
   //     );
   // }
 
-  public loadSVGLocal(event: any): void {
-    const reader: FileReader = new FileReader();
-    reader.onload = () => {
-      this.layersService.biomarkerCanvas = [];
-      this.svgBox.innerHTML = reader.result as string;
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
-      const arbre: SVGGElement[] = [];
-      Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-        const elems = e.getElementsByTagName('g');
-        for (let j = 0; j < elems.length; j++) {
-          if (elems[j].parentElement.tagName !== 'g') {
-            arbre.push(elems[j]);
-          }
-        }
-      });
-      this.layersService.biomarkerCanvas = [];
-      arbre.forEach((e: SVGGElement) => {
-        this.layersService.createFlatCanvasRecursive(e);
-      });
-    };
-    reader.readAsBinaryString(event.target.files[0]);
-    this.localSVGName = event.target.files[0].name;
-  }
+  // public loadSVGLocal(event: any): void {
+  //   const reader: FileReader = new FileReader();
+  //   reader.onload = () => {
+  //     this.layersService.biomarkerCanvas = [];
+  //     this.svgBox.innerHTML = reader.result as string;
+  //     const parser = new DOMParser();
+  //     const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
+  //     const arbre: SVGGElement[] = [];
+  //     Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
+  //       const elems = e.getElementsByTagName('g');
+  //       for (let j = 0; j < elems.length; j++) {
+  //         if (elems[j].parentElement.tagName !== 'g') {
+  //           arbre.push(elems[j]);
+  //         }
+  //       }
+  //     });
+  //     this.layersService.biomarkerCanvas = [];
+  //     arbre.forEach((e: SVGGElement) => {
+  //       this.layersService.createFlatCanvasRecursive(e);
+  //     });
+  //   };
+  //   reader.readAsBinaryString(event.target.files[0]);
+  //   this.localSVGName = event.target.files[0].name;
+  // }
 
   // Function to update the zoom rectangle.
   // TODO: Move this to zoom.service.ts if it gets enough logic, otherwise keep here.
@@ -306,22 +305,7 @@ export class EditorService {
 
   // Function to change the offsets to match a new center.
   moveCenter(percentX: number, percentY: number): void {
-    const displayW =
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.width <
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.width
-        ? this.canvasDimensionService.backgroundCanvas.originalCanvas.width
-        : this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
-    const displayH =
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.height <
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.height
-        ? this.canvasDimensionService.backgroundCanvas.originalCanvas.height
-        : this.canvasDimensionService.backgroundCanvas.displayCanvas.height;
-    this.canvasDimensionService.offsetX =
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
-    this.offsetY =
-      this.canvasDimensionService.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
-    this.adjustOffsets();
-    this.transform();
+    this.canvasDimensionService.moveCenter(percentX, percentY);
   }
 
   // Function that transforms the editor view according to the zoomFactor and offsets properties.
@@ -371,22 +355,7 @@ export class EditorService {
   }
 
   saveSVGFile(): void {
-    if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) {
-      return;
-    }
-    this.layersService.biomarkerCanvas.forEach((b) => {
-      const elem = document.getElementById(b.id.replace('annotation-', ''));
-      const url = b.currentCanvas.toDataURL();
-      elem.setAttribute('width', '100%');
-      elem.setAttribute('height', '100%');
-      elem.setAttribute('xlink:href', url);
-    });
-    const header = '<?xml version="1.0" encoding="UTF-8"?>';
-    const blob = new Blob(
-      [header + this.svgBox.getElementsByTagName('svg')[0].outerHTML],
-      { type: 'image/svg+xml' }
-    );
-    saveAs(blob, this.localSVGName);
+    this.submitService.saveSVGFile()
   }
 
   cancel() {}

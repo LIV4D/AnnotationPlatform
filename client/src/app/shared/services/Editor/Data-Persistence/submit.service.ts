@@ -11,7 +11,6 @@ import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 // Services
-import { EditorService } from '../editor.service';
 import { TasksService } from '../../Tasks/tasks.service';
 import { LayersService } from '../layers.service';
 import { AppService } from '../../app.service';
@@ -24,10 +23,16 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { AnnotationData } from 'src/app/shared/models/serverModels/annotationData.model';
 import { LoadingService } from './loading.service';
 
+// File Saver
+import { saveAs } from 'file-saver';
+
 @Injectable({
 		providedIn: 'root'
 })
 export class SubmitService {
+
+  svgBox: HTMLDivElement;
+  localSVGName: string;
 
 	constructor(
 		private http: HttpClient,
@@ -36,7 +41,6 @@ export class SubmitService {
 		private headerService: HeaderService,
     private tasksService: TasksService,
     private loadingService: LoadingService,
-    public editorService: EditorService,
     private canvasDimensionService: CanvasDimensionService,
 		private router: Router
 		){}
@@ -134,4 +138,24 @@ export class SubmitService {
     reqBody.pipe( tap(() => { this.appService.loading = false; }));
     return reqBody;
   }
+
+  saveSVGFile(): void {
+    if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) {
+      return;
+    }
+    this.layersService.biomarkerCanvas.forEach((b) => {
+      const elem = document.getElementById(b.id.replace('annotation-', ''));
+      const url = b.currentCanvas.toDataURL();
+      elem.setAttribute('width', '100%');
+      elem.setAttribute('height', '100%');
+      elem.setAttribute('xlink:href', url);
+    });
+    const header = '<?xml version="1.0" encoding="UTF-8"?>';
+    const blob = new Blob(
+      [header + this.svgBox.getElementsByTagName('svg')[0].outerHTML],
+      { type: 'image/svg+xml' }
+    );
+    saveAs(blob, this.localSVGName);
+  }
+
 }

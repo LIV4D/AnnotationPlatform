@@ -42,10 +42,6 @@ export class RightMenuComponent implements OnInit {
       this.flip.emit(null);
   }
 
-  public saveLocal(): void {
-      this.editorService.saveSVGFile();
-  }
-
 
   // public onKeyDown(event: KeyboardEvent): void {
   //     if (this.appService.keyEventsEnabled) {
