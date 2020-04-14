@@ -108,14 +108,6 @@ export class EditorContentComponent
 
           this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = false;
 
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0].disabled = true;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BRUSH)[0].disabled = true;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.ERASER)[0].disabled = true;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.FILL_BRUSH)[0].disabled = true;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.LASSO_ERASER)[0].disabled = true;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
-
           document.getElementById('boundary').style.zIndex = '300';
           document.getElementById('boundary').style.opacity = '1';
         } else {
@@ -125,14 +117,6 @@ export class EditorContentComponent
           });
 
           this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
-
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0].disabled = false;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BRUSH)[0].disabled = false;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.ERASER)[0].disabled = false;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.FILL_BRUSH)[0].disabled = false;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.LASSO_ERASER)[0].disabled = false;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = false;
-          // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = false;
 
           document.getElementById('boundary').style.zIndex = '0';
           document.getElementById('boundary').style.opacity = '0';
