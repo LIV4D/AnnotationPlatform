@@ -16,6 +16,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
         this.widgets.next(widgets);
     }
     
+    /**
+     * Get widgets for annotation
+     */
     public getWidgets(): Observable<Widget[]> {
         return this.widgets.asObservable()
     }    
