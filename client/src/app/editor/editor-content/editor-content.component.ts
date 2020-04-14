@@ -187,12 +187,14 @@ export class EditorContentComponent
     this.commentBoxes.comments.push(componentRef.instance);
 
     this.canvasWidth = this.viewPort.nativeElement.clientWidth;
+    console.log('%c this.canvasWidth: ' + this.canvasWidth, 'color:white; background:red;');
     this.canvasHeight = this.viewPort.nativeElement.clientHeight;
-    this.canvasHeight = 670;
+    // this.canvasHeight = 660;
     console.log('%c this.canvasHeight: ' + this.canvasHeight, 'color:black; background:yellow;');
 
-
     componentRef.instance.mousePosition = this.editorMousePos;
+
+    componentRef.instance.setDimensions(this.canvasWidth, this.canvasHeight);
 
     const comment = JSON.parse(localStorage.getItem('currentUser'));
     if(!this.commentBoxes.getUUID()) {
@@ -201,19 +203,16 @@ export class EditorContentComponent
     }
 
     this.editorFacadeService.setPanToolByString('pan');
-
     this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
   }
 
-  toggleCommentMode() {
-    console.log('TEST ON TOGGLE');
-
-    if (document.getElementById('boundary').style.zIndex === '0') {
-      document.getElementById('boundary').style.zIndex = '300';
-    } else {
-      document.getElementById('boundary').style.zIndex = '0';
-    }
-  }
+  // toggleCommentMode() {
+  //   if (document.getElementById('boundary').style.zIndex === '0') {
+  //     document.getElementById('boundary').style.zIndex = '300';
+  //   } else {
+  //     document.getElementById('boundary').style.zIndex = '0';
+  //   }
+  // }
 
   onMouseUp(event: MouseEvent): void {
     this.cursorDown = false;
@@ -439,12 +438,8 @@ export class EditorContentComponent
     let clientY: number;
     // X coordinate is adjusted if the image is flipped horizontally.
     clientX =
-      this.editorFacadeService.scaleX === 1
-        ? clientPosition.x -
-          this.viewPort.nativeElement.getBoundingClientRect().left
-        : this.viewPort.nativeElement.clientWidth -
-          clientPosition.x +
-          this.viewPort.nativeElement.getBoundingClientRect().left;
+      this.editorFacadeService.scaleX === 1 ?
+      clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left : this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
 
     clientY =
       clientPosition.y -
@@ -460,8 +455,10 @@ export class EditorContentComponent
       this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
         .height;
 
-    this.editorMousePos.x = canvasX;
-    this.editorMousePos.y = canvasY;
+    // this.editorMousePos.x = canvasX;
+    // this.editorMousePos.y = canvasY;
+    this.editorMousePos.x = clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left;
+    this.editorMousePos.y = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
     // console.log('%c putting value to this.editorMousePos: ' + this.editorMousePos.x + ' ' + this.editorMousePos.y, 'color:white;background:red;');
     return new Point(canvasX, canvasY);
   }

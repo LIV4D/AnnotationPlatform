@@ -29,8 +29,7 @@
 (mouseup)="onMouseUp($event)"
 (mouseleave)="onMouseLeave($event)"
 [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
-<!-- 300 -->
-<!-- z-index: 300; -->
+
   <div class="example-boundary" id="boundary" [style.width.px]="canvasWidth" [style.height.px]="canvasHeight"
     style="left: 0px; position: absolute;  background-color: transparent; border: 2px dotted black;" [style.opacity]="isCommentBoxExists">
     <ng-template id="template" #commentBox class="nothing"></ng-template>
