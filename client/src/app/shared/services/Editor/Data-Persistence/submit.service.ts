@@ -113,10 +113,8 @@ export class SubmitService {
    }
   }
 
-	/**
-  * Saves changes and then send the work on the database
-  * @returns the request on the server
-  */
+  //  Saves changes and then send the work on the database
+  //  @returns the request on the server
   public saveToDB(): Observable<any> {
     // The background canvases has to exist
     if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) { return; }
@@ -124,14 +122,12 @@ export class SubmitService {
 
     // The ophtalmologist work is saved
     if (this.layersService.unsavedChange) {
-      LocalStorage.clear();
       LocalStorage.save(this.loadingService, this.layersService);
       this.layersService.unsavedChange = false;
     }
 
     // Param
-    const currentTask:Task = this.loadingService.getTaskLoaded()
-    const taskId = currentTask.taskId;
+    const taskLoadedId: number = this.loadingService.getTaskLoaded().taskId;
 
     // Body
     const annotationData:AnnotationData = this.layersService.getAnnotationDatas();
@@ -139,11 +135,12 @@ export class SubmitService {
     const body = {
       data: annotationData,
       isComplete: this.loadingService.getTaskLoaded().isComplete,
+      isVisible: this.loadingService.getTaskLoaded().isVisible,
       user: currentUser
     };
 
     // Request
-    const req = this.http.post(`/api/tasks/submit/${taskId}`, body, { reportProgress:true, observe: 'events'});
+    const req = this.http.post(`/api/tasks/submit/${taskLoadedId}`, body, { reportProgress:true, observe: 'events'});
     const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
     reqBody.pipe( tap(() => { this.appService.loading = false; }));
     return reqBody;
