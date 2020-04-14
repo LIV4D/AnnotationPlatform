@@ -1,5 +1,20 @@
 @import '../../../../variables';
 
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#comments {
+  height: 30px;
+}
+
+#comment_title {
+  font-size: small;
+}
+
 #biomarkersDiv {
     display: flex;
     flex-direction: column;
@@ -234,7 +249,7 @@ span {
 
 #button-biomarkers{
     margin-left: 10px;
-} 
+}
 
 #button-biomarkers button{
     line-height: 0px !important;
