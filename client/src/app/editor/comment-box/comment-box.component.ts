@@ -36,7 +36,7 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    this.updatePositionOfComment();
+    this.updateCommentPosition();
   }
 
   onChange(newValue) {
@@ -87,9 +87,30 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
     return this.mousePosition;
   }
 
-  updatePositionOfComment() {
+  updateCommentPosition( ) { // displayCanvas: HTMLCanvasElement, window?: DOMRect
     console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
+    const posY = ((this.mousePosition.y / 493 ) * 100) - 3 ;
+    console.log('posY : ' + posY);
+
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (this.mousePosition.x).toString()+'px');
-    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (this.mousePosition.y).toString()+'px');
+    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (posY).toString()+'%');
+
+    // if (!window) {
+    //   window = new DOMRect(this.offsetX, this.offsetY,
+    //   Math.min(displayCanvas.width - this.offsetX, this.currentCanvas.width),
+    //   Math.min(displayCanvas.height - this.offsetY, this.currentCanvas.height));
+    // }
+
+    // let stupidOffsetX = 0;
+    // let stupidOffsetY = 0;
+    // if (displayCanvas.width > this.currentCanvas.width) {
+    //   stupidOffsetX = (displayCanvas.width - this.currentCanvas.width) / 2;
+    // }
+    // if (displayCanvas.height > this.currentCanvas.height) {
+    //   stupidOffsetY = (displayCanvas.height - this.currentCanvas.height) / 2;
+    // }
+
+    // const destX = window.x + this.offsetX - stupidOffsetX;
+    // const destY = window.y + this.offsetY - stupidOffsetY;
   }
 }
