@@ -32,6 +32,10 @@ export class EditorFacadeService {
     this.editorService.zoom(delta, position);
   }
 
+  get zoomFactor(): number {
+    return this.canvasDimensionService.zoomFactor;
+  }
+
   get firstPoint() {
     return this.editorService.layersService.firstPoint;
   }

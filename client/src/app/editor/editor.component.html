@@ -48,7 +48,8 @@
                   ></mat-slider> -->
               </div>
               <app-zoom *ngIf="editorFacadeService.imageLoaded"></app-zoom>
-              <span id="zoomFactorDisplay"> x 1.0 </span>
+              <!-- <span id="zoomFactorDisplay"> x 1.0 </span> -->
+              <span id="zoomFactorDisplay"> x {{editorFacadeService.zoomFactor | number: '1.0-1'}} </span>
               <!-- {{editorFacadeService.zoomFactor.toFixed(1)}} -->
           </div>
 
