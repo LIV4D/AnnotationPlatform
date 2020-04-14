@@ -267,8 +267,8 @@ export class LoadingService {
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
       this.getMainImage();
-      LocalStorage.load(this, this.layersService);
-      this.loadRevision(false);
+      //LocalStorage.load(this, this.layersService);
+      this.loadRevision(true);
       this.loadMetadata(this.imageId);
       return;
     }
