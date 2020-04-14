@@ -293,7 +293,7 @@ export class ImageController implements IController {
 
     /**
      * Gets all tasks associated with the id of multiple images
-     * Requires the image id in the body of the request.
+     * Requires the image ids in the body of the request.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
      * @param next is the following function in the express application

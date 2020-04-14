@@ -20,6 +20,13 @@ export class SubmissionEventController implements IController {
         app.get('/api/submissionEvents/get/:attr([a-zA-Z][a-zA-Z0-9]*)', this.getMultipleEvents);
     }
 
+    /**
+     * Gets all the submission events within the database, Can be filtered,
+     * Optionally, a filter can be passed through the request's body.
+     * @param req an express request with submission event data
+     * @param res an express response where the submission data will be put
+     * @param next is the following function in the express application
+     */
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const filter = isNullOrUndefined(req.body.filter) ? {} : req.body.filter;
         this.submissionService.getAllEvents(filter)
@@ -34,6 +41,13 @@ export class SubmissionEventController implements IController {
             }).catch(next);
     }
 
+    /**
+     * Gets a submission event attached to an annotation.
+     * Requires the annotation id in the parameters of the route.
+     * @param req an express request with submission event data
+     * @param res an express response where the submission event data will be put
+     * @param next is the following function in the express application
+     */
     private getEvent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.submissionService.getEvent(+req.params.annotationId)
         .then(event => {
@@ -44,6 +58,13 @@ export class SubmissionEventController implements IController {
         }).catch(next);
     }
 
+    /**
+     * Gets all the submission events that are specified.
+     * Requires the submission event ids in the body of the request
+     * @param req an express request with submission event data
+     * @param res an express response where the submission event data will be put
+     * @param next is the following function in the express application
+     */
     private getMultipleEvents = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.submissionService.getEvents(req.body.ids)
         .then(events => {
