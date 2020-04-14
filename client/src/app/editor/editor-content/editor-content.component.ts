@@ -18,7 +18,6 @@ import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription, Observable } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
-import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
 

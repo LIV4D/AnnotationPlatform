@@ -8,7 +8,6 @@ import { Eraser } from './Tools/eraser.service';
 import { Hand } from './Tools/hand.service';
 import { LassoEraser } from './Tools/lasso-eraser.service';
 import { BioPicker } from './Tools/biopicker.service';
-import { CommentTool } from './Tools/comment-tool.service';
 
 import { TOOL_NAMES } from './../../constants/tools';
 
