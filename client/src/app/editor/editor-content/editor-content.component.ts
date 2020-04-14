@@ -16,9 +16,8 @@ import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
-import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
 
@@ -34,8 +33,7 @@ export class EditorContentComponent
     public appService: AppService,
     private resolver: ComponentFactoryResolver,
     private toolBoxService: ToolboxService,
-    private storageService: StorageService,
-    // private commentBoxService: CommentBoxService
+    private storageService: StorageService
   ) {
     this.delayEventTimer = null;
   }
@@ -55,7 +53,6 @@ export class EditorContentComponent
   commentClickObservable: Subscription;
   commentFiredObservable: Subscription;
   isCommentBoxExists = 0;
-  // okToCreateCommentBox = false;
   canvasWidth = 0;
   canvasHeight = 0;
 
@@ -70,8 +67,6 @@ export class EditorContentComponent
   editorMousePos: Point;
 
   ngOnInit(): void {
-    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
-    // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
     this.editorMousePos = new Point(0, 0);
 
     this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
@@ -81,19 +76,14 @@ export class EditorContentComponent
       (hasBeenClicked) => {
         if (hasBeenClicked) {
           console.log('hasBeenClicked === true');
-          // this.okToCreateCommentBox = true;
           this.createCommentBox();
-          // checked
-          // if(!this.commentBoxCheck) {
-          //   document.getElementById('boundary').style.zIndex = '300';
-          // }
           this.isCommentBoxExists = 1;
         }
       }
     );
 
-    console.log('%c toolBoxService: ', 'color:black;background:yellow;');
-    console.log(this.toolBoxService.listOfTools[6]);
+    // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
+    // console.log(this.toolBoxService.listOfTools[6]);
 
     const commentBoxService: CommentBoxService = this.toolBoxService.listOfTools[6] as CommentBoxService;
     this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
@@ -208,6 +198,8 @@ export class EditorContentComponent
     }
 
     this.editorFacadeService.setPanToolByString('pan');
+
+    this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
   }
 
   toggleCommentMode() {
@@ -431,6 +423,8 @@ export class EditorContentComponent
   // }
 
   onResize(): void {
+    this.canvasWidth = this.viewPort.nativeElement.clientWidth;
+    this.canvasHeight = this.viewPort.nativeElement.clientHeight;
     this.editorFacadeService.resize();
   }
 
