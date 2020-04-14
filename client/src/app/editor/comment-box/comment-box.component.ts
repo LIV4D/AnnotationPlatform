@@ -89,10 +89,12 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
 
   updateCommentPosition( ) { // displayCanvas: HTMLCanvasElement, window?: DOMRect
     console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
-    const posY = ((this.mousePosition.y / 493 ) * 100) - 3 ;
+
+    const posX = ((this.mousePosition.x / 575 ) * 100);
+    const posY = (( (this.mousePosition.y) / 675 ) * 100);
     console.log('posY : ' + posY);
 
-    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (this.mousePosition.x).toString()+'px');
+    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (posX).toString()+'%');
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (posY).toString()+'%');
 
     // if (!window) {

@@ -188,6 +188,9 @@ export class EditorContentComponent
 
     this.canvasWidth = this.viewPort.nativeElement.clientWidth;
     this.canvasHeight = this.viewPort.nativeElement.clientHeight;
+    this.canvasHeight = 670;
+    console.log('%c this.canvasHeight: ' + this.canvasHeight, 'color:black; background:yellow;');
+
 
     componentRef.instance.mousePosition = this.editorMousePos;
 
