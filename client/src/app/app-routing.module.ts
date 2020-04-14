@@ -10,7 +10,6 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { ManagementComponent } from './management/management.component';
 import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
 import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
-import { ZoomngxComponent } from './zoomngx/zoomngx.component';
 import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 
 const routes: Routes = [
@@ -24,7 +23,6 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, data: {authorizedRoles: []}  },
   { path: 'tasks', component: TasksComponent, data: {authorizedRoles: []} },
   { path: 'management', canActivate: [AuthorizationGuard], component: ManagementComponent, data: {authorizedRoles: ['admin', 'researcher']} },
-  { path: 'zoomtest', component: ZoomngxComponent, data: {authorizedRoles: []} },
   { path: 'comment', component: CommentBoxComponent, data: {authorizedRoles: []} },
   { path: 'accessdenied', component: AccessDeniedComponent },
   { path: '**', component: NonExistentPageComponent },

@@ -2,7 +2,6 @@
     <div id="biomarkersHeaderDiv">
         <span>Biomarkers</span>
         <!--HIDE/BORDERS-->
-        <!-- <input type="checkbox" name="activate comment-box" ngModel="activateCommentBox"> -->
 
         <span id="button-biomarkers">
           <button id="button-simplifyList" matTooltip="Enable/Disable Simplified Biomarkers List" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleSimplifiedView()"><mat-icon svgIcon="tree"></mat-icon></button>
@@ -11,11 +10,11 @@
         </span>
       </div>
 
-    <p>
-      Show Comment
-      <mat-checkbox [disableRipple]="true" (change)="toggleCommentBox()" [checked]="activatedCommentBox" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
-        matTooltipPosition="left"></mat-checkbox>
-    </p>
+    <div id="comments" class='flexRow'>
+      <span id="comment_title">Show Comments</span>
+      <mat-checkbox [disableRipple]="true" (change)="toggleCommentBox()" [checked]="activatedCommentBox" matTooltip="Activate comments" matTooltipShowDelay="1000"
+        matTooltipPosition="right"></mat-checkbox>
+    </div>
 
     <div id="biomarkers-container" (window:keydown)="onKeyDown($event)">
 
