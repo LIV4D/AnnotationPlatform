@@ -27,6 +27,15 @@ export class UserController implements IController {
         app.get('/api/users/list', this.listUsers);
     }
 
+    /**
+     * Creates a user using the request's information.
+     *
+     * Requires the desired firstName, the desired lastName, the user's email, his password and his role (admin, clinician or researcher)
+     * in the request's body.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private createUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newUser: IUser = {
@@ -45,6 +54,12 @@ export class UserController implements IController {
             .catch(next);
     }
 
+    /**
+     * Authenticates the user and logs them into the database so taht they can access further functionalities.
+     * @param req an express request with task type data
+     * @param res an express response where the task type data will be put
+     * @param next is the following function in the express application
+     */
     private loginUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         passport.authenticate('local', { session: false, failureRedirect: '/auth/login' }, (err, user, info) => {
             if (err) { return next(err); }
@@ -64,7 +79,17 @@ export class UserController implements IController {
             return res.json({ user, token });
         })(req, res, next);
     }
-
+    /**
+     * Updates a user specified within the request's information.
+     *
+     * Requires the user id specified within the route's parameters.
+     *
+     * Requires the desired firstName, the desired lastName, the user's email, his password and his role (admin, clinician or researcher)
+     * in the request's body.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private updateUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newUser: IUser = {
@@ -83,6 +108,14 @@ export class UserController implements IController {
             .catch(next);
     }
 
+    /**
+     * Deletes the user specified within the request's information.
+     *
+     * Requires the user id specified within the route's parameters.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private deleteUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         this.userService.deleteUser(+req.params.userId)
@@ -90,6 +123,14 @@ export class UserController implements IController {
             .catch(next);
     }
 
+    /**
+     * Gets the user specified within the request's information.
+     *
+     * Requires the user id specified within the route's parameters.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private getUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.userService.getUser(+req.params.userId).then(user => {
             delete user.password;
@@ -98,6 +139,14 @@ export class UserController implements IController {
         }).catch(next);
     }
 
+    /**
+     * Gets all the submission events from the specified user.
+     *
+     * Requires the user id specified within the route's parameters.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private getEventsbyUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin(req);
         this.userService.getEventsFromUser(req.params.userId)
@@ -105,6 +154,14 @@ export class UserController implements IController {
         .catch(next);
     }
 
+    /**
+     * Gets the last submission event from the specified user.
+     *
+     * Requires the user id specified within the route's parameters.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private getLastEventFromUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         this.userService.getLastEventFromUser(req.params.userId).then(event => {
@@ -112,6 +169,12 @@ export class UserController implements IController {
         }).catch(next);
     }
 
+    /**
+     * Gets all the users within the database.
+     * @param req an express request with user data
+     * @param res an express response where the user data will be put
+     * @param next is the following function in the express application
+     */
     private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         this.userService.getUsers()

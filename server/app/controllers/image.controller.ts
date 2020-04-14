@@ -73,9 +73,9 @@ export class ImageController implements IController {
     /**
      * Creates an image using the request's information.
      *
-     * Requires the type to be in the body and the files (the absolute path on the server towards the file).
+     * Requires the type and the files (the absolute path on the server towards the file) in the request's body.
      *
-     * Optionally, the image's metadata and a boolean determining whether there's preprocessionf or not.
+     * Optionally, the image's metadata and a boolean determining whether there's preprocessing or not.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
      * @param next is the following function in the express application
