@@ -12,6 +12,7 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import { BiomarkersDialogComponent } from './biomarkers-dialog/biomarkers-dialog.component';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
+import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -35,8 +36,10 @@ export class BiomarkersComponent implements OnInit {
   readonly BORDERS_OFF = 'border_clear';
   opacity: number;
   shadowsChecked: boolean;
+
   activatedCommentBox = false;
   stateCheckCommentBox: boolean;
+  commentBoxService: CommentBoxService;
 
   @Output() fireCommentEvent = new EventEmitter<boolean>();
 
@@ -47,7 +50,7 @@ export class BiomarkersComponent implements OnInit {
 
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
               public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
-              private changeDetector: ChangeDetectorRef, private commentBoxService: CommentBoxService) {
+              private changeDetector: ChangeDetectorRef, private toolService: ToolboxService) {
 
     this.biomarkersFacadeService.showBorders = false;
     this.opacity = 65;
@@ -57,6 +60,7 @@ export class BiomarkersComponent implements OnInit {
     this.tree = this.biomarkersFacadeService.tree;
     this.treeDataSource.data = this.tree;
     this.stateCheckCommentBox = true;
+    this.commentBoxService = this.toolService.listOfTools[6] as CommentBoxService;
   }
 
   ngOnInit(): void {
@@ -71,7 +75,7 @@ export class BiomarkersComponent implements OnInit {
 
   hasChild = (_: number, node: BioNode) => !!node.biomarkers && node.biomarkers.length > 0;
 
-  public getCssClass(elem: HTMLElement): string {
+  public getCssClass(elem: Biomarker): string {
     return this.biomarkersFacadeService.getCssClass(elem);
   }
 
@@ -225,6 +229,7 @@ export class BiomarkersComponent implements OnInit {
   }
 
   toggleCommentBox() {
+    console.log('toggleCommentBox()');
     this.stateCheckCommentBox = !this.stateCheckCommentBox;
     this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
   }

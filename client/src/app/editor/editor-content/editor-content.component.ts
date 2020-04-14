@@ -20,6 +20,7 @@ import { Subscription, Observable } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
 import { CommentTool } from 'src/app/shared/services/Editor/Tools/comment-tool.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
+import { TOOL_NAMES } from 'src/app/shared/constants/tools';
 
 @Component({
   selector: 'app-editor-content',
@@ -72,7 +73,10 @@ export class EditorContentComponent
     // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
     // console.log('%c inside ngOnInit()', 'color:black; background: yellow;');
     this.editorMousePos = new Point(0, 0);
+
+    this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
     this.commentBoxes = CommentBoxSingleton.getInstance();
+
     this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe(
       (hasBeenClicked) => {
         if (hasBeenClicked) {
@@ -97,9 +101,25 @@ export class EditorContentComponent
         console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
         this.commentBoxCheck = checkBoxClicked;
         if(!this.commentBoxCheck) {
+
+          this.toolBoxService.listOfTools.forEach(element => {
+            element.disabled = true;
+          });
+
+          this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = false;
+
           document.getElementById('boundary').style.zIndex = '300';
+          document.getElementById('boundary').style.opacity = '1';
         } else {
+
+          this.toolBoxService.listOfTools.forEach(element => {
+            element.disabled = false;
+          });
+
+          this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+
           document.getElementById('boundary').style.zIndex = '0';
+          document.getElementById('boundary').style.opacity = '0';
         }
       }
     );
