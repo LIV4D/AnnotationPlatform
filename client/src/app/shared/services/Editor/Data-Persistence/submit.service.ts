@@ -60,7 +60,6 @@ export class SubmitService {
 	afterClosedTaskDialog(dialogRef: MatDialogRef<any, any>) {
 		dialogRef.afterClosed().subscribe(result => {
 			if (result) {
-        LocalStorage.clear();
 				LocalStorage.save(this.loadingService, this.layersService);
 				// Load the next task when the user clicks << Save & load Next >>
 				this.saveAnnotation(result === 'next');
