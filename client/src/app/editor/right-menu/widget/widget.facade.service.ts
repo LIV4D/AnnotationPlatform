@@ -12,6 +12,9 @@ export class WidgetFacadeService {
 
     constructor(private widgetStorage: WidgetStorageService, private widgetEvent: WidgetEventService) { }
 
+    /**
+     * Get all wdigets for annotation
+     */
     public getWidgets() : Observable<Widget[]> {
         return this.widgetStorage.getWidgets();
     }

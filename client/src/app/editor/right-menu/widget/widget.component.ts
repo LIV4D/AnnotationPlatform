@@ -15,17 +15,20 @@ import { isNullOrUndefined } from 'util';
 export class WidgetComponent implements OnInit, AfterViewInit {
 
   taskId = 0;
-  label = 'TESTTTT';
+  label = '';
   type = '';
   defaultEntryValue = '';
   validationRegex = '';
-  entryField = 'allo';
+  entryField = '';
   private widgets: Widget[];
   public singleLineWidgets: Widget[];
   public multiLineWidgets: Widget[];
 
   constructor(private facadeService: WidgetFacadeService) { }
 
+  /**
+   * get widgets all widgets for annotation
+   */
     ngOnInit(): void {
         this.facadeService.getWidgets().subscribe(widgets =>{
             this.widgets = widgets;
@@ -33,6 +36,9 @@ export class WidgetComponent implements OnInit, AfterViewInit {
         })
     }
 
+    /**
+     * Sort all widgets by type
+     */
     public initWidgets(): void {
         if (!isNullOrUndefined(this.widgets) && this.widgets.length > 0) {
             const sortedWidgets = _.groupBy(this.widgets, 'type');
