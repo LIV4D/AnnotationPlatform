@@ -26,9 +26,15 @@ import { LoadingService } from './loading.service';
 // File Saver
 import { saveAs } from 'file-saver';
 
+
 @Injectable({
 		providedIn: 'root'
 })
+
+/**
+ * The service organize methods with the purpose of submiting an annotation
+ * throught the button Submit
+ */
 export class SubmitService {
 
   svgBox: HTMLDivElement;
@@ -62,50 +68,53 @@ export class SubmitService {
 		});
 	}
 
-  // Navigate in another path and reload the window
-	public navigateTo(path:string): void{
-		this.router.navigate([path]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
-  	}
 
-
-	/**
-  * Saves the annotation with the possibility of loading the next task
-  * @param [loadNextHasBeenSelected] : Load the next task when true
-  */
+  //Saves the annotation with the possibility of loading the next task
+  // @param [loadNextHasBeenSelected] : Load the next task when true
   public saveAnnotation(loadNextHasBeenSelected= false): void {
     // The annotation is saved on the DB
 		this.saveToDB().subscribe(() => {
 				if (loadNextHasBeenSelected) {
-					// The next task is loaded on the editor
-					this.tasksService.getNextTask().subscribe((data: any) => {
-							if (data && data.annotation) {
-                  this.loadingService.setTaskLoaded(data);
-									const imageId = data.annotation.image.id.toString();
-									LocalStorage.resetImageId(imageId);
-									setTimeout(() => { window.location.reload(); }, 10);
-							} else {
-								this.navigateTo('/tasks');
-							}
-					}, () => {
-							this.navigateTo('/tasks');
-            });
+          this.loadNextTaskOnEditor();
 				} else {
-					// No other task is loaded after the saving, it navigates in the previous page
-					if (localStorage.getItem('previousPage') === 'tasks') {
-							this.navigateTo('/tasks');
-					} else {
-							this.navigateTo('/gallery');
+          this.leaveEditor(); // Leaves the editor when LoadNext is not chosen
 					}
-				}
 		}, error => {
 				setTimeout(() => { window.location.reload(); }, 10);
 		});
   }
 
-	/**
-  * Saves changes and then send the work on the database
-  * @returns the request on the server
-  */
+  // Load the next task on the editor
+  public loadNextTaskOnEditor(): void{
+    this.tasksService.getNextTask().subscribe((data: any) => {
+      if (data && data.annotation) {
+          this.loadingService.setTaskLoaded(data);
+          const nextImageId = data.annotation.image.id.toString();
+          LocalStorage.resetImageId(nextImageId);
+          setTimeout(() => { window.location.reload(); }, 10);
+      } else {
+        this.navigateTo('/tasks'); // we return to the task menu if there is no more task to load
+      }}, () => {
+      this.navigateTo('/tasks');
+    });
+  }
+
+  // Navigate in another path and reload the window
+  public navigateTo(path:string): void{
+		this.router.navigate([path]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
+  }
+
+  // Leaves the editor menu
+  public leaveEditor(): void{
+  if (localStorage.getItem('previousPage') === 'tasks') {
+    this.navigateTo('/tasks');
+  } else {
+    this.navigateTo('/gallery');
+   }
+  }
+
+  //  Saves changes and then send the work on the database
+  //  @returns the request on the server
   public saveToDB(): Observable<any> {
     // The background canvases has to exist
     if (!this.canvasDimensionService.backgroundCanvas || !this.canvasDimensionService.backgroundCanvas.originalCanvas) { return; }
@@ -113,15 +122,12 @@ export class SubmitService {
 
     // The ophtalmologist work is saved
     if (this.layersService.unsavedChange) {
-      LocalStorage.clear();
       LocalStorage.save(this.loadingService, this.layersService);
       this.layersService.unsavedChange = false;
     }
 
     // Param
-    const currentTask:Task = this.loadingService.getTaskLoaded()
-    const taskId = currentTask.taskId;
-    console.log(taskId);
+    const taskLoadedId: number = this.loadingService.getTaskLoaded().taskId;
 
     // Body
     const annotationData:AnnotationData = this.layersService.getAnnotationDatas();
@@ -129,11 +135,12 @@ export class SubmitService {
     const body = {
       data: annotationData,
       isComplete: this.loadingService.getTaskLoaded().isComplete,
+      isVisible: this.loadingService.getTaskLoaded().isVisible,
       user: currentUser
     };
 
     // Request
-    const req = this.http.post(`/api/tasks/submit/${taskId}`, body, { reportProgress:true, observe: 'events'});
+    const req = this.http.post(`/api/tasks/submit/${taskLoadedId}`, body, { reportProgress:true, observe: 'events'});
     const reqBody = this.headerService.display_progress(req, 'Saving Labels (do not refresh!)', false);
     reqBody.pipe( tap(() => { this.appService.loading = false; }));
     return reqBody;

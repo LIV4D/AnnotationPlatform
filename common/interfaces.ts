@@ -6,4 +6,5 @@ export interface ISubmission {
     data: AnnotationData;
     uptime: number;
     isComplete: boolean;
+    isVisible: boolean;
 }

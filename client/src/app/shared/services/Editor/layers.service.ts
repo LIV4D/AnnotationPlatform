@@ -230,33 +230,22 @@ export class LayersService {
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
 }
 
-  public getBiomarkerCanvas(): BiomarkerCanvas[] {
-    return this.biomarkerCanvas.filter(element => element.isVisible());
-  }
+	public getBiomarkerCanvas(): BiomarkerCanvas[] {
+		return this.biomarkerCanvas.filter(element => element.isVisible());
+	}
 
-  // Get annotationDatas meant to be send on the server
-  public getAnnotationDatas(): AnnotationData {
+	// Get annotationDatas meant to be send on the server
+	public getAnnotationDatas(): AnnotationData {
+    	let biomarkerId: Array<string> = [];
+		let imageData: Array<string> = [];
 
+    	this.biomarkerCanvas.forEach(biomarker => {
+        	biomarkerId.push(biomarker.id.toString().substr(11));
+        	imageData.push(biomarker.currentCanvas.toDataURL('image/png'));
+      	})
 
-      let biomarkerId: Array<string> = [];
-      let imageData: Array<string> = [];
-      this.biomarkerCanvas.forEach(biomarker => {
-        biomarkerId.push(biomarker.id.toString().substr(11));
-        imageData.push(biomarker.currentCanvas.toDataURL('image/png'));
-      })
-
-      this.revision.setDataImages(biomarkerId, imageData);
-      const annotationData:AnnotationData = this.revision.revision;
-      // Each biomarker datas are formated in Base64
-      // and then added in the dictionary
-      // this.biomarkerCanvas.forEach(biomarker => {
-      //   const key = biomarker.id.toString(); // you might have to do a subtr(11) to remove annotation-
-      //   const url: string = biomarker.currentCanvas.toDataURL();
-		  //   const index: string = biomarker.index.toString();
-
-      //   annotationData.biomarker[key] = url;
-      //   annotationData.hierarchy[key] = index;
-      // });
+    	this.revision.setDataImages(biomarkerId, imageData);
+      	const annotationData:AnnotationData = this.revision.revision;
     return annotationData;
   }
 

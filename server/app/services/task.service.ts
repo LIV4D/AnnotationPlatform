@@ -67,13 +67,15 @@ export class TaskService {
 
     public async submitTask(submission: ISubmission, user: User) {
         const task = await this.taskRepository.find(submission.taskId);
+        task.isComplete = submission.isComplete;
+        task.isVisible = submission.isVisible;
+
         if (isNullOrUndefined(task)) {
             throw createError('This task does not exist.', 404);
         }
         if (task.assignedUser.id !== user.id) {
             createError('You aren\'t this task\'s assigned user.', 401);
         }
-
         const newAnnotation: IAnnotation = {
             id: task.annotation.id,
             data: submission.data,

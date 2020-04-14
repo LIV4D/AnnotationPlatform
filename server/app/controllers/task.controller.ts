@@ -106,19 +106,20 @@ export class TaskController implements IController {
 
     private submitTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const submission: ISubmission = {
-            taskId: req.params.taskId as number,
+            taskId: + req.params.taskId as number,
             data: req.body.data as AnnotationData,
-            uptime: Math.round(process.uptime()),
+            uptime: Math.floor(Date.now() / 1000), // Integer TimeStamp in second
             isComplete: req.body.isComplete,
+            isVisible: req.body.isVisible,
         };
+        const user:User = new User();
         const currentUser: IUser = {
             id: req.body.user.id,
             email: req.body.user.email,
             firstName: req.body.user.firstName,
             lastName: req.body.user.lastName,
-            isAdmin: req.body.user.isAdmin
+            role: req.body.user.role
         };
-        const user:User = new User();
         user.update(currentUser);
 
         try {
