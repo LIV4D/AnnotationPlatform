@@ -79,6 +79,7 @@ export class LayersService {
   }
 
   redo(): void {
+    console.log(this.biomarkerCanvas);
       if (this.redoStack.getLength() > 0) {
           this.unsavedChange = true;
           const canvas = this.redoStack.pop();
@@ -245,7 +246,7 @@ export class LayersService {
       	})
 
     	this.revision.setDataImages(biomarkerId, imageData);
-      	const annotationData:AnnotationData = this.revision.revision;
+      const annotationData:AnnotationData = this.revision.revision;
     return annotationData;
   }
 

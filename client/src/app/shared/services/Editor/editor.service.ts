@@ -22,7 +22,6 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
   providedIn: 'root',
 })
 export class EditorService {
-  backgroundCanvas: BackgroundCanvas;
   offsetY: number;
   mouseDown = false;
   scaleX: number;
@@ -30,9 +29,6 @@ export class EditorService {
   menuState: boolean;
 
   commentBoxes: CommentBoxSingleton;
-
-
-  // public biomarkersService: BiomarkersService,
 
   constructor(
     private http: HttpClient,
@@ -46,8 +42,6 @@ export class EditorService {
     this.loadingService.setImageLoaded(false);
     this.canvasDimensionService.canvasDisplayRatio = new BehaviorSubject<number>(1);
     this.commentBoxes = CommentBoxSingleton.getInstance();
-    this.backgroundCanvas = this.canvasDimensionService.backgroundCanvas;
-
   }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void

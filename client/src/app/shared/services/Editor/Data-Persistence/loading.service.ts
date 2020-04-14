@@ -259,6 +259,7 @@ export class LoadingService {
     );
   }
 
+  // Load Everything in the editor
   public loadAll(): void {
     // Check if a an image is saved in localStorage
     const lastImageId = LocalStorage.lastSavedImageId();
@@ -266,8 +267,8 @@ export class LoadingService {
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
       this.getMainImage();
-      this.loadRevision(true);
-      //LocalStorage.load(this, this.layersService);
+      LocalStorage.load(this, this.layersService);
+      this.loadRevision(false);
       this.loadMetadata(this.imageId);
       return;
     }
@@ -275,6 +276,8 @@ export class LoadingService {
     if (!this.imageId) {
       return;
     }
+    this.getMainImage();
+    this.loadRevision(true);
   }
 
   public loadMetadata(imageId: string): void {

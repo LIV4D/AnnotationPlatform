@@ -57,7 +57,7 @@ export class LocalStorage {
   }
 
   // Read local storage of the annotation
-  static load(loadingService: LoadingService, layersService: LayersService, width: number, height: number): void {
+  static load(loadingService: LoadingService, layersService: LayersService): void {
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
     const json = JSON.parse(str);
     if (!json) {
@@ -66,7 +66,7 @@ export class LocalStorage {
     }
     if (!json.biomarkers) {return;}
     layersService.biomarkerCanvas.forEach(canvas => {
-        canvas.clear();
+        canvas.clear(); // Recreate Biomarkers
     });
     layersService.biomarkerCanvas = [];
     json.biomarkers.forEach(element => {
