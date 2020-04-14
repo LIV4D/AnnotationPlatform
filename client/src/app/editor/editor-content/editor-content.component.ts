@@ -82,8 +82,8 @@ export class EditorContentComponent
       }
     );
 
-    console.log('%c toolBoxService: ', 'color:black;background:yellow;');
-    console.log(this.toolBoxService.listOfTools[6]);
+    // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
+    // console.log(this.toolBoxService.listOfTools[6]);
 
     const commentBoxService: CommentBoxService = this.toolBoxService.listOfTools[6] as CommentBoxService;
     this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
@@ -198,6 +198,8 @@ export class EditorContentComponent
     }
 
     this.editorFacadeService.setPanToolByString('pan');
+
+    this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
   }
 
   toggleCommentMode() {
@@ -421,6 +423,8 @@ export class EditorContentComponent
   // }
 
   onResize(): void {
+    this.canvasWidth = this.viewPort.nativeElement.clientWidth;
+    this.canvasHeight = this.viewPort.nativeElement.clientHeight;
     this.editorFacadeService.resize();
   }
 

@@ -32,7 +32,7 @@
 <!-- 300 -->
 <!-- z-index: 300; -->
   <div class="example-boundary" id="boundary" [style.width.px]="canvasWidth" [style.height.px]="canvasHeight"
-    style="left: 0px; position: absolute;  background-color: transparent;" [style.opacity]="isCommentBoxExists">
+    style="left: 0px; position: absolute;  background-color: transparent; border: 2px dotted black;" [style.opacity]="isCommentBoxExists">
     <ng-template id="template" #commentBox class="nothing"></ng-template>
   </div>
 
@@ -40,5 +40,5 @@
   <app-layers id="app-layers"></app-layers>
   <span #svgBox id="svg-box"></span>
 
-  <!-- <span>{{editorMousePos.x}}, {{editorMousePos.y}}</span> -->
+  <span>{{editorMousePos.x}}, {{editorMousePos.y}}</span>
 </div>
