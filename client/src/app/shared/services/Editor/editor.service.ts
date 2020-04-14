@@ -31,9 +31,6 @@ export class EditorService {
 
   commentBoxes: CommentBoxSingleton;
 
-
-  // public biomarkersService: BiomarkersService,
-
   constructor(
     private http: HttpClient,
     public layersService: LayersService,

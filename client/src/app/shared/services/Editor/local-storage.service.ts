@@ -57,7 +57,7 @@ export class LocalStorage {
   }
 
   // Read local storage of the annotation
-  static load(loadingService: LoadingService, layersService: LayersService, width: number, height: number): void {
+  static load(loadingService: LoadingService, layersService: LayersService): void {
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
     const json = JSON.parse(str);
     if (!json) {
