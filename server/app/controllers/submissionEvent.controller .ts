@@ -22,6 +22,7 @@ export class SubmissionEventController implements IController {
 
     /**
      * Gets all the submission events within the database, Can be filtered,
+     *
      * Optionally, a filter can be passed through the request's body.
      * @param req an express request with submission event data
      * @param res an express response where the submission data will be put
@@ -43,6 +44,7 @@ export class SubmissionEventController implements IController {
 
     /**
      * Gets a submission event attached to an annotation.
+     *
      * Requires the annotation id in the parameters of the route.
      * @param req an express request with submission event data
      * @param res an express response where the submission event data will be put
@@ -60,6 +62,7 @@ export class SubmissionEventController implements IController {
 
     /**
      * Gets all the submission events that are specified.
+     *
      * Requires the submission event ids in the body of the request
      * @param req an express request with submission event data
      * @param res an express response where the submission event data will be put

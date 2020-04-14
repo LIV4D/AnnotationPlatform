@@ -38,6 +38,17 @@ export class TaskController implements IController {
 
     }
 
+    /**
+     * Creates a task using the request's information.
+     *
+     * Requires a task type id, an annotation id, whether the task isComplete or not, whether the task isVisible or not,
+     * the task's comment section, a project title, the assigned user's id specified within the request's body.
+     *
+     * Optionally, the lastModifiedTime can be specified with the request's body.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private createTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newTask: ITask = {
@@ -56,12 +67,28 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Gets a task using the specified id.
+     *
+     * Requires the task's id in the parameters of the route.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.taskService.getTask(+req.params.taskId, req.user as User)
             .then(task => res.send(this.export_task(task, req.params.attr)))
             .catch(next);
     }
 
+    /**
+     * Gets all the tasks that are specified.
+     *
+     * Requires the task ids in the request's body.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private getMultipleTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const ids = req.body.ids;
         this.taskService.getTasks(ids)
@@ -69,13 +96,19 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Gets all the tasks for a specified user and image.
+     *
+     * Requires the user's id and the image's id in the request's query.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-
         // Make sure the filter is in type Number
-        const radix = 10;
         const parseIntParams = {
-            userId: parseInt(req.query.userId, radix),
-            imageId: parseInt(req.query.imageId, radix),
+            userId: +req.query.userId,
+            imageId: +req.query.imageId,
         };
 
         const filter = (isNaN(parseIntParams.userId) || isNaN(parseIntParams.imageId)) ? {} : parseIntParams;
@@ -104,6 +137,16 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Uploads a task after it has been finished or saved within the editor
+     *
+     * Requires the task's id in the paremeters of the route.
+     *
+     * Requires the annotationData, the task's uptime and wheteher the task isComplete or not in the request's body.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private submitTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const submission: ISubmission = {
             taskId: +req.params.taskId,
@@ -111,18 +154,9 @@ export class TaskController implements IController {
             uptime: Math.round(process.uptime()),
             isComplete: req.body.isComplete,
         };
-        const currentUser: IUser = {
-            id: req.body.user.id,
-            email: req.body.user.email,
-            firstName: req.body.user.firstName,
-            lastName: req.body.user.lastName,
-            role: req.body.user.role
-        };
-        const user:User = new User();
-        user.update(currentUser);
 
         try {
-            this.taskService.submitTask(submission, user as User).then(
+            this.taskService.submitTask(submission, req.user as User).then(
                 () =>
                 res.sendStatus(204));
         } catch (error) {
@@ -130,6 +164,12 @@ export class TaskController implements IController {
         }
     }
 
+    /**
+     * Cleans a task so that it may be submitted without comprimising personal information.
+     * @param task a task who's login information needs to be deleted
+     * @param format a task's format, basically whether it's proto or not.
+     * @returns the task with no more personal login information.
+     */
     private export_task(task: Task, format: string): any {
         if (!isNullOrUndefined(task.assignedUser)) {
             delete task.assignedUser.password;
@@ -148,6 +188,14 @@ export class TaskController implements IController {
         return null;
     }
 
+    /**
+     * Gets the next task that the user must complete that is visible.
+     *
+     * Requires the user's id in the route's parameters.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private getNextTaskByUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         if ((req.user as User).id !== +req.params.userId) {
             throwIfNotAdmin(req.user);
@@ -183,6 +231,14 @@ export class TaskController implements IController {
             .catch(next);
     }
 
+    /**
+     * Deletes the specifed task
+     *
+     * Requires the task's id in the route's parameters.
+     * @param req an express request with task data
+     * @param res an express response where the task data will be put
+     * @param next is the following function in the express application
+     */
     private deleteTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         this.taskService.deleteTask(+req.params.taskId, req.user as User)

@@ -72,7 +72,9 @@ export class ImageController implements IController {
 
     /**
      * Creates an image using the request's information.
+     *
      * Requires the type to be in the body and the files (the absolute path on the server towards the file).
+     *
      * Optionally, the image's metadata and a boolean determining whether there's preprocessionf or not.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -149,6 +151,7 @@ export class ImageController implements IController {
 
     /**
      * Uploads the image specified in the request.
+     *
      * Requires the image id in the parameters of the route
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -166,6 +169,7 @@ export class ImageController implements IController {
 
     /**
      * Uploads the preprocessing image specified in the request.
+     *
      * Requires the image id in the parameters of the route
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -183,7 +187,9 @@ export class ImageController implements IController {
 
     /**
      * Updates the image specified in the request.
+     *
      * Requires the image id in the parameters of the route.
+     *
      * Requires the image type and its new metadata in the body of the request.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -203,6 +209,7 @@ export class ImageController implements IController {
 
     /**
      * Deletes the image specified in the request.
+     *
      * Requires the image id in the parameters of the route.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -275,6 +282,7 @@ export class ImageController implements IController {
 
     /**
      * Gets a task associated with the image.
+     *
      * Requires the image id in the parameters of the route
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -292,7 +300,8 @@ export class ImageController implements IController {
     }
 
     /**
-     * Gets all tasks associated with the id of multiple images
+     * Gets all tasks associated with the id of multiple images.
+     *
      * Requires the image ids in the body of the request.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -314,6 +323,7 @@ export class ImageController implements IController {
 
     /**
      * Gets the path associated with the image's file on the server.
+     *
      * Requires the image id in the parameters of the route.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -329,6 +339,7 @@ export class ImageController implements IController {
 
     /**
      * Gets the path associated with the image's preprocessing file on the server.
+     *
      * Requires the image id in the parameters of the route.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
@@ -344,6 +355,7 @@ export class ImageController implements IController {
 
     /**
      * Gets the path associated with the image's thumbnail file on the server.
+     *
      * Requires the image id in the parameters of the route.
      * @param req an express request with image data
      * @param res an express response where the image data will be put
