@@ -27,6 +27,7 @@ export class LocalStorage {
     window.localStorage.setItem(LocalStorageKeys.ImageId, imageId);
   }
 
+  // Save the annotations on local
   static save(loadingService: LoadingService, layersService: LayersService): void {
     // No save for local files or if nothing is loaded
     if (!loadingService.getImageId() || loadingService.getImageId() === 'local') {
@@ -55,21 +56,15 @@ export class LocalStorage {
     window.localStorage.setItem(LocalStorageKeys.ImageId, loadingService.getImageId());
   }
 
+  // Read local storage of the annotation
   static load(loadingService: LoadingService, layersService: LayersService, width: number, height: number): void {
-    // Read local storage\\
-
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
-
     const json = JSON.parse(str);
     if (!json) {
         loadingService.loadRevision(true);
         return;
     }
-    if (!json.biomarkers) {
-        return;
-    }
-
-    // Recreate biomarkers
+    if (!json.biomarkers) {return;}
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.clear();
     });
@@ -84,14 +79,11 @@ export class LocalStorage {
             biomarker.width = biomarkerImage.width;
             biomarker.height = biomarkerImage.height;
             biomarker.getContext('2d').drawImage(biomarkerImage, 0, 0);
-            layersService.newBiomarker(biomarkerImage, id, color);
+            layersService.newBiomarker(biomarkerImage, id, color); // Recreate biomarker
         };
         biomarkerImage.src = imageString;
     });
-
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.draw();
-    });
-  }
-
+    });}
 }
