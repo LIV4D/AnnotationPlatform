@@ -14,6 +14,12 @@ export enum WidgetType {
 
 }
 
+/**
+ * A widget is extra information in an annotation in the form of a field appearing in the editor view.
+ * It can be one of multiple types, however, for the time being only multiLine and singleLine are fully implemented.
+ * Furthermore, this is only a base class. The perceived way of extending widgets was to create children classes
+ * for this one.
+ */
 @Entity()
 export class Widget {
     @PrimaryGeneratedColumn('increment')
