@@ -95,4 +95,8 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   getMousePosition(): Point {
     return this.mousePosition;
   }
+
+  updatePositionOfComment() {
+
+  }
 }
