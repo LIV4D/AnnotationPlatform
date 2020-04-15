@@ -90,6 +90,7 @@ export class EditorContentComponent
     // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
     // console.log(this.toolBoxService.listOfTools[6]);
 
+    // TODO: uncomment once loading is functional
     // this.commentLoadEvent = this.loadingService.<name-of-Subject>.subscribe(
     //   (loadedComments) => {
     //     loadedComments.forEach(comment => {
