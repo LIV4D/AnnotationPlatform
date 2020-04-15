@@ -20,7 +20,7 @@ import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 
 
-const SAVE_TIME_INTERVAL = 10000; // 1 second
+const SAVE_TIME_INTERVAL = 10000; // 10 seconds
 
 @Injectable({
 		providedIn: 'root'
@@ -51,6 +51,7 @@ export class LoadingService {
   // Check if a change was made to save to localStorage every 10 seconds.
   public saveFromInterval(timeInterval: number){
     setInterval(() => {
+     // console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;

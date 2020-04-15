@@ -71,13 +71,9 @@ export class EditorContentComponent
       }
     );
 
-    // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
-    // console.log(this.toolBoxService.listOfTools[6]);
-
     const commentBoxService: CommentBoxService = this.toolBoxService.listOfTools[6] as CommentBoxService;
     this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
       (checkBoxClicked) => {
-        console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
         this.commentBoxCheck = checkBoxClicked;
         if(!this.commentBoxCheck) {
 
