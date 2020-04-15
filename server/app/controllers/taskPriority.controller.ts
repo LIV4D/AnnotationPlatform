@@ -6,7 +6,6 @@ import { IController } from './abstractController.controller';
 import { TaskBundleService } from '../services/taskBundle.service';
 import { throwIfNotAdmin } from '../utils/userVerification';
 import { User } from '../models/user.model';
-import { isNullOrUndefined } from 'util';
 
 @injectable()
 export class TaskPriorityController implements IController {
@@ -15,7 +14,7 @@ export class TaskPriorityController implements IController {
 
     public setRoutes(app: express.Application): void {
         app.post('/api/taskPrioritys/create', this.createTaskPriority);
-        app.put('/api/taskPrioritys/update/', this.updateTaskPriority);
+        app.put('/api/taskPrioritys/update/:taskPriorityId', this.updateTaskPriority);
         app.delete('/api/taskPrioritys/delete/:taskPriorityId', this.deleteTaskPriority);
 
         app.put('/api/taskPrioritys/assign', this.assignTaskPriority);
