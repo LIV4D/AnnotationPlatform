@@ -40,7 +40,7 @@ console.log(layersService.biomarkerCanvas);
     biomarkers.forEach(element => {
          encodedBiomarkers.push([
              element.currentCanvas.toDataURL('image/png'),
-             element.id,
+             element.id.substr(11),
              element.color
          ]);
      });
@@ -58,7 +58,7 @@ console.log(layersService.biomarkerCanvas);
 
   // Read local storage of the annotation
 
-   static async load(loadingService: LoadingService, layersService: LayersService){LocalStorage.clear();
+   static async load(loadingService: LoadingService, layersService: LayersService){
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
     const json = JSON.parse(str);
 

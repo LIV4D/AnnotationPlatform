@@ -165,7 +165,7 @@ export class LoadingService {
     this.revisionService.revision = data; // Store the loaded annotations within the revision service.
     this.layersService.biomarkerCanvas = [];
 
-    if(LocalStorage.hasAnnotationStored()){
+    if(LocalStorage.hasAnnotationStored() && this.shouldLoadLocalStorage(LocalStorage.lastSavedImageId())){
       // Add Annotations of localStorage
       LocalStorage.load(this, this.layersService);
     }
