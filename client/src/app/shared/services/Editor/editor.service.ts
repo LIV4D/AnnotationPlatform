@@ -1,6 +1,5 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { LayersService } from './layers.service';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { HttpClient} from '@angular/common/http';
 import { Point } from './Tools/point.service';
@@ -8,12 +7,7 @@ import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
 import { LoadingService } from './Data-Persistence/loading.service';
 import { SubmitService } from './Data-Persistence/submit.service';
-
-// Min and max values for zooming
-const ZOOM = {
-  MIN: 1.0,
-  MAX: 16.0,
-};
+import { ZoomService } from './zoom.service';
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 
@@ -31,11 +25,11 @@ export class EditorService {
 
   constructor(
     private http: HttpClient,
-    public layersService: LayersService,
     public canvasDimensionService: CanvasDimensionService,
     private biomarkerService: BiomarkerService,
     private loadingService: LoadingService,
     private submitService: SubmitService,
+    private zoomService: ZoomService
   ) {
     this.scaleX = 1;
     this.loadingService.setImageLoaded(false);
@@ -46,7 +40,7 @@ export class EditorService {
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void
     {
       this.biomarkerService.dataSource = null;
-      this.canvasDimensionService.zoomFactor = 1.0;
+      this.zoomService.zoomFactor = 1.0;
       this.canvasDimensionService.offsetX = 0;
       this.canvasDimensionService.offsetY = 0;
       this.loadingService.setImageLoaded(false);
@@ -84,30 +78,6 @@ export class EditorService {
   //     );
   // }
 
-  setZoomFactor(zoomFactor: number): void {
-      // Cap the values.
-      if (zoomFactor > 1) { zoomFactor = 1;
-      } else if (zoomFactor < 0) { zoomFactor = 0; }
-      zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
-
-      // Adjust canvas sizes.
-      const oldWidth = this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
-      const oldHeight = this.canvasDimensionService.backgroundCanvas.displayCanvas.height;
-      const newWidth = this.canvasDimensionService.fullCanvasWidth / zoomFactor;
-      const newHeight = this.canvasDimensionService.fullCanvasHeight / zoomFactor;
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.width = newWidth;
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.height = newHeight;
-      this.layersService.resize(newWidth, newHeight);
-
-      if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-          this.canvasDimensionService.zoomFactor = zoomFactor;
-          this.canvasDimensionService.offsetX += (oldWidth - newWidth) / 2;
-          this.canvasDimensionService.offsetY += (oldHeight - newHeight) / 2;
-      }
-      this.canvasDimensionService.adjustOffsets();
-      this.canvasDimensionService.transform();
-      this.canvasDimensionService.updateCanvasDisplayRatio();
-  }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
     let clientX: number;

@@ -7,6 +7,8 @@ import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
+import { LayersService } from '../shared/services/Editor/layers.service';
+import { ZoomService } from '../shared/services/Editor/zoom.service';
 
 @Injectable({
   providedIn:'root',
@@ -18,7 +20,9 @@ export class EditorFacadeService {
               private toolboxService: ToolboxService,
               public canvasDimensionService: CanvasDimensionService,
               private biomarkerService: BiomarkerService,
-              private loadingService: LoadingService) { }
+              public layersService: LayersService,
+              private loadingService: LoadingService,
+              private zoomService: ZoomService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
     // console.log('EditorFacadeService::init()');
@@ -32,11 +36,11 @@ export class EditorFacadeService {
   }
 
   get zoomFactor(): number {
-    return this.canvasDimensionService.zoomFactor;
+    return this.zoomService.zoomFactor;
   }
 
   get firstPoint() {
-    return this.editorService.layersService.firstPoint;
+    return this.layersService.firstPoint;
   }
 
   get backgroundCanvas() {
