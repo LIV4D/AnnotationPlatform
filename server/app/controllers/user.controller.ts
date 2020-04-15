@@ -176,7 +176,6 @@ export class UserController implements IController {
      * @param next is the following function in the express application
      */
     private listUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        throwIfNotAdmin(req.user);
         this.userService.getUsers()
             .then(users => {
                 users.forEach(user => {
