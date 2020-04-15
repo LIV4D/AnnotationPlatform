@@ -151,4 +151,11 @@ export class EditorFacadeService {
     return this.biomarkerService.currentElement;
   }
 
+  getOriginalImageRatio(): number {
+    return this.canvasDimensionService.originalImageRatio();
+  }
+
+  moveCenter(percentX: number, percentY: number) {
+    this.canvasDimensionService.moveCenter(percentX, percentY);
+  }
 }

@@ -48,9 +48,7 @@
                   ></mat-slider> -->
               </div>
               <app-zoom *ngIf="editorFacadeService.imageLoaded"></app-zoom>
-              <!-- <span id="zoomFactorDisplay"> x 1.0 </span> -->
               <span id="zoomFactorDisplay"> x {{editorFacadeService.zoomFactor | number: '1.0-1'}} </span>
-              <!-- {{editorFacadeService.zoomFactor.toFixed(1)}} -->
           </div>
 
           <!-- <app-editor-content id="app-editor" #editor (svgLoaded)="onSvgLoaded($event)" (contextmenu)="openBiomarkers($event); false"></app-editor-content> -->
@@ -75,7 +73,3 @@
       <app-right-menu #rightMenu [canvas]="this.editorFacadeService.backgroundCanvas"></app-right-menu>
   </div>
 </div>
-<!-- COMMENT BOX -->
-<!-- <div>
-    <app-comment-box *ngIf="this.editorFacadeService.commentBoxVisible"></app-comment-box>
-</div> -->

@@ -84,6 +84,8 @@ export class CanvasDimensionService {
 
   // Function to update the zoom rectangle.
   updateZoomRect(): void {
+    console.log('updateZoomRect()');
+
     const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
     if (zoomCanvas !== null) {
       const zoomContext: CanvasRenderingContext2D = zoomCanvas.getContext('2d');
@@ -115,6 +117,8 @@ export class CanvasDimensionService {
 
   // Function that transforms the editor view according to the zoomFactor and offsets properties.
   transform(): void {
+    console.log('transform()');
+
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
       return;
     }
@@ -131,7 +135,7 @@ export class CanvasDimensionService {
   }
 
   // Reajust the display
-  testRedraw(position: Point) {
+  applyRedraw(position: Point) {
     const zoomFactor = this.zoomService.zoomFactor;                // in order to get the new selection's width to zoom at
     const oldWidth = this.backgroundCanvas.displayCanvas.width;    // Adjust canvas sizes.
     const oldHeight = this.backgroundCanvas.displayCanvas.height;  // divide by the zoom factor
@@ -163,21 +167,15 @@ export class CanvasDimensionService {
   }
 
   // Function to change the offsets to match a new center.
-  moveCenter(percentX: number, percentY: number): void {
-    const displayW =
-      this.backgroundCanvas.displayCanvas.width <
-      this.backgroundCanvas.originalCanvas.width
-        ? this.backgroundCanvas.originalCanvas.width
-        : this.backgroundCanvas.displayCanvas.width;
-    const displayH =
-      this.backgroundCanvas.displayCanvas.height <
-      this.backgroundCanvas.originalCanvas.height
-        ? this.backgroundCanvas.originalCanvas.height
-        : this.backgroundCanvas.displayCanvas.height;
-    this.offsetX =
-      this.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
-    this.offsetY =
-      this.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
+  moveCenter(percentX: number, percentY: number): void {;
+    const displayW = this.backgroundCanvas.displayCanvas.width > this.backgroundCanvas.originalCanvas.width
+      ? this.backgroundCanvas.originalCanvas.width
+      : this.backgroundCanvas.displayCanvas.width;
+    const displayH = this.backgroundCanvas.displayCanvas.height > this.backgroundCanvas.originalCanvas.height
+      ? this.backgroundCanvas.originalCanvas.height
+      : this.backgroundCanvas.displayCanvas.height;
+    this.offsetX = this.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
+    this.offsetY = this.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
     this.adjustOffsets();
     this.transform();
   }
@@ -188,7 +186,7 @@ export class CanvasDimensionService {
     this.zoomService.updateZoomFactor(delta);
     if (this.canRedraw) {
       this.canRedraw = false;
-      this.testRedraw(position);
+      this.applyRedraw(position);
       setTimeout(() => {
         this.canRedraw = true;
       }, 100);
