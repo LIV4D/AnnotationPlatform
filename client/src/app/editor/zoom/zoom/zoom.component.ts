@@ -22,7 +22,7 @@ export class ZoomComponent {
       // CSS property names
       height: SIZE + 'px',
       width: (SIZE * this.canvasDimensionService.originalImageRatio()) + 'px',
-      transform: 'scaleX(' + this.editorService.scaleX + ')'
+      transform: 'scaleX(' + this.canvasDimensionService.scaleX + ')'
     };
     return styles;
   }
@@ -76,7 +76,7 @@ export class ZoomComponent {
     const zoomCanvasRect = zoomCanvas.getBoundingClientRect();
 
     // tslint:disable-next-line: max-line-length
-    const percentX = this.editorService.scaleX === 1 ? (clientX - zoomCanvasRect.left) / zoomCanvasRect.width : 1 - (clientX - zoomCanvasRect.left) / zoomCanvasRect.width;
+    const percentX = this.canvasDimensionService.scaleX === 1 ? (clientX - zoomCanvasRect.left) / zoomCanvasRect.width : 1 - (clientX - zoomCanvasRect.left) / zoomCanvasRect.width;
 
     const percentY = (clientY - zoomCanvasRect.top) / zoomCanvasRect.height;
 

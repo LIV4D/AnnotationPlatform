@@ -17,7 +17,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 export class EditorService {
   offsetY: number;
   mouseDown = false;
-  scaleX: number;
+
   svgLoaded: EventEmitter<any>;
   menuState: boolean;
 
@@ -31,7 +31,7 @@ export class EditorService {
     private submitService: SubmitService,
     private zoomService: ZoomService
   ) {
-    this.scaleX = 1;
+    this.canvasDimensionService.scaleX = 1;
     this.loadingService.setImageLoaded(false);
     this.canvasDimensionService.canvasDisplayRatio = new BehaviorSubject<number>(1);
     this.commentBoxes = CommentBoxSingleton.getInstance();
@@ -77,34 +77,6 @@ export class EditorService {
   //         }
   //     );
   // }
-
-
-  getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    let clientX: number;
-    let clientY: number;
-    clientX =
-      this.scaleX === 1
-        ? clientPosition.x - this.canvasDimensionService.viewPort.getBoundingClientRect().left
-        : this.canvasDimensionService.viewPort.clientWidth -
-          clientPosition.x +
-          this.canvasDimensionService.viewPort.getBoundingClientRect().left;
-
-    clientY = clientPosition.y - this.canvasDimensionService.viewPort.getBoundingClientRect().top;
-    const canvasX =
-      (clientX * this.canvasDimensionService.backgroundCanvas.displayCanvas.width) /
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-    const canvasY =
-      (clientY * this.canvasDimensionService.backgroundCanvas.displayCanvas.height) /
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
-    return new Point(canvasX, canvasY);
-  }
-
-  getMousePositionInDisplaySpace(clientPosition: Point): Point {
-    const x = clientPosition.x - this.canvasDimensionService.viewPort.getBoundingClientRect().left;
-    const y = clientPosition.y - this.canvasDimensionService.viewPort.getBoundingClientRect().top;
-
-    return new Point(x, y);
-  }
 
   cancel() {}
 }

@@ -40,7 +40,7 @@ export class LayersFacadeService {
     }
 
     get scaleX(){
-        return this.editorService.scaleX;
+        return this.canvasDimensionService.scaleX;
     }
 
     get viewPort(){

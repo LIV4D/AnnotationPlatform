@@ -48,7 +48,7 @@ export class EditorFacadeService {
   }
 
   get scaleX() {
-    return this.editorService.scaleX;
+    return this.canvasDimensionService.scaleX;
   }
 
   get panTool() {
@@ -129,7 +129,7 @@ export class EditorFacadeService {
   }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    return this.editorService.getMousePositionInCanvasSpace(clientPosition);
+    return this.canvasDimensionService.getMousePositionInCanvasSpace(clientPosition);
   }
 
   //loadSVGLocal(event: any) {

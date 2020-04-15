@@ -18,13 +18,15 @@ export class CanvasDimensionService {
   fullCanvasHeight: number;
   offsetX: number;
   offsetY: number;
+  scaleX: number;
   canRedraw = true;
 
   constructor(
     public layersService: LayersService,
     private zoomService: ZoomService,
     public router: Router,
-  ) {}
+  ) {
+  }
 
   // Return the width/height ratio of the viewport (displayed).
   viewportRatio(): number {
@@ -277,5 +279,32 @@ export class CanvasDimensionService {
       this.backgroundCanvas.originalCanvas.width,
       this.backgroundCanvas.originalCanvas.height
     );
+  }
+
+  getMousePositionInCanvasSpace(clientPosition: Point): Point {
+    let clientX: number;
+    let clientY: number;
+    clientX =
+      this.scaleX === 1
+        ? clientPosition.x - this.viewPort.getBoundingClientRect().left
+        : this.viewPort.clientWidth -
+          clientPosition.x +
+          this.viewPort.getBoundingClientRect().left;
+
+    clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+    const canvasX =
+      (clientX * this.backgroundCanvas.displayCanvas.width) /
+      this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+    const canvasY =
+      (clientY * this.backgroundCanvas.displayCanvas.height) /
+      this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+    return new Point(canvasX, canvasY);
+  }
+
+  getMousePositionInDisplaySpace(clientPosition: Point): Point {
+    const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
+    const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+
+    return new Point(x, y);
   }
 }
