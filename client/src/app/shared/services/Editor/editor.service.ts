@@ -166,7 +166,7 @@ export class EditorService {
   }
 
   testRedraw(position: Point) {
-    this.canvasDimensionService.testRedraw(position);
+    this.canvasDimensionService.applyRedraw(position);
   }
 
   // Function to zoom on a part of the image.

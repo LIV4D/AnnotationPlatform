@@ -137,7 +137,7 @@ export class CanvasDimensionService {
   }
 
   // Reajust the display
-  testRedraw(position: Point) {
+  applyRedraw(position: Point) {
     const zoomFactor = this.zoomFactor;                            // in order to get the new selection's width to zoom at
     const oldWidth = this.backgroundCanvas.displayCanvas.width;    // Adjust canvas sizes.
     const oldHeight = this.backgroundCanvas.displayCanvas.height;  // divide by the zoom factor
@@ -193,7 +193,6 @@ export class CanvasDimensionService {
   zoom(delta: number, position: Point = null): void {
     // Keep zoom in range [100%, 600%]
     let zoomFactor = this.zoomFactor * Math.exp(delta); // exp is used for acceleration
-    // let zoomFactor = this.zoomFactor * (2 / (1 + Math.exp(delta)));
 
     // Capture the values.
     if (zoomFactor > ZOOM.MAX) {
@@ -204,9 +203,10 @@ export class CanvasDimensionService {
 
     this.zoomFactor = zoomFactor;
 
+    // using 10fps to keep the zoom from overloading on heavy pictures
     if (this.canRedraw) {
       this.canRedraw = false;
-      this.testRedraw(position);
+      this.applyRedraw(position);
       setTimeout(() => {
         this.canRedraw = true;
       }, 100);
