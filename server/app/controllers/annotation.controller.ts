@@ -80,7 +80,7 @@ export class AnnotationController implements IController {
         const newAnnotation: IAnnotation = {
             data: EMPTY_REVISION,
             imageId: req.body.imageId,
-            comments: req.body.comment,
+            comments: req.body.comments,
         };
         res.send(newAnnotation);
     }
@@ -107,7 +107,7 @@ export class AnnotationController implements IController {
         const newAnnotation: IAnnotation = {
             data: req.body.data,
             imageId: req.body.imageId,
-            comments: req.body.comment,
+            comments: req.body.comments,
         };
         this.annotationService.create(newAnnotation, req.user)
             .then(annotation => res.send(annotation.proto()))
@@ -126,7 +126,7 @@ export class AnnotationController implements IController {
         const newAnnotation: IAnnotation = {
             id: req.params.annotationId as number,
             data: req.body.data,
-            comments: req.body.comment,
+            comments: req.body.comments,
         };
         this.annotationService.update(newAnnotation, req.user)
                             .then(updatedAnnotation => res.send(updatedAnnotation))
