@@ -24,7 +24,7 @@ export class VisualizationService {
             this.applyContrast(data, Math.pow(contrast / CONTRAST_FACTOR, 3));
         }
         canvas.currentCanvas.getContext('2d').putImageData(image, 0, 0);
-        this.editorService.transform();
+        this.canvasDimensionService.transform();
     }
 
     applyBrightness(data: Uint8ClampedArray, brightness: number): void {

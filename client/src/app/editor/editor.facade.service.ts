@@ -7,7 +7,6 @@ import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
-import { Tool } from '../shared/services/Editor/Tools/tool.service';
 
 @Injectable({
   providedIn:'root',
@@ -29,7 +28,7 @@ export class EditorFacadeService {
   }
 
   zoom(delta: number, position: Point = null): void {
-    this.editorService.zoom(delta, position);
+    this.canvasDimensionService.zoom(delta, position);
   }
 
   get zoomFactor(): number {
@@ -89,11 +88,11 @@ export class EditorFacadeService {
   }
 
   public resize() {
-    this.editorService.resize();
+    this.canvasDimensionService.resize();
   }
 
   public load(imageId: string) {
-    this.editorService.loadMetadata(imageId);
+    this.loadingService.loadMetadata(imageId);
   }
 
   set imageLoaded(boolValue: boolean) {

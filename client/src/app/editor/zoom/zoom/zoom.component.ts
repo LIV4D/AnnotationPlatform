@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { EditorService } from 'src/app/shared/services/Editor/editor.service';
+import { CanvasDimensionService } from 'src/app/shared/services/Editor/canvas-dimension.service';
 
 const SIZE = 80;
 
@@ -12,7 +13,7 @@ export class ZoomComponent {
 
   mouseDown: boolean;
 
-  constructor(public editorService: EditorService) {
+  constructor(public editorService: EditorService, private canvasDimensionService: CanvasDimensionService) {
       this.mouseDown = false;
   }
 
@@ -20,7 +21,7 @@ export class ZoomComponent {
     const styles = {
       // CSS property names
       height: SIZE + 'px',
-      width: (SIZE * this.editorService.originalImageRatio()) + 'px',
+      width: (SIZE * this.canvasDimensionService.originalImageRatio()) + 'px',
       transform: 'scaleX(' + this.editorService.scaleX + ')'
     };
     return styles;
@@ -65,27 +66,21 @@ export class ZoomComponent {
   }
 
   onTouchEnd(event: TouchEvent): void {
-    // console.log('onTouchEnd(event: TouchEvent)');
     this.mouseDown = event.targetTouches.length === 0;
   }
 
   moveEvent(clientX: number, clientY: number): void {
-    // console.log('moveEvent(clientX: number, clientY: number)');
 
     const zoomCanvas = document.getElementById('zoom-canvas') as HTMLCanvasElement;
-    // console.log('moveEvent::zoomCanvas ==> ' + zoomCanvas);
 
     const zoomCanvasRect = zoomCanvas.getBoundingClientRect();
-    // console.log('moveEvent::zoomCanvasRect ==> ' + zoomCanvasRect);
 
     // tslint:disable-next-line: max-line-length
     const percentX = this.editorService.scaleX === 1 ? (clientX - zoomCanvasRect.left) / zoomCanvasRect.width : 1 - (clientX - zoomCanvasRect.left) / zoomCanvasRect.width;
-    // console.log('percentX ==> ' + percentX);
 
     const percentY = (clientY - zoomCanvasRect.top) / zoomCanvasRect.height;
-    // console.log('percentY ==> ' + percentY);
 
-    this.editorService.moveCenter(percentX, percentY);
+    this.canvasDimensionService.moveCenter(percentX, percentY);
   }
 
 }

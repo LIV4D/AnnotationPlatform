@@ -25,7 +25,7 @@ export class SubmitFacadeService {
     }
 
     saveLocal():void {
-      this.editorService.saveSVGFile();
+      this.submitService.saveSVGFile();
     }
 
     async getTasks(imageId: string): Promise<Task[]> {
