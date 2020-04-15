@@ -163,10 +163,25 @@ export class LoadingService {
   loadAnnotationDatas(data: object){
     this.revisionService.revision = data; // Store the loaded annotations within the revision service.
     this.layersService.biomarkerCanvas = [];
-    this.layersService.createFlatCanvasRecursiveJson(data, this.canvasDimensionService.backgroundCanvas.originalCanvas.width, this.canvasDimensionService.backgroundCanvas.originalCanvas.height); // Add Annotation datas on the of the serveur the biomarkerCanvas
+
+    if(LocalStorage.hasAnnotationStored()){
+      // Add Annotations of localStorage
+      LocalStorage.load(this, this.layersService);
+    }
+    else{
+      // Add Annotation datas  of the server on the biomarkerCanvas
+      this.layersService.createFlatCanvasRecursiveJson(
+        data,
+        this.canvasDimensionService.backgroundCanvas.originalCanvas.width,
+        this.canvasDimensionService.backgroundCanvas.originalCanvas.height
+      );
+    }
     this.biomarkerService.initJsonRecursive(data);  // Add Annotation datas on Annotation selection right box
     this.biomarkerService.buildTreeRecursive(data); // Build the annotation tree right box
+
+
     setTimeout(() => {LocalStorage.save(this, this.layersService); }, 1000);
+
   }
 
   // Load the main image in the background canvas.
@@ -267,7 +282,7 @@ export class LoadingService {
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
       this.getMainImage();
-      //LocalStorage.load(this, this.layersService);
+
       this.loadRevision(true);
       this.loadMetadata(this.imageId);
       return;

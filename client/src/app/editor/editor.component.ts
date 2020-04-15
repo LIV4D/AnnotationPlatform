@@ -6,11 +6,9 @@ import { AppService } from '../shared/services/app.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BiomarkersFacadeService } from './right-menu/biomarkers/biomarkers.facade.service';
 import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
-// import { DeviceDetectorService } from 'ngx-device-detector';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { BioPicker } from './../shared/services/Editor/Tools/biopicker.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
-import { ToolPropertiesComponent } from './toolbox/tool-properties/tool-properties.component';
 
 @Component({
   selector: 'app-editor',
@@ -35,9 +33,6 @@ export class EditorComponent implements OnInit {
   windowHeight: number;
   sliderZoom: number;
 
-  // tslint:disable-next-line: max-line-length
-  // , public toolboxService: ToolboxService public biomarkersService: BiomarkersService, public deviceService: DeviceDetectorService, public toolPropertiesService: ToolPropertiesService
-
   constructor(private cdRef: ChangeDetectorRef,
               public layersService: LayersService, public appService: AppService,
               public editorFacadeService: EditorFacadeService, public biomarkersFacadeService: BiomarkersFacadeService,
@@ -51,7 +46,6 @@ export class EditorComponent implements OnInit {
   }
 
   ngAfterViewChecked(): void {
-    // console.log('EditorComponent::ngAfterViewChecked()');
     this.cdRef.detectChanges();
   }
 

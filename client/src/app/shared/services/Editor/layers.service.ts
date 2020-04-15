@@ -145,31 +145,6 @@ export class LayersService {
     );
   }
 
-  createFlatCanvasRecursive(node: SVGGElement, width: number = 0, height: number = 0): void {
-    if (node.tagName === 'image') {
-      node.style.visibility = 'visible';
-      const image = new Image();
-      if (height !== 0 && width !== 0) {
-        image.width = width;
-        image.height = height;
-      }
-      image.onload = () => {
-        console.log("push createFlatCanvasRecursive");
-        this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
-      };
-      if (!node.hasAttribute('xlink:href')) {
-        // Add a transparent pixel to have a valid xlink:href
-        node.setAttribute('xlink:href', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=');
-      }
-      image.src = node.getAttribute('xlink:href');
-    } else {
-      Array.from(node.children).forEach((child: SVGGElement) => {
-        child.style.visibility = 'visible';
-        this.createFlatCanvasRecursive(child, width, height);
-      });
-    }
-  }
-
   createFlatCanvasRecursiveJson(data: object, width: number = 0, height: number = 0): void {
     const topLevelBiomarkers = data['biomarkers'];
     for (let [key, value] of Object.entries(topLevelBiomarkers)) {
@@ -196,7 +171,6 @@ export class LayersService {
         this.newBiomarker(image, type, color);
       };
 
-      // console.log("%c "+type, 'color: black; background: yellow;');
       image.src = dataImage;
 
       //image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
