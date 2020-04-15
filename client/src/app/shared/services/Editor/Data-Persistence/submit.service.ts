@@ -25,6 +25,7 @@ import { LoadingService } from './loading.service';
 
 // File Saver
 import { saveAs } from 'file-saver';
+import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 
 
 @Injectable({
@@ -131,7 +132,9 @@ export class SubmitService {
     // Body
     const annotationData:AnnotationData = this.layersService.getAnnotationDatas();
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
+    const commentData:string[] = CommentBoxSingleton.getInstance().getTextAreaValues();
     const body = {
+      comments: commentData,
       data: annotationData,
       isComplete: this.loadingService.getTaskLoaded().isComplete,
       isVisible: this.loadingService.getTaskLoaded().isVisible,
