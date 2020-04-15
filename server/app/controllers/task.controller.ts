@@ -11,7 +11,6 @@ import { throwIfNotAdmin } from '../utils/userVerification';
 import { ISubmission } from '../../../common/interfaces';
 import { AnnotationData } from '../models/annotation.model';
 import { User } from '../models/user.model';
-import { IUser } from '../interfaces/IUser.interface';
 
 @injectable()
 export class TaskController implements IController {
