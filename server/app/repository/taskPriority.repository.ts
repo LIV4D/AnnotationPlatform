@@ -4,6 +4,7 @@ import { TaskPriority } from './../models/taskPriority.model';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { DeleteResult } from 'typeorm';
+import { isNullOrUndefined } from 'util';
 // import { DeleteResult } from 'typeorm';
 
 @injectable()
@@ -69,9 +70,18 @@ export class TaskPriorityRepository {
         return iTaskPrioritys;
     }
 
-    public async findAll(id: number): Promise<TaskPriority[]> {
+    public async findAll(id: number, userId?: number): Promise<TaskPriority[]> {
         const repository =  (await this.connectionProvider()).getRepository(TaskPriority);
-        return await repository.find({ taskId : id });
+        if(isNullOrUndefined(userId)){
+            return await repository.find({ taskId : id });
+        } else {
+            return await repository.find({ taskId : id, userId });
+        }
+    }
+
+    public async find(taskId: number, userId: number): Promise<TaskPriority> {
+        const repository =  (await this.connectionProvider()).getRepository(TaskPriority);
+        return await repository.findOne({ taskId, userId });
     }
 
     public async deletePriorities(taskPriorities: TaskPriority[]): Promise<DeleteResult[]> {

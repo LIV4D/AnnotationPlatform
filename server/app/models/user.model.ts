@@ -17,9 +17,11 @@ export enum UserRole {
     admin = 'admin'
 }
 
+/**
+ * A user is the person that is using the application. Kinda self-explanatory.
+ */
 @Entity()
 export class User {
-    // TODO: get rid of this column and put email column as Primary key
     @PrimaryGeneratedColumn('increment')
     public id: number;
 

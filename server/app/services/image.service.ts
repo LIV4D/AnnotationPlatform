@@ -241,7 +241,6 @@ export class ImageService {
         return await this.imageRepository.findAll();
     }
 
-    // public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string): Promise<Image[]> {
     public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string): Promise<any> {
         // console.log('Server::ImageService::getImagesWithCount ');
 

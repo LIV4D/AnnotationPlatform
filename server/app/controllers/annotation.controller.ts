@@ -7,6 +7,7 @@ import { isNullOrUndefined } from 'util';
 import { IController } from './abstractController.controller';
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
 import { AnnotationService } from '../services/annotation.service';
+import { User } from '../models/user.model';
 
 const EMPTY_REVISION: any = {
     biomarkers: [
@@ -25,7 +26,9 @@ const EMPTY_REVISION: any = {
               biomarkers: [
                   { type: 'Hemorrhages', color: '#4b18ff', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
                   { type: 'Microaneurysms', color: '#2a63fd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  // tslint:disable-next-line:max-line-length
                   { type: 'Sub-retinal hemorrhage', color: '#7a2afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
+                  // tslint:disable-next-line:max-line-length
                   { type: 'Pre-retinal hemorrhage', color: '#a12afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
                   { type: 'Neovascularization', color: '#ba2afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' },
                   { type: 'Uncertain - Red', color: '#d62afd', dataImage:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=' }
@@ -86,8 +89,8 @@ export class AnnotationController implements IController {
     }
 
     private getBaseAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const base_revision = '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'no\'?><svg><g></g></svg>';
-        res.send({ svg: base_revision });
+        const baseRevision = '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'no\'?><svg><g></g></svg>';
+        res.send({ svg: baseRevision });
     }
 
     /**
@@ -109,7 +112,7 @@ export class AnnotationController implements IController {
             imageId: req.body.imageId,
             comment: req.body.comment,
         };
-        this.annotationService.create(newAnnotation, req.user)
+        this.annotationService.create(newAnnotation, req.user as User)
             .then(annotation => res.send(annotation.proto()))
             .catch(next);
     }
@@ -124,11 +127,11 @@ export class AnnotationController implements IController {
     private updateAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
         const newAnnotation: IAnnotation = {
-            id: req.params.annotationId as number,
+            id: +req.params.annotationId,
             data: req.body.data,
             comment: req.body.comment,
         };
-        this.annotationService.update(newAnnotation, req.user)
+        this.annotationService.update(newAnnotation, req.user as User)
                             .then(updatedAnnotation => res.send(updatedAnnotation))
                             .catch (next);
     }
@@ -141,7 +144,7 @@ export class AnnotationController implements IController {
      */
     private deleteAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        this.annotationService.delete(req.params.annotationId)
+        this.annotationService.delete(+req.params.annotationId)
         .then(() => res.sendStatus(204))
         .catch(next);
     }
@@ -154,9 +157,9 @@ export class AnnotationController implements IController {
      */
     private cloneAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const annotationInfo: IAnnotation = {
-            id: req.params.annotationId as number,
+            id: +req.params.annotationId,
         };
-        this.annotationService.clone(annotationInfo.id, req.user)
+        this.annotationService.clone(annotationInfo.id, req.user as User)
         .then(clonedAnnotation => res.send(clonedAnnotation))
         .catch(next);
     }
@@ -190,7 +193,7 @@ export class AnnotationController implements IController {
      * @param next is the following function in the express application
      */
     private getAnnotation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.annotationService.getAnnotation(parseInt(req.params.annotationId))
+        this.annotationService.getAnnotation(+req.params.annotationId)
         .then(annotation => {
             switch (req.params.attr) {
                 case undefined: res.send(annotation); break;

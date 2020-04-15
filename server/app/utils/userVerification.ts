@@ -1,4 +1,4 @@
-import { UserRole } from './../models/user.model';
+import { UserRole, User } from './../models/user.model';
 import 'reflect-metadata';
 import * as express from 'express';
 import { createError } from './error';
@@ -12,5 +12,5 @@ export function throwIfNotAdmin(user: any) {
 }
 // TODO: this method is never called...
 export function isAdmin(req: express.Request) {
-    return req.user.role === UserRole.admin;
+    return (req.user as User).role === UserRole.admin;
 }

@@ -8,6 +8,16 @@ import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
 import { ITask } from '../interfaces/ITask.interface';
 import { TaskPriority } from './taskPriority.model';
 
+/**
+ * A task is a workload assigne to a specific user (ManyToOne) so that they may annotate an image. It can also be assigned
+ * to a group of users (OneToMany) through task priorities. In which case, one of those users must choose to work on that task
+ * before it can be annotated.
+ *
+ * To this extent, a task is an entity which is volatile. A number of tasks are created and deleted for each annotation (ManyToOne).
+ * For data persistence, it is better to store information within the annotation rather than in the task.
+ *
+ * A task may also have a task type (ManyToOne) where more generic info about the task can be stored.
+ */
 @Entity()
 export class Task {
 

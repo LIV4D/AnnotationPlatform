@@ -8,8 +8,6 @@ import { IProtoAnnotation } from '../prototype interfaces/IProtoAnnotation.inter
 import { IAnnotation } from '../interfaces/IAnnotation.interface';
 import { Widget } from './widget.model';
 
-export class StringHierarchy { [key: string]: StringHierarchy | string}
-
 // tslint:disable-next-line:max-classes-per-file
 export class AnnotationData {
     biomarkers?: AnnotationData[];
@@ -17,7 +15,16 @@ export class AnnotationData {
     color?: string;
     dataImage?: string; // ou string
 }
-
+/**
+ * An annotation is the persistent data where an image is being annotated with ist different biomarkers.
+ * Thus, it contains all the pertinent info for studying a retinian image.
+ *
+ * It can be associated with any number of tasks in order to be further annotated (OneToMany) and it can have any number of
+ * widgets for further information gathering (OneToMany).
+ *
+ * It also has a number of submission events since each time an annotation is completed or worked upon,
+ * a submission event is created (OneToOne).
+ */
 // tslint:disable-next-line:max-classes-per-file
 @Entity()
 export class Annotation {
