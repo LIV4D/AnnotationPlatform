@@ -90,6 +90,8 @@ export class CanvasDimensionService {
 
   // Function to update the zoom rectangle.
   updateZoomRect(): void {
+    console.log('updateZoomRect()');
+
     const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
     if (zoomCanvas !== null) {
       const zoomContext: CanvasRenderingContext2D = zoomCanvas.getContext('2d');
@@ -121,6 +123,8 @@ export class CanvasDimensionService {
 
   // Function that transforms the editor view according to the zoomFactor and offsets properties.
   transform(): void {
+    console.log('transform()');
+
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
       return;
     }
@@ -170,20 +174,15 @@ export class CanvasDimensionService {
 
   // Function to change the offsets to match a new center.
   moveCenter(percentX: number, percentY: number): void {
-    const displayW =
-      this.backgroundCanvas.displayCanvas.width <
-      this.backgroundCanvas.originalCanvas.width
-        ? this.backgroundCanvas.originalCanvas.width
-        : this.backgroundCanvas.displayCanvas.width;
-    const displayH =
-      this.backgroundCanvas.displayCanvas.height <
-      this.backgroundCanvas.originalCanvas.height
-        ? this.backgroundCanvas.originalCanvas.height
-        : this.backgroundCanvas.displayCanvas.height;
-    this.offsetX =
-      this.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
-    this.offsetY =
-      this.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
+    console.log('moveCenter()');
+    const displayW = this.backgroundCanvas.displayCanvas.width > this.backgroundCanvas.originalCanvas.width
+      ? this.backgroundCanvas.originalCanvas.width
+      : this.backgroundCanvas.displayCanvas.width;
+    const displayH = this.backgroundCanvas.displayCanvas.height > this.backgroundCanvas.originalCanvas.height
+      ? this.backgroundCanvas.originalCanvas.height
+      : this.backgroundCanvas.displayCanvas.height;
+    this.offsetX = this.backgroundCanvas.originalCanvas.width * percentX - displayW / 2;
+    this.offsetY = this.backgroundCanvas.originalCanvas.height * percentY - displayH / 2;
     this.adjustOffsets();
     this.transform();
   }
