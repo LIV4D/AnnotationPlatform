@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EditorService } from 'src/app/shared/services/Editor/editor.service';
+import { EditorFacadeService } from '../../editor.facade.service';
 
 const SIZE = 80;
 
@@ -12,7 +12,7 @@ export class ZoomComponent {
 
   mouseDown: boolean;
 
-  constructor(public editorService: EditorService) {
+  constructor(public editorFacadeService: EditorFacadeService) {
       this.mouseDown = false;
   }
 
@@ -20,8 +20,8 @@ export class ZoomComponent {
     const styles = {
       // CSS property names
       height: SIZE + 'px',
-      width: (SIZE * this.editorService.originalImageRatio()) + 'px',
-      transform: 'scaleX(' + this.editorService.scaleX + ')'
+      width: (SIZE * this.editorFacadeService.getOriginalImageRatio()) + 'px',
+      transform: 'scaleX(' + this.editorFacadeService.scaleX + ')'
     };
     return styles;
   }
@@ -65,9 +65,9 @@ export class ZoomComponent {
   moveEvent(clientX: number, clientY: number): void {
     const zoomCanvas = document.getElementById('zoom-canvas') as HTMLCanvasElement;
     const zoomCanvasRect = zoomCanvas.getBoundingClientRect();
-    const percentX = this.editorService.scaleX === 1 ? (clientX - zoomCanvasRect.left) / zoomCanvasRect.width : 1 - (clientX - zoomCanvasRect.left) / zoomCanvasRect.width;
+    const percentX = this.editorFacadeService.scaleX === 1 ? (clientX - zoomCanvasRect.left) / zoomCanvasRect.width : 1 - (clientX - zoomCanvasRect.left) / zoomCanvasRect.width;
     const percentY = (clientY - zoomCanvasRect.top) / zoomCanvasRect.height;
-    this.editorService.moveCenter(percentX, percentY);
+    this.editorFacadeService.moveCenter(percentX, percentY);
   }
 
 }

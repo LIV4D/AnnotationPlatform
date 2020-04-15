@@ -148,4 +148,11 @@ export class EditorFacadeService {
     return this.biomarkerService.currentElement;
   }
 
+  getOriginalImageRatio(): number {
+    return this.editorService.originalImageRatio();
+  }
+
+  moveCenter(percentX: number, percentY: number) {
+    this.editorService.moveCenter(percentX, percentY);
+  }
 }
