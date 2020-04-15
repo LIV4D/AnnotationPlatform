@@ -7,4 +7,5 @@ export interface ISubmission {
     uptime: number;
     isComplete: boolean;
     isVisible: boolean;
+    comments: string[];
 }
