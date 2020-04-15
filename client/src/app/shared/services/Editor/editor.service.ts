@@ -2,7 +2,6 @@ import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { HttpClient} from '@angular/common/http';
-import { Point } from './Tools/point.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
 import { LoadingService } from './Data-Persistence/loading.service';
