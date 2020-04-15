@@ -1,3 +1,8 @@
+import { Annotation } from './annotation.model';
+import { Image } from './image.model';
+import { TaskPriority } from './taskPriority.model';
+import { TaskType } from './taskType.model';
+import { User } from './user.model';
 import { Widget } from './widget.model';
 
 export class Task {
