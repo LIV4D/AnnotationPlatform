@@ -111,7 +111,7 @@ export class TaskController implements IController {
             uptime: Math.floor(Date.now() / 1000), // Integer TimeStamp in second
             isComplete: req.body.isComplete,
             isVisible: req.body.isVisible,
-            comments: req.body.comment
+            comments: req.body.comments
         };
         const user:User = new User();
         const currentUser: IUser = {
