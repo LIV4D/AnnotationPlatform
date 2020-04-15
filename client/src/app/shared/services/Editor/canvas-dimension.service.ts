@@ -135,7 +135,7 @@ export class CanvasDimensionService {
   }
 
   // Reajust the display
-  testRedraw(position: Point) {
+  applyRedraw(position: Point) {
     const zoomFactor = this.zoomService.zoomFactor;                // in order to get the new selection's width to zoom at
     const oldWidth = this.backgroundCanvas.displayCanvas.width;    // Adjust canvas sizes.
     const oldHeight = this.backgroundCanvas.displayCanvas.height;  // divide by the zoom factor
