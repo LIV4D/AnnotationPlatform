@@ -79,6 +79,7 @@ export class TaskService {
         const newAnnotation: IAnnotation = {
             id: task.annotation.id,
             data: submission.data,
+            comments: submission.comments,
         };
         this.annotationService.update(newAnnotation, user, { description: 'Task submission', timestamp: submission.uptime });
         this.updateTask(task, user);
