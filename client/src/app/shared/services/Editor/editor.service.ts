@@ -1,20 +1,12 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { LayersService } from './layers.service';
 import { CanvasDimensionService } from './canvas-dimension.service';
-import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { HttpClient} from '@angular/common/http';
-import { Point } from './Tools/point.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
 import { LoadingService } from './Data-Persistence/loading.service';
 import { SubmitService } from './Data-Persistence/submit.service';
-
-// Min and max values for zooming
-const ZOOM = {
-  MIN: 1.0,
-  MAX: 16.0,
-};
+import { ZoomService } from './zoom.service';
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 
@@ -24,7 +16,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 export class EditorService {
   offsetY: number;
   mouseDown = false;
-  scaleX: number;
+
   svgLoaded: EventEmitter<any>;
   menuState: boolean;
 
@@ -32,13 +24,13 @@ export class EditorService {
 
   constructor(
     private http: HttpClient,
-    public layersService: LayersService,
     public canvasDimensionService: CanvasDimensionService,
     private biomarkerService: BiomarkerService,
     private loadingService: LoadingService,
     private submitService: SubmitService,
+    private zoomService: ZoomService
   ) {
-    this.scaleX = 1;
+    this.canvasDimensionService.scaleX = 1;
     this.loadingService.setImageLoaded(false);
     this.canvasDimensionService.canvasDisplayRatio = new BehaviorSubject<number>(1);
     this.commentBoxes = CommentBoxSingleton.getInstance();
@@ -47,64 +39,21 @@ export class EditorService {
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void
     {
       this.biomarkerService.dataSource = null;
-      this.canvasDimensionService.zoomFactor = 1.0;
+      this.zoomService.zoomFactor = 1.0;
       this.canvasDimensionService.offsetX = 0;
       this.canvasDimensionService.offsetY = 0;
       this.loadingService.setImageLoaded(false);
-
-      // this.viewPort = document.getElementById('editor-box') as HTMLDivElement;
       this.canvasDimensionService.viewPort = viewPort.nativeElement;
-      // this.svgBox = document.getElementById('svg-box') as HTMLDivElement;
       this.submitService.svgBox = svgBox.nativeElement;
       this.svgLoaded = svgLoaded;
       if (this.loadingService.getImageLocal()) {
-        this.setImageId('local');
-        this.loadAllLocal(this.loadingService.getImageLocal(), this.svgLoaded);
+        this.loadingService.setImageId('local');
+        this.loadingService.loadAllLocal(this.loadingService.getImageLocal(), this.svgLoaded);
       } else {
-        this.loadAll();
+        this.loadingService.loadAll();
       }
-      this.resize();
+      this.canvasDimensionService.resize();
     }
-
-  // Reads the current display canvas dimensions and update canvasDisplayRatio.
-  updateCanvasDisplayRatio(): void {
-    this.canvasDimensionService.updateCanvasDisplayRatio();
-  }
-
-  // Resizes the canvases to the current window size.
-  resize(): void {
-    this.canvasDimensionService.resize();
-  }
-
-  // Load canvases and local variables when opening a local image.
-  public async loadAllLocal(image: HTMLImageElement,svgLoaded: EventEmitter<any>): Promise<void> {
-    this.loadingService.loadAllLocal(image, svgLoaded);
-  }
-
-  // Loads a revision from the server. Draws that revision optionnaly.
-  public async loadRevision(drawTheAnnotation: boolean): Promise<void> {
-    this.loadingService.loadRevision(drawTheAnnotation);
-  }
-
-  // Load the main image in the background canvas.
-  public loadMainImage(image: HTMLImageElement): void {
-    this.loadingService.loadMainImage(image);
-  }
-
-  getMainImage(): void {
-    this.loadingService.getMainImage();
-  }
-
-  // Check if the browser's local storage contains a usable revision
-  // that should be loaded.
-  shouldLoadLocalStorage(lastImageId: string): boolean {
-    return this.loadingService.shouldLoadLocalStorage(lastImageId);
-  }
-
-  // Load everything in the editor.
-  public loadAll(): void {
-    this.loadingService.loadAll();
-  }
 
   // public loadPretreatmentImage(): void {
   //     const req = this.http.get(`/api/preprocessings/${this.imageId}/${PREPROCESSING_TYPE}`, { responseType: 'blob',
@@ -128,142 +77,5 @@ export class EditorService {
   //     );
   // }
 
-  // public loadSVGLocal(event: any): void {
-  //   const reader: FileReader = new FileReader();
-  //   reader.onload = () => {
-  //     this.layersService.biomarkerCanvas = [];
-  //     this.svgBox.innerHTML = reader.result as string;
-  //     const parser = new DOMParser();
-  //     const xmlDoc = parser.parseFromString(this.svgBox.innerHTML, 'text/xml');
-  //     const arbre: SVGGElement[] = [];
-  //     Array.from(xmlDoc.children).forEach((e: SVGGElement) => {
-  //       const elems = e.getElementsByTagName('g');
-  //       for (let j = 0; j < elems.length; j++) {
-  //         if (elems[j].parentElement.tagName !== 'g') {
-  //           arbre.push(elems[j]);
-  //         }
-  //       }
-  //     });
-  //     this.layersService.biomarkerCanvas = [];
-  //     arbre.forEach((e: SVGGElement) => {
-  //       this.layersService.createFlatCanvasRecursive(e);
-  //     });
-  //   };
-  //   reader.readAsBinaryString(event.target.files[0]);
-  //   this.localSVGName = event.target.files[0].name;
-  // }
-
-  // Function to update the zoom rectangle.
-  // TODO: Move this to zoom.service.ts if it gets enough logic, otherwise keep here.
-  updateZoomRect(): void {
-    this.canvasDimensionService.updateZoomRect();
-  }
-
-  // Function to adjust the offsets to keep a coherent editor.
-  // Returns true if an adjustment was made, false otherwise.
-  adjustOffsets(): boolean {
-    return this.canvasDimensionService.adjustOffsets();
-  }
-
-  testRedraw(position: Point) {
-    this.canvasDimensionService.applyRedraw(position);
-  }
-
-  // Function to zoom on a part of the image.
-  // Currently only centered with specific ratios.
-  zoom(delta: number, position: Point = null): void {
-    this.canvasDimensionService.zoom(delta, position);
-  }
-
-
-  setZoomFactor(zoomFactor: number): void {
-      // Cap the values.
-      if (zoomFactor > 1) { zoomFactor = 1;
-      } else if (zoomFactor < 0) { zoomFactor = 0; }
-      zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
-
-      // Adjust canvas sizes.
-      const oldWidth = this.canvasDimensionService.backgroundCanvas.displayCanvas.width;
-      const oldHeight = this.canvasDimensionService.backgroundCanvas.displayCanvas.height;
-      const newWidth = this.canvasDimensionService.fullCanvasWidth / zoomFactor;
-      const newHeight = this.canvasDimensionService.fullCanvasHeight / zoomFactor;
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.width = newWidth;
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.height = newHeight;
-      this.layersService.resize(newWidth, newHeight);
-
-      if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-          this.canvasDimensionService.zoomFactor = zoomFactor;
-          this.canvasDimensionService.offsetX += (oldWidth - newWidth) / 2;
-          this.canvasDimensionService.offsetY += (oldHeight - newHeight) / 2;
-      }
-      this.adjustOffsets();
-      this.transform();
-      this.updateCanvasDisplayRatio();
-  }
-
-  // Function to translate the view in the editor.
-  translate(deltaX: number, deltaY: number): void {
-    this.canvasDimensionService.translate(deltaX, deltaY);
-  }
-
-  // Function to change the offsets to match a new center.
-  moveCenter(percentX: number, percentY: number): void {
-    this.canvasDimensionService.moveCenter(percentX, percentY);
-  }
-
-  // Function that transforms the editor view according to the zoomFactor and offsets properties.
-  transform(): void {
-    this.canvasDimensionService.transform();
-  }
-
-  // Return the width/height ratio of the viewport (displayed).
-  viewportRatio(): number {
-    return this.canvasDimensionService.viewportRatio();
-  }
-
-  // Return the width/height ratio of the original image.
-  originalImageRatio(): number {
-    return this.canvasDimensionService.originalImageRatio();
-  }
-
-  getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    let clientX: number;
-    let clientY: number;
-    clientX =
-      this.scaleX === 1
-        ? clientPosition.x - this.canvasDimensionService.viewPort.getBoundingClientRect().left
-        : this.canvasDimensionService.viewPort.clientWidth -
-          clientPosition.x +
-          this.canvasDimensionService.viewPort.getBoundingClientRect().left;
-
-    clientY = clientPosition.y - this.canvasDimensionService.viewPort.getBoundingClientRect().top;
-    const canvasX =
-      (clientX * this.canvasDimensionService.backgroundCanvas.displayCanvas.width) /
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
-    const canvasY =
-      (clientY * this.canvasDimensionService.backgroundCanvas.displayCanvas.height) /
-      this.canvasDimensionService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
-    return new Point(canvasX, canvasY);
-  }
-
-  getMousePositionInDisplaySpace(clientPosition: Point): Point {
-    const x = clientPosition.x - this.canvasDimensionService.viewPort.getBoundingClientRect().left;
-    const y = clientPosition.y - this.canvasDimensionService.viewPort.getBoundingClientRect().top;
-
-    return new Point(x, y);
-  }
-
-  loadMetadata(imageId: string): void {
-    this.loadingService.loadMetadata(imageId);
-  }
-
-  saveSVGFile(): void {
-    this.submitService.saveSVGFile()
-  }
-
   cancel() {}
-
-  setImageId(id: string): void {
-    this.loadingService.setImageId(id);
-  }
 }

@@ -25,7 +25,7 @@ export class SubmitFacadeService {
     }
 
     saveLocal():void {
-      this.editorService.saveSVGFile();
+      this.submitService.saveSVGFile();
     }
 
     async getTasks(imageId: string): Promise<Task[]> {
@@ -43,22 +43,26 @@ export class SubmitFacadeService {
       }
     }
 
-    async loadTaskTypeById(): Promise<void> {
+    async loadTaskTypeById():Promise<void> {
       if (!this.loadingService.getImageLocal() && this.loadingService.getTaskLoaded() !== null && this.loadingService.getTaskLoaded() !== undefined) {
         const currentTaskType: TaskType = await this.taskTypeService.getTaskTypeApp(this.loadingService.getTaskLoaded().taskTypeId);
         await this.loadingService.setTaskTypeLoaded(currentTaskType);
       }
     }
 
-    getLoadedTaskType(): TaskType{
+    public getLoadedTaskType():TaskType {
       return this.loadingService.getTaskTypeLoaded();
     }
 
-    getLoadedTask(): Task{
+    public getLoadedTask():Task{
       return this.loadingService.getTaskLoaded();
     }
 
-    completeTask(tasks: Task): void{
+    public hasTaskLoaded():boolean {
+      return ( this.getLoadedTask() !== undefined && this.getLoadedTask() !== null);
+    }
+
+    public completeTask(tasks: Task): void{
       this.tasksService.completeTask(tasks);
     }
 

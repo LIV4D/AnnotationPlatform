@@ -28,6 +28,7 @@ export class LocalStorage {
 
   // Save the annotations on local
   static save(loadingService: LoadingService, layersService: LayersService): void {
+console.log(layersService.biomarkerCanvas);
     // No save for local files or if nothing is loaded
     if (!loadingService.getImageId() || loadingService.getImageId() === 'local') {
       return;
@@ -39,7 +40,7 @@ export class LocalStorage {
     biomarkers.forEach(element => {
          encodedBiomarkers.push([
              element.currentCanvas.toDataURL('image/png'),
-             element.id.substr(11), // remove 'annotation-' from the id
+             element.id.substr(11),
              element.color
          ]);
      });
@@ -56,6 +57,7 @@ export class LocalStorage {
   }
 
   // Read local storage of the annotation
+
    static async load(loadingService: LoadingService, layersService: LayersService){
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
     const json = JSON.parse(str);

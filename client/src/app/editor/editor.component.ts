@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import { RightMenuComponent } from './right-menu/right-menu.component';
 import { LayersService } from '../shared/services/Editor/layers.service';
 import { EditorFacadeService } from './editor.facade.service';

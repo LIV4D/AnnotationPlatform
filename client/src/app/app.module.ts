@@ -58,7 +58,8 @@ import { BugtrackerService } from './shared/services/bugtracker.service';
 import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
 import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
 import { StorageService } from './shared/services/storage.service';
-import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
+import { VisualizationFacadeService } from './editor/right-menu/visualization/visualization.facade.service';
+import { VisualizationService} from './shared/services/Editor/visualization.service';
 import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
 import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
 import { RevisionService } from './shared/services/Editor/revision.service';
@@ -166,6 +167,7 @@ import { ErrorComponent } from './error/error.component';
       GalleryFacadeService,
       ToolPropertiesService,
       VisualizationService,
+      VisualizationFacadeService,
       RevisionService,
       LoadingService,
       CanvasDimensionService,

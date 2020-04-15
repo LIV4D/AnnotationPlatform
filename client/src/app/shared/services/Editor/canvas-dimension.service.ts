@@ -2,16 +2,10 @@ import { Injectable} from '@angular/core';
 import { LayersService } from './layers.service';
 import { Router } from '@angular/router';
 import { BackgroundCanvas } from './Tools/background-canvas.service';
-import { GalleryService } from '../Gallery/gallery.service';
 
 import { BehaviorSubject } from 'rxjs';
 import { Point } from './Tools/point.service';
-
-// Min and max values for zooming
-const ZOOM = {
-  MIN: 1.0,
-  MAX: 16.0,
-};
+import { ZoomService } from './zoom.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,18 +14,19 @@ export class CanvasDimensionService {
   backgroundCanvas: BackgroundCanvas;
   viewPort: HTMLDivElement;
   canvasDisplayRatio: BehaviorSubject<number>;
-  zoomFactor: number;
   fullCanvasWidth: number;
   fullCanvasHeight: number;
   offsetX: number;
   offsetY: number;
+  scaleX: number;
   canRedraw = true;
 
   constructor(
     public layersService: LayersService,
-    public galleryService: GalleryService,
+    private zoomService: ZoomService,
     public router: Router,
-  ) {}
+  ) {
+  }
 
   // Return the width/height ratio of the viewport (displayed).
   viewportRatio(): number {
@@ -64,7 +59,6 @@ export class CanvasDimensionService {
     const oldYOffset = this.offsetY;
 
     // The offsets are always positive.
-
     this.offsetX = Math.max(0, this.offsetX);
     this.offsetY = Math.max(0, this.offsetY);
     // The offsets must not be too large as to create empty space.
@@ -99,17 +93,17 @@ export class CanvasDimensionService {
       zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);  // Redraw the image
 
       // Redraw the zoom rectangle (unless completely zoomed out).
-      if (this.zoomFactor === 1.0) {
+      if (this.zoomService.zoomFactor === 1.0) {
         return;
       }
       const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
       const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
       let h: number; let w: number;
       if (this.originalImageRatio() > this.viewportRatio()) {
-        w = zoomCanvas.width / this.zoomFactor;
+        w = zoomCanvas.width / this.zoomService.zoomFactor;
         h = Math.min(w * (realHeight / realWidth), zoomCanvas.height);
       } else {
-        h = zoomCanvas.height / this.zoomFactor;
+        h = zoomCanvas.height / this.zoomService.zoomFactor;
         w = Math.min(h * (realWidth / realHeight), zoomCanvas.width);
       }
       const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
@@ -141,8 +135,8 @@ export class CanvasDimensionService {
   }
 
   // Reajust the display
-  applyRedraw(position: Point) {
-    const zoomFactor = this.zoomFactor;                            // in order to get the new selection's width to zoom at
+  testRedraw(position: Point) {
+    const zoomFactor = this.zoomService.zoomFactor;                // in order to get the new selection's width to zoom at
     const oldWidth = this.backgroundCanvas.displayCanvas.width;    // Adjust canvas sizes.
     const oldHeight = this.backgroundCanvas.displayCanvas.height;  // divide by the zoom factor
     const newWidth = this.fullCanvasWidth / zoomFactor;
@@ -152,8 +146,8 @@ export class CanvasDimensionService {
 
     this.layersService.resize(newWidth, newHeight);
 
-    if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
-       this.zoomFactor = zoomFactor;
+    if (zoomFactor !== this.zoomService.ZOOM.MIN && zoomFactor !== this.zoomService.ZOOM.MAX) {
+       this.zoomService.zoomFactor = zoomFactor;
 
       // Adjust offsets to keep them coherent with the previous zoom.
       let positionXPercentage = 0.5; let positionYPercentage = 0.5;
@@ -190,19 +184,7 @@ export class CanvasDimensionService {
   // Function to zoom on a part of the image.
   // Currently only centered with specific ratios.
   zoom(delta: number, position: Point = null): void {
-    // Keep zoom in range [100%, 600%]
-    let zoomFactor = this.zoomFactor * Math.exp(delta); // exp is used for acceleration
-
-    // Capture the values.
-    if (zoomFactor > ZOOM.MAX) {
-      zoomFactor = ZOOM.MAX;
-    } else if (zoomFactor < ZOOM.MIN) {
-      zoomFactor = ZOOM.MIN;
-    }
-
-    this.zoomFactor = zoomFactor;
-
-    // using 10fps to keep the zoom from overloading on heavy pictures
+    this.zoomService.updateZoomFactor(delta);
     if (this.canRedraw) {
       this.canRedraw = false;
       this.applyRedraw(position);
@@ -210,6 +192,29 @@ export class CanvasDimensionService {
         this.canRedraw = true;
       }, 100);
     }
+  }
+
+  setZoomFactor(zoomFactor: number): void {
+      // Cap the values.
+      zoomFactor = this.zoomService.capZoomValues(zoomFactor);
+
+      // Adjust canvas sizes.
+      const oldWidth = this.backgroundCanvas.displayCanvas.width;
+      const oldHeight = this.backgroundCanvas.displayCanvas.height;
+      const newWidth = this.fullCanvasWidth / zoomFactor;
+      const newHeight = this.fullCanvasHeight / zoomFactor;
+      this.backgroundCanvas.displayCanvas.width = newWidth;
+      this.backgroundCanvas.displayCanvas.height = newHeight;
+      this.layersService.resize(newWidth, newHeight);
+
+      if (zoomFactor !== this.zoomService.ZOOM.MIN && zoomFactor !== this.zoomService.ZOOM.MAX) {
+          this.zoomService.zoomFactor = zoomFactor;
+          this.offsetX += (oldWidth - newWidth) / 2;
+          this.offsetY += (oldHeight - newHeight) / 2;
+      }
+      this.adjustOffsets();
+      this.transform();
+      this.updateCanvasDisplayRatio();
   }
 
   // Function to translate the view in the editor.
@@ -234,8 +239,8 @@ export class CanvasDimensionService {
       H = this.backgroundCanvas.originalCanvas.height;
       W = H * viewportRatio;
     }
-    const h = H / this.zoomFactor;
-    const w = W / this.zoomFactor;
+    const h = H / this.zoomService.zoomFactor;
+    const w = W / this.zoomService.zoomFactor;
 
     // Resize main image.
     this.fullCanvasWidth = W;
@@ -273,5 +278,32 @@ export class CanvasDimensionService {
       this.backgroundCanvas.originalCanvas.width,
       this.backgroundCanvas.originalCanvas.height
     );
+  }
+
+  getMousePositionInCanvasSpace(clientPosition: Point): Point {
+    let clientX: number;
+    let clientY: number;
+    clientX =
+      this.scaleX === 1
+        ? clientPosition.x - this.viewPort.getBoundingClientRect().left
+        : this.viewPort.clientWidth -
+          clientPosition.x +
+          this.viewPort.getBoundingClientRect().left;
+
+    clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+    const canvasX =
+      (clientX * this.backgroundCanvas.displayCanvas.width) /
+      this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+    const canvasY =
+      (clientY * this.backgroundCanvas.displayCanvas.height) /
+      this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
+    return new Point(canvasX, canvasY);
+  }
+
+  getMousePositionInDisplaySpace(clientPosition: Point): Point {
+    const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
+    const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+
+    return new Point(x, y);
   }
 }

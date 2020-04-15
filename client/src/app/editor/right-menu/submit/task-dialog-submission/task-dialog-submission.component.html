@@ -1,12 +1,12 @@
 <div id="taskdialogcontainer">
-    <h2 mat-dialog-title>Complete Tasks</h2>
+    <h2 mat-dialog-title>Submit Your Task</h2>
     <div id="tasklist">
         <!--LOADED TASK -->
         <table >
             <tr [ngModel]="data" ngDefaultControl>
                 <td id="taskName">{{data.taskType.title}}</td>
                 <td id="taskdesc">{{data.taskType.description}}</td>
-                <td>
+                <td id="taskCompleted"> Mark as complete:
                     <input [checked]="data.task.isComplete" type="checkbox" (change)="checkTask($event.target.checked)">
                 </td>
             </tr>

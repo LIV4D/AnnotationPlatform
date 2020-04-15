@@ -27,8 +27,12 @@ export class SubmitComponent implements OnInit {
     }
 
   // load the taskType matching with the current TaskType
-  async loadTaskType(){
+  async loadTaskType(): Promise<void>{
     await this.submitFacadeService.loadTaskTypeById();
+  }
+
+  public hasTaskLoaded(): boolean{
+    return this.submitFacadeService.hasTaskLoaded();
   }
 
   // save on local editing
@@ -51,7 +55,7 @@ export class SubmitComponent implements OnInit {
     // Save taskDialog pops out
     const dialogRef = this.dialog.open(TaskDialogSubmissionComponent, {
 	    data: { task: submitedTask, taskType:submitedTaskType },
-      width: '600px',
+      width: '700px',
     });
 
         // Action after the dialog has been closed

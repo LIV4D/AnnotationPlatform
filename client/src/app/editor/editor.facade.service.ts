@@ -7,7 +7,8 @@ import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
-import { Tool } from '../shared/services/Editor/Tools/tool.service';
+import { LayersService } from '../shared/services/Editor/layers.service';
+import { ZoomService } from '../shared/services/Editor/zoom.service';
 
 @Injectable({
   providedIn:'root',
@@ -19,7 +20,9 @@ export class EditorFacadeService {
               private toolboxService: ToolboxService,
               public canvasDimensionService: CanvasDimensionService,
               private biomarkerService: BiomarkerService,
-              private loadingService: LoadingService) { }
+              public layersService: LayersService,
+              private loadingService: LoadingService,
+              private zoomService: ZoomService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
     // console.log('EditorFacadeService::init()');
@@ -29,15 +32,15 @@ export class EditorFacadeService {
   }
 
   zoom(delta: number, position: Point = null): void {
-    this.editorService.zoom(delta, position);
+    this.canvasDimensionService.zoom(delta, position);
   }
 
   get zoomFactor(): number {
-    return this.canvasDimensionService.zoomFactor;
+    return this.zoomService.zoomFactor;
   }
 
   get firstPoint() {
-    return this.editorService.layersService.firstPoint;
+    return this.layersService.firstPoint;
   }
 
   get backgroundCanvas() {
@@ -45,7 +48,7 @@ export class EditorFacadeService {
   }
 
   get scaleX() {
-    return this.editorService.scaleX;
+    return this.canvasDimensionService.scaleX;
   }
 
   get panTool() {
@@ -89,11 +92,11 @@ export class EditorFacadeService {
   }
 
   public resize() {
-    this.editorService.resize();
+    this.canvasDimensionService.resize();
   }
 
   public load(imageId: string) {
-    this.editorService.loadMetadata(imageId);
+    this.loadingService.loadMetadata(imageId);
   }
 
   set imageLoaded(boolValue: boolean) {
@@ -126,7 +129,7 @@ export class EditorFacadeService {
   }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    return this.editorService.getMousePositionInCanvasSpace(clientPosition);
+    return this.canvasDimensionService.getMousePositionInCanvasSpace(clientPosition);
   }
 
   //loadSVGLocal(event: any) {
@@ -149,10 +152,10 @@ export class EditorFacadeService {
   }
 
   getOriginalImageRatio(): number {
-    return this.editorService.originalImageRatio();
+    return this.canvasDimensionService.originalImageRatio();
   }
 
   moveCenter(percentX: number, percentY: number) {
-    this.editorService.moveCenter(percentX, percentY);
+    this.canvasDimensionService.moveCenter(percentX, percentY);
   }
 }

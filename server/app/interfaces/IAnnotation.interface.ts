@@ -3,6 +3,6 @@ export interface IAnnotation {
     id?: number;
     imageId?: number;
     data?: AnnotationData;
-    comment?: string;
+    comments?: string[];
     submitEventId?: number;
 }

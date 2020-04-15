@@ -1,11 +1,9 @@
 
-import { VisualizationService } from './visualization.service';
+import { VisualizationFacadeService } from './visualization.facade.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { HOTKEYS } from 'src/app/shared/constants/hotkeys';
-import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
-import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-dimension.service';
 
 @Component({
     selector: 'app-visualization',
@@ -23,10 +21,7 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
     autoContrastChecked: boolean;
     @Input() canvas: BackgroundCanvas;
 
-    constructor(private visualizationService: VisualizationService,
-                public canvasDimensionService: CanvasDimensionService,
-                public appService: AppService,
-                public editorService: EditorService) {
+    constructor(private visualizationFacadeService: VisualizationFacadeService, public appService: AppService) {
         this.minContrast = -255;
         this.maxContrast = 255;
         this.minBrightness = -100;
@@ -43,44 +38,44 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
     public changeBrightness(event: any): void {
         if (event.type === 'input') {
             this.brightness = Number(event.target.value);
-            this.visualizationService.applyChanges(this.canvas, Number(event.target.value), this.contrast);
+            this.visualizationFacadeService.applyChanges(this.canvas, Number(event.target.value), this.contrast);
         } else {
             this.brightness = Number(event.value);
-            this.visualizationService.applyChanges(this.canvas, Number(event.value), this.contrast);
+            this.visualizationFacadeService.applyChanges(this.canvas, Number(event.value), this.contrast);
         }
     }
 
     public changeContrast(event: any): void {
         if (event.type === 'input') {
             this.contrast = Number(event.target.value);
-            this.visualizationService.applyChanges(this.canvas, this.brightness, Number(event.target.value));
+            this.visualizationFacadeService.applyChanges(this.canvas, this.brightness, Number(event.target.value));
         } else {
             this.contrast = Number(event.value);
-            this.visualizationService.applyChanges(this.canvas, this.brightness, Number(event.value));
+            this.visualizationFacadeService.applyChanges(this.canvas, this.brightness, Number(event.value));
         }
     }
 
     public resetBrightness(): void {
         this.brightness = 0;
-        this.visualizationService.applyChanges(this.canvas, this.brightness, this.contrast);
+        this.visualizationFacadeService.applyChanges(this.canvas, this.brightness, this.contrast);
     }
 
     public resetContrast(): void {
         this.contrast = 0;
-        this.visualizationService.applyChanges(this.canvas, this.brightness, this.contrast);
+        this.visualizationFacadeService.applyChanges(this.canvas, this.brightness, this.contrast);
     }
 
     public togglePreprocessing(): void {
         this.preprocessingChecked = !this.preprocessingChecked;
-        this.visualizationService.tooglePretreatments(this.preprocessingChecked);
-        this.visualizationService.applyChanges(this.canvasDimensionService.backgroundCanvas, this.brightness, this.contrast,
+        this.visualizationFacadeService.tooglePretreatments(this.preprocessingChecked);
+        this.visualizationFacadeService.applyChanges(this.visualizationFacadeService.backgroundCanvas, this.brightness, this.contrast,
                                                this.autoContrastChecked);
     }
 
 
     public toggleAutoContrast(): void {
         this.autoContrastChecked = !this.autoContrastChecked;
-        this.visualizationService.applyChanges(this.canvasDimensionService.backgroundCanvas, this.brightness, this.contrast,
+        this.visualizationFacadeService.applyChanges(this.visualizationFacadeService.backgroundCanvas, this.brightness, this.contrast,
                                                this.autoContrastChecked);
     }
 
@@ -91,7 +86,7 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
         if (this.preprocessingChecked) {
             this.togglePreprocessing();
         } else {
-            this.visualizationService.applyChanges(this.canvasDimensionService.backgroundCanvas, this.brightness, this.contrast,
+            this.visualizationFacadeService.applyChanges(this.visualizationFacadeService.backgroundCanvas, this.brightness, this.contrast,
                                                    this.autoContrastChecked);
         }
     }
@@ -115,6 +110,3 @@ import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-d
         }
     }
 }
-
-
-

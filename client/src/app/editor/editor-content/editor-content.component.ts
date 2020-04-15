@@ -1,24 +1,15 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  ViewChild,
-  OnDestroy,
-  ElementRef,
-  AfterViewInit,
-  ComponentFactoryResolver,
-  ViewContainerRef,
+import { Component, OnInit, Output,
+        EventEmitter, ViewChild, OnDestroy,
+        ElementRef, AfterViewInit, ComponentFactoryResolver,
+        ViewContainerRef,
 } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
-import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 // import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { ToolboxFacadeService } from '../toolbox/toolbox.facade.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription } from 'rxjs';
-import { StorageService } from '../../shared/services/storage.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
 // import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
@@ -32,11 +23,9 @@ export class EditorContentComponent
   implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public editorFacadeService: EditorFacadeService,
-    public appService: AppService,
     private resolver: ComponentFactoryResolver,
     // private toolBoxService: ToolboxService,
-    private toolBoxFacadeService: ToolboxFacadeService,
-    private storageService: StorageService
+    private toolBoxFacadeService: ToolboxFacadeService
   ) {
     this.delayEventTimer = null;
   }
@@ -102,7 +91,6 @@ export class EditorContentComponent
 
     this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
       (checkBoxClicked) => {
-        console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
         this.commentBoxCheck = checkBoxClicked;
         if(!this.commentBoxCheck) {
 
