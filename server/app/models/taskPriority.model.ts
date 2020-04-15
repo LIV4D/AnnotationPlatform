@@ -7,7 +7,7 @@ import { ITaskPriority } from '../interfaces/ITaskPriority.interface';
 
 /**
  * A task priority is used in order to create bundles of tasks.
- * 
+ *
  * Any task can be assigned a task priority.
  * In which case, a user-task pair is created with a relative priority value. These values are then shunted
  * into an algorithm in order to create bundles which will be displayed to the user.
