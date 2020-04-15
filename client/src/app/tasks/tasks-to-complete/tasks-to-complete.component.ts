@@ -14,11 +14,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ITaskGroup } from 'src/app/shared/interfaces/taskGroup.interface';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 import { User } from 'src/app/shared/models/serverModels/user.model';
+import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { Task } from 'src/app/shared/models/serverModels/task.model';
+
 
 
 @Component({
