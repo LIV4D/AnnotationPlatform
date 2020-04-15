@@ -14,13 +14,14 @@ import { EditorFacadeService } from './../editor.facade.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
-import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
+// import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
+import { ToolboxFacadeService } from '../toolbox/toolbox.facade.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
-import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
+// import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -33,7 +34,8 @@ export class EditorContentComponent
     public editorFacadeService: EditorFacadeService,
     public appService: AppService,
     private resolver: ComponentFactoryResolver,
-    private toolBoxService: ToolboxService,
+    // private toolBoxService: ToolboxService,
+    private toolBoxFacadeService: ToolboxFacadeService,
     private storageService: StorageService
   ) {
     this.delayEventTimer = null;
@@ -71,10 +73,11 @@ export class EditorContentComponent
   ngOnInit(): void {
     this.editorMousePos = new Point(0, 0);
 
-    this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+    // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+    this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
     this.commentBoxes = CommentBoxSingleton.getInstance();
 
-    this.commentClickObservable = this.toolBoxService.commentBoxClicked.subscribe(
+    this.commentClickObservable = this.toolBoxFacadeService.getValueOfCommentBoxClicked().subscribe(
       (hasBeenClicked) => {
         if (hasBeenClicked) {
           console.log('hasBeenClicked === true');
@@ -87,35 +90,36 @@ export class EditorContentComponent
     // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
     // console.log(this.toolBoxService.listOfTools[6]);
 
-    this.commentLoadEvent = this.loadingService.<name-of-Subject>.subscribe(
-      (loadedComments) => {
-        loadedComments.forEach(comment => {
-          this.createCommentBox();
-        });
-      });
+    // this.commentLoadEvent = this.loadingService.<name-of-Subject>.subscribe(
+    //   (loadedComments) => {
+    //     loadedComments.forEach(comment => {
+    //       this.createCommentBox();
+    //     });
+    //   });
 
-    const commentBoxService: CommentBoxService = this.toolBoxService.listOfTools[6] as CommentBoxService;
+    const commentBoxService: CommentBoxService = this.toolBoxFacadeService.listOfTools[6] as CommentBoxService;
+
     this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
       (checkBoxClicked) => {
         console.log('%c checkBoxClicked: ' + checkBoxClicked, 'color:black; background:yellow;');
         this.commentBoxCheck = checkBoxClicked;
         if(!this.commentBoxCheck) {
 
-          this.toolBoxService.listOfTools.forEach(element => {
+          this.toolBoxFacadeService.listOfTools.forEach(element => {
             element.disabled = true;
           });
 
-          this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = false;
+          this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = false;
 
           document.getElementById('boundary').style.zIndex = '300';
           document.getElementById('boundary').style.opacity = '1';
         } else {
 
-          this.toolBoxService.listOfTools.forEach(element => {
+          this.toolBoxFacadeService.listOfTools.forEach(element => {
             element.disabled = false;
           });
 
-          this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+          this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
 
           document.getElementById('boundary').style.zIndex = '0';
           document.getElementById('boundary').style.opacity = '0';
@@ -215,7 +219,7 @@ export class EditorContentComponent
     }
 
     this.editorFacadeService.setPanToolByString('pan');
-    this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+    this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
   }
 
   // toggleCommentMode() {
