@@ -1,23 +1,14 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  ViewChild,
-  OnDestroy,
-  ElementRef,
-  AfterViewInit,
-  ComponentFactoryResolver,
-  ViewContainerRef,
+import { Component, OnInit, Output,
+        EventEmitter, ViewChild, OnDestroy,
+        ElementRef, AfterViewInit, ComponentFactoryResolver,
+        ViewContainerRef,
 } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
-import { AppService } from 'src/app/shared/services/app.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription } from 'rxjs';
-import { StorageService } from '../../shared/services/storage.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
 
@@ -30,10 +21,8 @@ export class EditorContentComponent
   implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public editorFacadeService: EditorFacadeService,
-    public appService: AppService,
     private resolver: ComponentFactoryResolver,
     private toolBoxService: ToolboxService,
-    private storageService: StorageService
   ) {
     this.delayEventTimer = null;
   }

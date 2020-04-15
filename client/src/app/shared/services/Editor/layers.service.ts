@@ -79,7 +79,6 @@ export class LayersService {
   }
 
   redo(): void {
-    console.log(this.biomarkerCanvas);
       if (this.redoStack.getLength() > 0) {
           this.unsavedChange = true;
           const canvas = this.redoStack.pop();
