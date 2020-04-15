@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs';
 import { StorageService } from '../../shared/services/storage.service';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
+import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -52,6 +53,7 @@ export class EditorContentComponent
   commentBoxes: CommentBoxSingleton;
   commentClickObservable: Subscription;
   commentFiredObservable: Subscription;
+  commentLoadEvent: Subscription;
   isCommentBoxExists = 0;
   canvasWidth = 0;
   canvasHeight = 0;
@@ -84,6 +86,13 @@ export class EditorContentComponent
 
     // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
     // console.log(this.toolBoxService.listOfTools[6]);
+
+    this.commentLoadEvent = this.loadingService.<name-of-Subject>.subscribe(
+      (loadedComments) => {
+        loadedComments.forEach(comment => {
+          this.createCommentBox();
+        });
+      });
 
     const commentBoxService: CommentBoxService = this.toolBoxService.listOfTools[6] as CommentBoxService;
     this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
@@ -179,7 +188,7 @@ export class EditorContentComponent
     // this.enableKeyEvents(false);
   }
 
-  createCommentBox() {
+  createCommentBox(textArea?: string) {
     console.log('creating comment box');
 
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
@@ -199,7 +208,10 @@ export class EditorContentComponent
     const comment = JSON.parse(localStorage.getItem('currentUser'));
     if(!this.commentBoxes.getUUID()) {
       this.commentBoxes.setUUID(comment.token);
-      // console.log('comment UUID: ' + this.commentBoxes.getUUID());
+    }
+
+    if (textArea) {
+      componentRef.instance.textAreaValue = textArea;
     }
 
     this.editorFacadeService.setPanToolByString('pan');
