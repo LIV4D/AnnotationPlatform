@@ -105,7 +105,6 @@ export class AnnotationController implements IController {
         if(isNullOrUndefined(req.body.data) || req.body.data === 'undefined'){
             req.body.data = EMPTY_REVISION;
         }
-        console.log(req.body.data);
 
         const newAnnotation: IAnnotation = {
             data: req.body.data,

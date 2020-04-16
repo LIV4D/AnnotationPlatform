@@ -86,7 +86,6 @@ export class ManagementComponent implements OnInit, IRoutable {
     public async createModel(eventName: string): Promise<void> {
         this.successText = 'Event loading...';
         this.changeUrlParams();
-        console.log(this.attributeValues);
         this.successText = await this.facadeService.sendHttpEvent(eventName, this.attributesForCreation, this.attributeValues);
     }
 }

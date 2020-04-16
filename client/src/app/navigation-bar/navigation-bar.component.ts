@@ -47,7 +47,6 @@ export class NavigationBarComponent implements OnInit {
 
     if (!isNullOrUndefined(JSON.parse(localStorage.getItem('currentUser')))){
       this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
-      console.log(this.userRole);
     }
 
   }
@@ -56,7 +55,6 @@ export class NavigationBarComponent implements OnInit {
     this.storageService.watchStorage().subscribe((data: string) => {
       // this will call whenever your localStorage data changes
       this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
-      console.log(this.userRole);
     });
   }
 
@@ -81,7 +79,6 @@ export class NavigationBarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
 
   }

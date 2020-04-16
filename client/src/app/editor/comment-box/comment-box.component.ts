@@ -41,11 +41,6 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    // if (this.textAreaValue.length > 0) {
-    //   console.log('%c if ','color:black; background:yellow;');
-    // } else {
-    //   console.log('%c inside else ','color:black; background:yellow;');
-    // }
     this.updateCommentPosition();
   }
 
@@ -55,11 +50,9 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log(changes);
   }
 
   onMouseUp(e: Event) {
-    // e.preventDefault();
     if (this.moving) {
       setTimeout(() => {
         this.isDisabled = false;
@@ -68,7 +61,6 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
       }, 100);
       this.pointFormat = 'example-box2';
     } else {
-      // console.log('this.moving is false');
     }
   }
 

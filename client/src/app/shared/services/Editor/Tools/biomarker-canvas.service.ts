@@ -90,12 +90,6 @@ export class BiomarkerCanvas extends Canvas {
         const destX = window.x + this.offsetX - stupidOffsetX;
         const destY = window.y + this.offsetY - stupidOffsetY;
 
-        console.log(stupidOffsetX);
-        console.log(stupidOffsetY);
-
-        console.log(destX);
-        console.log(destY);
-
         this.currentCanvas.getContext('2d').drawImage(canvas, window.x, window.y, window.width, window.height,
             destX, destY, window.width, window.height);
 

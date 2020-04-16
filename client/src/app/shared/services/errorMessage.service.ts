@@ -19,7 +19,6 @@ export class ErrorMessageService {
     constructor(public errorDialog: MatDialog) { }
 
     public handleServerError(err: HttpErrorResponse, severity?: ErrorSeverity): Observable<any> {
-        console.log('TEST');
         if (isNullOrUndefined(severity)) {
             // https://www.restapitutorial.com/httpstatuscodes.html
             switch(err.status) {

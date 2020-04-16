@@ -28,12 +28,10 @@ export class CommentBoxService extends Tool {
   }
 
   onCursorUp(): void {
-    console.log('%c ONCURSOR_UP: ', 'color:black;background:yellow;');
     const currentBiomarker = this.layersService.getCurrentBiomarkerCanvas();
   }
 
   sendStateCommentBox(checkBoxCommentBox: boolean) {
-    console.log('%c sendStateCommentBox: ', 'color:black;background:yellow;');
     this.commentBoxCheckBoxClicked.next(checkBoxCommentBox);
   }
 }

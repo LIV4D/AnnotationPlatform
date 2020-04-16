@@ -171,7 +171,6 @@ export class TasksToCompleteComponent implements OnInit, AfterViewInit {
    * @param imageId: image annotation attributed for a task
    */
   loadTaskAnnotation(task: Task, imageId:string): void {
-    console.log(task);
     this.taskToCompleteFacadeService.appService.localEditing = false;
     localStorage.setItem('previousPage', 'tasks');
     this.taskToCompleteFacadeService.setCurrentTask(task);
