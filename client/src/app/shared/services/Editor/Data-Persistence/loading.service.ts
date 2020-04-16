@@ -142,7 +142,7 @@ export class LoadingService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          if (res.comments.length > 0) {
+          if (res.comments !== undefined && res.comments && res.comments.length > 0) {
             this.commentsHasBeenLoaded.next(res.comments);
           }
 
