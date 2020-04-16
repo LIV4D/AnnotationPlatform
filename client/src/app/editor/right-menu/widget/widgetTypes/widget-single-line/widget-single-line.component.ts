@@ -12,6 +12,7 @@ export class WidgetSingleLineComponent implements OnInit {
     public labelText: string;
     public entryField: string;
     public defaultEntryValue: string;
+    public validRegex = '';
     private regexp: RegExp;
     // @Output() entryField: string;
     @Output() saveEntryEvent = new EventEmitter<Widget>();
@@ -22,14 +23,29 @@ export class WidgetSingleLineComponent implements OnInit {
         this.labelText = this.widget.label;
         this.entryField = this.widget.entryField;
         this.defaultEntryValue = this.widget.defaultEntryValue;
-        this.regexp = (!isNullOrUndefined(this.widget.validationRegex) && this.widget.validationRegex !== '' ? null : new RegExp(this.widget.validationRegex));
     }
 
     sendValue() {
+<<<<<<< HEAD
         // if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField)){
             this.widget.entryField = this.entryField;
             this.saveEntryEvent.emit(this.widget);
         // }
+=======
+        if(!isNullOrUndefined(this.widget.validationRegex) && this.widget.validationRegex !== '') {
+            if (this.entryField.match(this.widget.validationRegex)) {
+                this.widget.entryField = this.entryField;
+                this.saveEntryEvent.emit(this.widget);
+                this.validRegex = 'Your entry was sent!';
+            } else {
+                this.validRegex = 'Your entry was not sent due to invalid regex match.';
+            }
+        } else {
+            this.widget.entryField = this.entryField;
+            this.saveEntryEvent.emit(this.widget);
+            this.validRegex = 'Your entry was sent!';
+        }
+>>>>>>> 732a52611b1304e23e13681a4aec4050488c6101
     }
 
 }
