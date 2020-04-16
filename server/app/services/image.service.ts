@@ -254,6 +254,9 @@ export class ImageService {
             fs.unlinkSync(imgFile);
         }
 
+        // Delete the image in the repo
+        this.imageRepository.delete(image);
+
         // Delete thumbnail file
         const thumbFile = this.getThumbnailPathSync(image.id);
         if (fs.existsSync(thumbFile)) { fs.unlinkSync(thumbFile); }
@@ -263,7 +266,5 @@ export class ImageService {
             const preFile = this.getPreprocessingPathSync(image.id);
             if (fs.existsSync(preFile)) { fs.unlinkSync(preFile); }
         }
-
-        this.imageRepository.delete(image);
     }
 }

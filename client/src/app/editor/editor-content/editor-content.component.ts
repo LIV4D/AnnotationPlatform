@@ -77,6 +77,7 @@ export class EditorContentComponent
     this.commentLoadEvent = this.editorFacadeService.commentHasBeenLoaded.subscribe(
       (loadedComments) => {
         const temp = loadedComments as string [];
+        this.commentBoxes.comments = [];
         temp.forEach(comment => {
           this.createCommentBox(comment);
         });
