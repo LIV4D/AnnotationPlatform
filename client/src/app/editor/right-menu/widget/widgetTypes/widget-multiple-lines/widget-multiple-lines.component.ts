@@ -26,10 +26,10 @@ export class WidgetMultipleLinesComponent implements OnInit {
     }
 
     sendValue() {
-        if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField)){
+        // if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField)){
             this.widget.entryField = this.entryField;
             this.saveEntryEvent.emit(this.widget);
-        }
+        // }
     }
 
 }
