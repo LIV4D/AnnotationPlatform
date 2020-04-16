@@ -52,7 +52,7 @@ export class ErrorMessageService {
         return of(err.message);
     }
 
-    public handleStorageError(error: Error, severity = ErrorSeverity.critical) {
+    public handleStorageError(error: Error, severity = ErrorSeverity.noticeable) {
         this.errorDialog.open(ErrorComponent, {
             hasBackdrop: false,
             data: {
