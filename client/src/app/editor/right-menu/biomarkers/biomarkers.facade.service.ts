@@ -29,11 +29,6 @@ export class BiomarkersFacadeService {
         this.layersService.toggleShadows(showShadows);
     }
 
-    // BiomarkerService
-    // init(arbre: SVGGElement[]) {
-    //     this.biomarkerService.init(arbre);
-    // }
-
     changeOpacity(opacity: string) {
         this.biomarkerService.changeOpacity(opacity);
 
@@ -63,10 +58,6 @@ export class BiomarkersFacadeService {
         this.biomarkerService.toggleSoloVisibility(node);
     }
 
-    // hideOtherBiomarkers() {
-    //     this.biomarkerService.hideOtherBiomarkers();
-    // }
-
     toggleAllBiomarkers(visibility) {
         this.biomarkerService.toggleAllBiomarkers(visibility);
     }
@@ -82,10 +73,6 @@ export class BiomarkersFacadeService {
     get nestedTreeControl() {
         return this.biomarkerService.nestedTreeControl;
     }
-
-    // get hasNestedChild() {
-    //     return this.biomarkerService.serviceHasNestedChild;
-    // }
 
     get flatEnabledBiomarkers() {
         return this.biomarkerService.flatEnabledBiomarkers;

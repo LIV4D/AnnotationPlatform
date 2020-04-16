@@ -11,7 +11,6 @@ export const ANNOTATION_PREFIX = 'annotation-';
     providedIn: 'root'
 })
 export class BiomarkerService {
-    // public tree: SVGGElement[];
     public flat: HTMLElement[];
     public flatEnabledBiomarkers: HTMLElement[];
     public lastBiomarkers: Biomarker[];
@@ -228,27 +227,6 @@ export class BiomarkerService {
             }
         }
     }
-
-    // private setParentVisibility(elem: HTMLElement): void {
-    //     if ((elem.parentElement.style.visibility === 'visible' || elem.style.visibility === '') && elem.parentElement.tagName === 'g') {
-    //         this.allChildrenHidden = true;
-    //         this.parentToResetVisibility = elem.parentElement;
-    //         this.checkAllChildrenHidden(elem.parentElement);
-    //         if (this.allChildrenHidden) {
-    //             elem.parentElement.style.visibility = 'hidden';
-    //             this.setParentVisibility(elem.parentElement);
-    //         }
-    //     }
-    // }
-
-    // We reset the parent opacity to 1 when a child becomes visible.
-    // If the parent is opacity 0, the child will never be displayed
-    // private resetParentVisibilityRecursive(elem: HTMLElement): void {
-    //     if (elem.parentElement.tagName === 'g') {
-    //         this.resetParentVisibilityRecursive(elem.parentElement);
-    //     }
-    //     elem.parentElement.style.visibility = 'visible';
-    // }
 
     public changeOpacity(opacity: string): void {
         this.layersService.biomarkerCanvas.forEach(b => {

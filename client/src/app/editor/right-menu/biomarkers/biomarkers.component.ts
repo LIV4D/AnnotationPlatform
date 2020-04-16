@@ -69,7 +69,6 @@ export class BiomarkersComponent implements OnInit {
   public init(arbre: SVGGElement[]): void {
     this.opacity = 65;
     this.arbre = arbre;
-    // this.biomarkersFacadeService.init(arbre);
     this.biomarkersFacadeService.changeOpacity(this.opacity.toString());
   }
 
@@ -122,7 +121,6 @@ export class BiomarkersComponent implements OnInit {
 
   toggleVisibility(node: any): void {
     this.biomarkersFacadeService.toggleVisibility(node);
-    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 
@@ -132,7 +130,6 @@ export class BiomarkersComponent implements OnInit {
 
   public toggleSoloVisibility(node: Biomarker): void {
     this.biomarkersFacadeService.toggleSoloVisibility(node);
-    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 
@@ -158,10 +155,6 @@ export class BiomarkersComponent implements OnInit {
       this.biomarkersFacadeService.changeOpacity(event.value.toString());
     }
   }
-
-  // public hideOtherBiomarkers(): void {
-  //   this.biomarkersFacadeService.hideOtherBiomarkers();
-  // }
 
   public toggleAllBiomarkers(): void {
     this.visibilityAll = this.visibilityAll === 'visible' ? 'hidden' : 'visible';
@@ -229,7 +222,6 @@ export class BiomarkersComponent implements OnInit {
   }
 
   toggleCommentBox() {
-    // console.log('toggleCommentBox()');
     this.stateCheckCommentBox = !this.stateCheckCommentBox;
     this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
   }
