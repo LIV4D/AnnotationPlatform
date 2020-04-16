@@ -3,9 +3,11 @@ import { Point } from './point.service';
 import { LayersService } from './../layers.service';
 import { BiomarkerService } from './../biomarker.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
+import { BiomarkerVisibilityService } from '../biomarker-visibility.service';
 
 export class BioPicker extends Tool {
-    constructor(name: string, imagePath: string, tooltip: string, canvaDimensionService: CanvasDimensionService, layersService: LayersService, private biomarkerService: BiomarkerService) {
+    constructor(name: string, imagePath: string, tooltip: string, canvaDimensionService: CanvasDimensionService, layersService: LayersService, private biomarkerService: BiomarkerService,
+                private biomarkerVisibilityService: BiomarkerVisibilityService) {
         super(name, imagePath, tooltip, canvaDimensionService, layersService);
     }
 
@@ -34,7 +36,7 @@ export class BioPicker extends Tool {
             const data = b.currentCanvas.getContext('2d').getImageData(point.x, point.y, 1, 1);
             if (data.data[3] > 120) {
                  const biomarkerElem = this.biomarkerService.getBiomarkerOfType(type);
-                 this.biomarkerService.setFocusBiomarker(biomarkerElem);
+                 this.biomarkerVisibilityService.setFocusBiomarker(biomarkerElem);
                 return true;
             }
         }

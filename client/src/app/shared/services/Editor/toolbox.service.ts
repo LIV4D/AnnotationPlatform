@@ -15,10 +15,11 @@ import { BehaviorSubject, Subject } from 'rxjs';
 
 import { LayersService } from './layers.service';
 import { ToolPropertiesService } from './tool-properties.service';
-import { BiomarkerService } from './biomarker.service';
+import { BiomarkerVisibilityService } from './biomarker-visibility.service';
 import { ImageBorderService } from './image-border.service';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { CommentBoxService } from './comment-box.service';
+import { BiomarkerService } from './biomarker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,8 @@ export class ToolboxService {
     public canvasDimensionService: CanvasDimensionService,
     private toolPropertiesService: ToolPropertiesService,
     private biomarkerService: BiomarkerService,
-    private imageBorderService: ImageBorderService
+    private imageBorderService: ImageBorderService,
+    private biomarkerVisibilityService: BiomarkerVisibilityService
   ) {
     this.listOfTools = [
       new Hand(
@@ -83,7 +85,8 @@ export class ToolboxService {
         'Pick Biomarker (K)',
         canvasDimensionService,
         layersService,
-        biomarkerService
+        biomarkerService,
+        biomarkerVisibilityService
       ),
 
       new CommentBoxService(

@@ -3,6 +3,7 @@ import { EditorService } from './../shared/services/Editor/editor.service';
 import { LoadingService } from './../shared/services/Editor/Data-Persistence/loading.service';
 import { CanvasDimensionService } from './../shared/services/Editor/canvas-dimension.service';
 import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
+import { BiomarkerVisibilityService } from './../shared/services/Editor/biomarker-visibility.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
@@ -22,7 +23,8 @@ export class EditorFacadeService {
               private biomarkerService: BiomarkerService,
               public layersService: LayersService,
               private loadingService: LoadingService,
-              private zoomService: ZoomService) { }
+              private zoomService: ZoomService,
+              private biomarkerVisibilityService: BiomarkerVisibilityService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
     // console.log('EditorFacadeService::init()');
@@ -148,7 +150,7 @@ export class EditorFacadeService {
   // Biomarkers
 
   setFocusBiomarker(item: any) {
-    this.biomarkerService.setFocusBiomarker(item);
+    this.biomarkerVisibilityService.setFocusBiomarker(item);
   }
 
   get biomarkersCurrentElement(){

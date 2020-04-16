@@ -99,28 +99,6 @@ export class BiomarkerService {
         return this.onlyEnabledBiomarkers.length === 0 || this.onlyEnabledBiomarkers.indexOf(bio) !== -1;
     }
 
-    public setFocusBiomarker(node: Biomarker): void {
-        const biomarker: Biomarker = this.getBiomarkerOfType(node.type);
-
-        if (this.currentElement !== null && this.currentElement !== undefined && this.currentElement.type === biomarker.type) {
-            return;
-        }
-        if (this.isBiomarkerEnabled(biomarker)) {
-            if (this.currentElement !== null && this.currentElement !== undefined) {
-                for (let i = 0; i < this.lastBiomarkers.length; i++) {
-                    if (this.lastBiomarkers[i].type === this.currentElement.type) {
-                        this.lastBiomarkers.splice(i, 1);
-                        this.lastBiomarkers.splice(0, 0, this.currentElement);
-                        break;
-                    }
-                }
-            }
-            this.currentElement = biomarker;
-            this.layersService.selectedBiomarkerId = biomarker.type;
-            this.toggleVisibility(biomarker, 'visible');
-        }
-    }
-
     public deleteElements(type: string): void {
         const biomarker = this.getBiomarkerOfType(type);
 
@@ -148,10 +126,6 @@ export class BiomarkerService {
         return childrenList;
     }
 
-    public getVisibility(node: Biomarker): string {
-        return this.getBiomarkerOfType(node.type).isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
-    }
-
     public getBiomarkerOfType(type: string): Biomarker {
         for (const item of this.dataSourceJson) {
             if (type === item.type) {
@@ -161,35 +135,7 @@ export class BiomarkerService {
         return null
     }
 
-    public toggleVisibility(node: Biomarker, visibility?: string): void {
-        if (visibility === undefined){
-            this.getBiomarkerOfType(node.type).isVisible = !this.getBiomarkerOfType(node.type).isVisible;
-        } else if (visibility === 'visible') {
-            this.getBiomarkerOfType(node.type).isVisible = true;
-        } else if (visibility === 'hidden') {
-            this.getBiomarkerOfType(node.type).isVisible = false;
-        }
-
-        this.applyVisibility(this.getBiomarkerOfType(node.type));
-    }
-
-    public toggleVisibilityParent(node: Biomarker, tree){
-        const visibility = !this.getBiomarkerOfType(node.type).isVisible ? 'visible' : 'hidden';
-        this.toggleVisibilityRecursive(node, tree, visibility);
-    }
-
-    public toggleVisibilityRecursive(node: Biomarker, tree, visibility?: string): void {
-        this.toggleVisibility(node, visibility);
-        for (const biomarker of this.findBiomarkerInTree(node, tree)){
-            if (biomarker['biomarkers'] != null){
-                this.toggleVisibilityRecursive(biomarker, tree, visibility);
-            } else {
-                this.toggleVisibility(biomarker, visibility);
-            }
-        }
-    }
-
-    private findBiomarkerInTree(node: Biomarker, tree){
+    public findBiomarkerInTree(node: Biomarker, tree){
         let newTree = null;
         for (const biomarker of tree){
             if (biomarker.type == node.type){
@@ -207,25 +153,6 @@ export class BiomarkerService {
         }
         
         return newTree;
-    }
-
-    public toggleSoloVisibility(node: Biomarker): void {
-        this.toggleAllBiomarkers('hidden');
-        this.toggleVisibility(this.getBiomarkerOfType(node.type));
-    }
-
-    public toggleAllBiomarkers(visibility: string): void {
-        for (const item of this.layersService.biomarkerCanvas) {
-            this.toggleVisibility(this.getBiomarkerOfType(item.id.replace('annotation-', '')), visibility)
-        }
-    }
-
-    private applyVisibility(node: Biomarker): void {
-        for (const item of this.layersService.biomarkerCanvas) {
-            if (item.id === 'annotation-'+node.type){
-                item.setVisibility(this.getBiomarkerOfType(node.type).isVisible);
-            }
-        }
     }
 
     public changeOpacity(opacity: string): void {
