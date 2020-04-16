@@ -65,7 +65,7 @@ import { WidgetEventService } from './shared/services/Editor/widgetEvent.service
 import { RevisionService } from './shared/services/Editor/revision.service';
 import { LoadingService } from './shared/services/Editor/Data-Persistence/loading.service';
 import { CanvasDimensionService } from './shared/services/Editor/canvas-dimension.service';
-
+import { ViewportService } from './shared/services/Editor/viewport.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -166,6 +166,7 @@ import { ErrorComponent } from './error/error.component';
       LayersFacadeService,
       GalleryFacadeService,
       ToolPropertiesService,
+      ViewportService,
       VisualizationService,
       VisualizationFacadeService,
       RevisionService,
