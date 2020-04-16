@@ -169,7 +169,7 @@ export class EditorContentComponent
     }
 
     if (textArea) {
-      componentRef.instance.textAreaValue = textArea;
+      // componentRef.instance.textAreaValue = textArea;
       componentRef.instance.setText(textArea);
 
       // this is in order to keep comment-boxes from popping out out of the canvas borders
