@@ -3,14 +3,12 @@ import { AppService } from '../shared/services/app.service';
 import { BugtrackerFacadeService } from './bugtracker.facade.service';
 import { MatDialogRef } from '@angular/material/dialog';
 
-
 @Component({
   selector: 'app-bugtracker',
   templateUrl: './bugtracker.component.html',
   styleUrls: ['./bugtracker.component.scss']
 })
 export class BugtrackerComponent {
-
 
   constructor(
     public facadeService: BugtrackerFacadeService, public appService: AppService,
