@@ -67,6 +67,7 @@ import { LoadingService } from './shared/services/Editor/Data-Persistence/loadin
 import { CanvasDimensionService } from './shared/services/Editor/canvas-dimension.service';
 import { BiomarkerService } from './shared/services/Editor/biomarker.service';
 import { BiomarkerVisibilityService } from './shared/services/Editor/biomarker-visibility.service';
+import { ViewportService } from './shared/services/Editor/viewport.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -167,6 +168,7 @@ import { ErrorComponent } from './error/error.component';
       LayersFacadeService,
       GalleryFacadeService,
       ToolPropertiesService,
+      ViewportService,
       VisualizationService,
       VisualizationFacadeService,
       RevisionService,
