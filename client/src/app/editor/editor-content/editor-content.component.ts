@@ -63,6 +63,7 @@ export class EditorContentComponent
     this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
     this.commentBoxes = CommentBoxSingleton.getInstance();
 
+    // we subscribe to the event click that will call for comment-box creation
     this.commentClickObservable = this.toolBoxFacadeService.getValueOfCommentBoxClicked().subscribe(
       (hasBeenClicked) => {
         if (hasBeenClicked) {
@@ -72,6 +73,7 @@ export class EditorContentComponent
       }
     );
 
+    // we subscribe to the event that will take care of loading comment-boxes that were already saved in the server
     this.commentLoadEvent = this.editorFacadeService.commentHasBeenLoaded.subscribe(
       (loadedComments) => {
         const temp = loadedComments as string [];
@@ -80,6 +82,7 @@ export class EditorContentComponent
         });
       });
 
+    // we subscribe to the checkbox event that shows or hide comment-boxes in the editor
     this.commentFiredObservable = this.commentBoxFacadeService.commentBoxTool.subscribe(
       (checkBoxClicked) => {
         this.commentBoxCheck = checkBoxClicked;
@@ -88,7 +91,6 @@ export class EditorContentComponent
           this.toolBoxFacadeService.listOfTools.forEach(element => {
             element.disabled = true;
           });
-
           this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = false;
 
           document.getElementById('boundary').style.zIndex = '300';
@@ -98,7 +100,6 @@ export class EditorContentComponent
           this.toolBoxFacadeService.listOfTools.forEach(element => {
             element.disabled = false;
           });
-
           this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
 
           document.getElementById('boundary').style.zIndex = '0';
@@ -124,20 +125,11 @@ export class EditorContentComponent
   }
 
   onMouseWheel(event: WheelEvent): void {
-    const position = this.getMousePositionInCanvasSpace(
-      new Point(event.clientX, event.clientY)
-    );
+    const position = this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY));
     // delta is used to lower the zooming speed
-    const delta =
-      (-event.deltaY *
-        (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25)) /
-      500;
+    const delta = (-event.deltaY * (navigator.userAgent.indexOf('Firefox') !== -1 ? 4 : 0.25)) / 500;
 
-    if (
-      !this.cursorDown &&
-      !this.editorFacadeService.firstPoint &&
-      event.ctrlKey === false
-    ) {
+    if (!this.cursorDown && !this.editorFacadeService.firstPoint && event.ctrlKey === false) {
       this.editorFacadeService.zoom(delta, position);
     }
   }
@@ -146,28 +138,14 @@ export class EditorContentComponent
     this.cursorDown = true;
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorDown(
-        this.getMousePositionInCanvasSpace(
-          new Point(event.clientX, event.clientY)
-        )
-      );
+      panTool.onCursorDown(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
       this.middleMouseDown = true;
-    } else if (
-      event.which === 1 &&
-      !this.editorFacadeService.menuState &&
-      !this.middleMouseDown
-    ) {
-      this.editorFacadeService.onCursorDownToolbox(
-        this.getMousePositionInCanvasSpace(
-          new Point(event.clientX, event.clientY)
-        )
-      );
+    } else if (event.which === 1 && !this.editorFacadeService.menuState && !this.middleMouseDown) {
+      this.editorFacadeService.onCursorDownToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
     }
   }
 
   createCommentBox(textArea?: string) {
-    console.log('creating comment box : ' + textArea);
-
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
     this.commentBoxes.comments.push(componentRef.instance);
@@ -188,8 +166,8 @@ export class EditorContentComponent
       componentRef.instance.textAreaValue = textArea;
       componentRef.instance.setText(textArea);
 
+      // this is in order to keep comment-boxes from popping out out of the canvas borders
       let element: HTMLElement = <HTMLElement>componentRef.location.nativeElement;
-      // adding styles
       element.style.top= '150px';
     }
 
@@ -211,36 +189,20 @@ export class EditorContentComponent
   onMouseMove(event: MouseEvent): void {
     if (this.middleMouseDown) {
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorMove(
-        this.getMousePositionInCanvasSpace(
-          new Point(event.clientX, event.clientY)
-        )
-      );
+      panTool.onCursorMove(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
     } else {
-      this.editorFacadeService.onCursorMoveToolbox(
-        this.getMousePositionInCanvasSpace(
-          new Point(event.clientX, event.clientY)
-        )
-      );
+      this.editorFacadeService.onCursorMoveToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
     }
   }
 
   onMouseLeave(event: MouseEvent): void {
     if (event.which === 2 && !this.editorFacadeService.menuState) {
       const panTool = this.editorFacadeService.panTool;
-      panTool.onCursorOut(
-        this.getMousePositionInCanvasSpace(
-          new Point(event.clientX, event.clientY)
-        )
-      );
+      panTool.onCursorOut(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
       this.middleMouseDown = false;
     }
     this.cursorDown = false;
-    this.editorFacadeService.onCursorOutToolbox(
-      this.getMousePositionInCanvasSpace(
-        new Point(event.clientX, event.clientY)
-      )
-    );
+    this.editorFacadeService.onCursorOutToolbox(this.getMousePositionInCanvasSpace(new Point(event.clientX, event.clientY)));
   }
 
   onResize(): void {
@@ -258,24 +220,17 @@ export class EditorContentComponent
     // X coordinate is adjusted if the image is flipped horizontally.
     clientX =
       this.editorFacadeService.scaleX === 1 ?
-      clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left : this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
+      clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left :
+      this.viewPort.nativeElement.clientWidth - clientPosition.x + this.viewPort.nativeElement.getBoundingClientRect().left;
 
-    clientY =
-      clientPosition.y -
-      this.viewPort.nativeElement.getBoundingClientRect().top;
-    const canvasX =
-      (clientX *
-        this.editorFacadeService.backgroundCanvas.displayCanvas.width) /
-      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
-        .width;
-    const canvasY =
-      (clientY *
-        this.editorFacadeService.backgroundCanvas.displayCanvas.height) /
-      this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect()
-        .height;
+    clientY = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
+    const canvasX = (clientX * this.editorFacadeService.backgroundCanvas.displayCanvas.width) / this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+    const canvasY = (clientY * this.editorFacadeService.backgroundCanvas.displayCanvas.height) / this.editorFacadeService.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
 
+    // this binds to the pointer's x and y coordinates in comment-box components (child component)
     this.editorMousePos.x = clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left;
     this.editorMousePos.y = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
+
     return new Point(canvasX, canvasY);
   }
 }
