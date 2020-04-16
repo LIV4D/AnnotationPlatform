@@ -51,15 +51,12 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.editorFacadeService.imageServer = null;
     this.editorFacadeService.imageLocal = null;
-    // this.getImageTypes();  // commented for now
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     this.getImages();
-    // this.data.paginator = this.paginator;
   }
 
   getImages(): void {
-    // console.log('GalleryComponent::getImage()');
 
     // Create filters
     // WARNING : key must correspond to valid column in model

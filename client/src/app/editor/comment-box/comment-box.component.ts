@@ -103,7 +103,6 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   updateCommentPosition( ) { // displayCanvas: HTMLCanvasElement, window?: DOMRect
-    console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
 
     const posX = (( (this.mousePosition.x) / this.canvasWidth ) * 100);
     // const posY = (( (this.mousePosition.y) / this.canvasHeight ) * 100);
@@ -116,7 +115,6 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   setText(textArea: string) {
-    console.log('%c changing textArea to : ' + textArea, 'color:white;background:red;');
     this.textAreaValue = textArea
   }
 

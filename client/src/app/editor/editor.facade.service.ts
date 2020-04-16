@@ -43,6 +43,10 @@ export class EditorFacadeService {
     return this.layersService.firstPoint;
   }
 
+  get commentHasBeenLoaded() {
+    return this.loadingService.commentsHasBeenLoaded;
+  }
+
   get backgroundCanvas() {
     return this.canvasDimensionService.backgroundCanvas;
   }
