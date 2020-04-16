@@ -1,4 +1,38 @@
 {
-    "entityName": "Task",
-    "items": []
+ "entityName": "Task",
+ "items": [
+  {
+   "id": 1,
+   "taskTypeId": 1,
+   "annotationId": 1,
+   "isVisible": true,
+   "isComplete": false,
+   "comment": "",
+   "assignedUserId": 1,
+   "creatorId": 1,
+   "projectTitle": ""
+  },
+  {
+   "id": 2,
+   "taskTypeId": 1,
+   "annotationId": 3,
+   "isVisible": true,
+   "isComplete": false,
+   "comment": "",
+   "assignedUserId": 1,
+   "creatorId": 1,
+   "projectTitle": ""
+  },
+  {
+   "id": 3,
+   "taskTypeId": 1,
+   "annotationId": 2,
+   "isVisible": true,
+   "isComplete": false,
+   "comment": "",
+   "assignedUserId": 1,
+   "creatorId": 1,
+   "projectTitle": ""
+  }
+ ]
 }

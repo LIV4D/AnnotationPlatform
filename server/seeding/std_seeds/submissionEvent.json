@@ -1,4 +1,85 @@
 {
     "entityName": "SubmissionEvent",
-    "items": []
+    "items": [
+        {
+            "id": 1,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:48.617Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 2,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:49.207Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 3,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:49.738Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 4,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:50.237Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 5,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:50.819Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 6,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:51.342Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 7,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:51.858Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 8,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:52.448Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 9,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:52.991Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        },
+        {
+            "id": 10,
+            "description": "Initial submit",
+            "date": "2020-04-15T19:43:53.541Z",
+            "timestamp": 0,
+            "userId": 1,
+            "parentEventId": null
+        }
+    ]
 }
