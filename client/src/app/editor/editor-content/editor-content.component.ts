@@ -6,13 +6,12 @@ import { Component, OnInit, Output,
 import { EditorFacadeService } from './../editor.facade.service';
 import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
-// import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { ToolboxFacadeService } from '../toolbox/toolbox.facade.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription } from 'rxjs';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
-// import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
+import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -24,8 +23,8 @@ export class EditorContentComponent
   constructor(
     public editorFacadeService: EditorFacadeService,
     private resolver: ComponentFactoryResolver,
-    // private toolBoxService: ToolboxService,
-    private toolBoxFacadeService: ToolboxFacadeService
+    private toolBoxFacadeService: ToolboxFacadeService,
+    private loadingService: LoadingService
   ) {
     this.delayEventTimer = null;
   }
@@ -61,8 +60,6 @@ export class EditorContentComponent
 
   ngOnInit(): void {
     this.editorMousePos = new Point(0, 0);
-
-    // this.toolBoxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
     this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
     this.commentBoxes = CommentBoxSingleton.getInstance();
 
@@ -76,16 +73,13 @@ export class EditorContentComponent
       }
     );
 
-    // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
-    // console.log(this.toolBoxService.listOfTools[6]);
-
-    // TODO: uncomment once loading is functional
-    // this.commentLoadEvent = this.loadingService.<name-of-Subject>.subscribe(
-    //   (loadedComments) => {
-    //     loadedComments.forEach(comment => {
-    //       this.createCommentBox();
-    //     });
-    //   });
+    this.commentLoadEvent = this.loadingService.commentsHasBeenLoaded.subscribe(
+      (loadedComments) => {
+        const temp = loadedComments as string [];
+        temp.forEach(comment => {
+          this.createCommentBox(comment);
+        });
+      });
 
     const commentBoxService: CommentBoxService = this.toolBoxFacadeService.listOfTools[6] as CommentBoxService;
 
@@ -122,7 +116,6 @@ export class EditorContentComponent
     this.svgLoaded.emit();
     // this.editorFacadeService.load(imageId);
     // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
-    // this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
   }
 
   ngOnDestroy(): void {
@@ -137,7 +130,6 @@ export class EditorContentComponent
   }
 
   onMouseWheel(event: WheelEvent): void {
-    // console.log('EditorContent::onMouseWheel()');
     const position = this.getMousePositionInCanvasSpace(
       new Point(event.clientX, event.clientY)
     );
@@ -182,17 +174,15 @@ export class EditorContentComponent
   }
 
   createCommentBox(textArea?: string) {
-    console.log('creating comment box');
+    console.log('creating comment box : ' + textArea);
 
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
     this.commentBoxes.comments.push(componentRef.instance);
 
     this.canvasWidth = this.viewPort.nativeElement.clientWidth;
-    console.log('%c this.canvasWidth: ' + this.canvasWidth, 'color:white; background:red;');
     this.canvasHeight = this.viewPort.nativeElement.clientHeight;
     // this.canvasHeight = 660;
-    console.log('%c this.canvasHeight: ' + this.canvasHeight, 'color:black; background:yellow;');
 
     componentRef.instance.mousePosition = this.editorMousePos;
 
@@ -204,20 +194,18 @@ export class EditorContentComponent
     }
 
     if (textArea) {
+      // console.log('%c textArea is : ' + textArea, 'color:white; background:red;');
       componentRef.instance.textAreaValue = textArea;
+      componentRef.instance.setText(textArea);
+
+      let element: HTMLElement = <HTMLElement>componentRef.location.nativeElement;
+      // adding styles
+      element.style.top= '150px';
     }
 
-    // this.editorFacadeService.setPanToolByString('pan');
-    // this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+    this.editorFacadeService.setPanToolByString('pan');
+    this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
   }
-
-  // toggleCommentMode() {
-  //   if (document.getElementById('boundary').style.zIndex === '0') {
-  //     document.getElementById('boundary').style.zIndex = '300';
-  //   } else {
-  //     document.getElementById('boundary').style.zIndex = '0';
-  //   }
-  // }
 
   onMouseUp(event: MouseEvent): void {
     this.cursorDown = false;
@@ -464,7 +452,6 @@ export class EditorContentComponent
     // this.editorMousePos.y = canvasY;
     this.editorMousePos.x = clientPosition.x - this.viewPort.nativeElement.getBoundingClientRect().left;
     this.editorMousePos.y = clientPosition.y - this.viewPort.nativeElement.getBoundingClientRect().top;
-    // console.log('%c putting value to this.editorMousePos: ' + this.editorMousePos.x + ' ' + this.editorMousePos.y, 'color:white;background:red;');
     return new Point(canvasX, canvasY);
   }
 

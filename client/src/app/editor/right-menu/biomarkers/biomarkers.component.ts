@@ -229,7 +229,7 @@ export class BiomarkersComponent implements OnInit {
   }
 
   toggleCommentBox() {
-    console.log('toggleCommentBox()');
+    // console.log('toggleCommentBox()');
     this.stateCheckCommentBox = !this.stateCheckCommentBox;
     this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
   }

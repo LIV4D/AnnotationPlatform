@@ -17,6 +17,7 @@ import { BackgroundCanvas } from '../Tools/background-canvas.service';
 // Model
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
+import { Subject } from 'rxjs';
 
 const SAVE_TIME_INTERVAL = 10000; // 10 seconds
 
@@ -31,7 +32,8 @@ export class LoadingService {
   private imageServer: ImageServer;
   private imageLoaded: boolean;
   private taskLoaded: Task;
-  private taskTypeLoaded: TaskType
+  private taskTypeLoaded: TaskType;
+  commentsHasBeenLoaded: Subject<any>;
 
 	constructor(
     private http: HttpClient,
@@ -44,6 +46,7 @@ export class LoadingService {
     public router: Router,
     ){
       this.saveFromInterval(SAVE_TIME_INTERVAL);
+      this.commentsHasBeenLoaded = new Subject<any>();
   }
 
   // Check if a change was made to save to localStorage every 10 seconds.
@@ -139,6 +142,12 @@ export class LoadingService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
+          if (res.comments.length > 0) {
+            console.log('%c yellow: ', 'color:black;background:yellow;');
+            console.log(res);
+            this.commentsHasBeenLoaded.next(res.comments);
+          }
+
         this.widgetService.setWidgets(res.widgets);
           if (drawTheAnnotation) {
             this.loadAnnotationDatas(res.data);
