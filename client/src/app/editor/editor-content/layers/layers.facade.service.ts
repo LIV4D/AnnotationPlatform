@@ -12,7 +12,7 @@ import { ViewportService } from 'src/app/shared/services/Editor/viewport.service
 export class LayersFacadeService {
 
     constructor(private layersService: LayersService, private editorService: EditorService, public canvasDimensionService: CanvasDimensionService,
-                public toolPropertiesService: ToolPropertiesService, public toolboxService: ToolboxService, private viewPortService: ViewportService) {}
+                public toolPropertiesService: ToolPropertiesService, public toolboxService: ToolboxService, public viewPortService: ViewportService) {}
 
     public init() {
         this.layersService.init();

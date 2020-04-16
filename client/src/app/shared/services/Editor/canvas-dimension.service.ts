@@ -21,7 +21,7 @@ export class CanvasDimensionService {
   canRedraw = true;
 
   constructor(public layersService: LayersService, private zoomService: ZoomService,
-              private viewPortService: ViewportService) {}
+              public viewPortService: ViewportService) {}
 
   // Return the width/height ratio of the original image.
   originalImageRatio(): number {

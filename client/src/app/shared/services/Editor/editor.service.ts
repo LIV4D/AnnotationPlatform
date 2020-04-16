@@ -26,7 +26,7 @@ export class EditorService {
   constructor(
     public canvasDimensionService: CanvasDimensionService,
     private biomarkerService: BiomarkerService,
-    private viewPortService: ViewportService,
+    public viewPortService: ViewportService,
     private loadingService: LoadingService,
     private submitService: SubmitService,
     private zoomService: ZoomService,
