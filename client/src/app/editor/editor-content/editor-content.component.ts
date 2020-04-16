@@ -122,6 +122,12 @@ export class EditorContentComponent
     if (!this.commentClickObservable.closed) {
       this.commentClickObservable.unsubscribe();
     }
+    if (!this.commentLoadEvent.closed) {
+      this.commentLoadEvent.unsubscribe();
+    }
+    if (!this.commentFiredObservable.closed) {
+      this.commentFiredObservable.unsubscribe();
+    }
   }
 
   onMouseWheel(event: WheelEvent): void {

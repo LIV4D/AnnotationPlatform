@@ -45,7 +45,6 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onChange(newValue) {
-    console.log('%c Event Changes : ' + newValue, 'color:black;background:yellow;');
     this.appService.keyEventsEnabled = false;
   }
 
@@ -94,15 +93,9 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
     this.canvasHeight = canvasHeight;
   }
 
-  updateCommentPosition( ) { // displayCanvas: HTMLCanvasElement, window?: DOMRect
-
+  updateCommentPosition( ) {
     const posX = (( (this.mousePosition.x) / this.canvasWidth ) * 100);
-    // const posY = (( (this.mousePosition.y) / this.canvasHeight ) * 100);
-    // console.log('posY : ' + posY);
-
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (posX).toString()+'%');
-    // this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (posY).toString()+'%');
-    // this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (this.mousePosition.x).toString()+'px');
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (this.mousePosition.y).toString()+'px');
   }
 
