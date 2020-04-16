@@ -30,7 +30,7 @@ export class ToolboxService {
 
   constructor(
     private layersService: LayersService,
-    private canvasDimensionService: CanvasDimensionService,
+    public canvasDimensionService: CanvasDimensionService,
     private toolPropertiesService: ToolPropertiesService,
     private biomarkerService: BiomarkerService,
     private imageBorderService: ImageBorderService

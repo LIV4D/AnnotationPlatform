@@ -41,7 +41,7 @@ export class LoadingService {
     private biomarkerService: BiomarkerService,
     private widgetService: WidgetStorageService,
     private revisionService: RevisionService,
-    private canvasDimensionService: CanvasDimensionService,
+    public canvasDimensionService: CanvasDimensionService,
     public layersService: LayersService,
     public router: Router,
     ){
@@ -142,9 +142,7 @@ export class LoadingService {
       .display_progress(req, 'Downloading Preannotations')
       .subscribe(
         (res) => {
-          if (res.comments.length > 0) {
-            console.log('%c yellow: ', 'color:black;background:yellow;');
-            console.log(res);
+          if (res.comments !== undefined && res.comments && res.comments.length > 0) {
             this.commentsHasBeenLoaded.next(res.comments);
           }
 

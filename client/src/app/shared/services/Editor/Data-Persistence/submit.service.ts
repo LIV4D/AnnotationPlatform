@@ -48,7 +48,7 @@ export class SubmitService {
 		private headerService: HeaderService,
     private tasksService: TasksService,
     private loadingService: LoadingService,
-    private canvasDimensionService: CanvasDimensionService,
+    public canvasDimensionService: CanvasDimensionService,
 		private router: Router
 		){}
 
