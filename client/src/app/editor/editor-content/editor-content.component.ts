@@ -203,8 +203,8 @@ export class EditorContentComponent
       element.style.top= '150px';
     }
 
-    // this.editorFacadeService.setPanToolByString('pan');
-    // this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
+    this.editorFacadeService.setPanToolByString('pan');
+    this.toolBoxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.COMMENT_TOOL)[0].disabled = true;
   }
 
   onMouseUp(event: MouseEvent): void {
