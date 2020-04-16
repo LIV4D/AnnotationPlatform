@@ -16,7 +16,8 @@
     "seeding-standard": "NODE_ENV=standard ts-node -T seeding/loadSeeds.ts",
     "seeding-standard-windows": "SET NODE_ENV=standard && ts-node -T seeding/loadSeeds.ts",
     "seeding-test": "NODE_ENV=test ts-node -T seeding/loadSeeds.ts",
-    "seeding-test-windows": "SET NODE_ENV=test && ts-node -T seeding/loadSeeds.ts"
+    "seeding-test-windows": "SET NODE_ENV=test && ts-node -T seeding/loadSeeds.ts",
+    "seeding-demo": "NODE_ENV=demo ts-node -T seeding/loadSeeds.ts"
   },
   "dependencies": {
     "@types/sharp": "^0.24.0",
@@ -75,7 +76,7 @@
     "mocha": "7.1.0",
     "rimraf": "3.0.2",
     "sqlite3": "4.1.1",
-    "tslint": "6.0.0",
+    "tslint": "^6.1.1",
     "tslint-eslint-rules": "5.4.0",
     "tslint-microsoft-contrib": "6.2.0",
     "typescript": "3.8.3"

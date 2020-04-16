@@ -36,7 +36,7 @@ async function loadSeed(fileName: string, connection: Connection): Promise<any> 
     let entityName: string;
     try {
         console.log(`Seeding ${fileName}`);
-        const seedsDirectory = process.env['NODE_ENV'] === 'test' ? 'test_seeds' : 'std_seeds';
+        const seedsDirectory = {'test': 'test_seeds', 'standard': 'std_seeds', 'demo': 'demo_seeds'}[process.env['NODE_ENV']];
         const data = JSON.parse(fs.readFileSync(`./seeding/${seedsDirectory}/${fileName}`).toString(), (key, value) => {
             // Used in order to correctly save buffer array in database.
             if (key === 'password' || key === 'salt') {

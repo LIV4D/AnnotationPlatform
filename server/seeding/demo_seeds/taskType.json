@@ -1,0 +1,9 @@
+{
+    "entityName": "TaskType",
+    "items": [
+        {
+            "title": "taskType",
+            "description": "demo"
+        }
+    ]
+}
