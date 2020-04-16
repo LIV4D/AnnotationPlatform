@@ -4,6 +4,7 @@ import { EditorService } from './../../../shared/services/Editor/editor.service'
 import { ToolPropertiesService } from 'src/app/shared/services/Editor/tool-properties.service';
 import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 import { CanvasDimensionService } from 'src/app/shared/services/Editor/canvas-dimension.service';
+import { ViewportService } from 'src/app/shared/services/Editor/viewport.service';
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,7 @@ import { CanvasDimensionService } from 'src/app/shared/services/Editor/canvas-di
 export class LayersFacadeService {
 
     constructor(private layersService: LayersService, private editorService: EditorService, public canvasDimensionService: CanvasDimensionService,
-                public toolPropertiesService: ToolPropertiesService, public toolboxService: ToolboxService) {}
+                public toolPropertiesService: ToolPropertiesService, public toolboxService: ToolboxService, private viewPortService: ViewportService) {}
 
     public init() {
         this.layersService.init();
@@ -44,7 +45,7 @@ export class LayersFacadeService {
     }
 
     get viewPort(){
-        return this.canvasDimensionService.viewPort;
+        return this.viewPortService.viewPort;
     }
 
     // Tool properties service

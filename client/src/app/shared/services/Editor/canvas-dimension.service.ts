@@ -1,18 +1,17 @@
 import { Injectable} from '@angular/core';
-import { LayersService } from './layers.service';
-import { Router } from '@angular/router';
-import { BackgroundCanvas } from './Tools/background-canvas.service';
-
 import { BehaviorSubject } from 'rxjs';
-import { Point } from './Tools/point.service';
+
+import { LayersService } from './layers.service';
+import { BackgroundCanvas } from './Tools/background-canvas.service';
 import { ZoomService } from './zoom.service';
+import { ViewportService } from './viewport.service';
+import { Point } from './Tools/point.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanvasDimensionService {
   backgroundCanvas: BackgroundCanvas;
-  viewPort: HTMLDivElement;
   canvasDisplayRatio: BehaviorSubject<number>;
   fullCanvasWidth: number;
   fullCanvasHeight: number;
@@ -21,20 +20,8 @@ export class CanvasDimensionService {
   scaleX: number;
   canRedraw = true;
 
-  constructor(
-    public layersService: LayersService,
-    private zoomService: ZoomService,
-    public router: Router,
-  ) {
-  }
-
-  // Return the width/height ratio of the viewport (displayed).
-  viewportRatio(): number {
-    return (
-      this.viewPort.getBoundingClientRect().width /
-      this.viewPort.getBoundingClientRect().height
-    );
-  }
+  constructor(public layersService: LayersService, private zoomService: ZoomService,
+              private viewPortService: ViewportService) {}
 
   // Return the width/height ratio of the original image.
   originalImageRatio(): number {
@@ -84,8 +71,6 @@ export class CanvasDimensionService {
 
   // Function to update the zoom rectangle.
   updateZoomRect(): void {
-    console.log('updateZoomRect()');
-
     const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
     if (zoomCanvas !== null) {
       const zoomContext: CanvasRenderingContext2D = zoomCanvas.getContext('2d');
@@ -99,7 +84,7 @@ export class CanvasDimensionService {
       const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
       const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
       let h: number; let w: number;
-      if (this.originalImageRatio() > this.viewportRatio()) {
+      if (this.originalImageRatio() > this.viewPortService.viewportRatio()) {
         w = zoomCanvas.width / this.zoomService.zoomFactor;
         h = Math.min(w * (realHeight / realWidth), zoomCanvas.height);
       } else {
@@ -117,8 +102,6 @@ export class CanvasDimensionService {
 
   // Function that transforms the editor view according to the zoomFactor and offsets properties.
   transform(): void {
-    console.log('transform()');
-
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
       return;
     }
@@ -129,9 +112,7 @@ export class CanvasDimensionService {
       layer.setOffset(this.offsetX, this.offsetY);
       layer.draw();
     });
-
-    //Redraw the zoom rectangle.
-    this.updateZoomRect();
+    this.updateZoomRect(); //Redraw the zoom rectangle.
   }
 
   // Reajust the display
@@ -229,7 +210,7 @@ export class CanvasDimensionService {
     if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) {
       return;
     }
-    const viewportRatio = this.viewportRatio();
+    const viewportRatio = this.viewPortService.viewportRatio();
     let H: number; let W: number;
     if (this.originalImageRatio() > viewportRatio) {
       W = this.backgroundCanvas.originalCanvas.width;
@@ -254,7 +235,7 @@ export class CanvasDimensionService {
 
   // Load the main canvas.
   public loadMainCanvas(){
-    const viewportRatio = this.viewportRatio();
+    const viewportRatio = this.viewPortService.viewportRatio();
     const imageRatio = this.originalImageRatio();
     if (imageRatio > viewportRatio) {
       this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
@@ -284,12 +265,12 @@ export class CanvasDimensionService {
     let clientY: number;
     clientX =
       this.scaleX === 1
-        ? clientPosition.x - this.viewPort.getBoundingClientRect().left
-        : this.viewPort.clientWidth -
+        ? clientPosition.x - this.viewPortService.viewPort.getBoundingClientRect().left
+        : this.viewPortService.viewPort.clientWidth -
           clientPosition.x +
-          this.viewPort.getBoundingClientRect().left;
+          this.viewPortService.viewPort.getBoundingClientRect().left;
 
-    clientY = clientPosition.y - this.viewPort.getBoundingClientRect().top;
+    clientY = clientPosition.y - this.viewPortService.viewPort.getBoundingClientRect().top;
     const canvasX =
       (clientX * this.backgroundCanvas.displayCanvas.width) /
       this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
@@ -297,13 +278,6 @@ export class CanvasDimensionService {
       (clientY * this.backgroundCanvas.displayCanvas.height) /
       this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
     return new Point(canvasX, canvasY);
-  }
-
-  getMousePositionInDisplaySpace(clientPosition: Point): Point {
-    const x = clientPosition.x - this.viewPort.getBoundingClientRect().left;
-    const y = clientPosition.y - this.viewPort.getBoundingClientRect().top;
-
-    return new Point(x, y);
   }
 
   // Load the zoom canvas.
