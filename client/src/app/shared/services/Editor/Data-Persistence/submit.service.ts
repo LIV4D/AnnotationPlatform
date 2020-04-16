@@ -133,7 +133,7 @@ export class SubmitService {
     const annotationData:AnnotationData = this.layersService.getAnnotationDatas();
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).user;
     const commentData:string[] = CommentBoxSingleton.getInstance().getTextAreaValues();
-    console.log('%c commentData : ' + commentData, 'color:black; background:yellow;');
+    console.log('%c commentData : ' + commentData, 'color:white; background:red;');
 
     const body = {
       comments: commentData,

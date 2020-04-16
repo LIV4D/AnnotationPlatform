@@ -19,11 +19,11 @@ export class CommentBoxSingleton {
    * just one instance of each subclass around.
    */
   public static getInstance(): CommentBoxSingleton {
-      if (!CommentBoxSingleton.instance) {
-        CommentBoxSingleton.instance = new CommentBoxSingleton();
-      }
+    if (!CommentBoxSingleton.instance) {
+      CommentBoxSingleton.instance = new CommentBoxSingleton();
+    }
 
-      return CommentBoxSingleton.instance;
+    return CommentBoxSingleton.instance;
   }
 
   /**
