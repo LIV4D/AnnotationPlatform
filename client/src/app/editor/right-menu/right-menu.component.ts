@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
 import { BiomarkersComponent } from './biomarkers/biomarkers.component';
+import { AppService } from 'src/app/shared/services/app.service';
 
 @Component({
   selector: 'app-right-menu',
@@ -13,7 +14,7 @@ export class RightMenuComponent implements OnInit {
   @Input() canvas: BackgroundCanvas;
   @ViewChild('biomarkers') biomarkers: BiomarkersComponent;
 
-  constructor() {
+  constructor(public appService: AppService) {
     this.loaded = true;
     this.saveText = navigator.platform.indexOf('Mac') === -1 ? '(Ctrl + S)' : '(Cmd + S)';
   }
