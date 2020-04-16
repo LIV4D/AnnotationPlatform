@@ -2,7 +2,6 @@
 import { VisualizationFacadeService } from './visualization.facade.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { HOTKEYS } from 'src/app/shared/constants/hotkeys';
-import { AppService } from 'src/app/shared/services/app.service';
 import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
 
 @Component({
@@ -21,7 +20,7 @@ import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/backgroun
     autoContrastChecked: boolean;
     @Input() canvas: BackgroundCanvas;
 
-    constructor(private visualizationFacadeService: VisualizationFacadeService, public appService: AppService) {
+    constructor(private visualizationFacadeService: VisualizationFacadeService) {
         this.minContrast = -255;
         this.maxContrast = 255;
         this.minBrightness = -100;
@@ -92,15 +91,15 @@ import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/backgroun
     }
 
     enableOnKeyDown(): void {
-        this.appService.keyEventsEnabled = true;
+        this.visualizationFacadeService.appService.keyEventsEnabled = true;
     }
 
     disableOnKeyDown(): void {
-        this.appService.keyEventsEnabled = false;
+        this.visualizationFacadeService.appService.keyEventsEnabled = false;
     }
 
     public onKeyDown(event: KeyboardEvent): void {
-        if (this.appService.keyEventsEnabled) {
+        if (this.visualizationFacadeService.appService.keyEventsEnabled) {
             switch (event.keyCode) {
                 case HOTKEYS.KEY_T_PRETREATMENTS: {
                     this.togglePreprocessing();

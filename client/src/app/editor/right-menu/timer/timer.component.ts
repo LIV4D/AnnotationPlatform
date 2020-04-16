@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TimerFacadeService } from './timer.facade.service';
-import { LogoutService } from 'src/app/shared/services/logout.service';
 
 @Component({
   selector: 'app-timer',
