@@ -64,6 +64,9 @@ class TaskTable(EntityTable):
     # delete the entity
     def _delete(self, id):
         return server.delete('/api/tasks/delete/%i' % id)
+    
+    def export_seed(self, path):
+        self._dumps_to_json("/api/tasks/list", ('id', 'taskTypeId', 'annotationId', 'isComplete', 'isVisible', 'comment', 'assignedUserId', 'creatorId', 'projectTitle'), path)
 
 
 tasks = TaskTable()

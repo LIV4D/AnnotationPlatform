@@ -176,7 +176,7 @@ export class AnnotationController implements IController {
                     switch (req.params.attr) {
                         case undefined: return annotation;
                         case 'comment': return annotation.comments;
-                        case 'proto': return annotation.proto;
+                        case 'proto': return annotation.proto();
                         case 'data': return annotation.data;
                         case 'submitEvent': return annotation.submitEvent;
                     }
@@ -197,7 +197,7 @@ export class AnnotationController implements IController {
             switch (req.params.attr) {
                 case undefined: res.send(annotation); break;
                 case 'comment': res.send({ comment: annotation.comments }); break;
-                case 'proto': res.send(annotation.proto); break;
+                case 'proto': res.send(annotation.proto()); break;
                 case 'data': res.send(annotation.data); break;
                 case 'submitEvent': res.send(annotation.submitEvent); break;
             }
@@ -214,10 +214,10 @@ export class AnnotationController implements IController {
         this.annotationService.getAnnotations(req.body.ids)
         .then(annotations => {
             res.send(annotations.map(annotation => {
-                switch (req.params.field) {
+                switch (req.params.attr) {
                     case undefined: return annotation;
                     case 'comment': return annotation.comments;
-                    case 'proto': return annotation.proto;
+                    case 'proto': return annotation.proto();
                     case 'data': return annotation.data;
                     case 'submitEvent': return annotation.submitEvent;
                 }

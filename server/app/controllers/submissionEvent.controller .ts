@@ -13,11 +13,11 @@ export class SubmissionEventController implements IController {
     public setRoutes(app: express.Application): void {
         // Collection
         app.get('/api/submissionEvents/list', this.list);
-        app.get('/api/submissionEvents/list/:attr([a-zA-Z][a-zA-Z0-9]*)', this.list);
+        app.get('/api/submissionEvents/list/:attr([a-zA-Z][a-zA-Z0-9]+)', this.list);
         app.get('/api/submissionEvents/get/:id([0-9]+)', this.getEvent);
-        app.get('/api/submissionEvents/get/:id([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]*)', this.getEvent);
+        app.get('/api/submissionEvents/get/:id([0-9]+)/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getEvent);
         app.get('/api/submissionEvents/get', this.getMultipleEvents);
-        app.get('/api/submissionEvents/get/:attr([a-zA-Z][a-zA-Z0-9]*)', this.getMultipleEvents);
+        app.get('/api/submissionEvents/get/:attr([a-zA-Z][a-zA-Z0-9]+)', this.getMultipleEvents);
     }
 
     /**
@@ -35,7 +35,7 @@ export class SubmissionEventController implements IController {
                 res.send(events.map(event => {
                     switch (req.params.attr) {
                         case undefined: return event;
-                        case 'proto': return event.proto;
+                        case 'proto': return event.proto();
                     }
                     return null;
                 }));
@@ -55,7 +55,7 @@ export class SubmissionEventController implements IController {
         .then(event => {
             switch (req.params.attr) {
                 case undefined: res.send(event); break;
-                case 'proto': res.send(event.proto); break;
+                case 'proto': res.send(event.proto()); break;
             }
         }).catch(next);
     }
@@ -74,7 +74,7 @@ export class SubmissionEventController implements IController {
             res.send(events.map(event => {
                 switch (req.params.attr) {
                     case undefined: return event;
-                    case 'proto': return event.proto;
+                    case 'proto': return event.proto();
                 }
                 return null;
             }));

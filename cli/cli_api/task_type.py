@@ -41,5 +41,7 @@ class TaskTypeTable(EntityTable):
     def _getById(self, indexes):
         return server.get("/api/taskTypes/get/proto", payload={'ids': indexes})
 
+    def export_seed(self, path):
+        self._dumps_to_json("/api/taskTypes/list", ('id', 'title', 'description'), path)
 
 taskTypes = TaskTypeTable()

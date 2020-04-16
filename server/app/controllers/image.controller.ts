@@ -45,10 +45,10 @@ export class ImageController implements IController {
                     this.upload.fields([{ name: 'image', maxCount: 1 }, { name: 'preprocessing', maxCount: 1 }]),
                     this.createImageCLI);
         app.put('/api/images/update/:imageId', this.updateImage);
-        app.put('/api/images/updateFile/:imageId',
+        app.post('/api/images/updateFile/:imageId',
                     this.upload.single('image'),
                     this.uploadImage);
-        app.put('/api/images/updatePreprocessing/:imageId',
+        app.post('/api/images/updatePreprocessing/:imageId',
                     this.upload.single('preprocessing'),
                     this.uploadPreprocessing);
         app.delete('/api/images/delete/:imageId', this.deleteImage);
@@ -98,7 +98,7 @@ export class ImageController implements IController {
             preprocessingPath = preprocessingFile.path;
         }
 
-        this.imageService.createImage(newImage, imageFile, preprocessingPath)
+        this.imageService.createImage(newImage, imageFile, preprocessingPath, true)
             .then(image => res.send(image.proto()))
             .catch(next);
     }
@@ -121,7 +121,7 @@ export class ImageController implements IController {
             preprocessingPath = preprocessingFile.path;
         }
 
-        this.imageService.createImage(newImage, imageFile.path, preprocessingPath)
+        this.imageService.createImage(newImage, imageFile.path, preprocessingPath, true)
             .then(image => res.send(image.proto()))
             .catch(next);
     }
@@ -144,7 +144,7 @@ export class ImageController implements IController {
             preprocessingPath = preprocessingFile.path;
         }
 
-        this.imageService.createImage(newImage, imageFile.path, preprocessingPath)
+        this.imageService.createImage(newImage, imageFile.path, preprocessingPath, true)
             .then(image => res.send(image.proto()))
             .catch(next);
     }

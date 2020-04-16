@@ -1,7 +1,7 @@
 from .utilities.json_template import JSONClass, JSONAttr, JSONClassList, JSONAttribute, is_dict
 import functools
 import requests
-from .server import Server
+from .server import Server, server
 
 
 def PRIMARY(attr):
@@ -51,6 +51,7 @@ def format_entity(entity=None):
 
 
 class Entity(JSONClass):
+    __exact_template__ = False
     def __init__(self):
         super(Entity, self).__init__()
 
@@ -94,6 +95,7 @@ class Entity(JSONClass):
     def attr_to_json(self, attr, value, context=None):
         if isinstance(value, Entity) and isinstance(context, dict) and context.get('entity_to_str', False):
             return str(value)
+        return super(Entity, self).attr_to_json(attr, value, context=context)
 
 
 class EntityTable:
@@ -160,6 +162,13 @@ class EntityTable:
 
     def __delitem__(self, item):
         return self.delete(item)
+        
+    def _dumps_to_json(self, endpoint, fields, path):
+        import json
+        l = server.get(endpoint).json()
+        l = [{k:v for k,v in _.items() if k in fields} for _ in l]
+        with open(path, "w") as f:
+            json.dump({"entityName": self.__entity__.__name__, "items": l}, f, indent=True) 
 
 
 class EntityList:

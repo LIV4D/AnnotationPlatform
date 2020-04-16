@@ -22,9 +22,9 @@ class UserTable(EntityTable):
 
     @cli_method
     @format_entity()
-    def create(self, firstname, lastname, email, password, is_admin=False):
+    def create(self, firstname, lastname, email, password, role="clinician"):
         payload = dict(firstName=firstname, lastName=lastname, email=email,
-                       password=password, isAdmin=is_admin)
+                       password=password, role=role)
         return server.post('/api/users/create', payload=payload)
 
     @cli_method

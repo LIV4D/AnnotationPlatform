@@ -10,7 +10,7 @@ class SubmissionEvent(Entity):
     date = JSONAttr.String(read_only=True)
     timestamp = JSONAttr.Float()
     user = JSONAttr(User, read_only=True)
-    parentEventId = JSONAttr.Int(read_only=True)
+    parentEventId = JSONAttr.Int(read_only=True, optional=True)
 
     @classmethod
     def table(cls):
@@ -32,5 +32,7 @@ class SubmissionEventTable(EntityTable):
     def _getById(self, indexes):
         return server.get("/api/submissionEvents/get/proto", payload={'ids': indexes})
 
+    def export_seed(self, path):
+        self._dumps_to_json("/api/submissionEvents/list", ('id', 'description', 'date', 'timestamp', 'userId', 'parentEventId'), path)
 
 submissionEvents = SubmissionEventTable()

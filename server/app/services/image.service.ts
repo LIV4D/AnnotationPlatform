@@ -17,16 +17,16 @@ export class ImageService {
     @inject(TYPES.ImageRepository)
     private imageRepository: ImageRepository;
 
-    public async createImage(newImage: IImage, imageLocalPath: string, preprocessingPath: string = null) {
+    public async createImage(newImage: IImage, imageLocalPath: string, preprocessingPath: string = null, deleteOriginals = false) {
         // Setup new image entity
         let image = Image.fromInterface(newImage);
 
         // Add entity to image repository. After this line image has an id.
         image = await this.imageRepository.create(image);
 
-        await this.updateImageFile(image.id, imageLocalPath, false);
+        await this.updateImageFile(image.id, imageLocalPath, false, deleteOriginals);
         if (image.preprocessing) {
-            await this.updatePreprocessingFile(image.id, preprocessingPath, false);
+            await this.updatePreprocessingFile(image.id, preprocessingPath, false, deleteOriginals);
         }
 
         return image;
@@ -45,7 +45,7 @@ export class ImageService {
         return await this.imageRepository.update(image);
     }
 
-    public async updateImageFile(imageId: number, imageLocalPath: string, checkDatabase = true) {
+    public async updateImageFile(imageId: number, imageLocalPath: string, checkDatabase = true, deleteOriginal = false) {
         if (checkDatabase) {
             const image = await this.imageRepository.find(imageId);
             if (image === null) {
@@ -77,14 +77,17 @@ export class ImageService {
             const thumbnail = await sharp(destPath).resize(127)
                                                          .jpeg()
                                                          .toBuffer();
-
             fs.writeFileSync(thumbnailPath, thumbnail);
+
+            // Delete originals (in most cases temporary files)
+            if (deleteOriginal)
+                fs.unlinkSync(imageLocalPath);
         } catch (err) {
             throw createError('Error while uploading Image.\n' + err, 409);
         }
     }
 
-    public async updatePreprocessingFile(imageId: number, preprocessingLocalPath: string, checkDatabase = true) {
+    public async updatePreprocessingFile(imageId: number, preprocessingLocalPath: string, checkDatabase = true, deleteOriginal = true) {
         if (checkDatabase) {
             const image = await this.imageRepository.find(imageId);
             if (image === null) {
@@ -109,6 +112,10 @@ export class ImageService {
             // Convert image and save it to permanent folder
             await sharp(preprocessingLocalPath).jpeg()
                                                .toFile(destPath);
+
+            // Delete originals (in most cases temporary files)
+            if (deleteOriginal)
+                fs.unlinkSync(preprocessingLocalPath);
         } catch (err) {
             throw createError('Error while uploading Preprocessing.\n' + err, 409);
         }

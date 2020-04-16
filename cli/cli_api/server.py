@@ -68,8 +68,6 @@ class Server:
     def request(self, method, path, json=None, **kwargs):
         if json is None:
             json = {}
-        if not path.endswith('/'):
-            path += '/'
         try:
             response = requests.request(method, self.url + path, json=json, headers=self.headers(), **kwargs)
         except requests.exceptions.RequestException as e:
@@ -109,7 +107,7 @@ class Server:
         return self.request('DELETE', path, json=payload)
 
     def send_file(self, path, field, filename, payload=None):
-        return self.send_file(path=path, filenames_dict={field: filename}, payload=payload)
+        return self.send_files(path=path, filenames_dict={field: filename}, payload=payload)
 
     def send_files(self, path, filenames_dict, payload=None):
         if payload is None:

@@ -61,13 +61,13 @@ def recursive_dict_update(destination, origin, append=False):
 
 
 def recursive_dict(dictionnary, function):
-    r = {}
-    for n, v in dictionnary.items():
+    r = type(dictionnary)()
+    for k, v in dictionnary.items():
         if is_dict(v):
             v = recursive_dict(v, function=function)
         else:
-            v = function(n, v)
-        r[n] = v
+            v = function(k, v)
+        r[k] = v
     return r
 
 
@@ -80,18 +80,20 @@ def dict_walk(dict):
             yield dict, k, v
 
 
-def dict_walk_zip(dict1, dict2, raise_on_ignore=False):
-    for k, v1 in dict1.items():
+def dict_walk_zip(dict1, dict2, on_miss='skip'):
+    for k, v2 in dict2.items():
         try:
-            v2 = dict2[k]
+            v1 = dict1[k]
         except KeyError:
-            if raise_on_ignore:
+            if on_miss == 'raise':
                 raise KeyError('Unknown key %s.' % k)
-            else:
+            elif on_miss == 'skip':
                 continue
+            else:
+                v1 = on_miss
 
         if is_dict(v1) and is_dict(v2):
-            for _ in dict_walk_zip(v1, v2, raise_on_ignore=raise_on_ignore):
+            for _ in dict_walk_zip(v1, v2, on_miss=on_miss):
                 yield _
         else:
             yield dict1, dict2, k, v1, v2
