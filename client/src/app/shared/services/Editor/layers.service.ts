@@ -6,13 +6,14 @@ import { ImageBorderService } from './image-border.service';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { Stack } from './Tools/stack.service';
 import { RevisionService } from './revision.service';
-import { EMPTY_REVISION } from '../../constants/emptyrevision';
 export const ANNOTATION_PREFIX = 'annotation-';
-
 
 @Injectable({
   providedIn: 'root'
 })
+
+// The layerService provides usefull fonction
+// helping with the layering of biomarkers and the stacking of them
 export class LayersService {
   MAX_CAPACITY: number;
 
@@ -33,7 +34,6 @@ export class LayersService {
 
   unsavedChange = false;
 
-  // private deviceService: DeviceDetectorService, , private borderService: ImageBorderService
   constructor(private appService: AppService, private imageBorderService: ImageBorderService, public revision: RevisionService) { }
 
   init(): void {
@@ -51,8 +51,6 @@ export class LayersService {
     this.tempDrawCanvas = document.createElement('canvas');
     const drawCtx = this.tempDrawCanvas.getContext('2d');
     drawCtx.imageSmoothingEnabled = false;
-
-    // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
 
     this.MAX_CAPACITY = 20;
     this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
@@ -127,7 +125,6 @@ export class LayersService {
       canvas.width = canvas.height * canvasRatio;
     }
     this.setCanvasStyle(canvas);
-    // Remove some of this...
     let x = 0;
     let y = 0;
     if (imageRatio > canvasRatio) {
@@ -165,13 +162,10 @@ export class LayersService {
         image.height = height;
       }
       image.onload = () => {
-        console.log("create flat canvas recursive json");
         this.newBiomarker(image, type, color);
       };
 
       image.src = dataImage;
-
-      //image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
     }
 
   }
@@ -270,7 +264,6 @@ export class LayersService {
     });
     this.biomarkerOverlayCanvas.width = width;
     this.biomarkerOverlayCanvas.height = height;
-
     this.tempMaskCanvas.width = width;
     this.tempMaskCanvas.height = height;
     this.tempDrawCanvas.width = width;

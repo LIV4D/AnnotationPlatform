@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LayersService } from './layers.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
 import { Biomarker } from './../../models/biomarker.model';
 import { BioNode } from './../../models/bionode.model';
 

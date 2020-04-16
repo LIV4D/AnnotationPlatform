@@ -52,7 +52,6 @@ export class LoadingService {
   // Check if a change was made to save to localStorage every 10 seconds.
   public saveFromInterval(timeInterval: number){
     setInterval(() => {
-     // console.log(this.commentBoxes.getTextAreaValues());
       if (this.layersService.unsavedChange) {
         LocalStorage.save(this, this.layersService);
         this.layersService.unsavedChange = false;
@@ -169,7 +168,6 @@ export class LoadingService {
   loadAnnotationDatas(data: object){
     this.revisionService.revision = data; // Store the loaded annotations within the revision service.
     this.layersService.biomarkerCanvas = [];
-
     if(LocalStorage.hasAnnotationStored() && this.shouldLoadLocalStorage(LocalStorage.lastSavedImageId())){
       // Add Annotations of localStorage
       LocalStorage.load(this, this.layersService);
@@ -184,7 +182,6 @@ export class LoadingService {
     }
     this.biomarkerService.initJsonRecursive(data);  // Add Annotation datas on Annotation selection right box
     this.biomarkerService.buildTreeRecursive(data); // Build the annotation tree right box
-
 
     setTimeout(() => {LocalStorage.save(this, this.layersService); }, 1000);
 
@@ -241,7 +238,6 @@ export class LoadingService {
           const image = new Image();
           image.onload = () => {
             this.loadMainImage(image);
-            // TODO
             // this.loadPretreatmentImage();
           };
           image.src = reader.result as string;

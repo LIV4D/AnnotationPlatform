@@ -5,13 +5,17 @@ import { isNullOrUndefined } from 'util';
 @Injectable({
   providedIn: 'root'
 })
+
+// The service provides usefull functions
+// helping the conversion of an array of biomarkers to a Revision
+// object in the  format meant to be send to the server
 export class RevisionService {
 
     public revision: Revision;
     constructor() { }
 
     public setDataImages(types: string[], imageDatas: string[]) {
-     
+
         for(let i = 0; i < types.length && i < imageDatas.length; i++) {
             this.revision.biomarkers.forEach(revision => {
                 this.setDataImageRecursive(revision, types[i], imageDatas[i]);
@@ -35,19 +39,4 @@ export class RevisionService {
             });
         }
     }
-
-    /**
-     * 
-     * @param typeDataMap map consisting of each type (from Revision class) associated with its equivalent dataImage (from Revision class)
-     */
-    // public setDataImageRecursiveWithMap(typeDataMap: Map<string, Buffer>): void {
-    //     if (typeDataMap.has(this.type)) {
-    //         this.dataImage = typeDataMap.get(this.type);
-    //         typeDataMap.delete(this.type);
-    //     }
-
-    //     if (typeDataMap.size > 0){
-    //         this.setDataImageRecursiveWithMap(typeDataMap);
-    //     }
-    // }
 }

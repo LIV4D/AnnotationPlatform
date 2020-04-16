@@ -9,6 +9,9 @@ const ZOOM = {
 @Injectable({
   providedIn: 'root',
 })
+
+// The service provides usefull function
+// helping with the Widget Events
 export class ZoomService {
 	zoomFactor: number;
 	ZOOM = ZOOM;

@@ -21,7 +21,6 @@ export class GalleryService {
   // }
 
   getImages(sort: string, order: string, page: number, pageSize: number, filters?: string): Observable<IGallery> {
-    // console.log('GalleryService::getImages()');
 
     const params = new HttpParams()
     .set('sort', sort ? 'image.' + sort : 'image.id')
@@ -31,7 +30,6 @@ export class GalleryService {
     .set('filters', filters);
 
     // TODO: It was like that but /api/gallery/ couldn't resolve to a valid path -- Check this out with partners
-    // const req = this.http.get<IGallery>('/api/gallery/', {params, observe: 'events', reportProgress: true});
     const req = this.http.get<IGallery>('/api/images/gallery/', {params, observe: 'events', reportProgress: true});
 
     return this.headerService.display_progress(req, 'Downloading: Gallery');

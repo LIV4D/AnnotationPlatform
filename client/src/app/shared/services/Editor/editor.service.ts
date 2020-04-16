@@ -1,7 +1,6 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CanvasDimensionService } from './canvas-dimension.service';
-import { HttpClient} from '@angular/common/http';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
 import { LoadingService } from './Data-Persistence/loading.service';
@@ -14,6 +13,9 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 @Injectable({
   providedIn: 'root',
 })
+
+// The service initialize mulitiple variables of others services
+// linked with the EditorFacadeService at the same time
 export class EditorService {
   offsetY: number;
   mouseDown = false;
@@ -30,8 +32,6 @@ export class EditorService {
     private loadingService: LoadingService,
     private submitService: SubmitService,
     private zoomService: ZoomService,
-    private http: HttpClient,
-
   ) {
     this.canvasDimensionService.scaleX = 1;
     this.loadingService.setImageLoaded(false);

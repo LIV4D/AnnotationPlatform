@@ -24,6 +24,9 @@ import { BiomarkerService } from './biomarker.service';
 @Injectable({
   providedIn: 'root',
 })
+
+// The services provides usefull methods
+// helping handling the tooldBox
 export class ToolboxService {
   selectedTool: BehaviorSubject<Tool>;
   commentBoxClicked: Subject<any>;
@@ -53,7 +56,7 @@ export class ToolboxService {
         layersService,
         toolPropertiesService
       ),
-      // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
+
       new FillBrush(
         TOOL_NAMES.FILL_BRUSH,
         '../assets/icons/brush-fill.svg',
@@ -62,7 +65,7 @@ export class ToolboxService {
         layersService,
         toolPropertiesService
       ),
-      // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
+
       new Eraser(
         TOOL_NAMES.ERASER,
         '../assets/icons/eraser.svg',
@@ -150,7 +153,6 @@ export class ToolboxService {
       this.layersService.toggleBorders(false);
     }
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-      // console.log('SHOW')
     }
     this.selectedTool.getValue().onCursorDown(point);
     this.setUndoRedoState();
