@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
-import { AppService } from 'src/app/shared/services/app.service';
-import { EditorService } from 'src/app/shared/services/Editor/editor.service';
 import { TasksService } from 'src/app/shared/services/Tasks/tasks.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -14,8 +12,6 @@ import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/
 })
 export class SubmitFacadeService {
     constructor( private submitService: SubmitService,
-                 public appService: AppService,
-                 public editorService: EditorService,
                  private tasksService: TasksService,
                  private loadingService: LoadingService,
                  private taskTypeService: TaskTypeService ) {}
