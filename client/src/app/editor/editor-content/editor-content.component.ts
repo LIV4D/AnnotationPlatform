@@ -11,6 +11,7 @@ import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton
 import { Subscription } from 'rxjs';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
+import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -22,7 +23,8 @@ export class EditorContentComponent
   constructor(
     public editorFacadeService: EditorFacadeService,
     private resolver: ComponentFactoryResolver,
-    private toolBoxFacadeService: ToolboxFacadeService
+    private toolBoxFacadeService: ToolboxFacadeService,
+    private loadingService: LoadingService
   ) {
     this.delayEventTimer = null;
   }
@@ -71,16 +73,13 @@ export class EditorContentComponent
       }
     );
 
-    // console.log('%c toolBoxService: ', 'color:black;background:yellow;');
-    // console.log(this.toolBoxService.listOfTools[6]);
-
-    // TODO: uncomment once loading is functional
-    // this.commentLoadEvent = this.loadingService.<name-of-Subject>.subscribe(
-    //   (loadedComments) => {
-    //     loadedComments.forEach(comment => {
-    //       this.createCommentBox();
-    //     });
-    //   });
+    this.commentLoadEvent = this.loadingService.commentsHasBeenLoaded.subscribe(
+      (loadedComments) => {
+        const temp = loadedComments as string [];
+        temp.forEach(comment => {
+          this.createCommentBox(comment);
+        });
+      });
 
     const commentBoxService: CommentBoxService = this.toolBoxFacadeService.listOfTools[6] as CommentBoxService;
 
@@ -175,17 +174,15 @@ export class EditorContentComponent
   }
 
   createCommentBox(textArea?: string) {
-    console.log('creating comment box');
+    console.log('creating comment box : ' + textArea);
 
     const factory = this.resolver.resolveComponentFactory(CommentBoxComponent);
     const componentRef = this.commentBox.createComponent(factory);
     this.commentBoxes.comments.push(componentRef.instance);
 
     this.canvasWidth = this.viewPort.nativeElement.clientWidth;
-    console.log('%c this.canvasWidth: ' + this.canvasWidth, 'color:white; background:red;');
     this.canvasHeight = this.viewPort.nativeElement.clientHeight;
     // this.canvasHeight = 660;
-    console.log('%c this.canvasHeight: ' + this.canvasHeight, 'color:black; background:yellow;');
 
     componentRef.instance.mousePosition = this.editorMousePos;
 
@@ -197,7 +194,13 @@ export class EditorContentComponent
     }
 
     if (textArea) {
+      // console.log('%c textArea is : ' + textArea, 'color:white; background:red;');
       componentRef.instance.textAreaValue = textArea;
+      componentRef.instance.setText(textArea);
+
+      let element: HTMLElement = <HTMLElement>componentRef.location.nativeElement;
+      // adding styles
+      element.style.top= '150px';
     }
 
     // this.editorFacadeService.setPanToolByString('pan');

@@ -24,9 +24,13 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   down = false;
   moving = false;
   pointFormat = 'example-box2';
-  textAreaValue: string;
+  textAreaValue = '';
   canvasWidth: number;
   canvasHeight: number;
+  isLoadingCommentFromServer: boolean;
+
+  XLoaded: number;
+  YLoaded: number;
 
   @Input () mousePosition: Point;
   @ViewChild ('matAccordElement') matAccordElement: ElementRef;
@@ -34,10 +38,14 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private renderer: Renderer2, public appService: AppService) {}
 
   ngOnInit(): void {
-    this.textAreaValue = 'This is a test';
   }
 
   ngAfterViewInit(): void {
+    // if (this.textAreaValue.length > 0) {
+    //   console.log('%c if ','color:black; background:yellow;');
+    // } else {
+    //   console.log('%c inside else ','color:black; background:yellow;');
+    // }
     this.updateCommentPosition();
   }
 
@@ -47,7 +55,7 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    // console.log(changes);
   }
 
   onMouseUp(e: Event) {
@@ -97,13 +105,19 @@ export class CommentBoxComponent implements OnInit, AfterViewInit, OnChanges {
   updateCommentPosition( ) { // displayCanvas: HTMLCanvasElement, window?: DOMRect
     console.log('%c mousePos-xy : ' + this.mousePosition.x + ' y : ' + this.mousePosition.y, 'color:black;background:yellow;');
 
-    const posX = ((this.mousePosition.x / this.canvasWidth ) * 100);
+    const posX = (( (this.mousePosition.x) / this.canvasWidth ) * 100);
     // const posY = (( (this.mousePosition.y) / this.canvasHeight ) * 100);
     // console.log('posY : ' + posY);
 
     this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (posX).toString()+'%');
     // this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (posY).toString()+'%');
     // this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-left', (this.mousePosition.x).toString()+'px');
-    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (this.mousePosition.y - 20).toString()+'px');
+    this.renderer.setStyle(this.matAccordElement.nativeElement, 'margin-top', (this.mousePosition.y).toString()+'px');
   }
+
+  setText(textArea: string) {
+    console.log('%c changing textArea to : ' + textArea, 'color:white;background:red;');
+    this.textAreaValue = textArea
+  }
+
 }

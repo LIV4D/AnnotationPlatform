@@ -42,6 +42,4 @@ export class CommentBoxService extends Tool {
     console.log('%c sendStateCommentBox: ', 'color:black;background:yellow;');
     this.commentBoxCheckBoxClicked.next(checkBoxCommentBox);
   }
-
-
 }

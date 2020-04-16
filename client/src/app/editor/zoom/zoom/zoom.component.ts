@@ -27,7 +27,7 @@ export class ZoomComponent {
   }
 
   onMouseUp(event: MouseEvent): void {
-    console.log('onMouseUp(event: MouseEvent)');
+    // console.log('onMouseUp(event: MouseEvent)');
     this.mouseDown = false;
   }
 
@@ -36,7 +36,7 @@ export class ZoomComponent {
   }
 
   onMouseDown(event: MouseEvent): void {
-    console.log('onMouseDown(event: MouseEvent)');
+    // console.log('onMouseDown(event: MouseEvent)');
     this.moveEvent(event.clientX, event.clientY);
     this.mouseDown = true;
   }
