@@ -70,8 +70,17 @@ export class ImageController implements IController {
         app.get('/api/images/download/:imageId/thumbnail', this.getThumbnailFile);
     }
 
+    /**
+     * Creates an image using the request's information.
+     *
+     * Requires the type and the files (the absolute path on the server towards the file) in the request's body.
+     *
+     * Optionally, the image's metadata and a boolean determining whether there's preprocessing or not.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private createImage =  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log(req.body);
         // throwIfNotAdmin executes in this.upload
         const newImage: IImage = {
             type: req.body.type,
@@ -140,49 +149,87 @@ export class ImageController implements IController {
             .catch(next);
     }
 
+    /**
+     * Uploads the image specified in the request.
+     *
+     * Requires the image id in the parameters of the route
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private uploadImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in this.upload
         const imageId = req.params.imageId;
-        this.imageService.updateImageFile(imageId, req.file.path)
-            .then(() => this.imageService.updateMetadata(imageId, { filename: req.file.originalname })
+        this.imageService.updateImageFile(+imageId, req.file.path)
+            .then(() => this.imageService.updateMetadata(+imageId, { filename: req.file.originalname })
                             .then(image => res.send(image)))
                             .catch(next)
             .catch(next);
     }
 
+    /**
+     * Uploads the preprocessing image specified in the request.
+     *
+     * Requires the image id in the parameters of the route
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private uploadPreprocessing = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // throwIfNotAdmin executes in this.upload
         const imageId = req.params.imageId;
-        this.imageService.updatePreprocessingFile(imageId, req.file.path)
-            .then(() => this.imageService.updateMetadata(imageId, { preprocessingFilename: req.file.originalname })
+        this.imageService.updatePreprocessingFile(+imageId, req.file.path)
+            .then(() => this.imageService.updateMetadata(+imageId, { preprocessingFilename: req.file.originalname })
                             .then(image => res.send(image)))
                             .catch(next)
             .catch(next);
     }
 
+    /**
+     * Updates the image specified in the request.
+     *
+     * Requires the image id in the parameters of the route.
+     *
+     * Requires the image type and its new metadata in the body of the request.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private updateImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
         const newImage: IImage = {
             type: req.body.type,
             metadata: req.body.metadata,
         };
-        newImage.id = req.params.imageId as number;
+        newImage.id = +req.params.imageId;
         this.imageService.updateImage(newImage)
             .then(image => res.send(image))
             .catch(next);
     }
 
+    /**
+     * Deletes the image specified in the request.
+     *
+     * Requires the image id in the parameters of the route.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private deleteImage = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         throwIfNotAdmin(req.user);
-        const imageId = req.params.imageId as number;
+        const imageId = +req.params.imageId;
         this.imageService.deleteImage(imageId)
             .then(() => res.sendStatus(204))
             .catch(next);
     }
 
+    /**
+     * Gets all the images in the database ordered so that they can be used for the gallery view.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private getGallery = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // // // // console.log('ImageController::getGallery()');
-
         const arr: IGalleryObject[] = [];
         // get Images with params setted
         this.imageService.getImagesWithCount(req.query.sort, req.query.order, req.query.page, req.query.pageSize, req.query.filters)
@@ -193,7 +240,6 @@ export class ImageController implements IController {
                         type: image.type,
                         metadata: image.metadata,
                     } as IGalleryObject;
-
                     // Read thumbnail
                     try {
                         const thumbPath = path.resolve(this.imageService.getThumbnailPathSync(image.id));
@@ -202,25 +248,24 @@ export class ImageController implements IController {
                         console.error(`Thumbnail for image ` + image.id.toString() + ` not found.`);
                     }
 
-                    // // // // // console.log('item.metadata: ' + item.metadata.filename);
-                    // // // // // console.log('item.thumbPath: ' + item.thumbnail);
-
                     arr.push(item);
-
-                    // // // // console.log('arr.length : ' + arr.length);
-
                 });
 
                 const gallery: IGallery = {
                     objects: arr,
                     objectCount: imageViewModel[1],
                 };
-                // // // // // console.log('TEST TEST TEST TEST ---- imageViewModel.length : ' + imageViewModel.length);
                 res.send(gallery);
             })
             .catch(next);
     }
 
+    /**
+     * Gets all the images within the database, unsorted.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private list = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.imageService.getAllImages()
             .then(images => {
@@ -235,20 +280,33 @@ export class ImageController implements IController {
             }).catch(next);
     }
 
+    /**
+     * Gets a task associated with the image.
+     *
+     * Requires the image id in the parameters of the route
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private getTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // // // // console.log('ImageController::getTask() -- Which should be named getImage()...');
-
-        this.imageService.getImage(req.params.imageId)
+        this.imageService.getImage(+req.params.imageId)
             .then(image => {
                 switch (req.params.attr) {
                     case undefined: res.send(image); break;
                     case 'proto': res.send(image.proto()); break;
                     case 'metata': res.send(image.metadata); break;
                 }
-                // // // console.log('image ' + image);
             }).catch(next);
     }
 
+    /**
+     * Gets all tasks associated with the id of multiple images.
+     *
+     * Requires the image ids in the body of the request.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private getMultipleTasks = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         this.imageService.getImages(req.body.ids)
             .then(images => {
@@ -263,27 +321,48 @@ export class ImageController implements IController {
             }).catch(next);
     }
 
+    /**
+     * Gets the path associated with the image's file on the server.
+     *
+     * Requires the image id in the parameters of the route.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private getImageFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        // // // console.log('\nImageController::getImageFile() with id : ' + req.params.imageId + '\n');
-
-        this.imageService.getImagePath(req.params.imageId)
+        this.imageService.getImagePath(+req.params.imageId)
             .then(imgPath => {
-                // // // // console.log('imgPath : ' + imgPath.metadata);
-
                 res.sendFile(path.resolve(imgPath));
             })
             .catch(next);
     }
 
+    /**
+     * Gets the path associated with the image's preprocessing file on the server.
+     *
+     * Requires the image id in the parameters of the route.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private getPreprocessingFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getPrepocessingPath(req.params.imageId)
+        this.imageService.getPrepocessingPath(+req.params.imageId)
             .then(prePath => {
                 res.sendFile(path.resolve(prePath));
             })
             .catch(next);
     }
+
+    /**
+     * Gets the path associated with the image's thumbnail file on the server.
+     *
+     * Requires the image id in the parameters of the route.
+     * @param req an express request with image data
+     * @param res an express response where the image data will be put
+     * @param next is the following function in the express application
+     */
     private getThumbnailFile = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.imageService.getThumbnailPath(req.params.imageId)
+        this.imageService.getThumbnailPath(+req.params.imageId)
             .then(thumbPath => {
                 res.sendFile(path.resolve(thumbPath));
             })

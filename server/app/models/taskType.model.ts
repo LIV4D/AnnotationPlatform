@@ -5,6 +5,11 @@ import { Task } from './task.model';
 import { IProtoTaskType } from '../prototype interfaces/IProtoTaskType.interface';
 import { ITaskType } from '../interfaces/ITaskType.interface';
 
+/**
+ * A task type is where generic info about a task is stored such as a title for the group of tasks
+ * and a description.
+ * It is mainly used to sort tasks.
+ */
 @Entity()
 export class TaskType {
     @PrimaryGeneratedColumn()

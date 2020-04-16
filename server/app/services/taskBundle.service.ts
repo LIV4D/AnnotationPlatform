@@ -197,8 +197,35 @@ export class TaskBundleService {
         return await this.taskPriorityRepository.deletePriorities(taskPriority);
     }
 
+    /**
+     * Delete all task priorities for given task ID and user ID
+     * @param deletedTaskPriority : taskPriority to be removed
+     */
+    public async deleteSpecificTaskPriority(deletedTaskPriority: ITaskPriority): Promise < DeleteResult[] > {
+        const taskPriority = await this.taskPriorityRepository.findAll(deletedTaskPriority.taskId, deletedTaskPriority.userId );
+        if (isNullOrUndefined(taskPriority) || taskPriority.length <= 0 ) {
+            throw createError('This task priority with the given task id does not exist.', 404);
+        }
+
+        return await this.taskPriorityRepository.deletePriorities(taskPriority);
+    }
+
     public async updateTask(updatedTask: ITask, user: User): Promise<Task> {
         return await this.taskService.updateTask(updatedTask, user);
+    }
+
+    public async updateTaskPriority(updatedTaskPriority: ITaskPriority): Promise<TaskPriority> {
+        const oldTaskPriority = await this.getTaskPriority(updatedTaskPriority.taskId, updatedTaskPriority.userId);
+        oldTaskPriority.update(updatedTaskPriority);
+        return await this.taskPriorityRepository.create(oldTaskPriority);
+    }
+
+    public async getTaskPriority(taskId: number, userId: number): Promise<TaskPriority> {
+        const taskPriority = await this.taskPriorityRepository.find(taskId, userId);
+        if (taskPriority == null) {
+            throw createError('This task does not exist.', 404);
+        }
+        return taskPriority;
     }
 
 }

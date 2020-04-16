@@ -13,13 +13,24 @@ export class ImageRepository {
         this.connectionProvider = connectionProvider;
     }
 
+    /**
+     * Retrieves all the images within the database.
+     * @returns the array of all the images
+     */
     public async findAll(): Promise<Image[]> {
         const repository =  (await this.connectionProvider()).getRepository(Image);
         return await repository.find();
     }
 
-    // tslint:disable-next-line: max-line-length
-    // public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<Image[]> {
+    /**
+     * Gets all the images properly sorted and filtered following the specified parameters.
+     * @param sort the images will be sorted relative to this field.
+     * @param order the images are sorted following this order (either 'ASC' or 'DESC').
+     * @param page the amount of pages within the gallery that need to be filled, ignored if 0.
+     * @param pageSize the size of a page within the galley, ignore if 0.
+     * @param filters the additional filters applied to the images.
+     * @returns the images after having been manipulated.
+     */
     // tslint:disable-next-line: max-line-length
     public async findAllWithCount(sort: string = 'image.id', order: string = 'ASC', page: number = 0, pageSize: number = 0, filters?: string): Promise<any> {
         const repository =  (await this.connectionProvider()).getRepository(Image);
@@ -34,11 +45,16 @@ export class ImageRepository {
             queryBuilder.orderBy(sort, 'DESC');
         }
         const queryResult = await this.filterImages(queryBuilder, filters);
-        // console.log('QUERY RESULT : ' + queryResult[1]);
 
         return queryResult;
     }
 
+    /**
+     * Retrieves a fitered list of images.
+     * @param queryBuilder the query builder for a select of an image
+     * @param filters the different filters to put into the query.
+     * @returns the filtered list of images within the database.
+     */
     private async filterImages(queryBuilder: SelectQueryBuilder<Image>, filters?: string): Promise<[Image[], number]> {
         if (filters) {
             const filterJson = JSON.parse(filters);
@@ -64,6 +80,11 @@ export class ImageRepository {
         return queryBuilder.getManyAndCount();
     }
 
+    /**
+     * Creates an image within the database.
+     * @param image the model for the image to be created in the databse.
+     * @returns the created image, will return null if the image was not created properly
+     */
     public async create(image: Image): Promise<Image> {
         const repository =  (await this.connectionProvider()).getRepository(Image);
         return await repository.save(image);
