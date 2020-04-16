@@ -8,7 +8,7 @@ import {Screenfull} from 'screenfull';
 import { MatDialog } from '@angular/material/dialog';
 import { BugtrackerComponent } from '../bugtracker/bugtracker.component';
 import { HeaderService } from '../shared/services/header.service';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -16,7 +16,7 @@ import { Observable, Subject } from 'rxjs';
   styleUrls: ['./navigation-bar.component.scss']
 })
 export class NavigationBarComponent implements OnInit {
- 
+
   collapsed = true;
   showLoading = false;
   loadingLabel = '';
