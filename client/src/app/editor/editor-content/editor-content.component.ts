@@ -11,6 +11,7 @@ import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton
 import { Subscription } from 'rxjs';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
+import { CommentBoxFacadeService } from '../comment-box/comment-box.facade.service';
 
 @Component({
   selector: 'app-editor-content',
@@ -22,7 +23,8 @@ export class EditorContentComponent
   constructor(
     public editorFacadeService: EditorFacadeService,
     private resolver: ComponentFactoryResolver,
-    private toolBoxFacadeService: ToolboxFacadeService
+    private toolBoxFacadeService: ToolboxFacadeService,
+    private commentBoxFacadeService: CommentBoxFacadeService
   ) {
     this.delayEventTimer = null;
   }
@@ -78,8 +80,7 @@ export class EditorContentComponent
         });
       });
 
-    const commentBoxService: CommentBoxService = this.toolBoxFacadeService.listOfTools[6] as CommentBoxService;
-    this.commentFiredObservable = commentBoxService.commentBoxCheckBoxClicked.subscribe(
+    this.commentFiredObservable = this.commentBoxFacadeService.commentBoxTool.subscribe(
       (checkBoxClicked) => {
         this.commentBoxCheck = checkBoxClicked;
         if(!this.commentBoxCheck) {
