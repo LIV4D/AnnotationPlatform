@@ -1,8 +1,5 @@
-import { WidgetMultipleLinesComponent } from './widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
-import { WidgetSingleLineComponent } from './widgetTypes/widget-single-line/widget-single-line.component';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { WidgetFacadeService } from './widget.facade.service';
-import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
 import * as _ from 'underscore';
 import { isNullOrUndefined } from 'util';
