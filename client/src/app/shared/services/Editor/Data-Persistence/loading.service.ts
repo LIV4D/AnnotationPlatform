@@ -2,23 +2,21 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Image as ImageServer } from '../../../models/serverModels/image.model';
 import { Router } from '@angular/router';
-
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 // Services
 import { LayersService } from '../layers.service';
 import { HeaderService } from '../../header.service';
 import { WidgetStorageService } from './widgetStorage.service';
-
-// Material
 import { RevisionService } from '../revision.service';
 import { BiomarkerService } from '../biomarker.service';
-import { LocalStorage } from '../local-storage.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
+import { LocalStorage } from '../local-storage.service';
 import { BackgroundCanvas } from '../Tools/background-canvas.service';
+
+// Model
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
-
 
 const SAVE_TIME_INTERVAL = 10000; // 10 seconds
 
@@ -193,21 +191,9 @@ export class LoadingService {
       image
     );
     this.canvasDimensionService.loadMainCanvas();
-    // Load the zoom canvas.
-    // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
-    // Without this zoomCanvas is still undefined because of ngIf in template
     this.setImageLoaded(true);
-    setTimeout(() => {
-      // We use setTimeout
-      const zoomCanvas: HTMLCanvasElement = document.getElementById(
-        'zoom-canvas'
-      ) as HTMLCanvasElement;
-      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
-      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
-      const zoomContext = zoomCanvas.getContext('2d');
-      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
-      this.canvasDimensionService.resize();
-    }, 0);
+    this.canvasDimensionService.loadZoomCanvas();
+    this.canvasDimensionService.resize();
     this.canvasDimensionService.updateCanvasDisplayRatio();
   }
 
@@ -221,16 +207,7 @@ export class LoadingService {
 
     // Load the main canvas.
     this.canvasDimensionService.loadMainCanvas();
-    // Load the zoom canvas.
-    // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
-    // Without this zoomCanvas is still undefined because of ngIf in template
-    setTimeout(() => {
-      const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
-      zoomCanvas.width = this.canvasDimensionService.backgroundCanvas.originalCanvas.width;
-      zoomCanvas.height = this.canvasDimensionService.backgroundCanvas.originalCanvas.height;
-      const zoomContext = zoomCanvas.getContext('2d');
-      zoomContext.drawImage(this.canvasDimensionService.backgroundCanvas.originalCanvas, 0, 0);
-    }, 0);
+    this.canvasDimensionService.loadZoomCanvas();
     this.canvasDimensionService.updateCanvasDisplayRatio();
 
     this.http.get(`/api/annotations/get/getEmpty/`, {
@@ -301,5 +278,4 @@ export class LoadingService {
     //   this.imageServer = res;
     // });
   }
-
 }

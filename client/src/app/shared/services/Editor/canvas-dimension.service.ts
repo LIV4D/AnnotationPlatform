@@ -305,4 +305,17 @@ export class CanvasDimensionService {
 
     return new Point(x, y);
   }
+
+  // Load the zoom canvas.
+  // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
+  //  Without this zoomCanvas is still undefined because of ngIf in template
+  public loadZoomCanvas(): void{
+    setTimeout(() => {
+      const zoomCanvas: HTMLCanvasElement = document.getElementById('zoom-canvas') as HTMLCanvasElement;
+      zoomCanvas.width = this.backgroundCanvas.originalCanvas.width;
+      zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
+      const zoomContext = zoomCanvas.getContext('2d');
+      zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+    }, 0);
+  }
 }
