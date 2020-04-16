@@ -41,7 +41,7 @@ export class LoadingService {
     private biomarkerService: BiomarkerService,
     private widgetService: WidgetStorageService,
     private revisionService: RevisionService,
-    private canvasDimensionService: CanvasDimensionService,
+    public canvasDimensionService: CanvasDimensionService,
     public layersService: LayersService,
     public router: Router,
     ){
@@ -143,8 +143,6 @@ export class LoadingService {
       .subscribe(
         (res) => {
           if (res.comments.length > 0) {
-            console.log('%c yellow: ', 'color:black;background:yellow;');
-            console.log(res);
             this.commentsHasBeenLoaded.next(res.comments);
           }
 

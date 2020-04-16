@@ -11,7 +11,7 @@ import { AppService } from 'src/app/shared/services/app.service';
 })
 export class VisualizationFacadeService {
     constructor(private visualizationService: VisualizationService,
-                private canvasDimensionService: CanvasDimensionService,
+                public canvasDimensionService: CanvasDimensionService,
                 public appService: AppService) {}
 
     applyChanges(canvas: BackgroundCanvas, brightness: number, contrast: number, autoContrast= false): void {
