@@ -1,7 +1,7 @@
 <label>{{labelText}}</label>
 <div>
-    <input type="text" [(ngModel)]="entryField" placeholder="defaultEntryValue" >
+    <input type="text" [(ngModel)]="entryField" placeholder="{{defaultEntryValue}}" >
     <button type="button" (click)= "sendValue()" >Save</button>
-    <p>{{ValidRegex}}</p>
+    <p>{{validRegex}}</p>
 </div>
 
