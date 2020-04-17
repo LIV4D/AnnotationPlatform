@@ -224,27 +224,27 @@ export class LoadingService {
       });
   }
 
-  getMainImage(): void {
+  async getMainImage(): Promise<void> {
     const req = this.http.get(`/api/images/download/${this.imageId}/raw`, {
       responseType: 'blob',
       observe: 'events',
       reportProgress: true,
     });
 
-    this.headerService
+    const res = await this.headerService
       .display_progress(req, 'Downloading: Image')
-      .subscribe((res) => {
-        const reader: FileReader = new FileReader();
-        reader.onload = () => {
-          const image = new Image();
-          image.onload = () => {
-            this.loadMainImage(image);
+      .toPromise();
+      const reader: FileReader = new FileReader();
+    reader.onload = () => {
+    const image = new Image();
+    image.onload = () => {
+        this.loadMainImage(image);
             // this.loadPretreatmentImage();
-          };
-          image.src = reader.result as string;
         };
-        reader.readAsDataURL(res);
-      });
+          image.src = reader.result as string;
+    };
+    reader.readAsDataURL(res);
+
   }
 
   shouldLoadLocalStorage(lastImageId: string): boolean {
@@ -257,13 +257,13 @@ export class LoadingService {
   }
 
   // Load Everything in the editor
-  public loadAll(): void {
+  public async loadAll(): Promise<void> {
     // Check if a an image is saved in localStorage
     const lastImageId = LocalStorage.lastSavedImageId();
 
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
-      this.getMainImage();
+      await this.getMainImage();
 
       this.loadRevision(true);
       this.loadMetadata(this.imageId);
@@ -273,7 +273,7 @@ export class LoadingService {
     if (!this.imageId) {
       return;
     }
-    this.getMainImage();
+    await this.getMainImage();
     this.loadRevision(true);
   }
 
