@@ -142,7 +142,6 @@ export class LoadingService {
       .subscribe(
         (res) => {
           if (res.comments !== undefined && res.comments && res.comments.length > 0) {
-            console.log('%c commentData : ' + res.comments, 'color:black; background:yellow;');
             this.commentsHasBeenLoaded.next(res.comments);
           }
 
@@ -272,7 +271,7 @@ export class LoadingService {
       await this.getMainImage().then(() => {
           this.loadRevision(true);
       });
-      
+
       this.loadMetadata(this.imageId);
       return;
     }
