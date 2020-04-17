@@ -234,17 +234,23 @@ export class LoadingService {
     const res = await this.headerService
       .display_progress(req, 'Downloading: Image')
       .toPromise();
-      const reader: FileReader = new FileReader();
-    reader.onload = () => {
-    const image = new Image();
-    image.onload = () => {
-        this.loadMainImage(image);
-            // this.loadPretreatmentImage();
-        };
-          image.src = reader.result as string;
-    };
-    reader.readAsDataURL(res);
+    await this.loadImage(res);
 
+  }
+
+  async loadImage(res: any) {
+      return new Promise<any>((resolve, reject) => {
+        const reader: FileReader = new FileReader();
+        reader.onload = () => {
+            const image = new Image();
+            image.onload = () => {
+                resolve(this.loadMainImage(image));
+                // this.loadPretreatmentImage();
+                };
+            image.src = reader.result as string;
+        };
+        reader.readAsDataURL(res);
+      })
   }
 
   shouldLoadLocalStorage(lastImageId: string): boolean {
