@@ -263,9 +263,10 @@ export class LoadingService {
 
     if (this.shouldLoadLocalStorage(lastImageId)) {
       this.imageId = lastImageId;
-      await this.getMainImage();
-
-      this.loadRevision(true);
+      await this.getMainImage().then(() => {
+          this.loadRevision(true);
+      });
+      
       this.loadMetadata(this.imageId);
       return;
     }
