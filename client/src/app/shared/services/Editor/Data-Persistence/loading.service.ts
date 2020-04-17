@@ -239,7 +239,7 @@ export class LoadingService {
   }
 
   async loadImage(res: any) {
-      return new Promise<any>((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         const reader: FileReader = new FileReader();
         reader.onload = () => {
             const image = new Image();
