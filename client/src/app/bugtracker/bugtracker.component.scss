@@ -1,30 +1,24 @@
 @import '../../variables';
 
 #bugtrackerDiv {
-    position: absolute;
-    z-index: 20;
-    width: 50%;
-    height: 75%;
-    left: 25%;
-    top: -5px;
 
+    margin: 1%;
     background-color: #464646;
     border-radius: 5px;
-    padding: 10px;
-
-    display: flex;
-    flex-direction: column;
+    padding: 15px;
 }
 
-
-#bugtrackerDiv h2 {
-    margin-left: 20px;
+.mat-dialog-title {
+    text-align: center;
+    margin-top: 10%;
+    font-size: x-large;
 }
 
 #bugDescriptionBox {
-    margin-bottom: 5px;
-    padding: 10px !important;
-    flex-grow: 1;
+    // margin-bottom: 5px;
+    padding: 20px !important;
+    // flex-grow: 1;
+
 
     border: 0px !important;
     border-radius: 5px;
@@ -33,6 +27,29 @@
 
     background-color: $gray;
     color: $font-color-gray;
+
+    width: 75%;
+    margin: 0;
+    max-height: 150px;
+
+}
+
+#bugContent {
+    // position: absolute;
+    // left: 50%;
+    // top: 50%;
+    // transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+.mat-dialog-content {
+    margin: 0;
+}
+
+#buttons {
+    margin-top: 5%;
+    margin-right: 10%;
+
 }
 
 .bugButton {
@@ -48,3 +65,4 @@
 #bugCancel {
     background-color: $error-color;
 }
+

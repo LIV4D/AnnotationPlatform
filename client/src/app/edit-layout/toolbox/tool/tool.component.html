@@ -1,9 +1,0 @@
-<!--<img src="{{ tool.iconPath }}" alt="icon" class="icon" 
-    [class.mouseOvered]="mouseOvered && !isSelected" (mouseout)="mouseOvered=false"
-    [class.isSelected]="isSelected" matTooltip="{{ tool.tooltip }}"
-    (mouseover)="mouseOvered=true" (click)="selectTool()"/>-->
-
-<button mat-button [disabled]="tool.disabled" class="icon" [matTooltip]="tool.tooltip" [matTooltipShowDelay]="showDelay" matTooltipPosition="right" (click)="selectTool()"
-    [class.isSelected]="isSelected" (mouseup)="onMouseUp($event)"><img src="{{ tool.iconPath }}"
-    /></button>
-

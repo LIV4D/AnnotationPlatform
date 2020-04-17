@@ -1,0 +1,68 @@
+@import '../../../colorVariables.scss';
+
+.cards {
+    display: block;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    float: center;
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;   
+    
+}
+
+.header {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 25px;
+    margin-right: 25px;
+    
+}
+
+img {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 80%;
+    height: auto;
+    margin-left: 25px;
+    margin-right: 45px;
+}
+  
+button {
+    display: block;
+    margin-left: auto;
+    margin-right: 2%;
+    font-size: small;
+    background-color: $gray-ultra-light;
+    color: black;
+    border-radius: 5px;  
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 0;
+    box-shadow: none;
+}
+
+#refresh {
+    margin-top: 20px;
+    margin-right: 19%;
+    background-color: white;
+    color: black;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+}
+
+h3 {
+    text-align: center;
+    margin-top: 50px;
+    font-size: medium;
+}
+

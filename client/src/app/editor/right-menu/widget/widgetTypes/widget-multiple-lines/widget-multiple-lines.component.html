@@ -1,0 +1,6 @@
+<label>{{labelText}}</label>
+<div>
+    <textarea type="text" [(ngModel)]="entryField" placeholder="{{defaultEntryValue}}"></textarea>
+    <button type="button" (click)= "sendValue()" >Save</button>
+    <p>{{validRegex}}</p>
+</div>

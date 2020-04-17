@@ -1,15 +1,21 @@
 import * as path from 'path';
+import * as fs from 'fs';
+import TYPES from '../types';
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { Task } from '../models/task.model';
-import { ITaskGroup } from '../interfaces/taskGroup.interface';
-import { ITaskList } from '../interfaces/taskList.interface';
+import { ITaskGallery } from '../interfaces/gallery.interface';
+import { ImageService } from '../services/image.service';
+import { AnnotationService } from '../services/annotation.service';
 import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskRepository {
+    @inject(TYPES.ImageService)
+    private imageService: ImageService;
+    @inject(TYPES.AnnotationService)
+    private annotationService: AnnotationService;
     private connectionProvider: ConnectionProvider;
-
     constructor(
         @inject('ConnectionProvider') connectionProvider: ConnectionProvider,
     ) {
@@ -17,131 +23,138 @@ export class TaskRepository {
     }
 
     public async findAll(): Promise<Task[]> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).find({ relations : ['user', 'image', 'taskType'] }));
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.find();
     }
 
     public async create(task: Task): Promise<Task> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).save(task));
-    }
-
-    public async update(task: Task): Promise<Task> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).save(task));
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        task = await repository.save(task);
+        return repository.findOne(task.id); // Reload task
     }
 
     public async find(id: number): Promise<Task> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).findOne(id, { relations : ['user', 'image', 'taskType'] }));
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.findOne(id);
     }
 
-    public async findTasksByUser(userId: string): Promise<Task[]> {
-        return await this.connectionProvider().then(connection => {
-            return connection
-                .getRepository(Task)
-                .createQueryBuilder('task')
-                .where('task.user.id = :id', { id: userId })
-                .leftJoinAndSelect('task.image', 'image')
-                .leftJoinAndSelect('task.taskType', 'taskType')
-                .leftJoinAndSelect('task.user', 'user')
-                .getMany();
-        });
+    public async findByIds(ids: number[]): Promise<Task[]> {
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.findByIds(ids);
     }
 
-    public async findTasksByUserByImage(userId: string, imageId: number): Promise<Task[]> {
-        return await this.connectionProvider().then(connection => {
-            return connection
-                .getRepository(Task)
-                .createQueryBuilder('task')
-                .where('task.user.id = :usrId', { usrId: userId })
-                .andWhere('task.image.id = :imgId', { imgId: imageId })
-                .andWhere('task.active = :active', { active: true })
-                .leftJoinAndSelect('task.taskType', 'taskType')
-                .leftJoinAndSelect('task.user', 'user')
-                .getMany();
-        });
-    }
-
-    public async findTaskListByUser(userId: string, page?: number, pageSize?: number, completed?: boolean): Promise<ITaskList> {
-        const fs = require('fs');
-        const taskList: ITaskList = {
-            objects: [],
-            objectCount: 0,
-        };
-        if (!Number.isInteger(Number(page))) {
-            page = 0;
+    public async findByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<Task[]> {
+        const whereConditions = [];
+        if (filter.imageId !== undefined) {
+            // This does not work because of cross-referencing within PostgreSQL.
+            // whereConditions.push('task.annotation.imageId = ' + filter.imageId.toString());
         }
-        if (!Number.isInteger(Number(pageSize))) {
-            pageSize = 0;
+        if (filter.userId !== undefined) {
+            whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
         }
-        return this.connectionProvider().then(connection => {
-        // Get active tasks for user
-            const qb = connection
-                .getRepository(Task)
-                .createQueryBuilder('task')
-                .where('task.user.id = :id', { id: userId })
-                .andWhere('task.active = :active', { active: true })
-                .addOrderBy('task.image.id', completed?'DESC':'ASC')
-                .leftJoinAndSelect('task.image', 'image');
-            return qb.getMany();
-        })
-        .then(tasks => {
-            // Regroup tasks in taskGroups by image
-            tasks.forEach(task => {
-                // Search for existing taskGroup with task image id
-                const index = task.image.id ? taskList.objects.findIndex(e => e.imageId === task.image.id) : -1;
-                // If it exists add to taskGroup and update count
-                if (index > -1) {
-                    taskList.objects[index].tasks.push(task);
-                    if (task.completed) {
-                        taskList.objects[index].completeCount++;
-                    } else {
-                        taskList.objects[index].incompleteCount++;
-                    }
-                } else {
-                // If it doesn't create a new taskGroup and load the image thumbnail
-                    let dataUrl = '';
-                    try {
-                        const base64Image = fs.readFileSync(path.resolve(task.image.thumbnailPath), 'base64');
-                        dataUrl = 'data:image/png;base64, ' + base64Image;
-                    } catch {
-                        console.log('Image non-trouvée: ', task.image.id);
-                    }
-                    const taskGroup: ITaskGroup = {
-                        tasks: [ task ],
-                        imageId: task.image.id,
-                        imageSrc: dataUrl,
-                        completeCount: 0,
-                        incompleteCount: 0,
-                    };
-                    if (task.completed) {
-                        taskGroup.completeCount++;
-                    } else {
-                        taskGroup.incompleteCount++;
-                    }
-                    taskList.objects.push(taskGroup);
-                }
-            });
-            if (completed !== undefined) {
-                if (completed) {
-                    taskList.objects = taskList.objects.filter(o => o.incompleteCount === 0);
-                } else {
-                    taskList.objects = taskList.objects.filter(o => o.incompleteCount > 0);
-                }
+        if (filter.isComplete !== undefined) {
+            whereConditions.push('task.isComplete = ' + filter.isComplete.toString());
+        }
+
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository
+                     .createQueryBuilder('task')
+                     .leftJoinAndSelect('task.taskType', 'taskType')
+                     .leftJoinAndSelect('task.annotation', 'annotation')
+                        .leftJoinAndSelect('annotation.image', 'image')
+                        .leftJoinAndSelect('annotation.submitEvent', 'submitEvent')
+                            .leftJoinAndSelect('submitEvent.user', 'lastSubmittedBy')
+                     .leftJoinAndSelect('task.assignedUser', 'assignedUser')
+                     .leftJoinAndSelect('task.creator', 'creator')
+                     .where(whereConditions.join(' AND '))
+                     .getMany();
+    }
+
+    // public async findManyByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}) {
+    //     return await (await this.getQuery(filter)).getMany();
+    // }
+
+    // public async findOneByFilter(filter: {userId?: number, imageId?: number, isComplete?: boolean}) {
+    //     return await (await this.getQuery(filter)).getOne();
+    // }
+
+    // private async getQuery(filter: {userId?: number, imageId?: number, isComplete?: boolean}): Promise<SelectQueryBuilder<Task>>{
+    //     const whereConditions = [];
+    //     if (filter.imageId !== undefined) {
+    //         // This does not work because of cross-referencing within PostgreSQL.
+    //         // whereConditions.push('task.annotation.imageId = ' + filter.imageId.toString());
+    //     }
+    //     if (filter.userId !== undefined) {
+    //         whereConditions.push('task.assignedUser.id = ' + filter.userId.toString());
+    //     }
+    //     if (filter.isComplete !== undefined) {
+    //         whereConditions.push('task.isComplete = ' + filter.isComplete.toString());
+    //     }
+
+    //     const repository =  (await this.connectionProvider()).getRepository(Task);
+    //     return await repository
+    //                  .createQueryBuilder('task')
+    //                  .leftJoinAndSelect('task.taskType', 'taskType')
+    //                  .leftJoinAndSelect('task.annotation', 'annotation')
+    //                     .leftJoinAndSelect('annotation.image', 'image')
+    //                     .leftJoinAndSelect('annotation.submitEvent', 'submitEvent')
+    //                         .leftJoinAndSelect('submitEvent.user', 'lastSubmittedBy')
+    //                  .leftJoinAndSelect('task.assignedUser', 'assignedUser')
+    //                  .leftJoinAndSelect('task.creator', 'creator')
+    //                  .where(whereConditions.join(' AND '));
+    // }
+
+    public async findTaskListByUser(userId: string, page: number = 0,
+                                    pageSize: number = 0, completed: boolean): Promise<ITaskGallery[]> {
+
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        const qb = await repository
+                         .createQueryBuilder('task')
+                         .where('task.assignedUserId = :id', { id: userId })
+                         .andWhere('task.isVisible = :visible', { visible: true })
+                         .andWhere('task.isComplete = :isCompleted', { isCompleted: completed });
+
+        const tasks =  await qb.getMany();
+        let taskList: ITaskGallery[];
+        taskList = await Promise.all(tasks.map(async task => {
+            const annotation = await this.annotationService.getAnnotation(task.annotationId);
+            let dataUrl = '';
+            try {
+                const base64Image = fs.readFileSync(path.resolve(this.imageService.getThumbnailPathSync(annotation.imageId)), 'base64');
+                dataUrl = 'data:image/png;base64, ' + base64Image;
+            } catch (error) {
+                throw(error);
             }
-            // Save total object count
-            taskList.objectCount = taskList.objects.length;
-            // Select a subsection of our taskGroups, according to pageSize and page number
-            if (page !== 0 && pageSize !== 0) {
-                taskList.objects = taskList.objects.splice(pageSize * page, pageSize);
-            }
-            return taskList;
-        });
+            const taskGallery: ITaskGallery = {
+                taskId: task.id,
+                taskTypeId: task.taskTypeId,
+                isComplete: task.isComplete,
+                isVisible: task.isVisible,
+                thumbnail: dataUrl,
+                annotationId: task.annotationId,
+                imageId: annotation.imageId,
+                comment: task.comment,
+                assignedUserId: task.assignedUserId,
+                creatorId: task.creatorId,
+                projectTitle: task.projectTitle,
+                lastModifiedTime: task.lastModifiedTime,
+            };
+            return taskGallery;
+        }));
+        if (completed === true) {
+            taskList = taskList.filter(taskGallery => taskGallery.isComplete);
+        } else if (completed === false) {
+            taskList = taskList.filter(taskGallery => !taskGallery.isComplete);
+        }
+        // Select a subsection of our taskGroups, according to pageSize and page number
+        // if (page !== 0 && pageSize !== 0) {
+        //     taskList = taskList.splice(pageSize * page, pageSize);
+        // }
+        return await taskList;
     }
 
     public async delete(task: Task): Promise<DeleteResult> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(Task).delete(task));
+        const repository =  (await this.connectionProvider()).getRepository(Task);
+        return await repository.delete(task);
     }
 }

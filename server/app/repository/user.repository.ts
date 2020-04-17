@@ -2,6 +2,7 @@ import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { User } from '../models/user.model';
 import { DeleteResult } from 'typeorm';
+import { SubmissionEvent } from '../models/submissionEvent.model';
 
 @injectable()
 export class UserRepository {
@@ -14,32 +15,50 @@ export class UserRepository {
     }
 
     public async findAll(): Promise<User[]> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).find());
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).find();
     }
 
     public async create(user: User): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).save(user));
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).save(user);
     }
-
-    public async update(user: User): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).save(user));
-    }
-
-    public async find(id: string): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).findOne({ select: [ 'id', 'name', 'email', 'salt', 'hash', 'role' ], where: { id } }));
+    // TODO: delete this method
+    public async find(id: number): Promise<User> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).findOne(id);
     }
 
     public async findByEmail(email: string): Promise<User> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).findOne({ select: [ 'id', 'name', 'email', 'salt', 'hash', 'role' ], where: { email } }));
+        const connection = await this.connectionProvider();
+        return connection.getRepository(User).findOne({ where: { email } });
     }
 
     public async delete(user: User): Promise<DeleteResult> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(User).delete(user));
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(User).delete(user);
+    }
+
+    public async getEvents(id: string): Promise<SubmissionEvent[]> {
+        const connection = await this.connectionProvider();
+        return await connection
+                            .getRepository(SubmissionEvent)
+                            .createQueryBuilder('evenement')
+                            .where('evenement.user.id = :userId', { userId: id })
+                            .getMany();
+
+    }
+
+    public async getLastEvent(id: string): Promise<SubmissionEvent> {
+        const connection = await this.connectionProvider();
+        const queryBuilder = await connection
+                            .getRepository(SubmissionEvent);
+        // tslint:disable: no-trailing-whitespace
+        const lastEvent =  await queryBuilder
+        .query(`Select * from public.evenement as e1 INNER JOIN 
+        (SELECT userId, MAX(timestamp) as timestamp from public.evenement group by userId) 
+        as e2 ON e1.timestamp = e2.timestamp where userId = ${id}`);
+
+        return lastEvent as SubmissionEvent;
     }
 }

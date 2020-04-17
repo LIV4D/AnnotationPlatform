@@ -1,6 +1,7 @@
 import { ConnectionProvider } from './connection.provider';
 import { injectable, inject } from 'inversify';
 import { TaskType } from '../models/taskType.model';
+import { DeleteResult } from 'typeorm';
 
 @injectable()
 export class TaskTypeRepository {
@@ -13,27 +14,32 @@ export class TaskTypeRepository {
     }
 
     public async findAll(): Promise<TaskType[]> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(TaskType).find());
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(TaskType).find();
     }
 
-    public async create(taskType: TaskType): Promise<TaskType> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(TaskType).save(taskType));
-    }
-
-    public async update(taskType: TaskType): Promise<TaskType> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(TaskType).save(taskType));
+    public async create(taskGroup: TaskType): Promise<TaskType> {
+        const connection =  await this.connectionProvider();
+        return await connection.getRepository(TaskType).save(taskGroup);
     }
 
     public async find(id: number): Promise<TaskType> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(TaskType).findOne(id));
+        const connection  = await this.connectionProvider();
+        return await connection.getRepository(TaskType).findOne(id);
     }
 
-    public async findByName(name: string): Promise<TaskType> {
-        return await this.connectionProvider().then(connection =>
-            connection.getRepository(TaskType).findOne({ name }));
+    public async findByIds(ids: number[]): Promise<TaskType[]> {
+        const connection  = await this.connectionProvider();
+        return await connection.getRepository(TaskType).findByIds(ids);
+    }
+
+    public async findByTitle(title: string): Promise<TaskType> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(TaskType).findOne({ title });
+    }
+
+    public async delete(taskGroup: TaskType): Promise<DeleteResult> {
+        const connection = await this.connectionProvider();
+        return await connection.getRepository(TaskType).delete(taskGroup);
     }
 }

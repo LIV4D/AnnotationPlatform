@@ -1,120 +1,187 @@
 // Modules
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgxLoadingModule } from 'ngx-loading';
-import { DeviceDetectorModule } from 'ngx-device-detector';
-
-// Components
-import { RightMenuComponent } from './edit-layout/right-menu/right-menu.component';
-import { ToolBoxComponent } from './edit-layout/toolbox/toolbox.component';
-import { ToolComponent } from './edit-layout/toolbox/tool/tool.component';
-import { ToolPropertiesComponent } from './edit-layout/toolbox/tool-properties/tool-properties.component';
-import { BiomarkersDialogComponent } from './edit-layout/right-menu/biomarkers/biomarkers-dialog/biomarkers-dialog.component';
-import { LoginComponent } from './login/login.component';
-import { AppComponent } from './app.component';
-import { CommentsComponent } from './edit-layout/right-menu/comments/comments.component';
-import { LayersComponent } from './edit-layout/editor/layers/layers.component';
-import { EditorComponent } from './edit-layout/editor/editor.component';
-import { ZoomComponent } from './edit-layout/editor/zoom/zoom.component';
-import { BiomarkersComponent } from './edit-layout/right-menu/biomarkers/biomarkers.component';
-import { HeaderComponent } from './header/header.component';
-import { VisualizationComponent } from './edit-layout/right-menu/visualization/visualization.component';
-import { GalleryComponent } from './gallery/gallery.component';
-import { EditLayoutComponent } from './edit-layout/edit-layout.component';
-import { BugtrackerComponent } from './bugtracker/bugtracker.component';
-import { TimerComponent } from './edit-layout/right-menu/timer/timer.component';
-
-// Services
-import { AppService } from './app.service';
-import { LoginService } from './login/login.service';
-import { GalleryService } from './gallery/gallery.service';
-import { LayersService } from './edit-layout/editor/layers/layers.service';
-import { CommentsService} from './edit-layout/right-menu/comments/comments.service';
-import { BiomarkersService } from './edit-layout/right-menu/biomarkers/biomarkers.service';
-import { VisualizationService } from './edit-layout/right-menu/visualization/visualization.service';
-import { TimerService } from './edit-layout/right-menu/timer/timer.service';
-import { ImageBorderService } from './edit-layout/right-menu/biomarkers/image-border.service';
-import { BugtrackerService } from './bugtracker/bugtracker.service';
-import { EditorService } from './edit-layout/editor/editor.service';
-import {ToolPropertiesService} from './edit-layout/toolbox/tool-properties/tool-properties.service';
-import {ToolboxService} from './edit-layout/toolbox/toolbox.service';
-
-// Directives
-import { MouseWheelDirective } from './mousewheel.directive';
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Pipes
-import { CamelCaseToTextPipe } from './pipes/camel-case-to-text.pipe';
-import { SafeImagePipe } from './pipes/safe-image.pipe';
+import { CamelCaseToTextPipe } from './shared/pipes/camel-case-to-text.pipe';
+
+// Components
+import { AppComponent } from './app.component';
+import { EditorComponent } from './editor/editor.component';
+import { TaskDialogSubmissionComponent } from './editor/right-menu/submit/task-dialog-submission/task-dialog-submission.component';
+import { SubmitComponent } from './editor/right-menu/submit/submit.component';
+import { BugtrackerComponent } from './bugtracker/bugtracker.component';
+import { GalleryComponent } from './gallery/gallery.component';
+import { TasksComponent } from './tasks/tasks.component';
+import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
+import { TasksToCompleteComponent } from './tasks/tasks-to-complete/tasks-to-complete.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { BiomarkersComponent } from './editor/right-menu/biomarkers/biomarkers.component';
+import { ManagementComponent } from './management/management.component';
+import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
+import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
+import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
+import { WidgetComponent } from './editor/right-menu/widget/widget.component';
+import { WidgetSingleLineComponent } from './editor/right-menu/widget/widgetTypes/widget-single-line/widget-single-line.component';
+import { WidgetMultipleLinesComponent } from './editor/right-menu/widget/widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
+
+// Services
+import { LoginFacadeService } from './login/login.facade.service';
+import { NavigationBarFacadeService } from './navigation-bar/navigation-bar.facade.service';
+import { EditorFacadeService } from './editor/editor.facade.service';
+import { LayersFacadeService } from './editor/editor-content/layers/layers.facade.service';
+import { TaskFacadeService } from './tasks/tasks.facade.service';
+import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
+import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-complete.facade.service';
+import { GalleryFacadeService } from './gallery/gallery.facade.service';
+import { ImageBorderService } from './shared/services/Editor/image-border.service';
+import { LoginService } from './shared/services/login.service';
+import { HeaderService } from './shared/services/header.service';
+import { ManagementCreationService } from './shared/services/management-creation.service';
+import { ManagementFacadeService } from './management/management.facade.service';
+import { ModelFinderService } from './shared/services/modelFinder.service';
+import { AppService } from './shared/services/app.service';
+import { TasksBundlesService } from './shared/services/Tasks/tasksBundles.service';
+import { TasksService } from './shared/services/Tasks/tasks.service';
+import { TaskTypeService } from './shared/services/Tasks/taskType.service';
+import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
+import { ToolPropertiesService } from './shared/services/Editor/tool-properties.service';
+import { AuthorizationService } from './shared/services/authorization.service';
+import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
+import { BugtrackerService } from './shared/services/bugtracker.service';
+import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
+import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
+import { StorageService } from './shared/services/storage.service';
+import { VisualizationFacadeService } from './editor/right-menu/visualization/visualization.facade.service';
+import { VisualizationService} from './shared/services/Editor/visualization.service';
+import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
+import { RevisionService } from './shared/services/Editor/revision.service';
+import { LoadingService } from './shared/services/Editor/Data-Persistence/loading.service';
+import { CanvasDimensionService } from './shared/services/Editor/canvas-dimension.service';
+import { BiomarkerService } from './shared/services/Editor/biomarker.service';
+import { BiomarkerVisibilityService } from './shared/services/Editor/biomarker-visibility.service';
+import { ViewportService } from './shared/services/Editor/viewport.service';
+
+// Pipes
+import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
 
 // Material
 import { MaterialModule } from '../material/material.module';
-import { MatIconModule } from "@angular/material/icon";
+import { ToolboxComponent } from './editor/toolbox/toolbox.component';
+import { ToolElementComponent } from './editor/toolbox/tool-element/tool-element.component';
+import { RightMenuComponent } from './editor/right-menu/right-menu.component';
+import { TimerComponent } from './editor/right-menu/timer/timer.component';
+import { VisualizationComponent } from './editor/right-menu/visualization/visualization.component';
+import { EditorContentComponent } from './editor/editor-content/editor-content.component';
+import { LayersComponent } from './editor/editor-content/layers/layers.component';
+import { ZoomComponent } from './editor/zoom/zoom/zoom.component';
+import { ToolPropertiesComponent } from './editor/toolbox/tool-properties/tool-properties.component';
+import { BiomarkersDialogComponent } from './editor/right-menu/biomarkers/biomarkers-dialog/biomarkers-dialog.component';
 
-// Others
-import { LoginGuard } from './login/login.guard';
-import { NoImageGuard } from './edit-layout/editor/no-image.guard';
-import { AuthInterceptor } from './authentication/authentication.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TasksComponent } from './tasks/tasks.component';
-import { TaskDialogComponent } from './edit-layout/right-menu/tasks/task-dialog.component';
-import {ApplicationRef} from '@angular/core';
-import { HeaderService } from './header/header.service';
+// Directives
+import { MousewheelDirective } from './shared/directives/mousewheel.directive';
+
+// Interceptor
+import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { ErrorComponent } from './error/error.component';
 
 
 @NgModule({
-    entryComponents: [BiomarkersComponent, BiomarkersDialogComponent, TaskDialogComponent],
-    declarations: [
-        AppComponent,
-        EditorComponent,
-        ToolBoxComponent,
-        ToolComponent,
-        ToolPropertiesComponent,
-        ZoomComponent,
-        RightMenuComponent,
-        BiomarkersComponent,
-        HeaderComponent,
-        BiomarkersDialogComponent,
-        LoginComponent,
-        MouseWheelDirective,
-        LayersComponent,
-        CamelCaseToTextPipe,
-        SafeImagePipe,
-        VisualizationComponent,
-        GalleryComponent,
-        EditLayoutComponent,
-        CommentsComponent,
-        TasksComponent,
-        TaskDialogComponent,
-        BugtrackerComponent,
-        TimerComponent,
-    ],
-    imports: [
-        BrowserModule,
-        FormsModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        NgxLoadingModule.forRoot({}),
-        MaterialModule,
-        MatIconModule,
-        DeviceDetectorModule.forRoot()
-    ],
-
-    providers: [AppService, HttpClient,  EditorService, LoginService, {
-        provide: HTTP_INTERCEPTORS,
-        useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
-        multi: true,
-        deps: [LoginService]
-    }, LoginGuard, NoImageGuard, VisualizationService,  GalleryService, BugtrackerService, CamelCaseToTextPipe,
-    CommentsService, TimerService, BiomarkersService, ImageBorderService, LayersService, HeaderService],
-    bootstrap: [AppComponent]
+   declarations: [
+      AppComponent,
+      EditorComponent,
+      GalleryComponent,
+      TasksComponent,
+      TasksCompletedComponent,
+      TasksToCompleteComponent,
+      DashboardComponent,
+      LoginComponent,
+      NavigationBarComponent,
+      ToolboxComponent,
+      ToolElementComponent,
+      RightMenuComponent,
+      BiomarkersComponent,
+      TaskDialogSubmissionComponent,
+      SubmitComponent,
+      TimerComponent,
+      VisualizationComponent,
+      EditorContentComponent,
+      LayersComponent,
+      SafeImagePipe,
+      ManagementComponent,
+      ZoomComponent,
+      MousewheelDirective,
+      CamelCaseToTextPipe,
+      TasksBundlesComponent,
+      AccessDeniedComponent,
+      NonExistentPageComponent,
+      WidgetComponent,
+      CommentBoxComponent,
+      ToolPropertiesComponent,
+      WidgetSingleLineComponent,
+      WidgetMultipleLinesComponent,
+      BugtrackerComponent,
+      ErrorComponent,
+      BiomarkersDialogComponent,
+   ],
+   imports: [
+      BrowserModule,
+      AppRoutingModule,
+      MaterialModule,
+      HttpClientModule,
+      BrowserAnimationsModule,
+      FormsModule,
+      ReactiveFormsModule,
+   ],
+   providers: [
+      LoginFacadeService,
+      LoginService,
+      BugtrackerService,
+      BugtrackerFacadeService,
+      AuthorizationService,
+      StorageService,
+      WidgetStorageService,
+      ManagementFacadeService,
+      ModelFinderService,
+      NavigationBarFacadeService,
+      HttpClient,
+      AppService,
+      TaskFacadeService,
+      TasksToCompleteFacadeService,
+      TasksCompletedFacadeService,
+      TasksBundlesFacadeService,
+      TasksService,
+      TaskTypeService,
+      TasksBundlesService,
+      ManagementCreationService,
+      WidgetFacadeService,
+      WidgetEventService,
+      HeaderService,
+      EditorFacadeService,
+      LayersFacadeService,
+      GalleryFacadeService,
+      ToolPropertiesService,
+      ViewportService,
+      VisualizationService,
+      VisualizationFacadeService,
+      RevisionService,
+      LoadingService,
+      CanvasDimensionService,
+      ImageBorderService,
+      BiomarkerVisibilityService,
+      CamelCaseToTextPipe, {
+      provide: HTTP_INTERCEPTORS,
+      useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),
+      multi: true,
+      deps: [LoginService]
+  }],
+   bootstrap: [AppComponent]
 })
-export class AppModule {
-    constructor() {
-    }
-}
+export class AppModule { }

@@ -1,46 +1,50 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { BugtrackerService } from './bugtracker.service';
-import { AppService } from '../app.service';
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
+import { AppService } from '../shared/services/app.service';
+import { BugtrackerFacadeService } from './bugtracker.facade.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-bugtracker',
-    templateUrl: './bugtracker.component.html',
-    styleUrls: ['./bugtracker.component.scss']
+  selector: 'app-bugtracker',
+  templateUrl: './bugtracker.component.html',
+  styleUrls: ['./bugtracker.component.scss']
 })
-export class BugtrackerComponent implements OnInit {
+export class BugtrackerComponent {
 
-    visible = false;
-    @ViewChild('bugDescription') bugDescription: ElementRef;
+  constructor(
+    public facadeService: BugtrackerFacadeService, public appService: AppService,
+    public dialogRef: MatDialogRef<BugtrackerComponent>) {}
 
-    constructor(public service: BugtrackerService, public appService: AppService) {}
+  /**
+   * Close bugtracker dialog
+   */
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 
-    ngOnInit(): void {
-    }
+  /**
+   * Send bug description entered by user in bugtracker dialog textbox
+   * @param description: bug description entered by user in bugtracker dialog textbox
+   */
+  send(description: string): void {
+      if (description === '') {
+          return;
+      }
+      this.facadeService.send(description);
+      this.onNoClick();
+  }
 
-    get bug(): string {
-        return this.bugDescription.nativeElement.value;
-    }
+  /**
+   * Cancel bugtracker dialog
+   */
+  cancel(): void {
+      this.onNoClick();
+  }
 
-    send(): void {
-        if (!this.bug) {
-            return;
-        }
+  enableOnKeyDown(): void {
+      this.appService.keyEventsEnabled = true;
+  }
 
-        this.service.send(this.bug);
-        this.bugDescription.nativeElement.value = '';
-        this.service.hide();
-    }
-
-    cancel(): void {
-        this.bugDescription.nativeElement.value = '';
-        this.service.hide();
-    }
-
-    enableOnKeyDown(): void {
-        this.appService.keyEventsEnabled = true;
-    }
-
-    disableOnKeyDown(): void {
-        this.appService.keyEventsEnabled = false;
-    }
+  disableOnKeyDown(): void {
+      this.appService.keyEventsEnabled = false;
+  }
 }

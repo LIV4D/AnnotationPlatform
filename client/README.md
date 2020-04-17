@@ -1,14 +1,6 @@
 # Client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.4.
-
-#Initialize Postgresql
-1- Install Postgresql
-2- Open pgAdmin4
-3- Create a new database with the name "liv4d" by right clicking on Database -> Create.
-4- Dans un terminal, se positioner dans le dossier serveur du projet et rouler "npm install"
-5- Puis rouler "npm run dev"
-6- Finalement, rouler "npm run seeding-dev"
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.24.
 
 ## Development server
 
@@ -20,7 +12,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
 ## Running unit tests
 

@@ -1,31 +1,130 @@
-import 'reflect-metadata';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Image } from './image.model';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { isNullOrUndefined } from 'util';
+
 import { TaskType } from './taskType.model';
 import { User } from './user.model';
-import { TaskPrototype } from './taskPrototype.model';
+import { Annotation } from './annotation.model';
+import { IProtoTask } from '../prototype interfaces/IProtoTask.interface';
+import { ITask } from '../interfaces/ITask.interface';
+import { TaskPriority } from './taskPriority.model';
 
+/**
+ * A task is a workload assigne to a specific user (ManyToOne) so that they may annotate an image. It can also be assigned
+ * to a group of users (OneToMany) through task priorities. In which case, one of those users must choose to work on that task
+ * before it can be annotated.
+ *
+ * To this extent, a task is an entity which is volatile. A number of tasks are created and deleted for each annotation (ManyToOne).
+ * For data persistence, it is better to store information within the annotation rather than in the task.
+ *
+ * A task may also have a task type (ManyToOne) where more generic info about the task can be stored.
+ */
 @Entity()
 export class Task {
+
+    // Columns
+
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => Image, image => image.tasks)
-    public image: Image;
+    @Column()
+    public taskTypeId: number;
 
-    @ManyToOne(type => TaskType, taskType => taskType.tasks)
+    @Column()
+    public annotationId: number;
+
+    @Column({ default: true })
+    public isVisible: boolean;
+
+    @Column({ default: false })
+    public isComplete: boolean;
+
+    @Column({ default: '' })
+    public comment: string;
+
+    @Column({ nullable: true })
+    public assignedUserId: number;
+
+    @Column()
+    public creatorId: number;
+
+    @Column({ nullable: true })
+    public imageId: number;
+
+    @Column({ default: '' })
+    public projectTitle: string;
+
+    @Column({ nullable: true })
+    public lastModifiedTime: Date;
+
+    // Relationships
+
+    @ManyToOne(type => TaskType, taskType => taskType.tasks, { eager: true })
     public taskType: TaskType;
 
-    @ManyToOne(type => User, user => user.tasks)
-    public user: User;
+    @ManyToOne(type => Annotation, annotation => annotation.tasks, { eager: true })
+    public annotation!: Annotation;
 
-    @Column()
-    public active: boolean;
+    @ManyToOne(type => User, user => user.assignedTasks, { nullable: true, eager: true })
+    public assignedUser: User;
 
-    @Column()
-    public completed: boolean;
+    @ManyToOne(type => User, user => user.createdTasks, { eager: true })
+    public creator: User;
 
-    prototype(): TaskPrototype {
-        return new TaskPrototype(this);
+    @OneToMany(type => User, user => user.preferredTask, { eager: true })
+    public preferredUsers: Map<number, User>;
+
+    @OneToMany(type => TaskPriority, taskPriority => taskPriority.taskId, { eager: false })
+    public taskPriority: TaskPriority;
+
+    public static fromInterface(itask: ITask): Task {
+        const task = new Task();
+        task.update(itask);
+        if (!isNullOrUndefined(itask.id)) { task.id = itask.id; }
+        if (!isNullOrUndefined(itask.creatorId))  { task.creatorId = itask.creatorId; }
+        return task;
+    }
+
+    public interface(): ITask {
+        return {
+            id: this.id,
+            taskTypeId: this.taskTypeId,
+            annotationId: this.annotationId,
+            isComplete: this.isComplete,
+            isVisible: this.isVisible,
+            comment: this.comment,
+            assignedUserId: this.assignedUserId,
+            creatorId: this.creatorId,
+            imageId: this.imageId,
+            projectTitle: this.projectTitle,
+            lastModifiedTime: this.lastModifiedTime,
+        };
+    }
+
+    public update(itask: ITask): void {
+        if (!isNullOrUndefined(itask.taskTypeId)) {  this.taskTypeId = itask.taskTypeId; }
+        if (!isNullOrUndefined(itask.annotationId)) { this.annotationId = itask.annotationId; }
+        if (!isNullOrUndefined(itask.isComplete)) { this.isComplete = itask.isComplete; }
+        if (!isNullOrUndefined(itask.isVisible)) { this.isVisible = itask.isVisible; }
+        if (!isNullOrUndefined(itask.comment)) { this.comment = itask.comment; }
+        if (!isNullOrUndefined(itask.projectTitle)) { this.projectTitle = itask.projectTitle; }
+        if (!isNullOrUndefined(itask.assignedUserId)) { this.assignedUserId = itask.assignedUserId; }
+        if (!isNullOrUndefined(itask.lastModifiedTime)) { this.lastModifiedTime = itask.lastModifiedTime; }
+    }
+
+    public proto(): IProtoTask {
+        return {
+            id: this.id,
+            taskType: this.taskType.proto(),
+            annotation: this.annotation.proto(),
+            isComplete: this.isComplete,
+            isVisible: this.isVisible,
+            comment: this.comment,
+            projectTitle: this.projectTitle,
+            assignedUser: !isNullOrUndefined(this.assignedUser) ? this.assignedUser.proto() : null,
+            creator: this.creator.proto(),
+            // image: this.imageId.proto(),
+            // project: this.imageId.proto()
+
+        };
     }
 }

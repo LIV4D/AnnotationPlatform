@@ -1,66 +1,68 @@
-import 'reflect-metadata';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { ImageType } from './imageType.model';
-import { Preprocessing } from './preprocessing.model';
-import { Revision } from './revision.model';
-import { Task } from './task.model';
-import { ImagePrototype } from './imagePrototype.model';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { isNullOrUndefined } from 'util';
 
+import { Annotation } from './annotation.model';
+import { IProtoImage } from '../prototype interfaces/IProtoImage.interface';
+import { IImage } from '../interfaces/IImage.interface';
+
+export class Metadata {
+    [key: string]: string | number | boolean;
+}
+
+/**
+ * An image is the retinian image as well as its thumbnail, its preprocessed image (a better quality version of the original image),
+ * and the image which is going to be annotated for further study. All image file paths are stored within the object's metdata
+ * attribute.
+ *
+ * It can be associated with any number of annotations (OneToMany)
+ */
+// tslint:disable-next-line:max-classes-per-file
 @Entity()
 export class Image {
+
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @ManyToOne(type => ImageType, imageType => imageType.images)
-    public imageType: ImageType;
+    @Column()
+    public preprocessing: boolean;
 
-    @OneToMany(type => Preprocessing, preprocessing => preprocessing.image)
-    public preprocessings: Preprocessing[];
-
-    @OneToMany(type => Revision, revision => revision.image)
-    public revisions: Revision[];
-
-    @OneToMany(type => Task, task => task.image)
-    public tasks: Task[];
-
-    @Column({ unique: true })
-    public path: string;
-
-    @Column({ nullable: true })
-    public finalRevision: string;
+    @Column('jsonb')
+    public metadata: Metadata;
 
     @Column()
-    public baseRevision: string;
+    public type: string;
 
-    @Column()
-    public eye: string;
+    @OneToMany(type => Annotation, annotation => annotation.image)
+    public annotations: Annotation[];
 
-    @Column({ nullable: true })
-    public hospital: string;
-
-    @Column({ nullable: true })
-    public patient: string;
-
-    @Column({ nullable: true })
-    public visit: string;
-
-    // A visit can have multiple images taken, images within the same visit are differentiated by a code.
-    // This code is unique only to a specific visit
-    @Column({ nullable: true })
-    public code: string;
-
-    // Extra information may be added later in the form of a JSON string
-    @Column({ nullable: true })
-    public extra: string;
-
-    get thumbnailPath(): string {
-        const path = this.path;
-        const imgDirname = path.match(/.*\//);
-        const imgBasename = path.replace(/.*\//, '');
-        return imgDirname + '/' + 'thumbnailI' + imgBasename.substr(1);  // HACKISH
+    public static fromInterface(iimage: IImage): Image {
+        const image = new Image();
+        image.update(iimage);
+        if (!isNullOrUndefined(iimage.id)) {   image.id = iimage.id; }
+        return image;
     }
 
-    prototype(): ImagePrototype {
-        return new ImagePrototype(this);
+    public interface(): IImage {
+        return {
+            id: this.id,
+            type: this.type,
+            metadata: this.metadata,
+            preprocessing: this.preprocessing,
+        };
+    }
+
+    public update(iimage: IImage): void {
+        if (!isNullOrUndefined(iimage.type)) {          this.type = iimage.type; }
+        if (!isNullOrUndefined(iimage.metadata)) {      this.metadata = iimage.metadata; }
+        if (!isNullOrUndefined(iimage.preprocessing)) { this.preprocessing = iimage.preprocessing; }
+    }
+
+    public proto(): IProtoImage {
+        return {
+            id: this.id,
+            type: this.type,
+            metadata: this.metadata,
+            preprocessing: this.preprocessing,
+        };
     }
 }

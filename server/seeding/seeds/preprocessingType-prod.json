@@ -1,9 +1,0 @@
-{
-    "entityName": "PreprocessingType",
-    "items": [
-        {
-            "name": "Default",
-            "description": "Preprocessing that enhance contour making biomarker easier to see"
-        }
-    ]
-}

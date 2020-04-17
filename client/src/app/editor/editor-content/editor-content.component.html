@@ -1,0 +1,18 @@
+<div id="editor-box" appMousewheel #editorBox
+  (wheel)="onMouseWheel($event)"
+  (window:resize)="onResize()"
+  (mousemove)="onMouseMove($event)"
+  (mousedown)="onMouseDown($event)"
+  (mouseup)="onMouseUp($event)"
+  (mouseleave)="onMouseLeave($event)"
+  [ngStyle]="{'transform': 'scaleX(' + editorFacadeService.scaleX + ')'}">
+
+  <div class="example-boundary" id="boundary" [style.width.px]="canvasWidth" [style.height.px]="canvasHeight"
+    style="left: 0px; position: absolute;  background-color: transparent;" [style.opacity]="isCommentBoxExists">
+    <ng-template id="template" #commentBox class="nothing"></ng-template>
+  </div>
+
+  <canvas #mainCanvas id="main-canvas"></canvas>
+  <app-layers id="app-layers"></app-layers>
+  <span #svgBox id="svg-box"></span>
+</div>

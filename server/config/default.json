@@ -8,10 +8,10 @@
         "port": 5432,
         "username": "postgres",
         "password": "postgres",
-        "database": "liv4d",
+        "database": "liv4d_test",
         "synchronize": true,
         "logging": false,
-        "entities": ["./out/models/*.model.js"]
+        "entities": ["./out/server/**/*.model.js"]
     },
     "logging": {
         "level": "debug"
@@ -23,7 +23,10 @@
             "expiresIn": "30d"
         }
     },
-    "fileStorage": {
-        "path": "storage"
+    "storageFolders": {
+        "tmp": "storage/tmp",
+        "image": "storage/images",
+        "preprocessing": "storage/preprocessings",
+        "thumbnail": "storage/thumbnails"
     }
 }

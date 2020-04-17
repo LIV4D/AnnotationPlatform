@@ -1,56 +1,125 @@
 import 'reflect-metadata';
 import * as crypto from 'crypto';
-import { IsEmail, IsEnum } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Revision } from './revision.model';
-import { Task } from './task.model';
+import { IsEmail, validateSync } from 'class-validator';
+import { isNullOrUndefined } from 'util';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+
 import { isUndefined } from 'util';
+import { SubmissionEvent } from './submissionEvent.model';
+import { Task } from './task.model';
+import { IUser } from '../interfaces/IUser.interface';
+import { IProtoUser } from '../prototype interfaces/IProtoUser.interface';
+import { TaskPriority } from './taskPriority.model';
 
 export enum UserRole {
-    Clinician = 'clinician',
-    Admin = 'admin',
+    clinician = 'clinician',
+    researcher = 'researcher',
+    admin = 'admin'
 }
 
+/**
+ * A user is the person that is using the application. Kinda self-explanatory.
+ */
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn('uuid')
-    public id: string;
-
-    @OneToMany(type => Revision, revision => revision.user)
-    public revisions: Revision[];
-
-    @OneToMany(type => Task, task => task.user)
-    public tasks: Task[];
-
-    @Column({ length : 32 })
-    public name: string;
+    @PrimaryGeneratedColumn('increment')
+    public id: number;
 
     @Column({ length: 254, unique: true })
     @IsEmail()
     public email: string;
 
-    @Column({ type: 'bytea', select: false })
-    public hash: Buffer;
+    @Column({ length: 32, default: '' })
+    public firstName: string;
 
-    @Column({ type: 'bytea', select: false })
+    @Column({ length: 32, default: '' })
+    public lastName: string;
+
+    @Column({ type: 'bytea', select: true })
+    public password: Buffer;
+
+    @Column({ type: 'bytea', select: true })
     public salt: Buffer;
 
-    @Column()
-    @IsEnum(UserRole)
-    role: UserRole;
+    @Column({ type: 'text', default : UserRole.clinician })
+    public role: UserRole;
+
+    @OneToMany(type => Task, task => task.assignedUser)
+    public assignedTasks: Task[];
+
+    @OneToMany(type => Task, task => task.assignedUser)
+    public createdTasks: Task[];
+
+    @OneToMany(type => SubmissionEvent, evenement => evenement.user)
+    public submissions: SubmissionEvent[];
+
+    @ManyToOne(type => Task, task => task.preferredUsers)
+    public preferredTask: Task;
+
+    @OneToMany(type => TaskPriority, taskPriority => taskPriority.userId, { eager: false })
+    public taskPriority: TaskPriority;
 
     public static hashPassword(password: string, salt?: Buffer) {
+        const size = 64;
         if (isUndefined(salt)) {
-            salt = crypto.randomBytes(64);
+            salt = crypto.randomBytes(size);
         }
         return {
-            hash: crypto.pbkdf2Sync(password, salt, 20000, 64, 'sha512'),
+            hash: crypto.pbkdf2Sync(password, salt, 20000, size, 'sha512'),
             salt,
         };
     }
 
+    public static fromInterface(iuser: IUser): User {
+        const u = new User();
+        if (!isNullOrUndefined(iuser.id)) { u.id = iuser.id; }
+        if (!isNullOrUndefined(iuser.email)) { u.email = iuser.email; }
+        u.update(iuser);
+        return u;
+    }
+
     public hashCompare(passwordProvided: string) {
         const hashProvided = User.hashPassword(passwordProvided, this.salt).hash;
-        return crypto.timingSafeEqual(this.hash, hashProvided);
+        return crypto.timingSafeEqual(this.password, hashProvided);
+    }
+
+    public title(): string {
+        return this.firstName.split(' ').map(n => n.length ? n.substr(0, 1) : '').reduce((s, n) => n.length ? s + n + '. ' : s, '')
+                + this.lastName;
+    }
+
+    public interface(): IUser {
+        return {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            role: this.role,
+        };
+    }
+
+    public update(iuser: IUser) {
+        if (!isNullOrUndefined(iuser.id)) { this.id = iuser.id; }
+        if (!isNullOrUndefined(iuser.firstName)) { this.firstName = iuser.firstName; }
+        if (!isNullOrUndefined(iuser.lastName)) { this.lastName = iuser.lastName; }
+        if (!isNullOrUndefined(iuser.role)) { this.role = iuser.role; }
+        if (!isNullOrUndefined(iuser.password)) {
+            const hash = User.hashPassword(iuser.password);
+            this.password = hash.hash;
+            this.salt = hash.salt;
+        }
+
+        // Validate
+        validateSync(this);
+    }
+
+    public proto(): IProtoUser {
+        return {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            role: this.role,
+        };
     }
 }
