@@ -26,12 +26,6 @@ export class WidgetSingleLineComponent implements OnInit {
     }
 
     sendValue() {
-<<<<<<< HEAD
-        // if(!isNullOrUndefined(this.regexp) && this.regexp.test(this.entryField)){
-            this.widget.entryField = this.entryField;
-            this.saveEntryEvent.emit(this.widget);
-        // }
-=======
         if(!isNullOrUndefined(this.widget.validationRegex) && this.widget.validationRegex !== '') {
             if (this.entryField.match(this.widget.validationRegex)) {
                 this.widget.entryField = this.entryField;
@@ -45,7 +39,6 @@ export class WidgetSingleLineComponent implements OnInit {
             this.saveEntryEvent.emit(this.widget);
             this.validRegex = 'Your entry was sent!';
         }
->>>>>>> 732a52611b1304e23e13681a4aec4050488c6101
     }
 
 }
