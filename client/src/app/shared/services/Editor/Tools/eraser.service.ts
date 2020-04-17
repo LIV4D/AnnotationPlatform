@@ -2,14 +2,14 @@ import { Tool } from './tool.service';
 import { Point } from './point.service';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
 
-import { EditorService } from './../editor.service';
 import { LayersService } from './../layers.service';
 import { ToolPropertiesService } from './../tool-properties.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class Eraser extends Tool {
-    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService, layersService: LayersService,
+    constructor(name: string, iconPath: string, tooltip: string, canvasDimensionService: CanvasDimensionService, layersService: LayersService,
         private toolPropertiesService: ToolPropertiesService) {
-        super(name, iconPath, tooltip, editorService, layersService);
+        super(name, iconPath, tooltip, canvasDimensionService, layersService);
     }
 
     isMouseDown = false;
@@ -24,7 +24,7 @@ export class Eraser extends Tool {
         const biomarkerCanvas = this.getBiomarkerCanvas();
         if (biomarkerCanvas) {
             this.isMouseDown = true;
-            this.drawContext.drawImage(this.editorService.backgroundCanvas.displayCanvas, 0, 0);
+            this.drawContext.drawImage(this.canvasDimensionService.backgroundCanvas.displayCanvas, 0, 0);
 
             const ctx = this.maskContext;
             this.setStrokeProperties(ctx);
@@ -63,7 +63,7 @@ export class Eraser extends Tool {
         if (this.isMouseDown) {
             const mask = this.maskCanvas;
             const biomarkers = this.getBiomarkerCanvas();
-            // this.layersService.addToUndoStack(biomarkers);
+            this.layersService.addToUndoStack(biomarkers);
 
             biomarkers.forEach((biomarker) => {
                 const ctx = biomarker.getCurrentContext();

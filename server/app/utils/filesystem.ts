@@ -7,15 +7,12 @@ import * as filesystem from 'fs';
  * @returns the path of the specified file or null if the file doesn't exist
  */
 export function searchFileByName(name: string, folderPath: string): string {
-    // console.log('searchFileByName()');
 
     let filename = null;
     const files = filesystem.readdirSync(folderPath);
 
     files.some(file => {
-        // console.log('checking values of a file : ' + file);
-        // Search for a file with a name equal to name (without the extension).
-        // console.log('comparison: ' + file.substr(0, file.lastIndexOf('.')) + ' and ' + name);
+        // Search for a file with a name equal to name (without the extension).;
         if (file.substr(0, file.lastIndexOf('.')) === name) {
             filename = file;
             return true;

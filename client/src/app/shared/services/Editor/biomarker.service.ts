@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LayersService } from './layers.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
 import { Biomarker } from './../../models/biomarker.model';
 import { BioNode } from './../../models/bionode.model';
 
@@ -11,7 +10,6 @@ export const ANNOTATION_PREFIX = 'annotation-';
     providedIn: 'root'
 })
 export class BiomarkerService {
-    // public tree: SVGGElement[];
     public flat: HTMLElement[];
     public flatEnabledBiomarkers: HTMLElement[];
     public lastBiomarkers: Biomarker[];
@@ -100,34 +98,31 @@ export class BiomarkerService {
         return this.onlyEnabledBiomarkers.length === 0 || this.onlyEnabledBiomarkers.indexOf(bio) !== -1;
     }
 
-    public setFocusBiomarker(node: Biomarker): void {
-        const biomarker: Biomarker = this.getBiomarkerOfType(node.type);
-
-        if (this.currentElement !== null && this.currentElement !== undefined && this.currentElement.type === biomarker.type) {
-            return;
-        }
-        if (this.isBiomarkerEnabled(biomarker)) {
-            if (this.currentElement !== null && this.currentElement !== undefined) {
-                for (let i = 0; i < this.lastBiomarkers.length; i++) {
-                    if (this.lastBiomarkers[i].type === this.currentElement.type) {
-                        this.lastBiomarkers.splice(i, 1);
-                        this.lastBiomarkers.splice(0, 0, this.currentElement);
-                        break;
-                    }
-                }
-            }
-            this.currentElement = biomarker;
-            this.layersService.selectedBiomarkerId = biomarker.type;
-            this.toggleVisibility(biomarker, 'visible');
-        }
-    }
-
     public deleteElements(type: string): void {
-        this.layersService.resetBiomarkerCanvas([type]);
+        const biomarker = this.getBiomarkerOfType(type);
+
+        let toDelete = null;
+
+        if (biomarker.color != null) {
+            toDelete = [type];
+        } else {
+            toDelete = this.getChildrenList(this.getBiomarkerOfType(type));
+        }
+
+        this.layersService.resetBiomarkerCanvas(toDelete);
     }
 
-    public getVisibility(node: Biomarker): string {
-        return this.getBiomarkerOfType(node.type).isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
+    getChildrenList(node: Biomarker){
+        let childrenList = [];
+        const tree = this.findBiomarkerInTree(node, this.tree);
+        for (const item of tree){
+            if (item['biomarkers'] != null){
+                childrenList = childrenList.concat(this.getChildrenList(item))
+            } else {
+                childrenList.push(item.type);
+            }
+        }
+        return childrenList;
     }
 
     public getBiomarkerOfType(type: string): Biomarker {
@@ -139,82 +134,24 @@ export class BiomarkerService {
         return null
     }
 
-    public toggleVisibility(node: Biomarker, visibility?: string): void {
-        if (visibility === undefined){
-            this.getBiomarkerOfType(node.type).isVisible = !this.getBiomarkerOfType(node.type).isVisible;
-        } else if (visibility === 'visible') {
-            this.getBiomarkerOfType(node.type).isVisible = true;
-        } else if (visibility === 'hidden') {
-            this.getBiomarkerOfType(node.type).isVisible = false;
-        }
-
-        this.applyVisibility(this.getBiomarkerOfType(node.type));
-    }
-
-    public toggleSoloVisibility(node: Biomarker): void {
-        this.toggleAllBiomarkers('hidden');
-        this.toggleVisibility(this.getBiomarkerOfType(node.type));
-    }
-
-    public toggleAllBiomarkers(visibility: string): void {
-        for (const item of this.layersService.biomarkerCanvas) {
-            this.toggleVisibility(this.getBiomarkerOfType(item.id.replace('annotation-', '')), visibility)
-        }
-    }
-
-    private applyVisibility(node: Biomarker): void {
-        for (const item of this.layersService.biomarkerCanvas) {
-            if (item.id === 'annotation-'+node.type){
-                item.setVisibility(this.getBiomarkerOfType(node.type).isVisible);
+    public findBiomarkerInTree(node: Biomarker, tree){
+        let newTree = null;
+        for (const biomarker of tree){
+            if (biomarker.type == node.type){
+                newTree = biomarker['biomarkers'];
+                return newTree
             }
         }
-    }
-
-    private setParentVisibility(elem: HTMLElement): void {
-        if ((elem.parentElement.style.visibility === 'visible' || elem.style.visibility === '') && elem.parentElement.tagName === 'g') {
-            this.allChildrenHidden = true;
-            this.parentToResetVisibility = elem.parentElement;
-            this.checkAllChildrenHidden(elem.parentElement);
-            if (this.allChildrenHidden) {
-                elem.parentElement.style.visibility = 'hidden';
-                this.setParentVisibility(elem.parentElement);
+        for (const biomarker of tree){
+            if (biomarker['biomarkers'] != null){
+                let ret = this.findBiomarkerInTree(node, biomarker['biomarkers'])
+                if (ret != null){
+                    return ret
+                }
             }
         }
-    }
-
-    // We check if any of the child is still visible
-    private checkAllChildrenHidden(elem: HTMLElement): void {
-        if ((elem.style.visibility === 'visible' || elem.style.visibility === '') && !elem.isEqualNode(this.parentToResetVisibility)) {
-            this.allChildrenHidden = false;
-        }
-        if (elem.children.length > 0) {
-            Array.from(elem.children).forEach((child: HTMLElement) => {
-                this.checkAllChildrenHidden(child);
-            });
-        }
-    }
-
-    // We toggle the opacity of all the children. When making setting the opacity to 1,
-    // we must set all the parents opacities to 1.
-    private toggleVisibilityRecursive(elem: HTMLElement, visibility: string): void {
-        elem.style.visibility = visibility;
-        if (elem.children.length > 0) {
-            Array.from(elem.children).forEach((child: HTMLElement) => {
-                this.toggleVisibilityRecursive(child, visibility);
-            });
-        }
-        if (visibility === 'visible') {
-            this.resetParentVisibilityRecursive(elem);
-        }
-    }
-
-    // We reset the parent opacity to 1 when a child becomes visible.
-    // If the parent is opacity 0, the child will never be displayed
-    private resetParentVisibilityRecursive(elem: HTMLElement): void {
-        if (elem.parentElement.tagName === 'g') {
-            this.resetParentVisibilityRecursive(elem.parentElement);
-        }
-        elem.parentElement.style.visibility = 'visible';
+        
+        return newTree;
     }
 
     public changeOpacity(opacity: string): void {
@@ -230,5 +167,18 @@ export class BiomarkerService {
             return node.type
         }
         return node.type.slice(0,MAX_LENGTH) + '...'
+    }
+
+    public getCssClass(node: Biomarker): string {
+        let classes = '';
+        if (this.currentElement !== undefined && this.currentElement.type === node.type) {
+            classes += 'selected ';
+        }
+
+        if (!this.isBiomarkerEnabled(node)) {
+            classes += 'disabledBiomarker ';
+        }
+
+        return classes;
     }
 }

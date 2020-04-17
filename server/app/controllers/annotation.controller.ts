@@ -83,7 +83,7 @@ export class AnnotationController implements IController {
         const newAnnotation: IAnnotation = {
             data: EMPTY_REVISION,
             imageId: req.body.imageId,
-            comment: req.body.comment,
+            comments: req.body.comments,
         };
         res.send(newAnnotation);
     }
@@ -105,12 +105,11 @@ export class AnnotationController implements IController {
         if(isNullOrUndefined(req.body.data) || req.body.data === 'undefined'){
             req.body.data = EMPTY_REVISION;
         }
-        console.log(req.body.data);
 
         const newAnnotation: IAnnotation = {
             data: req.body.data,
             imageId: req.body.imageId,
-            comment: req.body.comment,
+            comments: req.body.comments,
         };
         this.annotationService.create(newAnnotation, req.user as User)
             .then(annotation => res.send(annotation.proto()))
@@ -129,7 +128,7 @@ export class AnnotationController implements IController {
         const newAnnotation: IAnnotation = {
             id: +req.params.annotationId,
             data: req.body.data,
-            comment: req.body.comment,
+            comments: req.body.comments,
         };
         this.annotationService.update(newAnnotation, req.user as User)
                             .then(updatedAnnotation => res.send(updatedAnnotation))
@@ -176,7 +175,7 @@ export class AnnotationController implements IController {
                 res.send(annotations.map(annotation => {
                     switch (req.params.attr) {
                         case undefined: return annotation;
-                        case 'comment': return annotation.comment;
+                        case 'comment': return annotation.comments;
                         case 'proto': return annotation.proto;
                         case 'data': return annotation.data;
                         case 'submitEvent': return annotation.submitEvent;
@@ -197,7 +196,7 @@ export class AnnotationController implements IController {
         .then(annotation => {
             switch (req.params.attr) {
                 case undefined: res.send(annotation); break;
-                case 'comment': res.send({ comment: annotation.comment }); break;
+                case 'comment': res.send({ comment: annotation.comments }); break;
                 case 'proto': res.send(annotation.proto); break;
                 case 'data': res.send(annotation.data); break;
                 case 'submitEvent': res.send(annotation.submitEvent); break;
@@ -217,7 +216,7 @@ export class AnnotationController implements IController {
             res.send(annotations.map(annotation => {
                 switch (req.params.field) {
                     case undefined: return annotation;
-                    case 'comment': return annotation.comment;
+                    case 'comment': return annotation.comments;
                     case 'proto': return annotation.proto;
                     case 'data': return annotation.data;
                     case 'submitEvent': return annotation.submitEvent;

@@ -8,7 +8,7 @@ import {Screenfull} from 'screenfull';
 import { MatDialog } from '@angular/material/dialog';
 import { BugtrackerComponent } from '../bugtracker/bugtracker.component';
 import { HeaderService } from '../shared/services/header.service';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -16,7 +16,7 @@ import { Observable, Subject } from 'rxjs';
   styleUrls: ['./navigation-bar.component.scss']
 })
 export class NavigationBarComponent implements OnInit {
- 
+
   collapsed = true;
   showLoading = false;
   loadingLabel = '';
@@ -47,7 +47,6 @@ export class NavigationBarComponent implements OnInit {
 
     if (!isNullOrUndefined(JSON.parse(localStorage.getItem('currentUser')))){
       this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
-      console.log(this.userRole);
     }
 
   }
@@ -56,7 +55,6 @@ export class NavigationBarComponent implements OnInit {
     this.storageService.watchStorage().subscribe((data: string) => {
       // this will call whenever your localStorage data changes
       this.userRole = JSON.parse(localStorage.getItem('currentUser')).user.role;
-      console.log(this.userRole);
     });
   }
 
@@ -81,7 +79,6 @@ export class NavigationBarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
 
   }

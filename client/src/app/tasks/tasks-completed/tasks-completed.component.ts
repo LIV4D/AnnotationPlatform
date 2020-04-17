@@ -20,7 +20,6 @@ import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
 // Rxjs
 import { merge, of as observableOf } from 'rxjs';
 import { catchError, startWith, switchMap } from 'rxjs/operators';
-import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 
 @Component({
@@ -44,7 +43,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort , {static: true}) sort: MatSort;
 
-  constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService, private submitService: SubmitService) {
+  constructor(private router: Router, private tasksCompletedFacadeService: TasksCompletedFacadeService) {
     this.isCompleted = true;
     this.pageSize = 15;
   }
@@ -87,7 +86,7 @@ export class TasksCompletedComponent implements OnInit, AfterViewInit {
           }),
           // Observable: Return an empty observable in the case of an error
           catchError(() => {
-              // // console.log('there is an Error');
+              console.log('there is an Error');
               setTimeout(() => (this.tasksCompletedFacadeService.appService.loading = false)); // Disable loading bar
               return observableOf([]);
           })

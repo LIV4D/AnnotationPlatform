@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToolboxService } from './../../shared/services/Editor/toolbox.service';
 import { Tool } from './../../shared/services/Editor/Tools/tool.service';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,5 +29,11 @@ export class ToolboxFacadeService {
     this.toolboxService.setRedo();
   }
 
-  public setUndoRedoState() {}
+  public setUndoRedoState() {
+    this.toolboxService.setUndoRedoState();
+  }
+
+  public getValueOfCommentBoxClicked(): Subject <any> {
+    return this.toolboxService.commentBoxClicked;
+  }
 }

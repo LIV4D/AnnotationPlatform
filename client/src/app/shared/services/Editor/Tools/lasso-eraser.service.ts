@@ -2,13 +2,13 @@ import { Tool } from './tool.service';
 import { Point } from './point.service';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
 
-import { EditorService } from '../editor.service';
 import { LayersService } from '../layers.service';
 import { ToolPropertiesService } from '../tool-properties.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class LassoEraser extends Tool {
-    constructor(name: string, iconPath: string, tooltip: string, editorService: EditorService, layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
-        super(name, iconPath, tooltip, editorService, layersService);
+    constructor(name: string, iconPath: string, tooltip: string, canvasDimensionService: CanvasDimensionService, layersService: LayersService, private toolPropertiesService: ToolPropertiesService) {
+        super(name, iconPath, tooltip, canvasDimensionService, layersService);
     }
 
     isMouseDown = false;
@@ -52,7 +52,7 @@ export class LassoEraser extends Tool {
 
     onCursorUp(): void {
         if (this.isMouseDown) {
-            // this.layersService.addToUndoStack(this.getBiomarkerCanvas());
+            this.layersService.addToUndoStack(this.getBiomarkerCanvas());
 
             const overlay = this.layersService.biomarkerOverlayCanvas;
             const overlayCtx = overlay.getContext('2d');

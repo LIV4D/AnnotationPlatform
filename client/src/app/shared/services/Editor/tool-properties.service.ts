@@ -4,6 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
+
+// The services provides usefull methods
+// that gives properties on the tools
 export class ToolPropertiesService {
 
     brushWidth: number;

@@ -31,7 +31,6 @@ export class BugtrackerService {
             author: !isNullOrUndefined(email) ? email : 'unknown',
             date: new Date(Date.now()).toLocaleString('en-GB', {timeZone: 'UTC'}).replace(',', ''),
         };
-        console.log(body);
         this.http.post(`/api/bugtracker/create`, body).pipe(catchError(x => this.errorMessage.handleServerError(x))).subscribe();
 
     }

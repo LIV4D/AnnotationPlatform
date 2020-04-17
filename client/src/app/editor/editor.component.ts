@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import { RightMenuComponent } from './right-menu/right-menu.component';
 import { LayersService } from '../shared/services/Editor/layers.service';
 import { EditorFacadeService } from './editor.facade.service';
@@ -6,11 +6,9 @@ import { AppService } from '../shared/services/app.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BiomarkersFacadeService } from './right-menu/biomarkers/biomarkers.facade.service';
 import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
-// import { DeviceDetectorService } from 'ngx-device-detector';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { BioPicker } from './../shared/services/Editor/Tools/biopicker.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
-import { ToolPropertiesComponent } from './toolbox/tool-properties/tool-properties.component';
 
 @Component({
   selector: 'app-editor',
@@ -35,39 +33,25 @@ export class EditorComponent implements OnInit {
   windowHeight: number;
   sliderZoom: number;
 
-  // tslint:disable-next-line: max-line-length
-  // , public toolboxService: ToolboxService public biomarkersService: BiomarkersService, public deviceService: DeviceDetectorService, public toolPropertiesService: ToolPropertiesService
-
-  constructor(private cdRef: ChangeDetectorRef,
-              public layersService: LayersService, public appService: AppService,
+  constructor(private cdRef: ChangeDetectorRef, public appService: AppService,
               public editorFacadeService: EditorFacadeService, public biomarkersFacadeService: BiomarkersFacadeService,
               public toolboxFacadeService: ToolboxFacadeService) {
     this.sliderZoom = 0;
   }
 
   ngOnInit(): void {
-    // this.rightMenu.svgLoaded(null);
 
   }
 
   ngAfterViewChecked(): void {
-    // console.log('EditorComponent::ngAfterViewChecked()');
     this.cdRef.detectChanges();
   }
 
   public onSvgLoaded(arbre: SVGGElement[]): void {
-    // console.log('EditorComponent::onSvgLoaded()');
     this.rightMenu.svgLoaded(arbre);
   }
 
-  // public flip(): void {
-  //     this.editorComponent.flip();
-  // }
-
   public openBiomarkers(event: MouseEvent): void {
-      // if (! this.deviceService.isDesktop()) {
-      //     return;
-      // }
       event.stopPropagation();
       const pickTool = this.toolboxFacadeService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
       if (! pickTool.selectUnder(this.editorFacadeService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
@@ -76,21 +60,6 @@ export class EditorComponent implements OnInit {
           this.positionMenu(event);
       }
   }
-
-  // public getPosition(event: MouseEvent): any {
-  //     let posx = 0;
-  //     let posy = 0;
-  //     if (event.pageX || event.pageY) {
-  //         posx = event.pageX;
-  //         posy = event.pageY;
-  //     } else if (event.clientX || event.clientY) {
-  //         posx = event.clientX + document.body.scrollLeft +
-  //             document.documentElement.scrollLeft;
-  //         posy = event.clientY + document.body.scrollTop +
-  //             document.documentElement.scrollTop;
-  //     }
-  //     return { x: posx, y: posy };
-  // }
 
   public positionMenu(clientPos): void {
       const appEditor = document.getElementById('edit-viewport');
@@ -119,73 +88,10 @@ export class EditorComponent implements OnInit {
       this.editorFacadeService.setFocusBiomarker(item);
   }
 
-  // closeMenu(): void {
-  //     this.editorService.menuState = false;
-  //     document.getElementById('bodyblack').style.opacity = '0';
-  // }
-
-  loadSVG(event: any): void {
-      this.editorFacadeService.loadSVGLocal(event);
-  }
 
    onMouseUp(event: MouseEvent): void {
        this.toolboxFacadeService.setUndoRedoState();
    }
-  // onKeyDown(event: KeyboardEvent): void {
-  //     if (event.keyCode === HOTKEYS.KEY_CTRL_S_SAVE && this.commandOrCtrlPressed(event) ||
-  //     event.keyCode === HOTKEYS.KEY_CTRL_Y_REDO && this.commandOrCtrlPressed(event)) {
-  //         event.preventDefault();
-  //     }
-  //     if (this.appService.keyEventsEnabled && this.biomarkersService.flat !== undefined) {
-  //         const current = this.biomarkersService.flat.filter((b) => b.id === this.biomarkersService.currentElement.id)[0];
-  //         let index = this.biomarkersService.flat.indexOf(current);
-  //         switch (event.keyCode) {
-  //             case HOTKEYS.KEY_D_NEXT_CLASS: {
-  //                 index = (index + 1) % this.biomarkersService.flat.length;
-  //                 this.selectBiomarker(this.biomarkersService.flat[index]);
-  //                 break;
-  //             }
-  //             case HOTKEYS.KEY_A_PREV_CLASS: {
-  //                 index = index > 0 ? index - 1 : this.biomarkersService.flat.length - 1;
-  //                 this.selectBiomarker(this.biomarkersService.flat[index]);
-  //                 break;
-  //             }
-  //             case HOTKEYS.KEY_PLUS: {
-  //                 if (event.altKey) {
-  //                     this.editorService.zoom(+.2);
-  //                 } else {
-  //                     this.toolPropertiesService.incrementBrushWidth(1);
-  //                 }
-  //                 break;
-  //             }
-  //             case HOTKEYS.KEY_MINUS: {
-  //                 if (event.altKey) {
-  //                     this.editorService.zoom(-.2);
-  //                 } else {
-  //                     this.toolPropertiesService.incrementBrushWidth(-1);
-  //                 }
-  //                 break;
-  //             }
-
-  //             case HOTKEYS.KEY_LEFT: {
-  //                 this.editorService.translate(-Math.round(200 / this.editorService.zoomFactor), 0);
-  //                 break;
-  //             }
-  //             case HOTKEYS.KEY_RIGHT: {
-  //                 this.editorService.translate(+Math.round(200 / this.editorService.zoomFactor), 0);
-  //                 break;
-  //             }
-  //             case HOTKEYS.KEY_UP: {
-  //                 this.editorService.translate(0, -Math.round(200 / this.editorService.zoomFactor));
-  //                 break;
-  //             }
-  //             case HOTKEYS.KEY_DOWN: {
-  //                 this.editorService.translate(0, +Math.round(200 / this.editorService.zoomFactor));
-  //                 break;
-  //             }
-  //         }
-  //     }
-  // }
 
   // public commandOrCtrlPressed(event: KeyboardEvent): boolean {
   //     return navigator.platform.indexOf('Mac') === -1 ? event.ctrlKey : event.metaKey;

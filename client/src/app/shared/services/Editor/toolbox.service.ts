@@ -8,21 +8,25 @@ import { Eraser } from './Tools/eraser.service';
 import { Hand } from './Tools/hand.service';
 import { LassoEraser } from './Tools/lasso-eraser.service';
 import { BioPicker } from './Tools/biopicker.service';
-import { CommentTool } from './Tools/comment-tool.service';
 
 import { TOOL_NAMES } from './../../constants/tools';
 
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { LayersService } from './layers.service';
-import { EditorService } from './editor.service';
 import { ToolPropertiesService } from './tool-properties.service';
-import { BiomarkerService } from './biomarker.service';
+import { BiomarkerVisibilityService } from './biomarker-visibility.service';
 import { ImageBorderService } from './image-border.service';
+import { CanvasDimensionService } from './canvas-dimension.service';
+import { CommentBoxService } from './comment-box.service';
+import { BiomarkerService } from './biomarker.service';
 
 @Injectable({
   providedIn: 'root',
 })
+
+// The services provides usefull methods
+// helping handling the tooldBox
 export class ToolboxService {
   selectedTool: BehaviorSubject<Tool>;
   commentBoxClicked: Subject<any>;
@@ -30,42 +34,43 @@ export class ToolboxService {
 
   constructor(
     private layersService: LayersService,
-    private editorService: EditorService,
+    public canvasDimensionService: CanvasDimensionService,
     private toolPropertiesService: ToolPropertiesService,
     private biomarkerService: BiomarkerService,
-    private imageBorderService: ImageBorderService
+    private imageBorderService: ImageBorderService,
+    private biomarkerVisibilityService: BiomarkerVisibilityService
   ) {
     this.listOfTools = [
       new Hand(
         TOOL_NAMES.PAN,
         '../assets/icons/hand.svg',
         'Pan (P)',
-        editorService,
+        canvasDimensionService,
         layersService
       ),
       new Brush(
         TOOL_NAMES.BRUSH,
         '../assets/icons/brush.svg',
         'Brush (B)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
-      // new Tool( '../assets/icons/lasso.png', 'Partial selection tool'),
+
       new FillBrush(
         TOOL_NAMES.FILL_BRUSH,
         '../assets/icons/brush-fill.svg',
         'Fill Brush (F)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
-      // new PointByPointBucket(TOOL_NAMES.FILL_VECTOR, '../assets/icons/vector.svg', 'Fill Vector (V)'),
+
       new Eraser(
         TOOL_NAMES.ERASER,
         '../assets/icons/eraser.svg',
         'Eraser (E)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
@@ -73,7 +78,7 @@ export class ToolboxService {
         TOOL_NAMES.LASSO_ERASER,
         '../assets/icons/lasso-eraser.svg',
         'Lasso Eraser (G)',
-        editorService,
+        canvasDimensionService,
         layersService,
         toolPropertiesService
       ),
@@ -81,16 +86,17 @@ export class ToolboxService {
         TOOL_NAMES.BIO_PICKER,
         '../assets/icons/picker.svg',
         'Pick Biomarker (K)',
-        editorService,
+        canvasDimensionService,
         layersService,
-        biomarkerService
+        biomarkerService,
+        biomarkerVisibilityService
       ),
 
-      new CommentTool(
+      new CommentBoxService(
         TOOL_NAMES.COMMENT_TOOL,
         '../assets/icons/comment-box.png',
         'Add comment',
-        editorService,
+        canvasDimensionService,
         layersService,
         biomarkerService
       ),
@@ -101,7 +107,7 @@ export class ToolboxService {
         navigator.platform.indexOf('Mac') === -1
           ? 'Undo (Ctrl + Z)'
           : 'Undo (Cmd + Z)',
-        editorService,
+        canvasDimensionService,
         layersService
       ),
       new Tool(
@@ -110,7 +116,7 @@ export class ToolboxService {
         navigator.platform.indexOf('Mac') === -1
           ? 'Redo (Ctrl + Y)'
           : 'Redo (Cmd + Y)',
-        editorService,
+        canvasDimensionService,
         layersService
       ),
     ];
@@ -147,9 +153,9 @@ export class ToolboxService {
       this.layersService.toggleBorders(false);
     }
     if (this.selectedTool.getValue().name === TOOL_NAMES.COMMENT_TOOL) {
-      // console.log('SHOW')
     }
     this.selectedTool.getValue().onCursorDown(point);
+    this.setUndoRedoState();
   }
 
   public onCursorUp(): void {
@@ -169,7 +175,21 @@ export class ToolboxService {
 
   public onCancel(): void {
     this.selectedTool.getValue().onCancel();
+    this.setUndoRedoState();
   }
 
+  setUndoRedoState(): void {
+    if (this.layersService.undoStack.getLength() === 0) {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = true;
+    } else {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0].disabled = false;
+    }
+
+    if (this.layersService.redoStack.getLength() === 0) {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = true;
+    } else {
+      this.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0].disabled = false;
+    }
+  }
 
 }

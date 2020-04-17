@@ -51,15 +51,12 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.editorFacadeService.imageServer = null;
     this.editorFacadeService.imageLocal = null;
-    // this.getImageTypes();  // commented for now
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     this.getImages();
-    // this.data.paginator = this.paginator;
   }
 
   getImages(): void {
-    // console.log('GalleryComponent::getImage()');
 
     // Create filters
     // WARNING : key must correspond to valid column in model
@@ -78,20 +75,8 @@ export class GalleryComponent implements OnInit, AfterViewInit {
       startWith({}),
       switchMap(
         () => {
-          // console.log('%c here? ', 'color: red; background: yellow;');
 
           setTimeout(() => this.appService.loading = true);
-
-          // console.log(
-          //   'this.sort.active : ' + this.sort.active
-          //   + '\nthis.sort.direction : ' +  this.sort.direction
-          //   + '\nthis.paginator.pageIndex : ' + this.paginator.pageIndex
-          //   + '\nthis.pageSize : ' + this.pageSize
-          //   + '\nfilters : ' + filters
-          // );
-
-          // tslint:disable-next-line: max-line-length
-          // return this.galleryService.getImages(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.pageSize, filters);
           // tslint:disable-next-line: max-line-length
           return this.galleryFacadeService.getImages(this.sort, this.paginator, this.pageSize, filters);
       }),
@@ -111,7 +96,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   onLocalImageLoaded(event: any): void {
-    console.log('GalleryComponent::onLocalImageLoaded()');
 
     const reader: FileReader = new FileReader();
     reader.onload = () => {
@@ -138,11 +122,9 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   }
 
   loadImage(imageId: string): void {
-    console.log('GalleryComponent::loadImage()');
 
     this.appService.localEditing = false;
     localStorage.setItem('previousPage', 'gallery');
-    console.log('imageID :' + imageId);
     this.editorFacadeService.loadImageFromServer(imageId);
   }
 }

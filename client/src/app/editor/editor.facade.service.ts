@@ -1,12 +1,15 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { EditorService } from './../shared/services/Editor/editor.service';
 import { LoadingService } from './../shared/services/Editor/Data-Persistence/loading.service';
+import { CanvasDimensionService } from './../shared/services/Editor/canvas-dimension.service';
 import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
+import { BiomarkerVisibilityService } from './../shared/services/Editor/biomarker-visibility.service';
 import { Point } from './../shared/services/Editor/Tools/point.service';
 import { ToolboxService } from './../shared/services/Editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
-import { Tool } from '../shared/services/Editor/Tools/tool.service';
+import { LayersService } from '../shared/services/Editor/layers.service';
+import { ZoomService } from '../shared/services/Editor/zoom.service';
 
 @Injectable({
   providedIn:'root',
@@ -14,33 +17,53 @@ import { Tool } from '../shared/services/Editor/Tools/tool.service';
 
 export class EditorFacadeService {
 
-  constructor(private editorService: EditorService, private toolboxService: ToolboxService, private biomarkerService: BiomarkerService, private loadingService: LoadingService) { }
+  constructor(private editorService: EditorService,
+              private toolboxService: ToolboxService,
+              public canvasDimensionService: CanvasDimensionService,
+              private biomarkerService: BiomarkerService,
+              public layersService: LayersService,
+              private loadingService: LoadingService,
+              private zoomService: ZoomService,
+              private biomarkerVisibilityService: BiomarkerVisibilityService) { }
 
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void {
-    // console.log('EditorFacadeService::init()');
-    // console.log('c% viewPort.nativeElement' + viewPort.nativeElement, 'color:black; background:yellow;');
-
     this.editorService.init(svgLoaded, viewPort, svgBox);
   }
 
   zoom(delta: number, position: Point = null): void {
-    this.editorService.zoom(delta, position);
+    this.canvasDimensionService.zoom(delta, position);
+  }
+
+  get zoomFactor(): number {
+    return this.zoomService.zoomFactor;
   }
 
   get firstPoint() {
-    return this.editorService.layersService.firstPoint;
+    return this.layersService.firstPoint;
+  }
+
+  get commentHasBeenLoaded() {
+    return this.loadingService.commentsHasBeenLoaded;
   }
 
   get backgroundCanvas() {
-    return this.editorService.backgroundCanvas;
+    return this.canvasDimensionService.backgroundCanvas;
   }
 
   get scaleX() {
-    return this.editorService.scaleX;
+    return this.canvasDimensionService.scaleX;
   }
 
   get panTool() {
     return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.PAN)[0];
+  }
+
+  get undoTool() {
+    return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.UNDO)[0];
+  }
+
+  get redoTool() {
+    return this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.REDO)[0];
   }
 
   setPanToolByString(tool: string) {
@@ -72,50 +95,49 @@ export class EditorFacadeService {
   }
 
   public resize() {
-    this.editorService.resize();
+    this.canvasDimensionService.resize();
   }
 
   public load(imageId: string) {
-    this.editorService.loadMetadata(imageId);
+    this.loadingService.loadMetadata(imageId);
   }
 
   set imageLoaded(boolValue: boolean) {
 
-    this.editorService.imageLoaded = boolValue;
+    this.loadingService.setImageLoaded(boolValue);
   }
 
   get imageLoaded(){
-    return this.editorService.imageLoaded;
+    return this.loadingService.getImageLoaded();
   }
 
   // TODO: Verify the path of this and its type
-  set imageServer(image: Image) {
+  set imageServer(imageServer: Image) {
 
-    this.editorService.imageServer = image;
+    this.loadingService.setImageServer(imageServer);
   }
 
-  set imageLocal(image: HTMLImageElement) {
+  set imageLocal(imageLocal: HTMLImageElement) {
 
-    this.editorService.imageLocal = image;
+    this.loadingService.setImageLocal(imageLocal);
   }
 
   set imageId(imageId: string) {
 
-    this.editorService.imageId = imageId;
+    this.loadingService.getImageId
   }
 
   loadImageFromServer(imageId: string) {
-
     this.loadingService.loadImageFromServer(imageId);
   }
 
   getMousePositionInCanvasSpace(clientPosition: Point): Point {
-    return this.editorService.getMousePositionInCanvasSpace(clientPosition);
+    return this.canvasDimensionService.getMousePositionInCanvasSpace(clientPosition);
   }
 
-  loadSVGLocal(event: any) {
-    this.editorService.loadSVGLocal(event);
-  }
+  //loadSVGLocal(event: any) {
+  //  this.editorService.loadSVGLocal(event);
+  //}
 
   get commentBoxVisible() {
     // return this.editorService.commentBoxVisible;
@@ -125,11 +147,18 @@ export class EditorFacadeService {
   // Biomarkers
 
   setFocusBiomarker(item: any) {
-    this.biomarkerService.setFocusBiomarker(item);
+    this.biomarkerVisibilityService.setFocusBiomarker(item);
   }
 
   get biomarkersCurrentElement(){
     return this.biomarkerService.currentElement;
   }
 
+  getOriginalImageRatio(): number {
+    return this.canvasDimensionService.originalImageRatio();
+  }
+
+  moveCenter(percentX: number, percentY: number) {
+    this.canvasDimensionService.moveCenter(percentX, percentY);
+  }
 }

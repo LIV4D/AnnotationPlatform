@@ -2,7 +2,6 @@
     <div id="biomarkersHeaderDiv">
         <span>Biomarkers</span>
         <!--HIDE/BORDERS-->
-        <!-- <input type="checkbox" name="activate comment-box" ngModel="activateCommentBox"> -->
 
         <span id="button-biomarkers">
           <button id="button-simplifyList" matTooltip="Enable/Disable Simplified Biomarkers List" matTooltipShowDelay="1000" matTooltipPosition="right" mat-button (click)="toggleSimplifiedView()"><mat-icon svgIcon="tree"></mat-icon></button>
@@ -11,17 +10,17 @@
         </span>
       </div>
 
-    <p>
-      Show Comment
-      <mat-checkbox [disableRipple]="true" (change)="toggleCommentBox()" [checked]="activatedCommentBox" matTooltip="Activate/Hide Shadows " matTooltipShowDelay="1000"
-        matTooltipPosition="left"></mat-checkbox>
-    </p>
+    <div id="comments" class='flexRow'>
+      <span id="comment_title">Show Comments</span>
+      <mat-checkbox [disableRipple]="true" (change)="toggleCommentBox()" [checked]="activatedCommentBox" matTooltip="Activate comments" matTooltipShowDelay="1000"
+        matTooltipPosition="right"></mat-checkbox>
+    </div>
 
     <div id="biomarkers-container" (window:keydown)="onKeyDown($event)">
 
         <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl" class="example-tree" *ngIf="!simplifiedView" class="example-tree">
             <!-- This is the tree node template for leaf nodes -->
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [ngClass]="getCssClass(node)">
             <li class="mat-tree-node">
                 <!-- Padding for tree leaf -->
                 <button mat-icon-button disabled></button>
@@ -57,7 +56,7 @@
                 <span matTreeNodeToggle (dblclick)="toggleSoloVisibility(node)">{{node.type | camelCaseToText}}</span>
 
                 <div class="align-right">
-                    <mat-icon class="button left" (click)="toggleVisibility(node)" (dblclick)="toggleSoloVisibility(node)"
+                    <mat-icon class="button left" (click)="toggleVisibilityParent(node)" (dblclick)="toggleSoloVisibility(node)"
                     [matTooltip]="'Show/Hide ' + node.type" matTooltipShowDelay="1000" matTooltipPosition="right">
                         {{getVisibility(node)}}
                     </mat-icon>
@@ -76,7 +75,7 @@
 
         <!-- SIMPLIFIED BIOMARKERS VIEW-->
         <mat-list dense *ngIf="simplifiedView" id="simpleBiomarkerView">
-            <mat-list-item *ngFor="let node of dataSourceSimpleView">
+            <mat-list-item *ngFor="let node of dataSourceSimpleView"  [ngClass]="getCssClass(node)">
                 <svg id="circle" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="6" cy="6" r="6" [ngStyle]="{'fill' : node.color}" />
                 </svg>

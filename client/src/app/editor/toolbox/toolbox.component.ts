@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-// import { Tool } from 'src/app/shared/services/Editor/Tools/tool.service';
 import { AppService } from './../../shared/services/app.service';
 import { HOTKEYS } from './../../shared/constants/hotkeys';
 import { TOOL_NAMES } from './../../shared/constants/tools';
@@ -49,13 +48,15 @@ export class ToolboxComponent implements OnInit {
         }
         case HOTKEYS.KEY_CTRL_Z_UNDO: {
           if (this.commandOrCtrlPressed(event)) {
-            this.toolboxFacadeService.setUndo();
+            this.toolboxFacadeService.setSelectedTool(TOOL_NAMES.UNDO);
+            this.toolboxFacadeService.setUndoRedoState();
           }
           break;
         }
         case HOTKEYS.KEY_CTRL_Y_REDO: {
           if (this.commandOrCtrlPressed(event)) {
-            this.toolboxFacadeService.setRedo();
+            this.toolboxFacadeService.setSelectedTool(TOOL_NAMES.REDO);
+            this.toolboxFacadeService.setUndoRedoState();
           }
           break;
         }

@@ -12,6 +12,7 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 
+// The service provides usefull function helping with the Task Types
 export class TaskTypeService {
   constructor(private http: HttpClient, private headerService: HeaderService) {}
 

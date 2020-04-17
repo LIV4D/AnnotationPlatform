@@ -148,10 +148,12 @@ export class TaskController implements IController {
      */
     private submitTask = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const submission: ISubmission = {
-            taskId: +req.params.taskId,
+            taskId: + req.params.taskId as number,
             data: req.body.data as AnnotationData,
-            uptime: Math.round(process.uptime()),
+            uptime: Math.floor(Date.now() / 1000), // Integer TimeStamp in second
             isComplete: req.body.isComplete,
+            isVisible: req.body.isVisible,
+            comments: req.body.comments
         };
 
         try {

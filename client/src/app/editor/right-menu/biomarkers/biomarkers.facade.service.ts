@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LayersService } from './../../../shared/services/Editor/layers.service';
 import { ImageBorderService } from 'src/app/shared/services/Editor/image-border.service';
 import { BiomarkerService } from 'src/app/shared/services/Editor/biomarker.service';
+import { BiomarkerVisibilityService } from 'src/app/shared/services/Editor/biomarker-visibility.service';
 import { Biomarker } from 'src/app/shared/models/biomarker.model';
 import { BioNode } from 'src/app/shared/models/bionode.model';
 
@@ -11,7 +12,8 @@ import { BioNode } from 'src/app/shared/models/bionode.model';
 export class BiomarkersFacadeService {
     constructor(private layersService: LayersService,
                 private imageBorderService: ImageBorderService,
-                private biomarkerService: BiomarkerService) {
+                private biomarkerService: BiomarkerService,
+                private biomarkerVisibilityService: BiomarkerVisibilityService) {
 
     }
 
@@ -29,22 +31,17 @@ export class BiomarkersFacadeService {
         this.layersService.toggleShadows(showShadows);
     }
 
-    // BiomarkerService
-    // init(arbre: SVGGElement[]) {
-    //     this.biomarkerService.init(arbre);
-    // }
-
     changeOpacity(opacity: string) {
         this.biomarkerService.changeOpacity(opacity);
 
     }
 
-    // getCssClass(elem: HTMLElement) {
-    //     return this.biomarkerService.getCssClass(elem);
-    // }
+    getCssClass(node: Biomarker) {
+        return this.biomarkerService.getCssClass(node);
+    }
 
     setFocusBiomarker(node: Biomarker) {
-        this.biomarkerService.setFocusBiomarker(node);
+        this.biomarkerVisibilityService.setFocusBiomarker(node);
     }
 
     deleteElements(type: string) {
@@ -52,19 +49,19 @@ export class BiomarkersFacadeService {
     }
 
     toggleVisibility(node, visibility?: string) {
-        this.biomarkerService.toggleVisibility(node, visibility);
+        this.biomarkerVisibilityService.toggleVisibility(node, visibility);
+    }
+
+    toggleVisibilityParent(node, tree){
+        this.biomarkerVisibilityService.toggleVisibilityParent(node, tree);
     }
 
     toggleSoloVisibility(node) {
-        this.biomarkerService.toggleSoloVisibility(node);
+        this.biomarkerVisibilityService.toggleSoloVisibility(node);
     }
 
-    // hideOtherBiomarkers() {
-    //     this.biomarkerService.hideOtherBiomarkers();
-    // }
-
     toggleAllBiomarkers(visibility) {
-        this.biomarkerService.toggleAllBiomarkers(visibility);
+        this.biomarkerVisibilityService.toggleAllBiomarkers(visibility);
     }
 
     get dataSource() {
@@ -78,10 +75,6 @@ export class BiomarkersFacadeService {
     get nestedTreeControl() {
         return this.biomarkerService.nestedTreeControl;
     }
-
-    // get hasNestedChild() {
-    //     return this.biomarkerService.serviceHasNestedChild;
-    // }
 
     get flatEnabledBiomarkers() {
         return this.biomarkerService.flatEnabledBiomarkers;
@@ -100,7 +93,7 @@ export class BiomarkersFacadeService {
     }
 
     public getVisibility(node: Biomarker): string {
-        return this.biomarkerService.getVisibility(node);
+        return this.biomarkerVisibilityService.getVisibility(node);
     }
 
     get dataSourceSimpleView(){

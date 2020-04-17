@@ -1,11 +1,13 @@
-import { EditorService } from './editor.service';
 import { LayersService } from './layers.service';
+import { LoadingService } from './Data-Persistence/loading.service';
 
 enum LocalStorageKeys {
   ImageId = 'imageId',
   AllCanvasInfo = 'canvasInfo'
 }
 
+// The service provide usefull functions
+// helping to load and save the biomarkers of an annotation
 export class LocalStorage {
   constructor() {}
 
@@ -26,11 +28,10 @@ export class LocalStorage {
     window.localStorage.setItem(LocalStorageKeys.ImageId, imageId);
   }
 
-  static save(editorService: EditorService, layersService: LayersService): void {
-
-
+  // Save the annotations on local
+  static save(loadingService: LoadingService, layersService: LayersService): void {
     // No save for local files or if nothing is loaded
-    if (!editorService.imageId || editorService.imageId === 'local') {
+    if (!loadingService.getImageId() || loadingService.getImageId() === 'local') {
       return;
     }
     const biomarkers = layersService.biomarkerCanvas;
@@ -40,7 +41,7 @@ export class LocalStorage {
     biomarkers.forEach(element => {
          encodedBiomarkers.push([
              element.currentCanvas.toDataURL('image/png'),
-             element.id.substr(11), // remove 'annotation-' from the id
+             element.id.substr(11),
              element.color
          ]);
      });
@@ -51,39 +52,33 @@ export class LocalStorage {
     };
 
     // Save json as string
-
     const str = JSON.stringify(json);
-    console.log("save");
-    console.log(biomarkers.length);
-    localStorage.removeItem(LocalStorageKeys.AllCanvasInfo);
     window.localStorage.setItem(LocalStorageKeys.AllCanvasInfo, str);
-
-    window.localStorage.setItem(LocalStorageKeys.ImageId, editorService.imageId);
+    window.localStorage.setItem(LocalStorageKeys.ImageId, loadingService.getImageId());
   }
 
-  static load(editorService: EditorService, layersService: LayersService): void {
-    // Read local storage\\
-
+  // Read local storage of the annotation
+    static async load(loadingService: LoadingService, layersService: LayersService){
     const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
-
     const json = JSON.parse(str);
+
     if (!json) {
-        editorService.loadRevision(true);
+        loadingService.loadRevision(true);
         return;
     }
     if (!json.biomarkers) {
-        return;
+      return;
     }
 
-    // Recreate biomarkers
+    // Recreate Biomarkers
     layersService.biomarkerCanvas.forEach(canvas => {
-        canvas.clear();
+      canvas.clear();
     });
+
     layersService.biomarkerCanvas = [];
-    console.log('json');
-    console.log(json);
+
     json.biomarkers.forEach(element => {
-        const imageString = element[0];
+        const imageString:string = element[0];
         const id = element[1];
         const color = element[2];
         const biomarker = document.createElement('canvas') as HTMLCanvasElement;
@@ -92,14 +87,33 @@ export class LocalStorage {
             biomarker.width = biomarkerImage.width;
             biomarker.height = biomarkerImage.height;
             biomarker.getContext('2d').drawImage(biomarkerImage, 0, 0);
-            layersService.newBiomarker(biomarkerImage, id, color);
+            layersService.newBiomarker(biomarkerImage, id, color); // Recreate biomarker
         };
         biomarkerImage.src = imageString;
     });
 
     layersService.biomarkerCanvas.forEach(canvas => {
         canvas.draw();
-    });
+    }
+    );
   }
 
+  static hasAnnotationStored(): boolean{
+    let hasAnnotation = false;
+    const str = window.localStorage.getItem(LocalStorageKeys.AllCanvasInfo);
+    const json = JSON.parse(str);
+    const blankImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABLAAAAZACAYAAABpLLv/AAAgAElEQVR4XuzYMREAAAwCseLfdG38kCrgQid2jgABAgQIECBAgAABAgQIECBAgEBYYOFsohEgQIAAAQIECBAgQIAAAQIECBA4A5YnIECAAAECBAgQIECAAAECBAgQSAsYsNL1CEeAAAECBAgQIECAAAECBAgQIGDA8gMECBAgQIAAAQIECBAgQIAAAQJpAQNWuh7hCBAgQIAAAQIECBAgQIAAAQIEDFh+gAABAgQIECBAgAABAgQIECBAIC1gwErXIxwBAgQIECBAgAABAgQIECBAgIAByw8QIECAAAECBAgQIECAAAECBAikBQxY6XqEI0CAAAECBAgQIECAAAECBAgQMGD5AQIECBAgQIAAAQIECBAgQIAAgbSAAStdj3AECBAgQIAAAQIECBAgQIAAAQIGLD9AgAABAgQIECBAgAABAgQIECCQFjBgpesRjgABAgQIECBAgAABAgQIECBAwIDlBwgQIECAAAECBAgQIECAAAECBNICBqx0PcIRIECAAAECBAgQIECAAAECBAgYsPwAAQIECBAgQIAAAQIECBAgQIBAWsCAla5HOAIECBAgQIAAAQIECBAgQIAAAQOWHyBAgAABAgQIECBAgAABAgQIEEgLGLDS9QhHgAABAgQIECBAgAABAgQIECBgwPIDBAgQIECAAAECBAgQIECAAAECaQEDVroe4QgQIECAAAECBAgQIECAAAECBAxYfoAAAQIECBAgQIAAAQIECBAgQCAtYMBK1yMcAQIECBAgQIAAAQIECBAgQICAAcsPECBAgAABAgQIECBAgAABAgQIpAUMWOl6hCNAgAABAgQIECBAgAABAgQIEDBg+QECBAgQIECAAAECBAgQIECAAIG0gAErXY9wBAgQIECAAAECBAgQIECAAAECBiw/QIAAAQIECBAgQIAAAQIECBAgkBYwYKXrEY4AAQIECBAgQIAAAQIECBAgQMCA5QcIECBAgAABAgQIECBAgAABAgTSAgasdD3CESBAgAABAgQIECBAgAABAgQIGLD8AAECBAgQIECAAAECBAgQIECAQFrAgJWuRzgCBAgQIECAAAECBAgQIECAAAEDlh8gQIAAAQIECBAgQIAAAQIECBBICxiw0vUIR4AAAQIECBAgQIAAAQIECBAgYMDyAwQIECBAgAABAgQIECBAgAABAmkBA1a6HuEIECBAgAABAgQIECBAgAABAgQMWH6AAAECBAgQIECAAAECBAgQIEAgLWDAStcjHAECBAgQIECAAAECBAgQIECAgAHLDxAgQIAAAQIECBAgQIAAAQIECKQFDFjpeoQjQIAAAQIECBAgQIAAAQIECBAwYPkBAgQIECBAgAABAgQIECBAgACBtIABK12PcAQIECBAgAABAgQIECBAgAABAgYsP0CAAAECBAgQIECAAAECBAgQIJAWMGCl6xGOAAECBAgQIECAAAECBAgQIEDAgOUHCBAgQIAAAQIECBAgQIAAAQIE0gIGrHQ9whEgQIAAAQIECBAgQIAAAQIECBiw/AABAgQIECBAgAABAgQIECBAgEBawICVrkc4AgQIECBAgAABAgQIECBAgAABA5YfIECAAAECBAgQIECAAAECBAgQSAsYsNL1CEeAAAECBAgQIECAAAECBAgQIGDA8gMECBAgQIAAAQIECBAgQIAAAQJpAQNWuh7hCBAgQIAAAQIECBAgQIAAAQIEDFh+gAABAgQIECBAgAABAgQIECBAIC1gwErXIxwBAgQIECBAgAABAgQIECBAgIAByw8QIECAAAECBAgQIECAAAECBAikBQxY6XqEI0CAAAECBAgQIECAAAECBAgQMGD5AQIECBAgQIAAAQIECBAgQIAAgbSAAStdj3AECBAgQIAAAQIECBAgQIAAAQIGLD9AgAABAgQIECBAgAABAgQIECCQFjBgpesRjgABAgQIECBAgAABAgQIECBAwIDlBwgQIECAAAECBAgQIECAAAECBNICBqx0PcIRIECAAAECBAgQIECAAAECBAgYsPwAAQIECBAgQIAAAQIECBAgQIBAWsCAla5HOAIECBAgQIAAAQIECBAgQIAAAQOWHyBAgAABAgQIECBAgAABAgQIEEgLGLDS9QhHgAABAgQIECBAgAABAgQIECBgwPIDBAgQIECAAAECBAgQIECAAAECaQEDVroe4QgQIECAAAECBAgQIECAAAECBAxYfoAAAQIECBAgQIAAAQIECBAgQCAtYMBK1yMcAQIECBAgQIAAAQIECBAgQICAAcsPECBAgAABAgQIECBAgAABAgQIpAUMWOl6hCNAgAABAgQIECBAgAABAgQIEDBg+QECBAgQIECAAAECBAgQIECAAIG0gAErXY9wBAgQIECAAAECBAgQIECAAAECBiw/QIAAAQIECBAgQIAAAQIECBAgkBYwYKXrEY4AAQIECBAgQIAAAQIECBAgQMCA5QcIECBAgAABAgQIECBAgAABAgTSAgasdD3CESBAgAABAgQIECBAgAABAgQIGLD8AAECBAgQIECAAAECBAgQIECAQFrAgJWuRzgCBAgQIECAAAECBAgQIECAAAEDlh8gQIAAAQIECBAgQIAAAQIECBBICxiw0vUIR4AAAQIECBAgQIAAAQIECBAgYMDyAwQIECBAgAABAgQIECBAgAABAmkBA1a6HuEIECBAgAABAgQIECBAgAABAgQMWH6AAAECBAgQIECAAAECBAgQIEAgLWDAStcjHAECBAgQIECAAAECBAgQIECAgAHLDxAgQIAAAQIECBAgQIAAAQIECKQFDFjpeoQjQIAAAQIECBAgQIAAAQIECBAwYPkBAgQIECBAgAABAgQIECBAgACBtIABK12PcAQIECBAgAABAgQIECBAgAABAgYsP0CAAAECBAgQIECAAAECBAgQIJAWMGCl6xGOAAECBAgQIECAAAECBAgQIEDAgOUHCBAgQIAAAQIECBAgQIAAAQIE0gIGrHQ9whEgQIAAAQIECBAgQIAAAQIECBiw/AABAgQIECBAgAABAgQIECBAgEBawICVrkc4AgQIECBAgAABAgQIECBAgAABA5YfIECAAAECBAgQIECAAAECBAgQSAsYsNL1CEeAAAECBAgQIECAAAECBAgQIGDA8gMECBAgQIAAAQIECBAgQIAAAQJpAQNWuh7hCBAgQIAAAQIECBAgQIAAAQIEDFh+gAABAgQIECBAgAABAgQIECBAIC1gwErXIxwBAgQIECBAgAABAgQIECBAgIAByw8QIECAAAECBAgQIECAAAECBAikBQxY6XqEI0CAAAECBAgQIECAAAECBAgQMGD5AQIECBAgQIAAAQIECBAgQIAAgbSAAStdj3AECBAgQIAAAQIECBAgQIAAAQIGLD9AgAABAgQIECBAgAABAgQIECCQFjBgpesRjgABA'
+
+    if (!json || !json.biomarkers) {
+      return hasAnnotation;
+    }
+
+    json.biomarkers.forEach(element => {
+        const imageString:string = element[0];
+        if (imageString !== null && imageString !== undefined && !imageString.startsWith(blankImage)){
+          hasAnnotation = true;
+        }
+      });
+    return hasAnnotation;
+  }
 }

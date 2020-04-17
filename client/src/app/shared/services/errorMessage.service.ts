@@ -19,7 +19,6 @@ export class ErrorMessageService {
     constructor(public errorDialog: MatDialog) { }
 
     public handleServerError(err: HttpErrorResponse, severity?: ErrorSeverity): Observable<any> {
-        console.log('TEST');
         if (isNullOrUndefined(severity)) {
             // https://www.restapitutorial.com/httpstatuscodes.html
             switch(err.status) {
@@ -53,7 +52,7 @@ export class ErrorMessageService {
         return of(err.message);
     }
 
-    public handleStorageError(error: Error, severity = ErrorSeverity.critical) {
+    public handleStorageError(error: Error, severity = ErrorSeverity.noticeable) {
         this.errorDialog.open(ErrorComponent, {
             hasBackdrop: false,
             data: {

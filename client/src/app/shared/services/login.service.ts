@@ -2,7 +2,6 @@ import { StorageService } from './storage.service';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
-// import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
@@ -18,8 +17,6 @@ export class LoginService {
   };
 
   public loginForm: FormGroup;
-  // public _email: string;
-  // public password: string;
 
   // tslint:disable-next-line:variable-name
   private _user: any;

@@ -154,17 +154,14 @@ export class ImageService {
                 // return image;
             }
             // name = await image.metadata.filename as string;
-            // console.log('image.name : ' + name);
         }
 
         const filename = this.getImagePathSync(imageId);
-        // console.log('name : ' + name);
 
         // const filename = this.getImagePathSync(name);
 
         if (filename === null ) {
             if (checkDatabase) {
-                // console.log('checking name val: ' + name);
                 throw createError('The image file was not found.', 404);
             } else {
                 throw createError('This image does not exist.', 404);
@@ -176,10 +173,6 @@ export class ImageService {
     public getImagePathSync(imageId: number) {
         const prePath = config.get('storageFolders.image') as string;
         const filename = searchFileByName(imageId.toString(), prePath);
-
-        // console.log('\nprePath : ' + prePath + ' and filename : ' + filename + '\n');
-
-        // console.log(filename! == null ? path.join(prePath, 'filename') : null);
 
         // return filename! == null ? path.join(prePath, 'filename') : null;
         return path.join(prePath, filename);
@@ -242,7 +235,6 @@ export class ImageService {
     }
 
     public async getImagesWithCount(sort?: string, order?: string, page?: number, pageSize?: number, filters?: string): Promise<any> {
-        // console.log('Server::ImageService::getImagesWithCount ');
 
         return await this.imageRepository.findAllWithCount(sort, order, page, pageSize, filters);
     }
@@ -262,6 +254,9 @@ export class ImageService {
             fs.unlinkSync(imgFile);
         }
 
+        // Delete the image in the repo
+        this.imageRepository.delete(image);
+
         // Delete thumbnail file
         const thumbFile = this.getThumbnailPathSync(image.id);
         if (fs.existsSync(thumbFile)) { fs.unlinkSync(thumbFile); }
@@ -271,7 +266,5 @@ export class ImageService {
             const preFile = this.getPreprocessingPathSync(image.id);
             if (fs.existsSync(preFile)) { fs.unlinkSync(preFile); }
         }
-
-        this.imageRepository.delete(image);
     }
 }

@@ -70,6 +70,7 @@ export class Widget {
         if (!isNullOrUndefined(iwidget.annotationId)) {  this.annotationId = iwidget.annotationId; }
         if (!isNullOrUndefined(iwidget.label)) { this.label = iwidget.label; }
         if (!isNullOrUndefined(iwidget.entryField)) { this.entryField = iwidget.entryField; }
+        if (!isNullOrUndefined(iwidget.defaultEntryValue)) { this.defaultEntryValue = iwidget.defaultEntryValue; }
         if (!isNullOrUndefined(iwidget.validationRegex)) { this.validationRegex = iwidget.validationRegex; }
         if (!isNullOrUndefined(iwidget.type)) { this.type = iwidget.type; }
     }

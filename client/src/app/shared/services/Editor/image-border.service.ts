@@ -11,7 +11,6 @@ export class ImageBorderService {
         this.showBorders = false;
     }
 
-
     erode(canvasDst: HTMLCanvasElement, canvasSrc: HTMLCanvasElement, minX = 0, minY = 0, maxX?: number, maxY?: number): void {
         if (!maxX) {
             maxX = canvasSrc.width;

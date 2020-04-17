@@ -17,7 +17,6 @@ export class ErrorComponent implements OnInit {
             @Inject(MAT_DIALOG_DATA) public data: any,
             private facadeService: ErrorFacadeService) {
         this.errorDescription = data.errorDescription;
-        // data.severity;
      }
 
     ngOnInit(): void {

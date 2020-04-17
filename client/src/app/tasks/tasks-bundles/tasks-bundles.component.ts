@@ -32,7 +32,6 @@ export class TasksBundlesComponent implements OnInit {
    */
   async loadBundles() {
     this.bundles = await this.facadeService.loadBundles();
-    // console.log(this.bundles);
   }
 
   areBundlesEmpty() {

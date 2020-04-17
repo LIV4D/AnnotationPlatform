@@ -7,6 +7,9 @@ import { ErrorMessageService } from '../errorMessage.service';
 @Injectable({
   providedIn: 'root'
 })
+
+// Service providing usefull function
+// helping with the Widget Events
 export class WidgetEventService {
 
     constructor(private http: HttpClient, private errorMessage: ErrorMessageService) { }

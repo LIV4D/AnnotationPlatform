@@ -80,15 +80,6 @@ select {
     box-shadow: inset 2px 2px 2px #505050;
 }
 
-#button-flip {
-    line-height: 0px !important;
-    min-width: 0px !important;
-    padding: 0px !important;
-    box-shadow: 2px 2px 2px $shadow-color !important;
-    // position: absolute;
-    // right: 3%;
-}
-
 .mat-button {
     background-color: $gray;
 }

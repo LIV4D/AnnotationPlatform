@@ -1,12 +1,12 @@
 import { LayersService } from './../layers.service';
-import { EditorService } from './../editor.service';
 import { Point } from './point.service';
+import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class Tool {
   disabled: boolean;
 
   protected layersService: LayersService;
-  protected editorService: EditorService;
+  protected canvasDimensionService: CanvasDimensionService;
 
   public name: string;
   public imagePath: string;
@@ -14,12 +14,12 @@ export class Tool {
 
   protected changeBoundedBox: DOMRect;
 
-  constructor(name: string, imagePath: string, tooltip: string, editorService: EditorService, layersService: LayersService) {
+  constructor(name: string, imagePath: string, tooltip: string, canvasDimensionService: CanvasDimensionService, layersService: LayersService) {
     this.name = name;
     this.imagePath = imagePath;
     this.tooltip = tooltip;
     this.layersService = layersService;
-    this.editorService = editorService;
+    this.canvasDimensionService = canvasDimensionService;
   }
 
   onCursorDown(point: Point): void { }

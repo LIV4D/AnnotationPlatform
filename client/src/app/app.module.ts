@@ -58,8 +58,16 @@ import { BugtrackerService } from './shared/services/bugtracker.service';
 import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
 import { WidgetFacadeService } from './editor/right-menu/widget/widget.facade.service';
 import { StorageService } from './shared/services/storage.service';
-import { CommentBoxService } from './shared/services/comment-box.service';
-
+import { VisualizationFacadeService } from './editor/right-menu/visualization/visualization.facade.service';
+import { VisualizationService} from './shared/services/Editor/visualization.service';
+import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
+import { RevisionService } from './shared/services/Editor/revision.service';
+import { LoadingService } from './shared/services/Editor/Data-Persistence/loading.service';
+import { CanvasDimensionService } from './shared/services/Editor/canvas-dimension.service';
+import { BiomarkerService } from './shared/services/Editor/biomarker.service';
+import { BiomarkerVisibilityService } from './shared/services/Editor/biomarker-visibility.service';
+import { ViewportService } from './shared/services/Editor/viewport.service';
 
 // Pipes
 import { SafeImagePipe } from './shared/pipes/safe-image.pipe';
@@ -83,10 +91,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 // Interceptor
 import { AuthInterceptor } from './shared/services/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
-import { VisualizationService } from './editor/right-menu/visualization/visualization.service';
-import { WidgetStorageService } from './shared/services/Editor/Data-Persistence/widgetStorage.service';
-import { WidgetEventService } from './shared/services/Editor/widgetEvent.service';
-import { RevisionService } from './shared/services/Editor/revision.service';
+
 
 @NgModule({
    declarations: [
@@ -140,7 +145,6 @@ import { RevisionService } from './shared/services/Editor/revision.service';
       LoginService,
       BugtrackerService,
       BugtrackerFacadeService,
-      CommentBoxService,
       AuthorizationService,
       StorageService,
       WidgetStorageService,
@@ -164,9 +168,14 @@ import { RevisionService } from './shared/services/Editor/revision.service';
       LayersFacadeService,
       GalleryFacadeService,
       ToolPropertiesService,
+      ViewportService,
       VisualizationService,
+      VisualizationFacadeService,
       RevisionService,
+      LoadingService,
+      CanvasDimensionService,
       ImageBorderService,
+      BiomarkerVisibilityService,
       CamelCaseToTextPipe, {
       provide: HTTP_INTERCEPTORS,
       useFactory: (loginService: LoginService) => new AuthInterceptor(loginService),

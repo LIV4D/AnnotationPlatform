@@ -12,6 +12,7 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import { BiomarkersDialogComponent } from './biomarkers-dialog/biomarkers-dialog.component';
 import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
+import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
 
 export interface DialogData {
   confirmDelete: boolean;
@@ -35,8 +36,10 @@ export class BiomarkersComponent implements OnInit {
   readonly BORDERS_OFF = 'border_clear';
   opacity: number;
   shadowsChecked: boolean;
+
   activatedCommentBox = false;
   stateCheckCommentBox: boolean;
+  commentBoxService: CommentBoxService;
 
   @Output() fireCommentEvent = new EventEmitter<boolean>();
 
@@ -47,7 +50,7 @@ export class BiomarkersComponent implements OnInit {
 
   constructor(public biomarkersFacadeService: BiomarkersFacadeService,
               public dialog: MatDialog, public appService: AppService, public camelCaseToTextPipe: CamelCaseToTextPipe,
-              private changeDetector: ChangeDetectorRef, private commentBoxService: CommentBoxService) {
+              private changeDetector: ChangeDetectorRef, private toolService: ToolboxService) {
 
     this.biomarkersFacadeService.showBorders = false;
     this.opacity = 65;
@@ -57,6 +60,7 @@ export class BiomarkersComponent implements OnInit {
     this.tree = this.biomarkersFacadeService.tree;
     this.treeDataSource.data = this.tree;
     this.stateCheckCommentBox = true;
+    this.commentBoxService = this.toolService.listOfTools[6] as CommentBoxService;
   }
 
   ngOnInit(): void {
@@ -65,15 +69,14 @@ export class BiomarkersComponent implements OnInit {
   public init(arbre: SVGGElement[]): void {
     this.opacity = 65;
     this.arbre = arbre;
-    // this.biomarkersFacadeService.init(arbre);
     this.biomarkersFacadeService.changeOpacity(this.opacity.toString());
   }
 
   hasChild = (_: number, node: BioNode) => !!node.biomarkers && node.biomarkers.length > 0;
 
-  // public getCssClass(elem: HTMLElement): string {
-  //   return this.biomarkersFacadeService.getCssClass(elem);
-  // }
+  public getCssClass(elem: Biomarker): string {
+    return this.biomarkersFacadeService.getCssClass(elem);
+  }
 
   get dataSource() {
     return this.biomarkersFacadeService.dataSourceJson;
@@ -118,27 +121,20 @@ export class BiomarkersComponent implements OnInit {
 
   toggleVisibility(node: any): void {
     this.biomarkersFacadeService.toggleVisibility(node);
-    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
+  }
+
+  toggleVisibilityParent(node: any) {
+    this.biomarkersFacadeService.toggleVisibilityParent(node, this.tree);
   }
 
   public toggleSoloVisibility(node: Biomarker): void {
     this.biomarkersFacadeService.toggleSoloVisibility(node);
-    // this.dataSource = this.biomarkersFacadeService.dataSourceJson;
     this.changeDetector.detectChanges();
   }
 
   public getVisibility(node: Biomarker): string {
-    // const node = document.getElementById(elem.id);
-    // if (node) {
-    //   return (node.style.visibility === 'visible' || node.style.visibility === '') ? this.VISIBILITY : this.VISIBILITY_OFF;
-    // } else {
-    //   return '';
-    // }
-    // console.log(type.isVisible)
     return this.biomarkersFacadeService.getVisibility(node);
-
-    // return node.isVisible ? this.VISIBILITY : this.VISIBILITY_OFF;
   }
 
   public getVisibilityAll(): string {
@@ -159,10 +155,6 @@ export class BiomarkersComponent implements OnInit {
       this.biomarkersFacadeService.changeOpacity(event.value.toString());
     }
   }
-
-  // public hideOtherBiomarkers(): void {
-  //   this.biomarkersFacadeService.hideOtherBiomarkers();
-  // }
 
   public toggleAllBiomarkers(): void {
     this.visibilityAll = this.visibilityAll === 'visible' ? 'hidden' : 'visible';
@@ -231,7 +223,6 @@ export class BiomarkersComponent implements OnInit {
 
   toggleCommentBox() {
     this.stateCheckCommentBox = !this.stateCheckCommentBox;
-    // console.log('FIREDDDD ' + this.stateCheckCommentBox);
     this.commentBoxService.sendStateCommentBox(this.stateCheckCommentBox);
   }
 }

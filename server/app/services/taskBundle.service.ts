@@ -108,7 +108,6 @@ export class TaskBundleService {
                     thumbnails.push(this.getThumbnails(task.annotation.imageId));
                 });
             }
-            console.log(taskTypes[0].description);
              // assign values to interface and return
             const  bundle: ITaskBundle = {
                 taskType: taskTypes[0].title,

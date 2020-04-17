@@ -41,8 +41,8 @@ export class Annotation {
     @Column('jsonb')
     public data: AnnotationData;
 
-    @Column({ default: '' })
-    public comment: string;
+    @Column('simple-array', { default: '' })
+    public comments: string[];
 
     @OneToOne(type => SubmissionEvent, event => event.annotation, { eager: true })
     @JoinColumn()
@@ -62,12 +62,12 @@ export class Annotation {
                 imageId: this.imageId,
                 submitEventId: this.submitEventId,
                 data: this.data,
-                comment: this.comment};
+                comments: this.comments};
     }
 
     public update(iannotation: IAnnotation): void {
         if (!isNullOrUndefined(iannotation.data)) { this.data = iannotation.data; }
-        if (!isNullOrUndefined(iannotation.comment)) { this.comment = iannotation.comment; }
+        if (!isNullOrUndefined(iannotation.comments)) { this.comments = iannotation.comments; }
         if (!isNullOrUndefined(iannotation.submitEventId)) { this.submitEventId = iannotation.submitEventId; }
     }
 
@@ -83,7 +83,7 @@ export class Annotation {
     public proto(): IProtoAnnotation {
         return {id: this.id,
                 image: this.image.proto(),
-                comment: this.comment,
+                comments: this.comments,
                 submitEvent: this.submitEvent.proto(),
             };
     }
