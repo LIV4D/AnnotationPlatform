@@ -1,8 +1,8 @@
-import { StorageService } from './storage.service';
+import { StorageService } from '../storage.service';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
-import { AppService } from './app.service';
+import { AppService } from '../app.service';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Injectable, Injector, isDevMode } from '@angular/core';

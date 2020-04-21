@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
 import { ErrorMessageService, ErrorSeverity } from './errorMessage.service';
 import { catchError } from 'rxjs/operators';
-import { LoginService } from './login.service';
+import { LoginService } from './auth/login.service';
 
 /**
  * Bugtracker service sends bug info to server

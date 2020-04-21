@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { LoginService } from '../shared/services/login.service';
+import { LoginService } from '../shared/services/auth/login.service';
 import { HeaderService } from '../shared/services/header.service';
 
 @Injectable()

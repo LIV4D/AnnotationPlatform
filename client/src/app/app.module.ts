@@ -41,7 +41,7 @@ import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-compl
 import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-complete.facade.service';
 import { GalleryFacadeService } from './gallery/gallery.facade.service';
 import { ImageBorderService } from './shared/services/editor/image-border.service';
-import { LoginService } from './shared/services/login.service';
+import { LoginService } from './shared/services/auth/login.service';
 import { HeaderService } from './shared/services/header.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
@@ -52,7 +52,7 @@ import { TasksService } from './shared/services/tasks/tasks.service';
 import { TaskTypeService } from './shared/services/tasks/taskType.service';
 import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/editor/tool-properties.service';
-import { AuthorizationService } from './shared/services/authorization.service';
+import { AuthorizationService } from './shared/services/auth/authorization.service';
 import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
 import { BugtrackerService } from './shared/services/bugtracker.service';
 import { BugtrackerFacadeService } from './bugtracker/bugtracker.facade.service';
@@ -89,7 +89,7 @@ import { BiomarkersDialogComponent } from './editor/right-menu/biomarkers/biomar
 import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
-import { AuthInterceptor } from './shared/services/authentification.intercept';
+import { AuthInterceptor } from './shared/services/auth/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
 
 
