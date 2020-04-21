@@ -18,6 +18,7 @@ import { injectable } from 'inversify';
 import { IController } from './controllers/abstractController.controller';
 import { container } from './inversify.config';
 import { UserService } from './services/user.service';
+import { User } from './models/user.model'
 import * as config from 'config';
 const LocalStrategy = passportLocal.Strategy;
 const JwtStrategy = passportJwt.Strategy;
@@ -63,7 +64,7 @@ export class Application {
      * a date token (date when the request was sent), and finally an ip-address token (ip)
      */
     private configTokens(): void {
-        morgan.token('user', req => req.user ? req.user.name : '-');
+        morgan.token('user', req => req.user ? (req.user as User).title() : '-');
         morgan.token('customDate',
                     (req) => { const d = new Date();
                                return d.getDate().toString() + '/' + d.getMonth().toString() + ' ' + d.toTimeString().slice(0, 8); });
