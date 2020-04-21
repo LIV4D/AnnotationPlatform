@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Biomarker } from './../../models/biomarker.model';
+import { Biomarker } from '../../models/biomarker.model';
 import { LayersService } from './layers.service';
 import { BiomarkerService } from './biomarker.service';
 

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { SubmitService } from 'src/app/shared/services/Editor/Data-Persistence/submit.service';
+import { SubmitService } from 'src/app/shared/services/editor/data-persistence/submit.service';
 import { AppService } from 'src/app/shared/services/app.service';
-import { TasksService } from 'src/app/shared/services/Tasks/tasks.service';
+import { TasksService } from 'src/app/shared/services/tasks/tasks.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskType } from 'src/app/shared/models/serverModels/taskType.model';
-import { TaskTypeService } from 'src/app/shared/services/Tasks/taskType.service';
-import { LoadingService } from 'src/app/shared/services/Editor/Data-Persistence/loading.service';
+import { TaskTypeService } from 'src/app/shared/services/tasks/taskType.service';
+import { LoadingService } from 'src/app/shared/services/editor/data-persistence/loading.service';
 
 @Injectable({
     providedIn: 'root'

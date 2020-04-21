@@ -11,7 +11,7 @@ import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 // Services
-import { TasksService } from '../../Tasks/tasks.service';
+import { TasksService } from '../../tasks/tasks.service';
 import { LayersService } from '../layers.service';
 import { AppService } from '../../app.service';
 import { HeaderService } from '../../header.service';

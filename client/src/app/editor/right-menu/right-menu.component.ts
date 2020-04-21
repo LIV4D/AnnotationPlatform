@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
+import { BackgroundCanvas } from 'src/app/shared/services/editor/tools/background-canvas.service';
 import { BiomarkersComponent } from './biomarkers/biomarkers.component';
 import { AppService } from 'src/app/shared/services/app.service';
 

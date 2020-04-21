@@ -1,4 +1,4 @@
-import { Widget } from './../../../models/serverModels/widget.model';
+import { Widget } from '../../../models/serverModels/widget.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 

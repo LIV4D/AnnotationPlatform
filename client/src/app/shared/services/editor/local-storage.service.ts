@@ -1,5 +1,5 @@
 import { LayersService } from './layers.service';
-import { LoadingService } from './Data-Persistence/loading.service';
+import { LoadingService } from './data-persistence/loading.service';
 
 enum LocalStorageKeys {
   ImageId = 'imageId',

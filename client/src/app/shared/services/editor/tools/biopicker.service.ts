@@ -1,7 +1,7 @@
 import { Tool } from './tool.service';
 import { Point } from './point.service';
-import { LayersService } from './../layers.service';
-import { BiomarkerService } from './../biomarker.service';
+import { LayersService } from '../layers.service';
+import { BiomarkerService } from '../biomarker.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 import { BiomarkerVisibilityService } from '../biomarker-visibility.service';
 

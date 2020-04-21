@@ -3,8 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { BiomarkerService } from './biomarker.service';
 import { CommentBoxSingleton } from '../../models/comment-box-singleton.model';
-import { LoadingService } from './Data-Persistence/loading.service';
-import { SubmitService } from './Data-Persistence/submit.service';
+import { LoadingService } from './data-persistence/loading.service';
+import { SubmitService } from './data-persistence/submit.service';
 import { ZoomService } from './zoom.service';
 import { ViewportService } from './viewport.service';
 

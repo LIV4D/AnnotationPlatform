@@ -12,7 +12,7 @@ import { RevisionService } from '../revision.service';
 import { BiomarkerService } from '../biomarker.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 import { LocalStorage } from '../local-storage.service';
-import { BackgroundCanvas } from '../Tools/background-canvas.service';
+import { BackgroundCanvas } from '../tools/background-canvas.service';
 
 // Model
 import { Task } from 'src/app/shared/models/serverModels/task.model';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GalleryService } from '../shared/services/Gallery/gallery.service';
+import { GalleryService } from '../shared/services/gallery/gallery.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 

@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import { RightMenuComponent } from './right-menu/right-menu.component';
-import { LayersService } from '../shared/services/Editor/layers.service';
+import { LayersService } from '../shared/services/editor/layers.service';
 import { EditorFacadeService } from './editor.facade.service';
 import { AppService } from '../shared/services/app.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BiomarkersFacadeService } from './right-menu/biomarkers/biomarkers.facade.service';
 import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
-import { BioPicker } from './../shared/services/Editor/Tools/biopicker.service';
-import { Point } from './../shared/services/Editor/Tools/point.service';
+import { BioPicker } from '../shared/services/editor/tools/biopicker.service';
+import { Point } from '../shared/services/editor/tools/point.service';
 
 @Component({
   selector: 'app-editor',

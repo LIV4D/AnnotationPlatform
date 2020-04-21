@@ -1,5 +1,5 @@
 // Services
-import { HeaderService } from './../header.service';
+import { HeaderService } from '../header.service';
 
 // Model
 import { TaskType } from '../../models/serverModels/taskType.model';

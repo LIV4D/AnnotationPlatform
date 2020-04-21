@@ -2,10 +2,10 @@ import { Injectable} from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { LayersService } from './layers.service';
-import { BackgroundCanvas } from './Tools/background-canvas.service';
+import { BackgroundCanvas } from './tools/background-canvas.service';
 import { ZoomService } from './zoom.service';
 import { ViewportService } from './viewport.service';
-import { Point } from './Tools/point.service';
+import { Point } from './tools/point.service';
 
 @Injectable({
   providedIn: 'root',

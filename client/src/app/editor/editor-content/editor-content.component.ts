@@ -4,12 +4,12 @@ import { Component, OnInit, Output,
         ViewContainerRef,
 } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
-import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
+import { Point } from 'src/app/shared/services/editor/tools/point.service';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxFacadeService } from '../toolbox/toolbox.facade.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';
 import { Subscription } from 'rxjs';
-import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
+import { CommentBoxService } from 'src/app/shared/services/editor/comment-box.service';
 import { TOOL_NAMES } from 'src/app/shared/constants/tools';
 import { CommentBoxFacadeService } from '../comment-box/comment-box.facade.service';
 

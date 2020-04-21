@@ -1,4 +1,4 @@
-import { LayersService } from './../layers.service';
+import { LayersService } from '../layers.service';
 import { Point } from './point.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 

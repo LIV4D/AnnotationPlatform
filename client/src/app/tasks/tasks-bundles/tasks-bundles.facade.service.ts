@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { TasksBundlesService } from 'src/app/shared/services/Tasks/tasksBundles.service';
+import { TasksBundlesService } from 'src/app/shared/services/tasks/tasksBundles.service';
 import { ITaskBundle } from 'src/app/shared/interfaces/ITaskBundle.interface';
 
 @Injectable()

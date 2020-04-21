@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LayersService } from './layers.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Biomarker } from './../../models/biomarker.model';
-import { BioNode } from './../../models/bionode.model';
+import { Biomarker } from '../../models/biomarker.model';
+import { BioNode } from '../../models/bionode.model';
 
 export const ANNOTATION_PREFIX = 'annotation-';
 

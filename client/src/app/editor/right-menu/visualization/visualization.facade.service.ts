@@ -1,9 +1,9 @@
 
 
 import { Injectable } from '@angular/core';
-import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
-import { CanvasDimensionService } from './../../../shared/services/Editor/canvas-dimension.service';
-import { VisualizationService } from './../../../shared/services/Editor/visualization.service';
+import { BackgroundCanvas } from 'src/app/shared/services/editor/tools/background-canvas.service';
+import { CanvasDimensionService } from '../../../shared/services/editor/canvas-dimension.service';
+import { VisualizationService } from '../../../shared/services/editor/visualization.service';
 import { AppService } from 'src/app/shared/services/app.service';
 
 @Injectable({

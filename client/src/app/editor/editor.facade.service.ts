@@ -1,15 +1,15 @@
 import { Injectable, EventEmitter, ElementRef } from '@angular/core';
-import { EditorService } from './../shared/services/Editor/editor.service';
-import { LoadingService } from './../shared/services/Editor/Data-Persistence/loading.service';
-import { CanvasDimensionService } from './../shared/services/Editor/canvas-dimension.service';
-import { BiomarkerService } from './../shared/services/Editor/biomarker.service';
-import { BiomarkerVisibilityService } from './../shared/services/Editor/biomarker-visibility.service';
-import { Point } from './../shared/services/Editor/Tools/point.service';
-import { ToolboxService } from './../shared/services/Editor/toolbox.service';
+import { EditorService } from '../shared/services/editor/editor.service';
+import { LoadingService } from '../shared/services/editor/data-persistence/loading.service';
+import { CanvasDimensionService } from '../shared/services/editor/canvas-dimension.service';
+import { BiomarkerService } from '../shared/services/editor/biomarker.service';
+import { BiomarkerVisibilityService } from '../shared/services/editor/biomarker-visibility.service';
+import { Point } from '../shared/services/editor/tools/point.service';
+import { ToolboxService } from '../shared/services/editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';
-import { LayersService } from '../shared/services/Editor/layers.service';
-import { ZoomService } from '../shared/services/Editor/zoom.service';
+import { LayersService } from '../shared/services/editor/layers.service';
+import { ZoomService } from '../shared/services/editor/zoom.service';
 
 @Injectable({
   providedIn:'root',

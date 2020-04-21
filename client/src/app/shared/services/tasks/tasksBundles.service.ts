@@ -1,5 +1,5 @@
-import { HeaderService } from './../header.service';
-import { AppService } from './../app.service';
+import { HeaderService } from '../header.service';
+import { AppService } from '../app.service';
 import { HttpClient, HttpParams, HttpEvent, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

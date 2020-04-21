@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
-import { Tool } from './Tools/tool.service';
-import { Point } from './Tools/point.service';
+import { Tool } from './tools/tool.service';
+import { Point } from './tools/point.service';
 import { CanvasDimensionService } from './canvas-dimension.service';
 import { LayersService } from './layers.service';
 import { BiomarkerService } from './biomarker.service';

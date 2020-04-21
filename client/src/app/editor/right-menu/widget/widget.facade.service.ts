@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Widget } from 'src/app/shared/models/serverModels/widget.model';
-import { WidgetStorageService } from 'src/app/shared/services/Editor/Data-Persistence/widgetStorage.service';
+import { WidgetStorageService } from 'src/app/shared/services/editor/data-persistence/widgetStorage.service';
 import { Observable } from 'rxjs';
-import { WidgetEventService } from 'src/app/shared/services/Editor/widgetEvent.service';
+import { WidgetEventService } from 'src/app/shared/services/editor/widgetEvent.service';
 
 @Injectable({
   providedIn: 'root'

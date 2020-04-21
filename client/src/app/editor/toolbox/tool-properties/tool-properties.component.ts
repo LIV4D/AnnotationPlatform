@@ -1,4 +1,4 @@
-import { Tool } from './../../../shared/services/Editor/Tools/tool.service';
+import { Tool } from '../../../shared/services/editor/tools/tool.service';
 import { ToolboxFacadeService } from './../toolbox.facade.service';
 import { Component, OnInit } from '@angular/core';
 import { ToolPropertiesFacadeService } from './tool-properties.facade.service';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToolPropertiesService } from 'src/app/shared/services/Editor/tool-properties.service';
+import { ToolPropertiesService } from 'src/app/shared/services/editor/tool-properties.service';
 
 @Injectable({
     providedIn: 'root'

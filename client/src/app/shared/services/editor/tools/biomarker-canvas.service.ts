@@ -1,6 +1,6 @@
 import { Canvas } from './canvas.service';
-import { ImageBorderService } from './../image-border.service';
-import { Comment } from './../../../models/comment.model';
+import { ImageBorderService } from '../image-border.service';
+import { Comment } from '../../../models/comment.model';
 import { LogoutService } from '../../logout.service';
 
 export class BiomarkerCanvas extends Canvas {

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { Tool } from './Tools/tool.service';
-import { Point } from './Tools/point.service';
-import { FillBrush } from './Tools/fill-brush.service';
-import { Brush } from './Tools/brush.service';
-import { Eraser } from './Tools/eraser.service';
-import { Hand } from './Tools/hand.service';
-import { LassoEraser } from './Tools/lasso-eraser.service';
-import { BioPicker } from './Tools/biopicker.service';
+import { Tool } from './tools/tool.service';
+import { Point } from './tools/point.service';
+import { FillBrush } from './tools/fill-brush.service';
+import { Brush } from './tools/brush.service';
+import { Eraser } from './tools/eraser.service';
+import { Hand } from './tools/hand.service';
+import { LassoEraser } from './tools/lasso-eraser.service';
+import { BioPicker } from './tools/biopicker.service';
 
-import { TOOL_NAMES } from './../../constants/tools';
+import { TOOL_NAMES } from '../../constants/tools';
 
 import { BehaviorSubject, Subject } from 'rxjs';
 

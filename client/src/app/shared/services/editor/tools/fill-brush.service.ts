@@ -1,6 +1,6 @@
 import { Tool } from './tool.service';
-import { LayersService } from './../layers.service';
-import { ToolPropertiesService } from './../tool-properties.service';
+import { LayersService } from '../layers.service';
+import { ToolPropertiesService } from '../tool-properties.service';
 import { Point } from './point.service';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';

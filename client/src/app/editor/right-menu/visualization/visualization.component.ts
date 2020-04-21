@@ -3,7 +3,7 @@ import { VisualizationFacadeService } from './visualization.facade.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { HOTKEYS } from 'src/app/shared/constants/hotkeys';
 import { AppService } from 'src/app/shared/services/app.service';
-import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
+import { BackgroundCanvas } from 'src/app/shared/services/editor/tools/background-canvas.service';
 
 @Component({
     selector: 'app-visualization',

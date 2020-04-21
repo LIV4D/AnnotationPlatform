@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { LayersService } from './../../../shared/services/Editor/layers.service';
-import { EditorService } from './../../../shared/services/Editor/editor.service';
-import { ToolPropertiesService } from 'src/app/shared/services/Editor/tool-properties.service';
-import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
-import { CanvasDimensionService } from 'src/app/shared/services/Editor/canvas-dimension.service';
-import { ViewportService } from 'src/app/shared/services/Editor/viewport.service';
+import { LayersService } from '../../../shared/services/editor/layers.service';
+import { EditorService } from '../../../shared/services/editor/editor.service';
+import { ToolPropertiesService } from 'src/app/shared/services/editor/tool-properties.service';
+import { ToolboxService } from 'src/app/shared/services/editor/toolbox.service';
+import { CanvasDimensionService } from 'src/app/shared/services/editor/canvas-dimension.service';
+import { ViewportService } from 'src/app/shared/services/editor/viewport.service';
 
 @Injectable({
     providedIn: 'root'

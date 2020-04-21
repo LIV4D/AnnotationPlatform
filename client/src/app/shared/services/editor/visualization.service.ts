@@ -1,8 +1,8 @@
 
 
 import { Injectable } from '@angular/core';
-import { BackgroundCanvas } from 'src/app/shared/services/Editor/Tools/background-canvas.service';
-import { CanvasDimensionService } from '../../../shared/services/Editor/canvas-dimension.service';
+import { BackgroundCanvas } from 'src/app/shared/services/editor/tools/background-canvas.service';
+import { CanvasDimensionService } from './canvas-dimension.service';
 
 const BRIGHTNESS_FACTOR = 33.0;
 const CONTRAST_FACTOR = 50.0;

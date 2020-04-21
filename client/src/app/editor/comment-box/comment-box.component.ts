@@ -9,7 +9,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { Point } from 'src/app/shared/services/Editor/Tools/point.service';
+import { Point } from 'src/app/shared/services/editor/tools/point.service';
 import { AppService } from 'src/app/shared/services/app.service';
 
 @Component({

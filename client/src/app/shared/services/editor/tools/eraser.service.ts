@@ -2,8 +2,8 @@ import { Tool } from './tool.service';
 import { Point } from './point.service';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
 
-import { LayersService } from './../layers.service';
-import { ToolPropertiesService } from './../tool-properties.service';
+import { LayersService } from '../layers.service';
+import { ToolPropertiesService } from '../tool-properties.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class Eraser extends Tool {

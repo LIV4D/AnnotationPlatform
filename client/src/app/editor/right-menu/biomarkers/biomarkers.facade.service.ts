@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { LayersService } from './../../../shared/services/Editor/layers.service';
-import { ImageBorderService } from 'src/app/shared/services/Editor/image-border.service';
-import { BiomarkerService } from 'src/app/shared/services/Editor/biomarker.service';
-import { BiomarkerVisibilityService } from 'src/app/shared/services/Editor/biomarker-visibility.service';
+import { LayersService } from '../../../shared/services/editor/layers.service';
+import { ImageBorderService } from 'src/app/shared/services/editor/image-border.service';
+import { BiomarkerService } from 'src/app/shared/services/editor/biomarker.service';
+import { BiomarkerVisibilityService } from 'src/app/shared/services/editor/biomarker-visibility.service';
 import { Biomarker } from 'src/app/shared/models/biomarker.model';
 import { BioNode } from 'src/app/shared/models/bionode.model';
 

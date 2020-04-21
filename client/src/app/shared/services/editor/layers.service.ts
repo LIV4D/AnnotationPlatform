@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
-import { BiomarkerCanvas } from './Tools/biomarker-canvas.service';
-import { Point } from './Tools/point.service';
+import { BiomarkerCanvas } from './tools/biomarker-canvas.service';
+import { Point } from './tools/point.service';
 import { ImageBorderService } from './image-border.service';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
-import { Stack } from './Tools/stack.service';
+import { Stack } from './tools/stack.service';
+import { LocalStorage } from './local-storage.service';
 import { RevisionService } from './revision.service';
+import { EMPTY_REVISION } from '../../constants/emptyrevision';
 export const ANNOTATION_PREFIX = 'annotation-';
+
 
 @Injectable({
   providedIn: 'root'
 })
-
-// The layerService provides usefull fonction
-// helping with the layering of biomarkers and the stacking of them
 export class LayersService {
   MAX_CAPACITY: number;
 
@@ -34,6 +34,7 @@ export class LayersService {
 
   unsavedChange = false;
 
+  // private deviceService: DeviceDetectorService, , private borderService: ImageBorderService
   constructor(private appService: AppService, private imageBorderService: ImageBorderService, public revision: RevisionService) { }
 
   init(): void {
@@ -51,6 +52,8 @@ export class LayersService {
     this.tempDrawCanvas = document.createElement('canvas');
     const drawCtx = this.tempDrawCanvas.getContext('2d');
     drawCtx.imageSmoothingEnabled = false;
+
+    // this.MAX_CAPACITY = this.deviceService.isDesktop() ? 15 : 1;
 
     this.MAX_CAPACITY = 20;
     this.redoStack = new Stack<[number[], ImageData[]]>(this.MAX_CAPACITY);
@@ -125,6 +128,7 @@ export class LayersService {
       canvas.width = canvas.height * canvasRatio;
     }
     this.setCanvasStyle(canvas);
+    // Remove some of this...
     let x = 0;
     let y = 0;
     if (imageRatio > canvasRatio) {
@@ -132,12 +136,39 @@ export class LayersService {
     } else {
       x = (canvas.width - image.width) / 2;
     }
+    // context.fillStyle = color;
+    // context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, x, y, image.width, image.height);
     canvas.id = ANNOTATION_PREFIX + id;
     this.appLayers.appendChild(canvas);
     this.biomarkerCanvas.push(
       new BiomarkerCanvas(canvas, image, ANNOTATION_PREFIX + id, color, this.biomarkerCanvas.length, this.imageBorderService)
     );
+  }
+
+  createFlatCanvasRecursive(node: SVGGElement, width: number = 0, height: number = 0): void {
+    if (node.tagName === 'image') {
+      node.style.visibility = 'visible';
+      const image = new Image();
+      if (height !== 0 && width !== 0) {
+        image.width = width;
+        image.height = height;
+      }
+      image.onload = () => {
+        console.log("push createFlatCanvasRecursive");
+        this.newBiomarker(image, node.id, node.getAttributeNS(null, 'color'));
+      };
+      if (!node.hasAttribute('xlink:href')) {
+        // Add a transparent pixel to have a valid xlink:href
+        node.setAttribute('xlink:href', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=');
+      }
+      image.src = node.getAttribute('xlink:href');
+    } else {
+      Array.from(node.children).forEach((child: SVGGElement) => {
+        child.style.visibility = 'visible';
+        this.createFlatCanvasRecursive(child, width, height);
+      });
+    }
   }
 
   createFlatCanvasRecursiveJson(data: object, width: number = 0, height: number = 0): void {
@@ -162,10 +193,14 @@ export class LayersService {
         image.height = height;
       }
       image.onload = () => {
+        console.log("create flat canvas recursive json");
         this.newBiomarker(image, type, color);
       };
 
+      // console.log("%c "+type, 'color: black; background: yellow;');
       image.src = dataImage;
+
+      //image.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
     }
 
   }
@@ -197,22 +232,33 @@ export class LayersService {
     return currentBiomarkerCanvas.isVisible() ? currentBiomarkerCanvas : null;
 }
 
-	public getBiomarkerCanvas(): BiomarkerCanvas[] {
-		return this.biomarkerCanvas.filter(element => element.isVisible());
-	}
+  public getBiomarkerCanvas(): BiomarkerCanvas[] {
+    return this.biomarkerCanvas.filter(element => element.isVisible());
+  }
 
-	// Get annotationDatas meant to be send on the server
-	public getAnnotationDatas(): AnnotationData {
-    	let biomarkerId: Array<string> = [];
-		let imageData: Array<string> = [];
+  // Get annotationDatas meant to be send on the server
+  public getAnnotationDatas(): AnnotationData {
 
-    	this.biomarkerCanvas.forEach(biomarker => {
-        	biomarkerId.push(biomarker.id.toString().substr(11));
-        	imageData.push(biomarker.currentCanvas.toDataURL('image/png'));
-      	})
 
-    	this.revision.setDataImages(biomarkerId, imageData);
+      let biomarkerId: Array<string> = [];
+      let imageData: Array<string> = [];
+      this.biomarkerCanvas.forEach(biomarker => {
+        biomarkerId.push(biomarker.id.toString().substr(11));
+        imageData.push(biomarker.currentCanvas.toDataURL('image/png'));
+      })
+
+      this.revision.setDataImages(biomarkerId, imageData);
       const annotationData:AnnotationData = this.revision.revision;
+      // Each biomarker datas are formated in Base64
+      // and then added in the dictionary
+      // this.biomarkerCanvas.forEach(biomarker => {
+      //   const key = biomarker.id.toString(); // you might have to do a subtr(11) to remove annotation-
+      //   const url: string = biomarker.currentCanvas.toDataURL();
+		  //   const index: string = biomarker.index.toString();
+
+      //   annotationData.biomarker[key] = url;
+      //   annotationData.hierarchy[key] = index;
+      // });
     return annotationData;
   }
 
@@ -264,6 +310,7 @@ export class LayersService {
     });
     this.biomarkerOverlayCanvas.width = width;
     this.biomarkerOverlayCanvas.height = height;
+
     this.tempMaskCanvas.width = width;
     this.tempMaskCanvas.height = height;
     this.tempDrawCanvas.width = width;

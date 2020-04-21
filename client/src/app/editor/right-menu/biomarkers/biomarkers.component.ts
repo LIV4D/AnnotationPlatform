@@ -11,8 +11,8 @@ import { BioNode } from './../../../shared/models/bionode.model';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import { BiomarkersDialogComponent } from './biomarkers-dialog/biomarkers-dialog.component';
-import { CommentBoxService } from 'src/app/shared/services/Editor/comment-box.service';
-import { ToolboxService } from 'src/app/shared/services/Editor/toolbox.service';
+import { CommentBoxService } from 'src/app/shared/services/editor/comment-box.service';
+import { ToolboxService } from 'src/app/shared/services/editor/toolbox.service';
 
 export interface DialogData {
   confirmDelete: boolean;
