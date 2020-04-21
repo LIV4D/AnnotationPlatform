@@ -27,7 +27,7 @@ const JwtStrategy = passportJwt.Strategy;
 export class Application {
 
     private readonly internalError: number = 500;
-    private readonly staticPath: string = '../client/dist/';
+    private readonly staticPath: string = 'out/client/';
     public app: express.Application;
 
     constructor() {

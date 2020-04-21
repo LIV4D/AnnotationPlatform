@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "tsc && NODE_ENV=production node out/www.js",
+    "start": "tsc && NODE_ENV=production node out/server/app/www.js",
     "start-windows": "concurrently --kill-others \"tsc -w \" \"SET NODE_ENV=development && nodemon out/server/app/www.js\"",
     "dev": "concurrently --kill-others \"tsc -w \" \"NODE_ENV=development nodemon out/server/app/www.js \"",
     "lint": "tslint -c tslint.json --format stylish app/**/*.ts test/**/*.ts",
