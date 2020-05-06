@@ -5,7 +5,7 @@ import { LayersService } from './layers.service';
 import { BackgroundCanvas } from './tools/background-canvas.service';
 import { ZoomService } from './zoom.service';
 import { ViewportService } from './viewport.service';
-import { Point } from './tools/point.service';
+import { Point } from '../../models/point.model';
 
 @Injectable({
   providedIn: 'root',

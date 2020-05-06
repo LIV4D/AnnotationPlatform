@@ -1,5 +1,5 @@
 import { Tool } from './tool.service';
-import { Point } from './point.service';
+import { Point } from '../../../models/point.model';
 import { BiomarkerCanvas } from './biomarker-canvas.service';
 
 import { LayersService } from '../layers.service';

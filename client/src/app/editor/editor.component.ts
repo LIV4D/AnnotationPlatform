@@ -8,7 +8,7 @@ import { BiomarkersFacadeService } from './right-menu/biomarkers/biomarkers.faca
 import { ToolboxFacadeService } from './toolbox/toolbox.facade.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { BioPicker } from '../shared/services/editor/tools/biopicker.service';
-import { Point } from '../shared/services/editor/tools/point.service';
+import { Point } from '../shared/models/point.model';
 
 @Component({
   selector: 'app-editor',

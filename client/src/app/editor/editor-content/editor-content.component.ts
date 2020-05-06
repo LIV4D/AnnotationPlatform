@@ -4,7 +4,7 @@ import { Component, OnInit, Output,
         ViewContainerRef,
 } from '@angular/core';
 import { EditorFacadeService } from './../editor.facade.service';
-import { Point } from 'src/app/shared/services/editor/tools/point.service';
+import { Point } from 'src/app/shared/models/point.model';
 import { CommentBoxComponent } from '../comment-box/comment-box.component';
 import { ToolboxFacadeService } from '../toolbox/toolbox.facade.service';
 import { CommentBoxSingleton } from 'src/app/shared/models/comment-box-singleton.model';

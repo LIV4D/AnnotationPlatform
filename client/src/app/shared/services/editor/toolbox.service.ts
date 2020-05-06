@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Tool } from './tools/tool.service';
-import { Point } from './tools/point.service';
+import { Point } from '../../models/point.model';
 import { FillBrush } from './tools/fill-brush.service';
 import { Brush } from './tools/brush.service';
 import { Eraser } from './tools/eraser.service';

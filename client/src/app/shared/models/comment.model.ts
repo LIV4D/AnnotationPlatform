@@ -1,4 +1,4 @@
-import { Point } from '../services/editor/tools/point.service';
+import { Point } from './point.model';
 
 export class Comment {
     public text: string;

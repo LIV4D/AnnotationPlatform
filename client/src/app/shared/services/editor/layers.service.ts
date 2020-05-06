@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
 import { BiomarkerCanvas } from './tools/biomarker-canvas.service';
-import { Point } from './tools/point.service';
+import { Point } from '../../models/point.model';
 import { ImageBorderService } from './image-border.service';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { Stack } from './tools/stack.service';

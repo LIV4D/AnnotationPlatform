@@ -4,7 +4,7 @@ import { LoadingService } from '../shared/services/editor/data-persistence/loadi
 import { CanvasDimensionService } from '../shared/services/editor/canvas-dimension.service';
 import { BiomarkerService } from '../shared/services/editor/biomarker.service';
 import { BiomarkerVisibilityService } from '../shared/services/editor/biomarker-visibility.service';
-import { Point } from '../shared/services/editor/tools/point.service';
+import { Point } from '../shared/models/point.model';
 import { ToolboxService } from '../shared/services/editor/toolbox.service';
 import { TOOL_NAMES } from './../shared/constants/tools';
 import { Image } from '../shared/models/serverModels/image.model';

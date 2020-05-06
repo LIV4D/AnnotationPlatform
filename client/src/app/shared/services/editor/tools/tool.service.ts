@@ -1,5 +1,5 @@
 import { LayersService } from '../layers.service';
-import { Point } from './point.service';
+import { Point } from '../../../models/point.model';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 
 export class Tool {

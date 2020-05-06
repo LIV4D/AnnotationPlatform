@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { LayersFacadeService } from './../layers/layers.facade.service';
 import { Tool } from '../../../shared/services/editor/tools/tool.service';
-import { Point } from '../../../shared/services/editor/tools/point.service';
+import { Point } from '../../../shared/models/point.model';
 import { TOOL_NAMES } from './../../../shared/constants/tools';
 import { CommentBoxComponent } from '../../comment-box/comment-box.component';
 
