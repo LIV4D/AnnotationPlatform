@@ -1,0 +1,7 @@
+export enum Tab{
+    TASKS="TASKS",
+    GALLERY="GALLERY",
+    DASHBOARD="DASHBOARD",
+    EDITOR="EDITOR",
+    MANAGEMENT="MANAGEMENT"
+}

@@ -91,6 +91,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 // Interceptor
 import { AuthInterceptor } from './shared/services/auth/authentification.intercept';
 import { ErrorComponent } from './error/error.component';
+import { UrlService } from './shared/services/ui-states/url.service';
 
 
 @NgModule({
