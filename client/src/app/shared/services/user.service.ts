@@ -4,7 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
-import { ErrorMessageService } from './errorMessage.service';
+import { ErrorMessageService } from './error-message.service';
 
 @Injectable({
     providedIn: 'root'

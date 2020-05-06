@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ErrorMessageService } from './errorMessage.service';
+import { ErrorMessageService } from './error-message.service';
 
 @Injectable({
   providedIn: 'root'

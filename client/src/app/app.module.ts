@@ -45,7 +45,7 @@ import { LoginService } from './shared/services/auth/login.service';
 import { HeaderService } from './shared/services/header.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
-import { ModelFinderService } from './shared/services/modelFinder.service';
+import { ModelFinderService } from './shared/services/model-finder.service';
 import { AppService } from './shared/services/app.service';
 import { TasksBundlesService } from './shared/services/tasks/tasksBundles.service';
 import { TasksService } from './shared/services/tasks/tasks.service';
@@ -172,6 +172,7 @@ import { UrlService } from './shared/services/ui-states/url.service';
       ViewportService,
       VisualizationService,
       VisualizationFacadeService,
+      UrlService,
       RevisionService,
       LoadingService,
       CanvasDimensionService,

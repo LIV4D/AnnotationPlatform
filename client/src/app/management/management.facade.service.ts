@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ModelFinderService } from '../shared/services/modelFinder.service';
+import { ModelFinderService } from '../shared/services/model-finder.service';
 import { ManagementCreationService } from '../shared/services/management-creation.service';
 
 @Injectable({

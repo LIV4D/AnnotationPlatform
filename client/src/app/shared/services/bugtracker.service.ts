@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
-import { ErrorMessageService, ErrorSeverity } from './errorMessage.service';
+import { ErrorMessageService, ErrorSeverity } from './error-message.service';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './auth/login.service';
 
