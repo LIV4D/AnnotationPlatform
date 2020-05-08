@@ -78,17 +78,17 @@ export class CanvasDimensionService {
       zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);  // Redraw the image
 
       // Redraw the zoom rectangle (unless completely zoomed out).
-      if (this.zoomService.zoomFactor === 1.0) {
+      if (this.zoomService.zoomFactor.get() === 1.0) {
         return;
       }
       const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
       const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
       let h: number; let w: number;
       if (this.originalImageRatio() > this.viewPortService.viewportRatio()) {
-        w = zoomCanvas.width / this.zoomService.zoomFactor;
+        w = zoomCanvas.width / this.zoomService.zoomFactor.get();
         h = Math.min(w * (realHeight / realWidth), zoomCanvas.height);
       } else {
-        h = zoomCanvas.height / this.zoomService.zoomFactor;
+        h = zoomCanvas.height / this.zoomService.zoomFactor.get();
         w = Math.min(h * (realWidth / realHeight), zoomCanvas.width);
       }
       const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
@@ -117,7 +117,7 @@ export class CanvasDimensionService {
 
   // Reajust the display
   applyRedraw(position: Point) {
-    const zoomFactor = this.zoomService.zoomFactor;                // in order to get the new selection's width to zoom at
+    const zoomFactor = this.zoomService.zoomFactor.get();          // in order to get the new selection's width to zoom at
     const oldWidth = this.backgroundCanvas.displayCanvas.width;    // Adjust canvas sizes.
     const oldHeight = this.backgroundCanvas.displayCanvas.height;  // divide by the zoom factor
     const newWidth = this.fullCanvasWidth / zoomFactor;
@@ -128,7 +128,7 @@ export class CanvasDimensionService {
     this.layersService.resize(newWidth, newHeight);
 
     if (zoomFactor !== this.zoomService.ZOOM.MIN && zoomFactor !== this.zoomService.ZOOM.MAX) {
-       this.zoomService.zoomFactor = zoomFactor;
+       // this.zoomService.zoomFactor.set(zoomFactor);
 
       // Adjust offsets to keep them coherent with the previous zoom.
       let positionXPercentage = 0.5; let positionYPercentage = 0.5;
@@ -176,7 +176,7 @@ export class CanvasDimensionService {
 
   setZoomFactor(zoomFactor: number): void {
       // Cap the values.
-      zoomFactor = this.zoomService.capZoomValues(zoomFactor);
+      // zoomFactor = this.zoomService.capZoomValues(zoomFactor);
 
       // Adjust canvas sizes.
       const oldWidth = this.backgroundCanvas.displayCanvas.width;
@@ -188,7 +188,7 @@ export class CanvasDimensionService {
       this.layersService.resize(newWidth, newHeight);
 
       if (zoomFactor !== this.zoomService.ZOOM.MIN && zoomFactor !== this.zoomService.ZOOM.MAX) {
-          this.zoomService.zoomFactor = zoomFactor;
+          // this.zoomService.zoomFactor.set(zoomFactor);
           this.offsetX += (oldWidth - newWidth) / 2;
           this.offsetY += (oldHeight - newHeight) / 2;
       }
@@ -219,8 +219,8 @@ export class CanvasDimensionService {
       H = this.backgroundCanvas.originalCanvas.height;
       W = H * viewportRatio;
     }
-    const h = H / this.zoomService.zoomFactor;
-    const w = W / this.zoomService.zoomFactor;
+    const h = H / this.zoomService.zoomFactor.get();
+    const w = W / this.zoomService.zoomFactor.get();
 
     // Resize main image.
     this.fullCanvasWidth = W;
@@ -230,7 +230,7 @@ export class CanvasDimensionService {
 
     this.layersService.resize(w, h);  // Resize layers.
     this.adjustOffsets();             // Adjust the offsets so the image is in place.
-    this.zoom(-100, new Point(0, 0)); // Call zoom to redraw everything.
+    this.zoom(0, new Point(0, 0)); // Call zoom to redraw everything.
   }
 
   // Load the main canvas.

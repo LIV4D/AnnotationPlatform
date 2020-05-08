@@ -35,7 +35,7 @@ export class EditorFacadeService {
   }
 
   get zoomFactor(): number {
-    return this.zoomService.zoomFactor;
+    return this.zoomService.zoomFactor.value;
   }
 
   get firstPoint() {

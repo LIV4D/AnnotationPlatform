@@ -42,7 +42,7 @@ export class EditorService {
   init(svgLoaded: EventEmitter<any>, viewPort: ElementRef, svgBox: ElementRef): void
     {
       this.biomarkerService.dataSource = null;
-      this.zoomService.zoomFactor = 1.0;
+      // this.zoomService.zoomFactor.set(1);
       this.canvasDimensionService.offsetX = 0;
       this.canvasDimensionService.offsetY = 0;
       this.loadingService.setImageLoaded(false);
