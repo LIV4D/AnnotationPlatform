@@ -1,5 +1,5 @@
 // Services
-import { HeaderService } from '../header.service';
+import { UIStatusService } from '../ui-status.service';
 
 // Model
 import { TaskType } from '../../models/serverModels/taskType.model';
@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 
 // The service provides usefull function helping with the Task Types
 export class TaskTypeService {
-  constructor(private http: HttpClient, private headerService: HeaderService) {}
+  constructor(private http: HttpClient, private headerService: UIStatusService) {}
 
 
   /**

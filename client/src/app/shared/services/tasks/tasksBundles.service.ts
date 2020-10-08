@@ -1,4 +1,4 @@
-import { HeaderService } from '../header.service';
+import { UIStatusService } from '../ui-status.service';
 import { AppService } from '../app.service';
 import { HttpClient, HttpParams, HttpEvent, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -12,7 +12,7 @@ import { ITaskBundle } from '../../interfaces/ITaskBundle.interface';
 export class TasksBundlesService {
   private status = 0;
 
-  constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
+  constructor(private http: HttpClient, private headerService: UIStatusService, private appService: AppService) {}
 
   /**
    * Get bundles from server

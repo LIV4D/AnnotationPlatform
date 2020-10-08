@@ -5,7 +5,7 @@ import { Point } from '../../models/point.model';
 import { ImageBorderService } from './image-border.service';
 import { AnnotationData } from '../../models/serverModels/annotationData.model';
 import { Stack } from './tools/stack.service';
-import { LocalStorage } from './local-storage.service';
+import { LocalStorage } from './local-storage-old.service';
 import { RevisionService } from './revision.service';
 import { EMPTY_REVISION } from '../../constants/emptyrevision';
 export const ANNOTATION_PREFIX = 'annotation-';

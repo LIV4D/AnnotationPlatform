@@ -1,4 +1,4 @@
-import { HeaderService } from './header.service';
+import { UIStatusService } from './ui-status.service';
 import { User } from '../models/serverModels/user.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { ErrorMessageService } from './error-message.service';
 })
 
 export class UserService {
-  constructor(private http: HttpClient, private headerService: HeaderService, private errorMessage: ErrorMessageService) {}
+  constructor(private http: HttpClient, private headerService: UIStatusService, private errorMessage: ErrorMessageService) {}
 
   /**
    * Gets the list of all users

@@ -14,8 +14,8 @@ import { Observable } from 'rxjs';
 import { TasksService } from '../../tasks/tasks.service';
 import { LayersService } from '../layers.service';
 import { AppService } from '../../app.service';
-import { HeaderService } from '../../header.service';
-import { LocalStorage } from '../local-storage.service';
+import { UIStatusService } from '../../ui-status.service';
+import { LocalStorage } from '../local-storage-old.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
 
 // Material
@@ -45,7 +45,7 @@ export class SubmitService {
 		private http: HttpClient,
 		private layersService: LayersService,
 		private appService: AppService,
-		private headerService: HeaderService,
+		private headerService: UIStatusService,
     private tasksService: TasksService,
     private loadingService: LoadingService,
     public canvasDimensionService: CanvasDimensionService,

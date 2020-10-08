@@ -2,19 +2,21 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {map, filter} from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { BackgroundJob } from '../models/background-job.model';
+import { delay } from '../misc/async-utils';
 
 
 @Injectable({
     providedIn: 'root'
 })
-export class HeaderService {
+export class UIStatusService {
 
     progress: number;
     isShown: boolean;
     name?: string;
     isDownloading?: boolean;
 
-    
+    backgroundJobs: BackgroundJob[] = [];
 
     constructor() {}
 
@@ -45,19 +47,16 @@ export class HeaderService {
      * @param [download] : tells if the progress bar is downloading, True by default
      * @returns progress : Observable<any> response from the request
      */
-    display_progress(request: Observable<any>, name: string, isDownloading = true): Observable<any> {
+     display_progress(request: Observable<any>, name: string, isDownloading = true): Observable<any> {
 
         this.cbShowProgress(true, name, isDownloading);
 
         return request.pipe(filter(res => {
             if (res.type === HttpEventType.DownloadProgress) {
-
                 if (this.cbProgress) {
-
                     this.cbProgress(res.loaded / res.total);
                 }
             } else if (res.type === HttpEventType.UploadProgress) {
-
                 if (this.cbProgress) {
                     this.cbProgress(res.loaded / res.total);
                 }
@@ -69,4 +68,20 @@ export class HeaderService {
             return false;
         }), map(res => (res as HttpResponse<any>).body));
     }
+
+    registerBackgroundJob(job: BackgroundJob){
+        this.backgroundJobs.push(job);
+        job.state.subscribe((state)=>{
+            if(state!=="running")
+                this.backgroundJobs.splice(this.backgroundJobs.indexOf(job),1);
+        });
+    }
+
+    async waitForBackgroundJobsCompletion(){
+        while(this.backgroundJobs){
+            await this.backgroundJobs[0].waitCompletion();
+            await delay(5);
+        }
+    }
+
 }

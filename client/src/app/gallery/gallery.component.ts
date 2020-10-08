@@ -7,7 +7,7 @@ import { merge } from 'rxjs';
 import { of as observableOf } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { IGallery } from '../shared/services/gallery/gallery.interface';
-import { LocalStorage } from '../shared/services/editor/local-storage.service';
+import { LocalStorage } from '../shared/services/editor/local-storage-old.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { GalleryFacadeService } from './gallery.facade.service';
 import { EditorFacadeService } from '../editor/editor.facade.service';

@@ -42,7 +42,7 @@ import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to
 import { GalleryFacadeService } from './gallery/gallery.facade.service';
 import { ImageBorderService } from './shared/services/editor/image-border.service';
 import { LoginService } from './shared/services/auth/login.service';
-import { HeaderService } from './shared/services/header.service';
+import { UIStatusService } from './shared/services/ui-status.service';
 import { ManagementCreationService } from './shared/services/management-creation.service';
 import { ManagementFacadeService } from './management/management.facade.service';
 import { ModelFinderService } from './shared/services/model-finder.service';
@@ -164,7 +164,7 @@ import { UrlService } from './shared/services/ui-states/url.service';
       ManagementCreationService,
       WidgetFacadeService,
       WidgetEventService,
-      HeaderService,
+      UIStatusService,
       EditorFacadeService,
       LayersFacadeService,
       GalleryFacadeService,

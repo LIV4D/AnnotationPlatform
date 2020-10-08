@@ -1,5 +1,5 @@
 // Services
-import { HeaderService } from '../header.service';
+import { UIStatusService } from '../ui-status.service';
 import { AppService } from '../app.service';
 
 // Interface
@@ -15,7 +15,7 @@ import { Task } from '../../models/serverModels/task.model';
 })
 
 export class TasksService {
-  constructor(private http: HttpClient, private headerService: HeaderService, private appService: AppService) {}
+  constructor(private http: HttpClient, private headerService: UIStatusService, private appService: AppService) {}
 
   /**
    * Loads image: Load an image from the data base

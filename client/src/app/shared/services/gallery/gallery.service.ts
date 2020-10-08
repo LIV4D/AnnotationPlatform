@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { IGallery } from './gallery.interface';
-import { HeaderService } from '../header.service';
+import { UIStatusService } from '../ui-status.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class GalleryService {
   selected: any;
   selectedImageId = '';
 
-  constructor(public http: HttpClient, private headerService: HeaderService) {}
+  constructor(public http: HttpClient, private headerService: UIStatusService) {}
 
   getImageTypes(): Observable<any> {
       return this.http.get('/api/imageTypes/');

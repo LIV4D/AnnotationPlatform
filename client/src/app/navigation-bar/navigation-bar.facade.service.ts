@@ -1,27 +1,22 @@
 import { Injectable, Injector } from '@angular/core';
 import { LoginService } from '../shared/services/auth/login.service';
-import { HeaderService } from '../shared/services/header.service';
+import { UIStatusService } from '../shared/services/ui-status.service';
+import { BackgroundJob } from '../shared/models/background-job.model';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class NavigationBarFacadeService {
 
   constructor(private injector: Injector, private loginService: LoginService,
-    private headerService: HeaderService) {  }
+    private uiStatusService: UIStatusService) {  }
 
-  initProgress(loadingProgress, showLoading, loadingLabel, loadingDownload) {
-    this.headerService.cbProgress = (progress: number) => { loadingProgress = progress; };
-    this.headerService.cbShowProgress = (show: boolean, name?: string, download= true) => {
-      if (show) {
-        showLoading = true;
-        loadingLabel = name;
-        loadingProgress = 0;
-        loadingDownload = download;
-      } else {
-        showLoading = false;
-        loadingLabel = '';
-        loadingProgress = 0;
-      }
-    };
+  fetchBackgroundJob(current: BackgroundJob=undefined): BackgroundJob {
+    if(isNullOrUndefined(current))
+        return this.uiStatusService.backgroundJobs[0];
+    const jobId = this.uiStatusService.backgroundJobs.indexOf(current);
+    if(jobId>=0 && jobId+1<this.uiStatusService.backgroundJobs.length)
+        return this.uiStatusService.backgroundJobs[jobId+1];
+    return this.uiStatusService.backgroundJobs[0];
   }
 
   logout() {

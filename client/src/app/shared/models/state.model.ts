@@ -18,7 +18,7 @@ type StateOptions<T> = {
     fromJson?: (json: string) => T,
 };
 
-class ObservableBuffer<T> extends Observable<T> {
+export class ObservableBuffer<T> extends Observable<T> {
     protected _value: T;
     protected _subscribers: Subscriber<T>[] = [];
     constructor(value?: T) {
@@ -142,6 +142,7 @@ export class Derived<T> extends ObservableBuffer<T> {
 
         if(isNullOrUndefined(value) && depends.findIndex(o => !(o instanceof ObservableBuffer))===-1){
             const dependenciesValues: any[] = [];
+            // @ts-ignore
             depends.forEach(o => dependenciesValues.push(o.get()));
             this._next(definition(...dependenciesValues));
         }

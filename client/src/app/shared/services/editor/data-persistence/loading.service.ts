@@ -6,12 +6,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 // Services
 import { LayersService } from '../layers.service';
-import { HeaderService } from '../../header.service';
+import { UIStatusService } from '../../ui-status.service';
 import { WidgetStorageService } from './widgetStorage.service';
 import { RevisionService } from '../revision.service';
 import { BiomarkerService } from '../biomarker.service';
 import { CanvasDimensionService } from '../canvas-dimension.service';
-import { LocalStorage } from '../local-storage.service';
+import { LocalStorage } from '../local-storage-old.service';
 import { BackgroundCanvas } from '../tools/background-canvas.service';
 
 // Model
@@ -37,7 +37,7 @@ export class LoadingService {
 
 	constructor(
     private http: HttpClient,
-    private headerService: HeaderService,
+    private headerService: UIStatusService,
     private biomarkerService: BiomarkerService,
     private widgetService: WidgetStorageService,
     private revisionService: RevisionService,
@@ -91,7 +91,7 @@ export class LoadingService {
 		return this.taskLoaded;
 	}
 
-	public setTaskLoaded(taskLoaded:Task): void{
+  public setTaskLoaded(taskLoaded:Task): void{
     this.taskLoaded = taskLoaded;
   }
 
