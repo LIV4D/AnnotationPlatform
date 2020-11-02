@@ -1,14 +1,14 @@
 {
     "server": {
-        "port": 5050
+        "port": 80 
     },
     "database": {
         "type": "postgres",
         "host": "localhost",
         "port": 5432,
         "username": "postgres",
-        "password": "postgres",
-        "database": "liv4d",
+        "password": "76hgrt34",
+        "database": "liv4d_old",
         "synchronize": true,
         "logging": false,
         "entities": ["./out/models/*.model.js"]

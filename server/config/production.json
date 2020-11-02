@@ -3,7 +3,7 @@
         "port": 5050
     },
     "logging": {
-        "level": "error"
+        "level": "debug"
     },
     "jwtAuthOptions": {
         "secretOrKey": "ycg$%hC6&AE!HQG3Z89!Xe+M4XWbCFbX",
