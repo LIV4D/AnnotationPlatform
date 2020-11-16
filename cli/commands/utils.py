@@ -72,6 +72,12 @@ def to_boolean(string):
     else:
         return string
 
+def encode_svg(data):
+    new_image = Image.fromarray(data)
+    buffer = BytesIO()
+    new_image.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode('ascii')
+
 def decode_svg(svg_xref):
     import base64
     from io import BytesIO

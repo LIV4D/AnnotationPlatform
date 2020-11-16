@@ -103,6 +103,11 @@ def update_svg(svg_string, user_id, image_id, display=False):
     return response.json()
 
 def update_diagnostic(diagnostic, user_id, image_id, display=False):
+    if isinstance(image_id, (list,tuple,set)):
+        for i in image_id:
+            update_diagnostic(diagnostic, user_id, i)
+        return
+    
     payload = { 'diagnostic': diagnostic}
     response = utils.request_server('PUT', '/api/revisions/{}/{}'.format(user_id, image_id), payload)
     if response.status_code == 200 and display:
@@ -190,6 +195,19 @@ def delete(user_id, image_id, display=False):
         print(response.json()['message'])
     return response.status_code == 204
 
+def clear_revision(user_id, image_id):
+    empty_svg = empty_revision(1)['svg']
+    if isinstance(user_id, (tuple,list,set)):
+        for u in user_id:
+            clear_revision(u,image_id)
+        return
+    if isinstance(image_id, (tuple,list,set)):
+        for i in image_id:
+            clear_revision(user_id,i)
+        return
+
+    update_svg(empty_svg, user_id, image_id)
+    
 def clean_unused(user, force=False, only_empty=False):
     from .task import list_task
     user_revisions = list_revision(user)
