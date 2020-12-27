@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorComponent } from 'src/app/error/error.component';
+import { ErrorComponent } from 'src/app/ui/errors-handler/error-popup/error-popup.component';
 import { isNullOrUndefined } from 'util';
 
 export enum ErrorSeverity {

@@ -1,10 +1,10 @@
 import { Injectable, Injector } from '@angular/core';
 
 // Service
-import { TasksService } from '../../shared/services/tasks/tasks.service';
-import { TaskTypeService } from '../../shared/services/tasks/taskType.service';
-import { AppService} from '../../shared/services/app.service';
-import { LoadingService } from '../../shared/services/editor/data-persistence/loading.service';
+import { TasksService } from '../../../shared/services/tasks/tasks.service';
+import { TaskTypeService } from '../../../shared/services/tasks/taskType.service';
+import { AppService} from '../../../shared/services/app.service';
+import { LoadingService } from '../../../shared/services/editor/data-persistence/loading.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { Task } from 'src/app/shared/models/serverModels/task.model';
 

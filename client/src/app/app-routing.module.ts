@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './ui/login/login.component';
-import { TasksComponent } from './tasks/tasks.component';
+import { TasksComponent } from './ui/tasks/tasks.component';
 import { DashboardComponent } from './ui/dashboard/dashboard.component';
 import { EditorComponent } from './ui/editor/editor.component';
 import { GalleryComponent } from './ui/gallery/gallery.component';
 import { ManagementComponent } from './management/management.component';
-import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
-import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
+import { AccessDeniedComponent } from './ui/errors-handler/access-denied/access-denied.component';
+import { NonExistentPageComponent } from './ui/errors-handler/non-existent-page/non-existent-page.component';
 import { CommentBoxComponent } from './ui/editor/comment-box/comment-box.component';
 import { Tab } from './shared/constants/tab';
 

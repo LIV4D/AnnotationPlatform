@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ErrorComponent } from './error.component';
+import { ErrorComponent } from './error-popup.component';
 
 describe('ErrorComponentComponent', () => {
   let component: ErrorComponent;

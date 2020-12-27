@@ -16,17 +16,17 @@ import { TaskDialogSubmissionComponent } from './ui/editor/right-menu/submit/tas
 import { SubmitComponent } from './ui/editor/right-menu/submit/submit.component';
 import { BugtrackerComponent } from './ui/bugtracker/bugtracker.component';
 import { GalleryComponent } from './ui/gallery/gallery.component';
-import { TasksComponent } from './tasks/tasks.component';
-import { TasksCompletedComponent } from './tasks/tasks-completed/tasks-completed.component';
-import { TasksToCompleteComponent } from './tasks/tasks-to-complete/tasks-to-complete.component';
+import { TasksComponent } from './ui/tasks/tasks.component';
+import { TasksCompletedComponent } from './ui/tasks/tasks-completed/tasks-completed.component';
+import { TasksToCompleteComponent } from './ui/tasks/tasks-to-complete/tasks-to-complete.component';
 import { DashboardComponent } from './ui/dashboard/dashboard.component';
 import { LoginComponent } from './ui/login/login.component';
 import { NavigationBarComponent } from './ui/navigation-bar/navigation-bar.component';
 import { BiomarkersComponent } from './ui/editor/right-menu/biomarkers/biomarkers.component';
 import { ManagementComponent } from './management/management.component';
-import { TasksBundlesComponent } from './tasks/tasks-bundles/tasks-bundles.component';
-import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
-import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
+import { TasksBundlesComponent } from './ui/tasks/tasks-bundles/tasks-bundles.component';
+import { AccessDeniedComponent } from './ui/errors-handler/access-denied/access-denied.component';
+import { NonExistentPageComponent } from './ui/errors-handler/non-existent-page/non-existent-page.component';
 import { WidgetComponent } from './ui/editor/right-menu/widget/widget.component';
 import { WidgetSingleLineComponent } from './ui/editor/right-menu/widget/widgetTypes/widget-single-line/widget-single-line.component';
 import { WidgetMultipleLinesComponent } from './ui/editor/right-menu/widget/widgetTypes/widget-multiple-lines/widget-multiple-lines.component';
@@ -36,9 +36,9 @@ import { LoginFacadeService } from './ui/login/login.facade.service';
 import { NavigationBarFacadeService } from './ui/navigation-bar/navigation-bar.facade.service';
 import { EditorFacadeService } from './ui/editor/editor.facade.service';
 import { LayersFacadeService } from './ui/editor/editor-content/layers/layers.facade.service';
-import { TaskFacadeService } from './tasks/tasks.facade.service';
-import { TasksCompletedFacadeService } from './tasks/tasks-completed/tasks-completed.facade.service';
-import { TasksToCompleteFacadeService } from './tasks/tasks-to-complete/tasks-to-complete.facade.service';
+import { TaskFacadeService } from './ui/tasks/tasks.facade.service';
+import { TasksCompletedFacadeService } from './ui/tasks/tasks-completed/tasks-completed.facade.service';
+import { TasksToCompleteFacadeService } from './ui/tasks/tasks-to-complete/tasks-to-complete.facade.service';
 import { GalleryFacadeService } from './ui/gallery/gallery.facade.service';
 import { ImageBorderService } from './shared/services/editor/image-border.service';
 import { LoginService } from './shared/services/auth/login.service';
@@ -50,7 +50,7 @@ import { AppService } from './shared/services/app.service';
 import { TasksBundlesService } from './shared/services/tasks/tasksBundles.service';
 import { TasksService } from './shared/services/tasks/tasks.service';
 import { TaskTypeService } from './shared/services/tasks/taskType.service';
-import { TasksBundlesFacadeService } from './tasks/tasks-bundles/tasks-bundles.facade.service';
+import { TasksBundlesFacadeService } from './ui/tasks/tasks-bundles/tasks-bundles.facade.service';
 import { ToolPropertiesService } from './shared/services/editor/tool-properties.service';
 import { AuthorizationService } from './shared/services/auth/authorization.service';
 import { CommentBoxComponent } from './ui/editor/comment-box/comment-box.component';
@@ -90,7 +90,7 @@ import { MousewheelDirective } from './shared/directives/mousewheel.directive';
 
 // Interceptor
 import { AuthInterceptor } from './shared/services/auth/authentification.intercept';
-import { ErrorComponent } from './error/error.component';
+import { ErrorComponent } from './ui/errors-handler/error-popup/error-popup.component';
 import { UrlService } from './shared/services/ui-states/url.service';
 
 
