@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { State, Derived } from '../../../../utilities/states/state.model';
+import { State } from '../../../../utilities/states/state.model';
+import { DerivedState } from "../../../../utilities/states/derived-state.model";
 import { UrlService } from '../../../navigation-logic/url.service';
 import { Tab } from '../../constants/tab';
 import { StatesHandlerService as StatesService } from '../../../../utilities/states/states-handler.service';
