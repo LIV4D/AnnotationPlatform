@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { StatesHandlerService } from './states-handler.service';
+import { StatesHandlerService } from '../../utilities/states/states-handler.service';
 import { isNullOrUndefined } from 'util';
-import { IState } from '../../models/state.model';
+import { IState } from '../../utilities/states/state.model';
 import { Subscription, Subscriber, Observable } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, NavigationEnd } from '@angular/router';
 import { stringify } from 'querystring';
-import { Tab } from '../../constants/tab';
+import { Tab } from '../shared/constants/tab';
 import { filter } from 'rxjs/operators';
 
 type Explicity = 'always' | 'never' | 'not-default' | 'inherit';

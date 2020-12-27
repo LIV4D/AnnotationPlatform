@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
-import { LoginService } from '../../shared/services/auth/login.service';
+import { LoginService } from '../../navigation-logic/auth/login.service';
 import { UIStatusService } from '../../shared/services/ui-status.service';
-import { BackgroundJob } from '../../shared/models/background-job.model';
+import { BackgroundJob } from '../../../utilities/background-job.model';
 import { isNullOrUndefined } from 'util';
 
 @Injectable()

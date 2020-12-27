@@ -1,4 +1,4 @@
-import { IState } from '../../models/state.model';
+import { IState } from './state.model';
 
 
 export class StatesHandlerService{

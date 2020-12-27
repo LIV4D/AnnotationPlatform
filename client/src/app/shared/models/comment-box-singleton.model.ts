@@ -1,4 +1,4 @@
-import { CommentBoxComponent } from 'src/app/ui/editor/comment-box/comment-box.component';
+import { CommentBoxComponent } from 'src/app/frontend-ui/editor/comment-box/comment-box.component';
 
 export class CommentBoxSingleton {
 

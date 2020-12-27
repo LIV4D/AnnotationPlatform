@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {map, filter} from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { BackgroundJob } from '../models/background-job.model';
+import { BackgroundJob } from '../../../utilities/background-job.model';
 import { delay } from '../misc/async-utils';
 
 

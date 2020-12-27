@@ -8,7 +8,7 @@ import {Screenfull} from 'screenfull';
 import { MatDialog } from '@angular/material/dialog';
 import { BugtrackerComponent } from '../bugtracker/bugtracker.component';
 import { Subject, Subscription } from 'rxjs';
-import { BackgroundJob } from '../../shared/models/background-job.model';
+import { BackgroundJob } from '../../../utilities/background-job.model';
 import { isUndefined } from 'underscore';
 
 @Component({

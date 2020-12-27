@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { State, Derived } from '../../models/state.model';
-import { UrlService } from '../ui-states/url.service';
+import { State, Derived } from '../../../../utilities/states/state.model';
+import { UrlService } from '../../../navigation-logic/url.service';
 import { Tab } from '../../constants/tab';
-import { StatesHandlerService as StatesService } from '../ui-states/states-handler.service';
+import { StatesHandlerService as StatesService } from '../../../../utilities/states/states-handler.service';
 import { Point } from '../../models/point.model';
 
 // Min and max values for zooming

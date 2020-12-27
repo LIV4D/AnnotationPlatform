@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ThrowStmt } from '@angular/compiler';
 import { delay, AsyncExecutionQueue } from '../misc/async-utils';
 import { isNullOrUndefined } from 'util';
-import { LoginService } from './auth/login.service';
+import { LoginService } from '../../navigation-logic/auth/login.service';
 import { isUndefined } from 'underscore';
 
 // @ts-ignore
