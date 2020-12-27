@@ -1,0 +1,32 @@
+@import '../../../../../colorVariables.scss';
+
+.cancel {
+    background-color: $error-color;
+    margin-right: 4px;
+}
+
+.confirm {
+    background-color: $register-color;
+}
+button {
+    height: 100%;
+    width: 36px !important;
+    min-width: 0px !important;
+    min-width: 0px !important;
+    color: $font-color-light;
+    padding: 0px;
+}
+
+mat-icon {
+    font-size: 24px;
+}
+
+span {
+    color: $font-color-light;
+    margin: 0 auto;
+}
+
+div {
+    text-align: center;
+    width: 100%;
+}

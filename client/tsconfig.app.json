@@ -4,6 +4,9 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
+  "angularCompilerOptions": {
+    "enableIvy": false      // Fix a bug with NGCC preventing building: https://github.com/PoE-Overlay-Community/PoE-Overlay-Community-Fork/issues/140
+  },
   "files": [
     "src/main.ts",
     "src/polyfills.ts"

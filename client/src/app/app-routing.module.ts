@@ -2,15 +2,15 @@ import { AuthorizationGuard } from './shared/guard/authorization.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './ui/login/login.component';
 import { TasksComponent } from './tasks/tasks.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { EditorComponent } from './editor/editor.component';
-import { GalleryComponent } from './gallery/gallery.component';
+import { DashboardComponent } from './ui/dashboard/dashboard.component';
+import { EditorComponent } from './ui/editor/editor.component';
+import { GalleryComponent } from './ui/gallery/gallery.component';
 import { ManagementComponent } from './management/management.component';
 import { AccessDeniedComponent } from './user-control/access-denied/access-denied.component';
 import { NonExistentPageComponent } from './user-control/non-existent-page/non-existent-page.component';
-import { CommentBoxComponent } from './editor/comment-box/comment-box.component';
+import { CommentBoxComponent } from './ui/editor/comment-box/comment-box.component';
 import { Tab } from './shared/constants/tab';
 
 

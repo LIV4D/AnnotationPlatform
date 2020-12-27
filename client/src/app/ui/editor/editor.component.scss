@@ -1,0 +1,148 @@
+@import '../../colorVariables.scss';
+
+app-right-menu {
+  color: $icon-color;
+  position: absolute;
+  height: calc(100% - 30px);
+  right: 0%;
+  width: $right-width;
+  top: 0;
+}
+
+app-toolbox {
+  overflow: hidden;
+  width: $tools-width;
+  height: 100%;
+  position: absolute;
+}
+
+app-editor-content {
+  width: 100%;
+  height: calc(100% - 93px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.center {
+  color: $font-color-gray;
+  position: absolute;
+  height: 100%;
+  width: calc(100% - 285px);
+  top: 0;
+  left: $tools-width;
+  background-color: $gray;
+  overflow: hidden;
+}
+.container {
+position: absolute;
+top: #{$header-height};
+bottom: 0;
+left: 0;
+right: 0;
+}
+
+mat-sidenav {
+  background-color: $gray-light;
+}
+
+.context-menu {
+position: absolute;
+display: none;
+}
+
+.context-active {
+display: block;
+position: absolute;
+border-radius: 4px;
+background-color: $gray;
+border: 3px solid $gray-dark;
+color: $font-color-gray;
+padding: 4px;
+z-index: 10;
+}
+
+.biomarkerflat {
+  padding-left: 4px;
+}
+.biomarkerflat:hover {
+  background-color: $gray-light;
+}
+
+#classTitle {
+  position: absolute;
+  left: 53%;
+  transform: translateX(-50%);
+  top: 48px;
+  border-radius: 4px;
+  padding: 8px;
+  color: $font-color-light;
+}
+
+#bodyblack {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 9;
+  opacity: 0;
+  pointer-events : none;
+}
+
+#overlay {
+  height: $overlay-height;
+  border-bottom: 3px solid $gray-light;
+}
+
+#metadata {
+  position: absolute;
+  top: 10px;
+  left: 53%;
+  text-align: center;
+  transform: translateX(-50%);
+  height: 40px;
+  font-size: 14px;
+  overflow: auto;
+}
+
+#zoomSlider{
+  position: absolute;
+  top: 3px;
+  right: 3px;
+}
+
+#zoomFactorDisplay{
+  position: absolute;
+  right: 7px;
+  top: 5px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+app-zoom {
+  position: absolute;
+  top: 3px;
+  right: 38px;
+}
+
+.meta {
+  margin-right: 12px;
+}
+
+.metaVal {
+  color: $font-color-light;
+}
+
+#loadsvg {
+  position: absolute;
+  top: 40px;
+  left: 450px;
+  background-color: $login-color;
+  border-radius: 5px;
+  color: $font-color-light;
+}
