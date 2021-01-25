@@ -73,6 +73,9 @@ def to_boolean(string):
         return string
 
 def encode_svg(data):
+    import base64
+    from io import BytesIO
+    from PIL import Image   
     new_image = Image.fromarray(data)
     buffer = BytesIO()
     new_image.save(buffer, format="PNG")
@@ -88,7 +91,7 @@ def decode_svg(svg_xref):
     png_buffer = BytesIO(base64.b64decode(svg_xref.encode('ascii')))
     png_img = Image.open(png_buffer)
     return numpy.array(png_img)[...,3] > 127
-
+ 
 
 def confirm(text, default=None):
     answer = ""
@@ -129,7 +132,7 @@ def info_from_diagnostic(diagnostic):
 
 
 def dict_info_from_diagnostic(diagnostic):
-    d = dict(comment="")
+    d = dict(comment="", biomarkers=[])
     for c in diagnostic.split(']'):
         c_stripped = c.strip()
         if c_stripped.startswith('[onlyEnable='):

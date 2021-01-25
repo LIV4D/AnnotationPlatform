@@ -195,8 +195,9 @@ def delete(user_id, image_id, display=False):
         print(response.json()['message'])
     return response.status_code == 204
 
-def clear_revision(user_id, image_id):
-    empty_svg = empty_revision(1)['svg']
+
+def clear_revision(user_id, image_id, size):
+    import numpy as np
     if isinstance(user_id, (tuple,list,set)):
         for u in user_id:
             clear_revision(u,image_id)
@@ -206,8 +207,18 @@ def clear_revision(user_id, image_id):
             clear_revision(user_id,i)
         return
 
-    update_svg(empty_svg, user_id, image_id)
+    svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
+    for b in svg_tree.iter():
+        if b.tag.endswith('image'):
+            array = utils.decode_svg(b.get('{http://www.w3.org/1999/xlink}href'))
+            array = np.zeros(array.shape+(4,), dtype=np.uint8)
+            png = utils.encode_svg(array)
+            b.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
     
+    xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    svg = (xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')).decode('utf-8')
+    update_svg(svg, user_id, image_id)
+
 def clean_unused(user, force=False, only_empty=False):
     from .task import list_task
     user_revisions = list_revision(user)
