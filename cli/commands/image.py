@@ -82,11 +82,19 @@ def get_image(image_id):
 def _image_file(image_id, path):
     image_file(image_id, path, True)
 
-def image_file(image_id, path, display=False):
+def image_file(image_id, out='array', display=False):
     response = utils.request_file('/api/images/{}/getFile'.format(image_id))
     if response.status_code == 200:
-        with open(path + ntpath.basename(image_object['path']), 'wb') as file:
-            shutil.copyfileobj(response.raw, file)
+        if out=='array':
+            import base64
+            from io import BytesIO
+            from PIL import Image
+
+            #png_buffer = BytesIO(base64.b64decode(response.raw.encode('ascii')))
+            return Image.open(response.raw)
+        else:
+            with open(path + ntpath.basename(image_object['path']), 'wb') as file:
+                shutil.copyfileobj(response.raw, file)
 
 @image.command(name='revision', help='Downloads the revision stored in the server')
 @click.option('--imageId', 'image_id', help='Id of the image to get the base revision from')

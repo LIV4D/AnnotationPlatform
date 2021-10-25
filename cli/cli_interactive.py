@@ -21,7 +21,9 @@ hammamji = "7b1dc155-f885-4ad8-9582-b5db27196c66"
 duval = "02758e79-f1e1-4989-8e57-5658672a2b12"
 desroches = "d8fae448-3e1f-41cc-93cd-bef2df151d47"
 
+clinicians = [brent, qian, wong, boucher, kalevar, hammamji, duval, desroches]
+
 gabriel = "b45c99c9-b10e-4cd9-96d7-4060a889184b"
 
-import code
-code.interact(local=locals())
+from IPython import embed
+embed(colors='neutral')

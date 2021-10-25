@@ -179,7 +179,7 @@ export class LayersService {
         canvas.style.left = '0%';
         canvas.style.visibility = 'visible'; // important
         canvas.style.opacity = '0.65'; // important
-        canvas.style['mix-blend-mode'] = 'color';
+        canvas.style['mix-blend-mode'] = 'hue';
 
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;

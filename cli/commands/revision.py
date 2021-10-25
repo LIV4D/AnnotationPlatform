@@ -103,6 +103,11 @@ def update_svg(svg_string, user_id, image_id, display=False):
     return response.json()
 
 def update_diagnostic(diagnostic, user_id, image_id, display=False):
+    if isinstance(image_id, (list,tuple,set)):
+        for i in image_id:
+            update_diagnostic(diagnostic, user_id, i)
+        return
+    
     payload = { 'diagnostic': diagnostic}
     response = utils.request_server('PUT', '/api/revisions/{}/{}'.format(user_id, image_id), payload)
     if response.status_code == 200 and display:
@@ -189,6 +194,30 @@ def delete(user_id, image_id, display=False):
     elif display:
         print(response.json()['message'])
     return response.status_code == 204
+
+
+def clear_revision(user_id, image_id, size):
+    import numpy as np
+    if isinstance(user_id, (tuple,list,set)):
+        for u in user_id:
+            clear_revision(u,image_id)
+        return
+    if isinstance(image_id, (tuple,list,set)):
+        for i in image_id:
+            clear_revision(user_id,i)
+        return
+
+    svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
+    for b in svg_tree.iter():
+        if b.tag.endswith('image'):
+            array = utils.decode_svg(b.get('{http://www.w3.org/1999/xlink}href'))
+            array = np.zeros(array.shape+(4,), dtype=np.uint8)
+            png = utils.encode_svg(array)
+            b.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+    
+    xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    svg = (xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')).decode('utf-8')
+    update_svg(svg, user_id, image_id)
 
 def clean_unused(user, force=False, only_empty=False):
     from .task import list_task

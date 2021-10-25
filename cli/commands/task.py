@@ -1,4 +1,4 @@
-                                                                                                                                                                                                       import click
+import click
 from . import utils
 from collections import OrderedDict
 
@@ -32,7 +32,7 @@ def create(image_id, user_id, limit_biomarkers=None, diagnostic=False, active=Tr
         limit_biomarkers = ''
         
     c = ""
-    if limit_biomarkers or comment:
+    if limit_biomarkers or comment or diagnostic:
         if isinstance(limit_biomarkers, (list, tuple)):
                 limit_biomarkers = ','.join(limit_biomarkers)
             
