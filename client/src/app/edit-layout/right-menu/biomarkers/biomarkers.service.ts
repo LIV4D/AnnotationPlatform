@@ -5,6 +5,7 @@ import { BiomarkerCanvas } from './../../../model/biomarker-canvas';
 import { element, elementStylingMap } from '@angular/core/src/render3/instructions';
 import { Observable } from 'rxjs';
 import { disableDebugTools } from '@angular/platform-browser';
+import { EMFILE } from 'constants';
 
 
 const NOT_SELECTED = 'not-selected';
@@ -187,8 +188,27 @@ export class BiomarkersService {
     }
 
     public toggleSoloVisibility(id: string): void {
-        this.toggleAllBiomarkers('hidden');
-        this.toggleVisibility(id);
+        const elem: HTMLElement = document.getElementById(id);
+        let visibility = elem.style.visibility;
+
+        if (visibility === 'hidden') {
+            this.toggleAllBiomarkers('hidden');
+            this.toggleVisibility(id);
+        } else {
+            let allOtherBiomarkersHidden = true;
+            this.flat.forEach(e => {
+                if(e.tagName !== 'g' && e.id !== id && e.style.visibility === 'visible')
+                    allOtherBiomarkersHidden = false;
+            });
+            
+            if (allOtherBiomarkersHidden) {
+                this.toggleAllBiomarkers('visible');
+            } else{
+                this.toggleAllBiomarkers('hidden');
+                this.toggleVisibility(id);
+            }
+
+        }
     }
 
     public toggleAllBiomarkers(visibility: string): void {
@@ -285,7 +305,7 @@ export class BiomarkersService {
             });
         }
         if (visibility === 'visible') {
-            this.resetParentVisibilityRecursive(elem);
+            this. (elem);
         }
 
     }
@@ -293,10 +313,19 @@ export class BiomarkersService {
     // We reset the parent opacity to 1 when a child becomes visible.
     // If the parent is opacity 0, the child will never be displayed
     private resetParentVisibilityRecursive(elem: HTMLElement): void {
+        let childVisible = false;
+        if (elem.children.length > 0) {
+            Array.from(elem.children).forEach((child: HTMLElement) => {
+                childVisible = childVisible || (child.style.visibility === 'visible');
+            });
+        }
+        if (childVisible === (elem.style.visibility==='visible'))
+            return;
+
+        elem.style.visibility = childVisible ? 'visible' : 'hidden';
         if (elem.parentElement.tagName === 'g') {
             this.resetParentVisibilityRecursive(elem.parentElement);
         }
-        elem.parentElement.style.visibility = 'visible';
     }
 
     public changeOpacity(opacity: string): void {
