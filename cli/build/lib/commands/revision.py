@@ -176,6 +176,15 @@ def empty_revision(image_type_id, display=False):
         print(response.json()['svg'])
     return response.json()
 
+def clear_revision(user_id, image_id, image_type_id=1):
+    svg = empty_revision(image_type_id)['svg']
+    if isinstance(image_id, (list,tuple,set)):
+        for img in image_id:
+            clear_revision(user_id, img)
+        return
+    
+    update(svg, user_id, image_id, "")
+
 @revision.command(name='delete', help='Delete a revision')
 @click.option('--userId', 'user_id', help='The user that is associated to the revision', required=True)
 @click.option('--imageId', 'image_id', help='The image that is associated to the revision', required=True)

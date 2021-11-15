@@ -19,7 +19,7 @@ def _create(image_id, task_type_id, user_id, limit_biomarkers, active, completed
 def create(image_id, user_id, limit_biomarkers=None, diagnostic=False, active=True, completed=False, display=True, comment="", force=False, merge=True, task_type_id=1):
     if isinstance(image_id, (list,tuple,set)):
         for i in image_id:
-            if not create(i, user_id=user_id, limit_biomarkers=limit_biomarkers, active=active, completed=completed, display=display, 
+            if not create(i, user_id=user_id, limit_biomarkers=limit_biomarkers, active=active, completed=completed, display=display, diagnostic=diagnostic,
                           comment=comment, force=force, merge=merge, task_type_id=task_type_id):
                 return False
         return True

@@ -1,4 +1,5 @@
 import requests
+import numpy as np
 from . import config
 
 
@@ -72,16 +73,27 @@ def to_boolean(string):
     else:
         return string
 
-def encode_svg(data):
+def encode_png(data, color=None):
     import base64
     from io import BytesIO
     from PIL import Image   
+    
+    if len(data.shape) == 3 and data.shape[-1]==1:
+        data = data[..., 0]
+    if data.dtype==np.bool:
+        data = data.astype(np.uint8)*255
+    if len(data.shape) == 2 and color is not None:
+        if isinstance(color, str):
+            color = str2color(color)
+        colormap = np.ones(shape=data.shape+(3,),dtype=np.uint8) * color[None, None,:]
+        data = np.concatenate([colormap, data[:,:,None]], axis=2)
+    
     new_image = Image.fromarray(data)
     buffer = BytesIO()
     new_image.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode('ascii')
 
-def decode_svg(svg_xref):
+def decode_png(svg_xref):
     import base64
     from io import BytesIO
     from PIL import Image
@@ -185,3 +197,18 @@ def paste_int_list():
     import clipboard
     l = clipboard.paste().split('\n')
     return [int(_) for _ in l if _]
+
+
+def str2color(str_color):
+    if not str_color or not isinstance(str_color, str):
+        return np.zeros((3,), dtype=np.uint8 if uint8 else np.float16)
+
+    import webcolors
+    if str_color.startswith('#'):
+        c = webcolors.hex_to_rgb(str_color)
+    else:
+        c = webcolors.name_to_rgb(str_color)
+
+    c = np.array(c, dtype=np.float16)
+    c = c.astype(dtype=np.uint8)#[::-1]
+    return c

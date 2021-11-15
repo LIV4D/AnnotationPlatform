@@ -4,6 +4,7 @@ from os.path import dirname
 from . import utils
 from collections import OrderedDict
 import xml.etree.ElementTree as ET
+import numpy as np
 
 ET.register_namespace('', 'http://www.w3.org/2000/svg')
 ET.register_namespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -31,6 +32,28 @@ def create(svg_string, user_id, image_id, diagnostic, display=False):
     elif display:
         print(response.json()['message'])
     return response.json()
+
+
+def create_from_biomarkers(user_id, image_id, biomarkers_data, diagnostic="", display=False, empty_rev_sample=None):
+    if empty_rev_sample is None:
+        empty_rev_sample = empty_revision(1, False)
+    svg_sample = empty_rev_sample['svg']
+    svg_tree = ET.fromstring(svg_sample)
+    for biomarker, png in biomarkers_data.items():
+        svg_bio = [_ for _ in svg_tree.iter() if _.get('id')==biomarker]
+        if len(biomarker)==0:
+            raise ValueError(f'Unknown biomarker identifier: "{biomarker}".')
+        svg_bio = svg_bio[0]
+        if isinstance(png, np.ndarray):
+            png = utils.encode_png(png, color=svg_bio.get('color'))
+        if isinstance(png, bytes):
+            png = png.decode('ascii')
+        svg_bio.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+    
+    xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
+    return create(image_id=image_id, user_id=user_id, svg_string=svg.decode('utf-8'), diagnostic=diagnostic, display=display)
+
 
 @revision.command(name='list', help='Lists all revisions')
 def _list_revision():
@@ -119,7 +142,7 @@ def update_diagnostic(diagnostic, user_id, image_id, display=False):
 def get_biomarkers(user_id, image_id):
     svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
     biomarkers = [_ for _ in svg_tree.iter() if _.tag.endswith('image')]
-    biomarkers = {node.get('id'): utils.decode_svg(node.get('{http://www.w3.org/1999/xlink}href')) for node in biomarkers}
+    biomarkers = {node.get('id'): utils.decode_PNG(node.get('{http://www.w3.org/1999/xlink}href')) for node in biomarkers}
     return biomarkers
 
 def get_biomarker(user_id, image_id, biomarker, out='array'):
@@ -129,7 +152,7 @@ def export_biomarker(svg, biomarker, out='array'):
     svg_tree = ET.fromstring(svg)
     b = [_.get('{http://www.w3.org/1999/xlink}href') for _ in svg_tree.iter() if _.get('id') == biomarker][0]
     if out.lower()=='array':
-        return utils.decode_svg(b)
+        return utils.decode_png(b)
     elif out.lower()=='svg':
         return b
     elif out.lower()=='png':
@@ -139,7 +162,7 @@ def export_biomarker(svg, biomarker, out='array'):
     else:
         from PIL import Image
         import numpy as np
-        array = utils.decode_svg(b)
+        array = utils.decode_png(b)
         array = (array*255).astype(np.uint8)
         makedirs(dirname(out), exist_ok=True)
         Image.fromarray(array).save(out)
@@ -155,6 +178,27 @@ def update_biomarker(user_id, image_id, biomarker, png, display=False):
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
     return update_svg(image_id=image_id, user_id=user_id, svg_string=svg.decode('utf-8'), display=display)
+
+
+def update_biomarkers(user_id, image_id, biomarkers_data, svg_samples=None, display=False):
+    if svg_samples is None:
+        svg_samples = get_revision(user_id, image_id)['svg']
+    svg_tree = ET.fromstring(svg_samples)
+    for biomarker, png in biomarkers_data.items():
+        svg_bio = [_ for _ in svg_tree.iter() if _.get('id')==biomarker]
+        if len(biomarker)==0:
+            raise ValueError(f'Unknown biomarker identifier: "{biomarker}".')
+        svg_bio = svg_bio[0]
+        if isinstance(png, np.ndarray):
+            png = utils.encode_png(png, color=svg_bio.get('color'))
+        if isinstance(png, bytes):
+            png = png.decode('ascii')
+        svg_bio.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+    
+    xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
+    return update_svg(image_id=image_id, user_id=user_id, svg_string=svg.decode('utf-8'), display=display)
+
 
 def transfer_biomarker(image_id, from_user_id, to_user_id, biomarker, force=False, display=False):
     if not force:
@@ -174,8 +218,21 @@ def transfer_biomarker(image_id, from_user_id, to_user_id, biomarker, force=Fals
 def _empty_revision(image_type_id):
     empty_revision(image_type_id, True)
 
-def empty_revision(image_type_id, display=False):
+def empty_revision(image_type_id, img_size=None, display=False):
     response = utils.request_server('GET', '/api/revisions/emptyRevision/{}'.format(image_type_id))
+    
+    if img_size:
+        svg_tree = ET.fromstring(response['svg'])
+        for b in svg_tree.iter():
+            if b.tag.endswith('image'):
+                array = np.zeros(img_size+(4,), dtype=np.uint8)
+                png = utils.encode_png(array)
+                b.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+    
+        xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        svg = (xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')).decode('utf-8')
+        response['svg'] = svg
+        
     if display:
         print('Empty revision xml')
         print(response.json()['svg'])
@@ -196,7 +253,7 @@ def delete(user_id, image_id, display=False):
     return response.status_code == 204
 
 
-def clear_revision(user_id, image_id, size):
+def clear_revision(user_id, image_id):
     import numpy as np
     if isinstance(user_id, (tuple,list,set)):
         for u in user_id:
@@ -210,9 +267,9 @@ def clear_revision(user_id, image_id, size):
     svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
     for b in svg_tree.iter():
         if b.tag.endswith('image'):
-            array = utils.decode_svg(b.get('{http://www.w3.org/1999/xlink}href'))
+            array = utils.decode_png(b.get('{http://www.w3.org/1999/xlink}href'))
             array = np.zeros(array.shape+(4,), dtype=np.uint8)
-            png = utils.encode_svg(array)
+            png = utils.encode_png(array)
             b.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
