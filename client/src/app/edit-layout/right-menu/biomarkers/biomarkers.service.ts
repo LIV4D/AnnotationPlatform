@@ -47,8 +47,10 @@ export class BiomarkersService {
         if (this.onlyEnabledBiomarkers.length > 0) {
             this.toggleAllBiomarkers('hidden');
             this.onlyEnabledBiomarkers.forEach( (b) => {
-                this.toggleVisibility(b);
-                this.expandToBiomarker(b);
+                if (b !== 'Others') {
+                    this.toggleVisibility(b);
+                    this.expandToBiomarker(b);
+                }
             });
             this.flatEnabledBiomarkers = this.onlyEnabledBiomarkers.map((elem) => this.flat.find(x => x.id===elem));
             this.lastBiomarkers = this.flatEnabledBiomarkers.slice();
@@ -197,7 +199,8 @@ export class BiomarkersService {
         } else {
             let allOtherBiomarkersHidden = true;
             this.flat.forEach(e => {
-                if(e.tagName !== 'g' && e.id !== id && e.style.visibility === 'visible')
+                const elem = document.getElementById(e.id);
+                if(e.tagName !== 'g' && e.id !== id && elem.style.visibility === 'visible')
                     allOtherBiomarkersHidden = false;
             });
             
@@ -305,7 +308,7 @@ export class BiomarkersService {
             });
         }
         if (visibility === 'visible') {
-            this. (elem);
+            this.resetParentVisibilityRecursive(elem);
         }
 
     }
