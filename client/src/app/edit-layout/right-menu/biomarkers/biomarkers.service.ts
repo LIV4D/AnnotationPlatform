@@ -47,8 +47,10 @@ export class BiomarkersService {
         if (this.onlyEnabledBiomarkers.length > 0) {
             this.toggleAllBiomarkers('hidden');
             this.onlyEnabledBiomarkers.forEach( (b) => {
-                this.toggleVisibility(b);
-                this.expandToBiomarker(b);
+                if (b !== 'Others') {
+                    this.toggleVisibility(b);
+                    this.expandToBiomarker(b);
+                }
             });
             this.flatEnabledBiomarkers = this.onlyEnabledBiomarkers.map((elem) => this.flat.find(x => x.id===elem));
             this.lastBiomarkers = this.flatEnabledBiomarkers.slice();
