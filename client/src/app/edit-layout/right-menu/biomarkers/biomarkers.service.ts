@@ -197,7 +197,8 @@ export class BiomarkersService {
         } else {
             let allOtherBiomarkersHidden = true;
             this.flat.forEach(e => {
-                if(e.tagName !== 'g' && e.id !== id && e.style.visibility === 'visible')
+        	const elem = document.getElementById(e.id);
+                if(elem.tagName !== 'g' && e.id !== id && elem.style.visibility === 'visible')
                     allOtherBiomarkersHidden = false;
             });
             
@@ -305,7 +306,7 @@ export class BiomarkersService {
             });
         }
         if (visibility === 'visible') {
-            this. (elem);
+            this.resetParentVisibilityRecursive(elem);
         }
 
     }
@@ -313,19 +314,10 @@ export class BiomarkersService {
     // We reset the parent opacity to 1 when a child becomes visible.
     // If the parent is opacity 0, the child will never be displayed
     private resetParentVisibilityRecursive(elem: HTMLElement): void {
-        let childVisible = false;
-        if (elem.children.length > 0) {
-            Array.from(elem.children).forEach((child: HTMLElement) => {
-                childVisible = childVisible || (child.style.visibility === 'visible');
-            });
-        }
-        if (childVisible === (elem.style.visibility==='visible'))
-            return;
-
-        elem.style.visibility = childVisible ? 'visible' : 'hidden';
         if (elem.parentElement.tagName === 'g') {
             this.resetParentVisibilityRecursive(elem.parentElement);
         }
+        elem.parentElement.style.visibility = 'visible';
     }
 
     public changeOpacity(opacity: string): void {
