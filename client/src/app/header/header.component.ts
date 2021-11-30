@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import * as screenfull from 'screenfull';
 import { BugtrackerService } from '../bugtracker/bugtracker.service';
 import { HeaderService } from './header.service';
+import { LocalStorage } from '../model/local-storage';
 
 @Component({
     selector: 'app-header',
@@ -58,6 +59,7 @@ export class HeaderComponent {
     }
 
     logout(): void {
+        LocalStorage.clear();
         this.loginService.logout();
         this.router.navigate(['/' + ROUTES.LOGIN]).then(() => {setTimeout(() => { window.location.reload(); }, 10); });
     }
