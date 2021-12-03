@@ -123,7 +123,7 @@ export class EditorService {
 
         //this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
         //this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
-        const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
+        /* const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
         let x = 0, y = 0;
         if (imageRatio > viewportRatio) {
             y = (this.backgroundCanvas.displayCanvas.height - this.backgroundCanvas.originalCanvas.height) / 2;
@@ -137,7 +137,9 @@ export class EditorService {
             y,
             this.backgroundCanvas.originalCanvas.width,
             this.backgroundCanvas.originalCanvas.height
-        );
+        ); */
+
+        this.backgroundCanvas.draw();
 
         // Load the zoom canvas.
         // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
@@ -284,7 +286,7 @@ export class EditorService {
             zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
             const zoomContext = zoomCanvas.getContext('2d');
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
-            this.resize();
+            this.resize(true);
         }, 0);
         this.updateCanvasDisplayRatio();
     }
