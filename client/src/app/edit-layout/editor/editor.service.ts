@@ -25,7 +25,7 @@ const ZOOM = {
     MIN: 0,
     MAX: 16.0
 };
-const ZOOM_SCALE = 0.3 / 509; // unit: screen_width/pixel; 509mm is the width for 23" screen; 0.3mm is the desired pixel size
+const ZOOM_SCALE = 0.2 / 509; // unit: screen_width/pixel; 509mm is the width for 23" screen; 0.2mm is the desired pixel size
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 
@@ -34,7 +34,7 @@ export class EditorService {
     imageLocal: HTMLImageElement;
     imageServer: ImageServer;
     zoomFactor: number;     // mm / pixel
-    _zoomMin: number = 1;
+    _zoomMin: number = 0;
     offsetX: number;
     offsetY: number;
     viewPort: HTMLDivElement;
@@ -160,10 +160,10 @@ export class EditorService {
             zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
             const zoomContext = zoomCanvas.getContext('2d');
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
+            this.resize();
         }, 0);
 
         this.zoomFactor = 0;
-        this.resize();
 
         this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
             { headers: new HttpHeaders(), responseType: 'json' }).pipe(
@@ -415,6 +415,7 @@ export class EditorService {
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
 
             // Redraw the rectangle (unless completely zoomed out).
+            console.log(this.zoomFactor, this._zoomMin, this.zoomFactor-this._zoomMin)
             if (this.zoomFactor === this._zoomMin) {
                 return;
             }
