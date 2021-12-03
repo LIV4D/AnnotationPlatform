@@ -75,15 +75,16 @@ export class EditorService {
     resize(): void {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         const viewportRatio = this.viewportRatio();
-        let H, W;
 
+        let scaleMin = 0
         if (this.originalImageRatio() > viewportRatio) {
-            this._zoomMin = this.viewPort.getBoundingClientRect().width / this.backgroundCanvas.originalCanvas.width;
+            scaleMin = this.viewPort.getBoundingClientRect().width / this.backgroundCanvas.originalCanvas.width;
         } else {
-            this._zoomMin = this.viewPort.getBoundingClientRect().height / this.backgroundCanvas.originalCanvas.height;
+            scaleMin = this.viewPort.getBoundingClientRect().height / this.backgroundCanvas.originalCanvas.height;
         }
 
-        
+        const mm_per_pixel = screen.width / window.devicePixelRatio * ZOOM_SCALE;
+        this._zoomMin = scaleMin /  mm_per_pixel;
 
         this.zoom(0);
 
@@ -161,7 +162,8 @@ export class EditorService {
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
         }, 0);
 
-        this.setZoomFactor(0);
+        this.zoomFactor = 0;
+        this.resize();
 
         this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
             { headers: new HttpHeaders(), responseType: 'json' }).pipe(
@@ -474,7 +476,7 @@ export class EditorService {
         } else if (zoomFactor < this.zoomMin()) { zoomFactor = this.zoomMin(); }
 
         const zoomScale = this.zoomScale(zoomFactor);
-        console.log("zoomScale: ", zoomScale);
+        console.log("zoomScale: ", zoomScale, "zoomFactor: ", zoomFactor);
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
