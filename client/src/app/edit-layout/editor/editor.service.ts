@@ -72,7 +72,7 @@ export class EditorService {
     }
 
     // Resizes the canvases to the current window size.
-    resize(): void {
+    resize(resetZoomFactor=false): void {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         const viewportRatio = this.viewportRatio();
 
@@ -86,8 +86,10 @@ export class EditorService {
         const mm_per_pixel = screen.width / window.devicePixelRatio * ZOOM_SCALE;
         this._zoomMin = scaleMin /  mm_per_pixel;
 
-        this.zoom(0);
-
+        if(resetZoomFactor)
+            this.setZoomFactor(0);
+        else
+            this.zoom(0);
         /* const h = H / this.zoomFactor;
         const w = W / this.zoomFactor;
 
@@ -105,7 +107,6 @@ export class EditorService {
 
     init(svgLoaded: EventEmitter<any>): void {
         this.biomarkersService.dataSource = null;
-        this.zoomFactor = this.zoomMin();
         this.offsetX = 0;
         this.offsetY = 0;
         this.imageLoaded = false;
@@ -118,7 +119,7 @@ export class EditorService {
         } else {
             this.loadAll();
         }
-        this.resize();
+        this.resize(true);
     }
 
     // Load canvases and local variables when opening a local image.
@@ -160,7 +161,7 @@ export class EditorService {
             zoomCanvas.height = this.backgroundCanvas.originalCanvas.height;
             const zoomContext = zoomCanvas.getContext('2d');
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
-            this.resize();
+            this.resize(true);
         }, 0);
 
         this.zoomFactor = 1;
