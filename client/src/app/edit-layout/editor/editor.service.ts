@@ -105,7 +105,7 @@ export class EditorService {
 
     init(svgLoaded: EventEmitter<any>): void {
         this.biomarkersService.dataSource = null;
-        this.zoomFactor = 1.0;
+        this.zoomFactor = 0;
         this.offsetX = 0;
         this.offsetY = 0;
         this.imageLoaded = false;
