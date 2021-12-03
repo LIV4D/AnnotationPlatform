@@ -90,19 +90,7 @@ export class EditorService {
             this.setZoomFactor(0);
         else
             this.zoom(0);
-        /* const h = H / this.zoomFactor;
-        const w = W / this.zoomFactor;
 
-        this.backgroundCanvas.displayCanvas.width = w;
-        this.backgroundCanvas.displayCanvas.height = h;
-
-        // Resize layers.
-        this.layersService.resize(w, h);
-
-        // Call zoom to redraw everything.
-        this.adjustOffsets();
-        this.transform();
-        this.updateCanvasDisplayRatio(); */
     }
 
     init(svgLoaded: EventEmitter<any>): void {
@@ -163,8 +151,6 @@ export class EditorService {
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
             this.resize(true);
         }, 0);
-
-        this.zoomFactor = 1;
 
         this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
             { headers: new HttpHeaders(), responseType: 'json' }).pipe(
@@ -474,11 +460,11 @@ export class EditorService {
         let zoomFactor = this.zoomFactor * Math.exp(delta);
 
         // Cap the values.
-        if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX;
-        } else if (zoomFactor < this.zoomMin()) { zoomFactor = this.zoomMin(); }
+        zoomFactor = Math.min(ZOOM.MAX, Math.max(this.zoomMin(), zoomFactor))
+        if(this.zoomFactor === zoomFactor)
+            return;
 
         const zoomScale = this.zoomScale(zoomFactor);
-        console.log("zoomScale: ", zoomScale, "zoomFactor: ", zoomFactor, "zoomMin: ", this.zoomMin());
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
@@ -489,20 +475,18 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if (zoomFactor !== this.zoomMin() && zoomFactor !== ZOOM.MAX) {
-            this.zoomFactor = zoomFactor;
-            // Adjust offsets to keep them coherent with the previous zoom.
-            let positionXPercentage = 0.5;
-            let positionYPercentage = 0.5;
-            if (position !== null) {
-                positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
-                positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
-            }
-            const deltaX = (oldWidth - newWidth) * positionXPercentage;
-            const deltaY = (oldHeight - newHeight) * positionYPercentage;
-            this.offsetX += deltaX;
-            this.offsetY += deltaY;
+        this.zoomFactor = zoomFactor;
+        // Adjust offsets to keep them coherent with the previous zoom.
+        let positionXPercentage = 0.5;
+        let positionYPercentage = 0.5;
+        if (position !== null) {
+            positionXPercentage = Math.min(Math.max(position.x / oldWidth, 0), 1);
+            positionYPercentage = Math.min(Math.max(position.y / oldHeight, 0), 1);
         }
+        const deltaX = (oldWidth - newWidth) * positionXPercentage;
+        const deltaY = (oldHeight - newHeight) * positionYPercentage;
+        this.offsetX += deltaX;
+        this.offsetY += deltaY;
 
         this.adjustOffsets();
         this.transform();
@@ -526,11 +510,10 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if (zoomFactor !== this.zoomMin() && zoomFactor !== ZOOM.MAX) {
-            this.zoomFactor = zoomFactor;
-            this.offsetX += (oldWidth - newWidth) / 2;
-            this.offsetY += (oldHeight - newHeight) / 2;
-        }
+        this.zoomFactor = zoomFactor;
+        this.offsetX += (oldWidth - newWidth) / 2;
+        this.offsetY += (oldHeight - newHeight) / 2;
+
         this.adjustOffsets();
         this.transform();
         this.updateCanvasDisplayRatio();
