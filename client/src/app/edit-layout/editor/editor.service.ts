@@ -33,7 +33,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 export class EditorService {
     imageLocal: HTMLImageElement;
     imageServer: ImageServer;
-    zoomFactor: number;     // mm / pixel
+    zoomFactor: number = 1;     // mm / pixel
     _zoomMin: number = 0;
     offsetX: number;
     offsetY: number;
