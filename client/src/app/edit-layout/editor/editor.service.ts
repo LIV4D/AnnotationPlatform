@@ -422,12 +422,12 @@ export class EditorService {
 
             let h = zoomCanvas.height;
             let w = zoomCanvas.width;
-            h = Math.min(h, h * this.viewPort.getBoundingClientRect().height/this.backgroundCanvas.originalCanvas.height);
-            w = Math.min(w, w * this.viewPort.getBoundingClientRect().width/this.backgroundCanvas.originalCanvas.width);
+            h = Math.min(h, this.viewPort.getBoundingClientRect().height/zoomScale);
+            w = Math.min(w, this.viewPort.getBoundingClientRect().width/zoomScale);
             
             const offsetScale  = zoomCanvas.width / this.backgroundCanvas.displayCanvas.width;
-            const x = this.offsetX * offsetScale;
-            const y = this.offsetY * offsetScale;
+            const x = this.offsetX;
+            const y = this.offsetY;
 
             zoomContext.strokeStyle = 'white';
             zoomContext.lineWidth = 20;
@@ -474,6 +474,7 @@ export class EditorService {
         } else if (zoomFactor < this.zoomMin()) { zoomFactor = this.zoomMin(); }
 
         const zoomScale = this.zoomScale(zoomFactor);
+        console.log("zoomScale: ", zoomScale);
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
