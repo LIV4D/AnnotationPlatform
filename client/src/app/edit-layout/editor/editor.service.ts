@@ -34,7 +34,7 @@ export class EditorService {
     imageLocal: HTMLImageElement;
     imageServer: ImageServer;
     zoomFactor: number;     // mm / pixel
-    _zoomMin: number;
+    _zoomMin: number = 1;
     offsetX: number;
     offsetY: number;
     viewPort: HTMLDivElement;
@@ -78,9 +78,9 @@ export class EditorService {
         let H, W;
 
         if (this.originalImageRatio() > viewportRatio) {
-            this._zoomMin = this.backgroundCanvas.originalCanvas.width / this.viewPort.getBoundingClientRect().width;
+            this._zoomMin = this.viewPort.getBoundingClientRect().width / this.backgroundCanvas.originalCanvas.width;
         } else {
-            this._zoomMin = this.backgroundCanvas.originalCanvas.height / this.viewPort.getBoundingClientRect().height;
+            this._zoomMin = this.viewPort.getBoundingClientRect().height / this.backgroundCanvas.originalCanvas.height;
         }
 
         
@@ -422,10 +422,12 @@ export class EditorService {
 
             let h = zoomCanvas.height;
             let w = zoomCanvas.width;
-            h = Math.min(h, h/zoomScale);
-            w = Math.min(w, w/zoomScale);
-            const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
-            const y = (this.offsetY / this.backgroundCanvas.displayCanvas.height) * h;
+            h = Math.min(h, h * this.viewPort.getBoundingClientRect().height/this.backgroundCanvas.originalCanvas.height);
+            w = Math.min(w, w * this.viewPort.getBoundingClientRect().width/this.backgroundCanvas.originalCanvas.width);
+            
+            const offsetScale  = zoomCanvas.width / this.backgroundCanvas.displayCanvas.width;
+            const x = this.offsetX * offsetScale;
+            const y = this.offsetY * offsetScale;
 
             zoomContext.strokeStyle = 'white';
             zoomContext.lineWidth = 20;
