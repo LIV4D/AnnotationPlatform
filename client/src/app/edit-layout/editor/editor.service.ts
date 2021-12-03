@@ -22,9 +22,10 @@ import { tap, catchError } from 'rxjs/operators';
 
 // Min and max values for zooming
 const ZOOM = {
-    MIN: 1.0,
+    MIN: 0.5,
     MAX: 16.0
 };
+const ZOOM_SCALE = 0.3 / 487; // unit: screen_width/pixel; 487mm is the median screen width; 0.3mm is the desired pixel size
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 
@@ -32,7 +33,7 @@ const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 export class EditorService {
     imageLocal: HTMLImageElement;
     imageServer: ImageServer;
-    zoomFactor: number;
+    zoomFactor: number;     // mm / pixel
     offsetX: number;
     offsetY: number;
     viewPort: HTMLDivElement;
@@ -83,23 +84,26 @@ export class EditorService {
             H = this.backgroundCanvas.originalCanvas.height;
             W = H * viewportRatio;
         }
-        const h = H / this.zoomFactor;
-        const w = W / this.zoomFactor;
 
         // Resize main image.
         this.fullCanvasWidth = W;
         this.fullCanvasHeight = H;
+
+        this.zoom(0);
+
+        /* const h = H / this.zoomFactor;
+        const w = W / this.zoomFactor;
+
         this.backgroundCanvas.displayCanvas.width = w;
         this.backgroundCanvas.displayCanvas.height = h;
 
         // Resize layers.
         this.layersService.resize(w, h);
 
-        // Adjust the offsets so the image is in place.
-        this.adjustOffsets();
-
         // Call zoom to redraw everything.
-        this.zoom(-100, new Point(0, 0));
+        this.adjustOffsets();
+        this.transform();
+        this.updateCanvasDisplayRatio(); */
     }
 
     init(svgLoaded: EventEmitter<any>): void {
@@ -419,12 +423,13 @@ export class EditorService {
             }
             const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
             const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+            const zoomScale = this.zoomScale(this.zoomFactor);
             let h: number, w: number;
             if (this.originalImageRatio() > this.viewportRatio()) {
-                w = zoomCanvas.width / this.zoomFactor;
+                w = zoomCanvas.width / zoomScale;
                 h = Math.min(w * (realHeight / realWidth), zoomCanvas.height);
             } else {
-                h = zoomCanvas.height / this.zoomFactor;
+                h = zoomCanvas.height / zoomScale;
                 w = Math.min(h * (realWidth / realHeight), zoomCanvas.width);
             }
             const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
@@ -468,18 +473,19 @@ export class EditorService {
     // Function to zoom on a part of the image.
     // Currently only centered with specific ratios.
     zoom(delta: number, position: Point= null): void {
-        // Keep zoom in range [100%, 600%]
         let zoomFactor = this.zoomFactor * Math.exp(delta);
 
         // Cap the values.
         if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX;
         } else if (zoomFactor < ZOOM.MIN) { zoomFactor = ZOOM.MIN; }
 
+        const zoomScale = this.zoomScale(zoomFactor);
+
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
         const oldHeight = this.backgroundCanvas.displayCanvas.height;
-        const newWidth = this.fullCanvasWidth / zoomFactor;
-        const newHeight = this.fullCanvasHeight / zoomFactor;
+        const newWidth = this.fullCanvasWidth / zoomScale;
+        const newHeight = this.fullCanvasHeight / zoomScale;
         this.backgroundCanvas.displayCanvas.width = newWidth;
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
@@ -510,11 +516,13 @@ export class EditorService {
         } else if (zoomFactor < 0) { zoomFactor = 0; }
         zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
 
+        const zoomScale = this.zoomScale(zoomFactor);
+
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
         const oldHeight = this.backgroundCanvas.displayCanvas.height;
-        const newWidth = this.fullCanvasWidth / zoomFactor;
-        const newHeight = this.fullCanvasHeight / zoomFactor;
+        const newWidth = this.fullCanvasWidth / zoomScale;
+        const newHeight = this.fullCanvasHeight / zoomScale;
         this.backgroundCanvas.displayCanvas.width = newWidth;
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
@@ -572,6 +580,13 @@ export class EditorService {
     // Return the width/height ratio of the original image.
     originalImageRatio(): number {
         return this.backgroundCanvas.originalCanvas.width / this.backgroundCanvas.originalCanvas.height;
+    }
+
+    zoomScale(zoomFactor:number=null): number {
+        if(zoomFactor === null)
+            zoomFactor = this.zoomFactor;
+        const mm_per_pixel = screen.width / window.devicePixelRatio * ZOOM_SCALE;
+        return zoomFactor * mm_per_pixel;
     }
 
     getMousePositionInCanvasSpace(clientPosition: Point): Point {
