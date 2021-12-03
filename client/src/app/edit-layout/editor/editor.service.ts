@@ -484,8 +484,8 @@ export class EditorService {
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
         const oldHeight = this.backgroundCanvas.displayCanvas.height;
-        const newWidth = this.backgroundCanvas.originalCanvas.width / zoomScale;
-        const newHeight = newWidth / this.viewportRatio();
+        const newWidth = this.viewPort.getBoundingClientRect().width / zoomScale;
+        const newHeight = this.viewPort.getBoundingClientRect().height / zoomScale;
         this.backgroundCanvas.displayCanvas.width = newWidth;
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
@@ -521,8 +521,8 @@ export class EditorService {
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
         const oldHeight = this.backgroundCanvas.displayCanvas.height;
-        const newWidth = this.backgroundCanvas.originalCanvas.width / zoomScale;
-        const newHeight = newWidth / this.viewportRatio();
+        const newWidth = this.viewPort.getBoundingClientRect().width / zoomScale;
+        const newHeight = this.viewPort.getBoundingClientRect().height / zoomScale;
         this.backgroundCanvas.displayCanvas.width = newWidth;
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
