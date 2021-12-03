@@ -22,10 +22,10 @@ import { tap, catchError } from 'rxjs/operators';
 
 // Min and max values for zooming
 const ZOOM = {
-    MIN: 0.5,
+    MIN: 0,
     MAX: 16.0
 };
-const ZOOM_SCALE = 0.3 / 487; // unit: screen_width/pixel; 487mm is the median screen width; 0.3mm is the desired pixel size
+const ZOOM_SCALE = 0.3 / 50.9; // unit: screen_width/pixel; 487mm is the median screen width; 0.3mm is the desired pixel size
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 
@@ -34,14 +34,13 @@ export class EditorService {
     imageLocal: HTMLImageElement;
     imageServer: ImageServer;
     zoomFactor: number;     // mm / pixel
+    _zoomMin: number;
     offsetX: number;
     offsetY: number;
     viewPort: HTMLDivElement;
     mouseDown = false;
     svgBox: HTMLDivElement;
     imageLoaded: boolean;
-    fullCanvasWidth: number;
-    fullCanvasHeight: number;
     scaleX: number;
     backgroundCanvas: BackgroundCanvas;
     canvasDisplayRatio: BehaviorSubject<number>;
@@ -77,17 +76,14 @@ export class EditorService {
         if (!this.backgroundCanvas || !this.backgroundCanvas.originalCanvas) { return; }
         const viewportRatio = this.viewportRatio();
         let H, W;
+
         if (this.originalImageRatio() > viewportRatio) {
-            W = this.backgroundCanvas.originalCanvas.width;
-            H = W * (1 / viewportRatio);
+            this._zoomMin = this.backgroundCanvas.originalCanvas.width / this.viewPort.getBoundingClientRect().width;
         } else {
-            H = this.backgroundCanvas.originalCanvas.height;
-            W = H * viewportRatio;
+            this._zoomMin = this.backgroundCanvas.originalCanvas.height / this.viewPort.getBoundingClientRect().height;
         }
 
-        // Resize main image.
-        this.fullCanvasWidth = W;
-        this.fullCanvasHeight = H;
+        
 
         this.zoom(0);
 
@@ -134,15 +130,9 @@ export class EditorService {
         // Load the main canvas.
         const viewportRatio = this.viewportRatio();
         const imageRatio = this.originalImageRatio();
-        if (imageRatio > viewportRatio) {
-            this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
-            this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
-        } else {
-            this.fullCanvasHeight = this.backgroundCanvas.originalCanvas.height;
-            this.fullCanvasWidth = this.fullCanvasHeight * viewportRatio;
-        }
-        this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
-        this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
+
+        //this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
+        //this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
         const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
         let x = 0, y = 0;
         if (imageRatio > viewportRatio) {
@@ -150,6 +140,7 @@ export class EditorService {
         } else {
             x = (this.backgroundCanvas.displayCanvas.width - this.backgroundCanvas.originalCanvas.width) / 2;
         }
+        
         context.drawImage(
             this.backgroundCanvas.originalCanvas,
             x,
@@ -157,6 +148,7 @@ export class EditorService {
             this.backgroundCanvas.originalCanvas.width,
             this.backgroundCanvas.originalCanvas.height
         );
+
         // Load the zoom canvas.
         // setTimeout 0 makes sure the imageLoaded boolean was changed in the cycle,
         // Without this zoomCanvas is still undefined because of ngIf in template
@@ -168,7 +160,9 @@ export class EditorService {
             const zoomContext = zoomCanvas.getContext('2d');
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
         }, 0);
-        this.updateCanvasDisplayRatio();
+
+        this.setZoomFactor(0);
+
         this.http.get(`/api/revisions/emptyRevision/${this.galleryService.selected.id}`,
             { headers: new HttpHeaders(), responseType: 'json' }).pipe(
             ).subscribe(
@@ -266,7 +260,7 @@ export class EditorService {
         // Load the main canvas.
         const viewportRatio = this.viewportRatio();
         const imageRatio = this.originalImageRatio();
-        if (imageRatio > viewportRatio) {
+        /*if (imageRatio > viewportRatio) {
             this.fullCanvasWidth = this.backgroundCanvas.originalCanvas.width;
             this.fullCanvasHeight = this.fullCanvasWidth * (1 / viewportRatio);
         } else {
@@ -275,6 +269,7 @@ export class EditorService {
         }
         this.backgroundCanvas.displayCanvas.width = this.fullCanvasWidth;
         this.backgroundCanvas.displayCanvas.height = this.fullCanvasHeight;
+        */
         const context: CanvasRenderingContext2D = this.backgroundCanvas.getDisplayContext();
         let x = 0, y = 0;
         if (imageRatio > viewportRatio) {
@@ -418,22 +413,20 @@ export class EditorService {
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
 
             // Redraw the rectangle (unless completely zoomed out).
-            if (this.zoomFactor === 1.0) {
+            if (this.zoomFactor === this._zoomMin) {
                 return;
             }
-            const realHeight = this.backgroundCanvas.displayCanvas.getBoundingClientRect().height;
-            const realWidth = this.backgroundCanvas.displayCanvas.getBoundingClientRect().width;
+            const realHeight = this.viewPort.getBoundingClientRect().height;
+            const realWidth = this.viewPort.getBoundingClientRect().width;
             const zoomScale = this.zoomScale(this.zoomFactor);
-            let h: number, w: number;
-            if (this.originalImageRatio() > this.viewportRatio()) {
-                w = zoomCanvas.width / zoomScale;
-                h = Math.min(w * (realHeight / realWidth), zoomCanvas.height);
-            } else {
-                h = zoomCanvas.height / zoomScale;
-                w = Math.min(h * (realWidth / realHeight), zoomCanvas.width);
-            }
+
+            let h = zoomCanvas.height;
+            let w = zoomCanvas.width;
             const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
             const y = (this.offsetY / this.backgroundCanvas.displayCanvas.height) * h;
+
+            h = Math.min(h, h/zoomScale);
+            w = Math.min(w, w/zoomScale);
 
             zoomContext.strokeStyle = 'white';
             zoomContext.lineWidth = 20;
@@ -587,6 +580,10 @@ export class EditorService {
             zoomFactor = this.zoomFactor;
         const mm_per_pixel = screen.width / window.devicePixelRatio * ZOOM_SCALE;
         return zoomFactor * mm_per_pixel;
+    }
+
+    zoomMin(): number {
+        return ZOOM.MIN === 0 ? this._zoomMin : ZOOM.MIN;
     }
 
     getMousePositionInCanvasSpace(clientPosition: Point): Point {
