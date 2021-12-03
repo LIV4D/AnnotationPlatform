@@ -404,7 +404,6 @@ export class EditorService {
             zoomContext.drawImage(this.backgroundCanvas.originalCanvas, 0, 0);
 
             // Redraw the rectangle (unless completely zoomed out).
-            console.log(this.zoomFactor, this._zoomMin, this.zoomFactor-this._zoomMin)
             if (this.zoomFactor === this._zoomMin) {
                 return;
             }
@@ -463,8 +462,6 @@ export class EditorService {
 
         // Cap the values.
         zoomFactor = Math.min(ZOOM.MAX, Math.max(this.zoomMin(), zoomFactor))
-        if(this.zoomFactor === zoomFactor)
-            return;
 
         const zoomScale = this.zoomScale(zoomFactor);
 
