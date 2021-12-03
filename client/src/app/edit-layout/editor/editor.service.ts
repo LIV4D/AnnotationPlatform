@@ -25,7 +25,7 @@ const ZOOM = {
     MIN: 0,
     MAX: 16.0
 };
-const ZOOM_SCALE = 0.3 / 50.9; // unit: screen_width/pixel; 487mm is the median screen width; 0.3mm is the desired pixel size
+const ZOOM_SCALE = 0.3 / 509; // unit: screen_width/pixel; 509mm is the width for 23" screen; 0.3mm is the desired pixel size
 
 const PREPROCESSING_TYPE = 1; // Eventually there could be more.
 
@@ -476,7 +476,7 @@ export class EditorService {
         } else if (zoomFactor < this.zoomMin()) { zoomFactor = this.zoomMin(); }
 
         const zoomScale = this.zoomScale(zoomFactor);
-        console.log("zoomScale: ", zoomScale, "zoomFactor: ", zoomFactor);
+        console.log("zoomScale: ", zoomScale, "zoomFactor: ", zoomFactor, "zoomMin: ", this.zoomMin());
 
         // Adjust canvas sizes.
         const oldWidth = this.backgroundCanvas.displayCanvas.width;
