@@ -422,11 +422,10 @@ export class EditorService {
 
             let h = zoomCanvas.height;
             let w = zoomCanvas.width;
-            const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
-            const y = (this.offsetY / this.backgroundCanvas.displayCanvas.height) * h;
-
             h = Math.min(h, h/zoomScale);
             w = Math.min(w, w/zoomScale);
+            const x = (this.offsetX / this.backgroundCanvas.displayCanvas.width) * w;
+            const y = (this.offsetY / this.backgroundCanvas.displayCanvas.height) * h;
 
             zoomContext.strokeStyle = 'white';
             zoomContext.lineWidth = 20;
@@ -470,7 +469,7 @@ export class EditorService {
 
         // Cap the values.
         if (zoomFactor > ZOOM.MAX) { zoomFactor = ZOOM.MAX;
-        } else if (zoomFactor < ZOOM.MIN) { zoomFactor = ZOOM.MIN; }
+        } else if (zoomFactor < this.zoomMin()) { zoomFactor = this.zoomMin(); }
 
         const zoomScale = this.zoomScale(zoomFactor);
 
@@ -483,7 +482,7 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
+        if (zoomFactor !== this.zoomMin() && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
             // Adjust offsets to keep them coherent with the previous zoom.
             let positionXPercentage = 0.5;
@@ -507,7 +506,7 @@ export class EditorService {
         // Cap the values.
         if (zoomFactor > 1) { zoomFactor = 1;
         } else if (zoomFactor < 0) { zoomFactor = 0; }
-        zoomFactor = ZOOM.MAX * zoomFactor + ZOOM.MIN;
+        zoomFactor = ZOOM.MAX * zoomFactor + this.zoomMin();
 
         const zoomScale = this.zoomScale(zoomFactor);
 
@@ -520,7 +519,7 @@ export class EditorService {
         this.backgroundCanvas.displayCanvas.height = newHeight;
         this.layersService.resize(newWidth, newHeight);
 
-        if (zoomFactor !== ZOOM.MIN && zoomFactor !== ZOOM.MAX) {
+        if (zoomFactor !== this.zoomMin() && zoomFactor !== ZOOM.MAX) {
             this.zoomFactor = zoomFactor;
             this.offsetX += (oldWidth - newWidth) / 2;
             this.offsetY += (oldHeight - newHeight) / 2;
