@@ -64,7 +64,7 @@ export class ToolboxService {
             new Tool(TOOL_NAMES.REDO, '../assets/icons/redo.svg',
                      navigator.platform.indexOf('Mac') === -1 ? 'Redo (Ctrl + Y)' : 'Redo (Cmd + Y)', toolServices)
         ];
-        this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[0]);
+        this.selectedTool = new BehaviorSubject<Tool>(this.listOfTools[1]);
     }
 
     getToolPropertiesService(): ToolPropertiesService {
