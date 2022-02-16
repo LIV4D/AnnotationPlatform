@@ -11,12 +11,12 @@ export class ToolPropertiesService {
     enableBrushMultiplier: boolean;
     eraseAll: boolean;
     smartMask: boolean;
-    brushWidthChanged = new BehaviorSubject<number>(10);
+    brushWidthChanged = new BehaviorSubject<number>(40);
 
     constructor() {
-        this.brushWidth = 10;
-        this.baseBrushWidth = 10;
-        this.smartMask = false;
+        this.brushWidth = 40;
+        this.baseBrushWidth = 40;
+        this.smartMask = true;
         this.eraseAll = true;
         this.enableBrushMultiplier = true;
     }
