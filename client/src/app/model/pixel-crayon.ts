@@ -31,8 +31,8 @@ export class PixelCrayon extends Tool {
                 const maskCtx = this.maskContext;
                 const drawCtx = this.drawContext;
 
-                // Merge visible biomarkers
-                const biomarkerCanvas = this.layersService.getBiomarkerCanvas();
+                // Merge ALL biomarkers
+                const biomarkerCanvas = this.layersService.biomarkerCanvas;
                 maskCtx.globalCompositeOperation = 'destination-over';
                 biomarkerCanvas.forEach(biomarker => {biomarker.drawCurrentTo(this.maskCanvas); });
 

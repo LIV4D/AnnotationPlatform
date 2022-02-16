@@ -64,9 +64,9 @@ export class PixelBucket extends Tool {
                 const mask = this.layersService.tempMaskCanvas;
                 const maskCtx = mask.getContext('2d');
 
-                // Merge visible biomarkers
+                // Merge ALL biomarkers
                 maskCtx.save();
-                const biomarkerCanvas = this.layersService.getBiomarkerCanvas();
+                const biomarkerCanvas = this.layersService.biomarkerCanvas;
                 biomarkerCanvas.forEach(biomarker => {biomarker.drawCurrentTo(mask); });
                 maskCtx.globalCompositeOperation = 'source-in';
                 maskCtx.drawImage(overlay, 0, 0);
