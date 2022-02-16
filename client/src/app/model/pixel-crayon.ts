@@ -34,7 +34,6 @@ export class PixelCrayon extends Tool {
                 // Merge ALL biomarkers
                 const biomarkerCanvas = this.layersService.biomarkerCanvas;
                 maskCtx.globalCompositeOperation = 'destination-over';
-                console.log('Stencil mask union:', biomarkerCanvas);
                 biomarkerCanvas.forEach(biomarker => {biomarker.drawCurrentTo(this.maskCanvas); });
 
                 // Current draw context set to drawCanvas
