@@ -31,9 +31,10 @@ export class PixelCrayon extends Tool {
                 const maskCtx = this.maskContext;
                 const drawCtx = this.drawContext;
 
-                // Merge visible biomarkers
-                const biomarkerCanvas = this.layersService.getBiomarkerCanvas();
+                // Merge ALL biomarkers
+                const biomarkerCanvas = this.layersService.biomarkerCanvas;
                 maskCtx.globalCompositeOperation = 'destination-over';
+                console.log('Stencil mask union:', biomarkerCanvas);
                 biomarkerCanvas.forEach(biomarker => {biomarker.drawCurrentTo(this.maskCanvas); });
 
                 // Current draw context set to drawCanvas
@@ -101,11 +102,9 @@ export class PixelCrayon extends Tool {
             if (this.toolPropertiesService.smartMask) {
                 const maskCanvas = this.layersService.tempMaskCanvas;
                 const drawCanvas = this.layersService.tempDrawCanvas;
-                const maskCtx = maskCanvas.getContext('2d');
-                const drawCtx = drawCanvas.getContext('2d');
 
-                // Remove the drawn shape from every other visible biomarker
-                this.layersService.getBiomarkerCanvas().forEach(biomarker => {
+                // Remove the drawn shape from every other biomarker
+                this.layersService.biomarkerCanvas.forEach(biomarker => {
                             if (biomarker.index !== currentBiomarker.index) {
                                 const bioCtx = biomarker.getCurrentContext();
                                 bioCtx.save();
