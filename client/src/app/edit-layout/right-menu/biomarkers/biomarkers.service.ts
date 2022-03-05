@@ -54,13 +54,19 @@ export class BiomarkersService {
             });
             this.flatEnabledBiomarkers = this.onlyEnabledBiomarkers.map((elem) => this.flat.find(x => x.id===elem));
             this.lastBiomarkers = this.flatEnabledBiomarkers.slice();
+            this.setFocusBiomarker(this.flatEnabledBiomarkers[0]);
+            
+            if(this.lastBiomarkers.length > 1 && this.currentElement===this.lastBiomarkers[0]){
+                this.lastBiomarkers[0] = this.flatEnabledBiomarkers[1];
+                this.lastBiomarkers[1] = this.flatEnabledBiomarkers[0];
+            }
 
-            for (let i = 0 ; i < this.flat.length; i++) {
+            /*for (let i = 0 ; i < this.flat.length; i++) {
                 if (this.flat[i].id === this.onlyEnabledBiomarkers[0]) {
                     this.setFocusBiomarker(this.flat[i]);
                     break;
                 }
-            }
+            }*/
         } else {
             this.toggleAllBiomarkers('visible');
             this.nestedTreeControl.expandAll();

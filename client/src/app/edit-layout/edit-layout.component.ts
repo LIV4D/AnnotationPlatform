@@ -70,7 +70,7 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
             // this.editorService.menuState = true;
             // this.positionMenu(event);
             // this.toolboxService.listOfTools
-            this.biomarkersService.setFocusBiomarker(this.biomarkersService.lastBiomarkers[1]);
+            this.biomarkersService.setFocusBiomarker(this.biomarkersService.lastBiomarkers[0]);
         }
     }
 
