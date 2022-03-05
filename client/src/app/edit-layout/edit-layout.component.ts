@@ -65,9 +65,12 @@ export class EditLayoutComponent implements OnInit, AfterViewChecked {
         event.stopPropagation();
         const pickTool = this.toolboxService.listOfTools.filter((tool) => tool.name === TOOL_NAMES.BIO_PICKER)[0] as BioPicker;
         if (! pickTool.selectUnder(this.editorService.getMousePositionInCanvasSpace(new Point(event.x, event.y))) ) {
-            document.getElementById('bodyblack').style.opacity = '0.6';
-            this.editorService.menuState = true;
-            this.positionMenu(event);
+            //   Disable context menu. Replaced by fast switch to last biormarker
+            // document.getElementById('bodyblack').style.opacity = '0.6';
+            // this.editorService.menuState = true;
+            // this.positionMenu(event);
+            // this.toolboxService.listOfTools
+            this.biomarkersService.setFocusBiomarker(this.biomarkersService.lastBiomarkers[1]);
         }
     }
 
