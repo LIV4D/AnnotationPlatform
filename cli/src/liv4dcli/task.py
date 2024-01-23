@@ -17,6 +17,52 @@ def _create(image_id, task_type_id, user_id, limit_biomarkers, active, completed
     create(image_id, task_type_id, user_id, limit_biomarkers, utils.to_boolean(active), utils.to_boolean(completed), True)
 
 def create(image_id, user_id, limit_biomarkers=None, diagnostic=False, active=True, completed=False, display=True, comment="", force=False, merge=True, task_type_id=1):
+    """
+    Create a new task for a given image and user.
+    If a revision already exists for this image and user, the biomarkers will be merged.
+
+    Parameters
+    ----------
+    image_id : int
+        Id of the image associated to the task
+
+    user_id : int
+        Id of the user receiving the task
+ 
+    limit_biomarkers : list of str
+        Limit the task to specific biomarkers
+
+    diagnostic : str
+        Diagnostic to be displayed to the user
+
+    active : bool
+        Boolean specifying if the task is active (default=true)
+
+    completed : bool
+        Boolean specifying if the task is completed (default=false)
+
+    display : bool
+        Boolean specifying if the result should be displayed (default=true)
+
+    comment : str
+        Comment to be displayed to the user
+
+    force : bool
+        Boolean specifying if the task should be created even if a revision already exists (default=false)
+
+    merge : bool
+        Boolean specifying if the biomarkers should be merged (default=true)
+
+    task_type_id : int
+        Id of the task type (default=1)
+
+    Returns
+    -------
+    bool
+        True if the task has been created, False otherwise
+
+
+    """
     if isinstance(image_id, (list,tuple,set)):
         for i in image_id:
             if not create(i, user_id=user_id, limit_biomarkers=limit_biomarkers, active=active, completed=completed, display=display, diagnostic=diagnostic,

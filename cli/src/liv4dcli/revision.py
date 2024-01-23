@@ -48,7 +48,7 @@ def create_from_biomarkers(user_id, image_id, biomarkers_data, diagnostic="", di
             png = utils.encode_png(png, color=svg_bio.get('color'))
         if isinstance(png, bytes):
             png = png.decode('ascii')
-        svg_bio.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+        svg_bio.set('{http://www.w3.org/1999/xlink}href', png)
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
@@ -142,7 +142,7 @@ def update_diagnostic(diagnostic, user_id, image_id, display=False):
 def get_biomarkers(user_id, image_id):
     svg_tree = ET.fromstring(get_revision(user_id, image_id)['svg'])
     biomarkers = [_ for _ in svg_tree.iter() if _.tag.endswith('image')]
-    biomarkers = {node.get('id'): utils.decode_PNG(node.get('{http://www.w3.org/1999/xlink}href')) for node in biomarkers}
+    biomarkers = {node.get('id'): utils.decode_png(node.get('{http://www.w3.org/1999/xlink}href')) for node in biomarkers if isinstance(node.get('{http://www.w3.org/1999/xlink}href'), str)}
     return biomarkers
 
 def get_biomarker(user_id, image_id, biomarker, out='array'):
@@ -193,7 +193,7 @@ def update_biomarkers(user_id, image_id, biomarkers_data, svg_samples=None, disp
             png = utils.encode_png(png, color=svg_bio.get('color'))
         if isinstance(png, bytes):
             png = png.decode('ascii')
-        svg_bio.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+        svg_bio.set('{http://www.w3.org/1999/xlink}href', png)
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')
@@ -222,12 +222,12 @@ def empty_revision(image_type_id, img_size=None, display=False):
     response = utils.request_server('GET', '/api/revisions/emptyRevision/{}'.format(image_type_id))
     
     if img_size:
-        svg_tree = ET.fromstring(response['svg'])
+        svg_tree = ET.fromstring(response.json()['svg'])
         for b in svg_tree.iter():
             if b.tag.endswith('image'):
                 array = np.zeros(img_size+(4,), dtype=np.uint8)
                 png = utils.encode_png(array)
-                b.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+                b.set('{http://www.w3.org/1999/xlink}href', png)
     
         xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         svg = (xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')).decode('utf-8')
@@ -237,6 +237,27 @@ def empty_revision(image_type_id, img_size=None, display=False):
         print('Empty revision xml')
         print(response.json()['svg'])
     return response.json()
+
+
+def format_biomarkers_as_svg(image_type_id: int, biomarkers):
+    first_biomarker = next(iter(biomarkers.values()))
+    assert all(b.shape == first_biomarker.shape for b in biomarkers.values()), 'All biomarkers must have the same shape'
+    assert all(b.dtype == bool for b in biomarkers.values()), 'All biomarkers must be boolean'
+
+    response = utils.request_server('GET', '/api/revisions/emptyRevision/{}'.format(image_type_id))
+    svg_tree = ET.fromstring(response.json()['svg'])
+    for b in svg_tree.iter():
+        if b.tag.endswith('image'):
+            if b.get('id') in biomarkers:
+                png = utils.encode_png(biomarkers[b.get('id')], color=b.get('color'))
+            else:
+                array = np.zeros(first_biomarker.shape+(4,), dtype=np.uint8)
+                png = utils.encode_png(array)
+            b.set('{http://www.w3.org/1999/xlink}href', png)
+
+    xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    return (xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')).decode('utf-8')
+
 
 @revision.command(name='delete', help='Delete a revision')
 @click.option('--userId', 'user_id', help='The user that is associated to the revision', required=True)
@@ -270,7 +291,7 @@ def clear_revision(user_id, image_id):
             array = utils.decode_png(b.get('{http://www.w3.org/1999/xlink}href'))
             array = np.zeros(array.shape+(4,), dtype=np.uint8)
             png = utils.encode_png(array)
-            b.set('{http://www.w3.org/1999/xlink}href', 'data:image/png;base64,{!s}'.format(png))
+            b.set('{http://www.w3.org/1999/xlink}href', png)
     
     xml_header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     svg = (xml_header.encode(encoding='utf-8') + ET.tostring(svg_tree, encoding='utf-8')).decode('utf-8')

@@ -7,6 +7,7 @@ tmp/
 out-tsc/
 out/
 __pycache__/
+.ipynb_checkpoints/
 
 # dependencies
 node_modules/
@@ -50,3 +51,6 @@ token
 Thumbs.db
 package-lock.json
 *.pyc
+cli/.ipynb_checkpoints/cli_interactive-checkpoint.py
+cli/.ipynb_checkpoints/cli_notebook-checkpoint.ipynb
+cli/.ipynb_checkpoints/DownloadNotebook-checkpoint.ipynb

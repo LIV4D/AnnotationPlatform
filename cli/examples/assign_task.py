@@ -1,9 +1,4 @@
-import os
-import sys
-from os.path import basename, join, abspath
-import inspect
-
-import liv4dcli as cli
+import src.liv4dcli.liv4dcli as cli
 
 cli.config.url = "http://206.12.89.104:5050"
 
@@ -33,7 +28,8 @@ for user, task in user_assign.items():
 
 
 # ===    IMAGES    ===
-batch = [3, 5, 7, 8, 10, 12, 13, 14, 15, 22, 16, 36, 52, 53, 64, 68, 70, 75, 78, 85, 116, 207, 295, 997, 1032, 28, 128, 235, 270, 648, 2, 4, 11, 20, 21, 88, 137, 167, 17, 38, 9, 23, 49, 81, 98, 18, 19, 1, 6, 25]
+batch = [3, 5, 7, 8, 10, 12, 13, 14, 15, 22, 16, 36, 52, 53, 64, 68, 70, 75, 78, 85, 116, 207, 295, 997, 1032, 28, 128, 
+         235, 270, 648, 2, 4, 11, 20, 21, 88, 137, 167, 17, 38, 9, 23, 49, 81, 98, 18, 19, 1, 6, 25]
 
 for img in batch:
     for task, users in task_assign.items():

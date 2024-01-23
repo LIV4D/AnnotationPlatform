@@ -75,8 +75,9 @@ def to_boolean(string):
 
 def encode_png(data, color=None):
     import base64
-    from io import BytesIO
-    from PIL import Image   
+    # from io import BytesIO
+    import cv2
+    # from PIL import Image   
     
     if len(data.shape) == 3 and data.shape[-1]==1:
         data = data[..., 0]
@@ -85,13 +86,12 @@ def encode_png(data, color=None):
     if len(data.shape) == 2 and color is not None:
         if isinstance(color, str):
             color = str2color(color)
-        colormap = np.ones(shape=data.shape+(3,),dtype=np.uint8) * color[None, None,:]
+        colormap = np.ones(shape=data.shape+(3,),dtype=np.uint8)
+        colormap *= color[None, None, ::-1]
         data = np.concatenate([colormap, data[:,:,None]], axis=2)
     
-    new_image = Image.fromarray(data)
-    buffer = BytesIO()
-    new_image.save(buffer, format="PNG")
-    return base64.b64encode(buffer.getvalue()).decode('ascii')
+    _, data = cv2.imencode('.png', data)
+    return 'data:image/png;base64,' + base64.b64encode(data).decode('ascii')
 
 def decode_png(svg_xref):
     import base64
@@ -141,6 +141,36 @@ def info_from_diagnostic(diagnostic):
         comment = comment[:-1]
 
     return biomarkers, time, comment
+
+def decode_info(d):
+    r = {'time': 0, 'comment': "", 'biomarkers': []}
+    for c in d.split(']'):
+        c_stripped = c.strip()
+        if not c_stripped:
+            continue
+        
+        if c_stripped.startswith('[onlyEnable='):
+            b = c_stripped[12:].split(',')
+            r['biomarkers'] += [_.strip() for _ in b if _.strip() not in ('Others', )]
+        elif c_stripped.startswith('[time='):
+            t = c_stripped[6:].split(':')
+            if len(t) == 1:
+                t = int(t[0])
+            elif len(t) == 2:
+                t = int(t[0])*60 + int(t[1])
+            elif len(t) == 3:
+                t = int(t[0])*3600 + int(t[1])*60 + int(t[2])
+            r['time'] += t
+        elif c_stripped[0] == '[' and '=' in c_stripped:
+            name, data = c_stripped[1:].split('=')
+            r[name.strip()] = data.strip()
+        else:
+            r['comment']+= c+']'
+
+    if r['comment']:
+        r['comment'] = r['comment'][:-1]
+
+    return r
 
 
 def dict_info_from_diagnostic(diagnostic):
