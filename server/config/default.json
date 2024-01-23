@@ -7,8 +7,8 @@
         "host": "localhost",
         "port": 5432,
         "username": "postgres",
-        "password": "76hgrt34",
-        "database": "liv4d", //"tumor_vessels", //"liv4d", // AV: "liv4dv1"
+        "password": "password",
+        "database": "liv4d",
         "synchronize": true,
         "logging": false,
         "entities": ["./out/models/*.model.js"]
