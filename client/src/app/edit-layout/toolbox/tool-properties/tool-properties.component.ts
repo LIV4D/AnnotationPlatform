@@ -22,9 +22,9 @@ export class ToolPropertiesComponent implements OnInit {
     constructor(private toolboxService: ToolboxService, private toolPropertiesService: ToolPropertiesService, 
                 public appService: AppService) {
         this.eraseAll = true;
-        this.smartMask = true;
-        this.eraserSize = 25;
-        this.brushSize = 40;
+        this.smartMask = false;
+        this.eraserSize = 5;
+        this.brushSize = 5;
         // toolboxService.setToolPropertiesComponent(this);
         this.toolPropertiesService.brushWidthChanged.subscribe( (v) => { this.sliderValue = v; });
      }

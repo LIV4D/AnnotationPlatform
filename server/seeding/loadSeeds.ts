@@ -26,11 +26,18 @@ const seedingFiles = {
         'preprocessingType-dev.json',
         'preprocessing-dev.json',
     ],
-    production: [
+    production2: [
         'imageType-prod.json',
         'biomarkerType-prod.json',
         'preprocessingType-prod.json',
         'taskType-prod.json',
+        'user-prod.json',
+    ],
+    production: [
+        'imageType-tumorVessels.json',
+        'biomarkerType-tumorVessels.json',
+        'preprocessingType-prod.json',
+        'taskType-tumorVessels.json',
         'user-prod.json',
     ],
 };

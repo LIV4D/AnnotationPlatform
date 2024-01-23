@@ -6,6 +6,7 @@ import { element, elementStylingMap } from '@angular/core/src/render3/instructio
 import { Observable } from 'rxjs';
 import { disableDebugTools } from '@angular/platform-browser';
 import { EMFILE } from 'constants';
+import { E } from '@angular/core/src/render3';
 
 
 const NOT_SELECTED = 'not-selected';
@@ -329,9 +330,19 @@ export class BiomarkersService {
     }
 
     public changeOpacity(opacity: string): void {
-        this.layersService.biomarkerCanvas.forEach(b => {
-            b.displayCanvas.style.opacity = (Number(opacity) / 100).toString();
-            b.displayCanvas.style['mix-blend-mode'] = Number(opacity)<=75 ? 'color' : 'normal';
-        });
+        let newOpacity = Math.min(Math.max(Number(opacity)/100, 0.0), 1.0);
+        if (newOpacity>.75){
+            newOpacity = ((newOpacity-.75)/.25)*.75+.25;
+            this.layersService.biomarkerCanvas.forEach((b) => {  
+                b.displayCanvas.style["mix-blend-mode"] = "normal";
+                b.displayCanvas.style.opacity = newOpacity.toString();
+            });
+        } else {
+            newOpacity = newOpacity / .75;
+            this.layersService.biomarkerCanvas.forEach((b) => {
+                b.displayCanvas.style["mix-blend-mode"] = "color";
+                b.displayCanvas.style.opacity = newOpacity.toString();
+            });
+        }
     }
 }
