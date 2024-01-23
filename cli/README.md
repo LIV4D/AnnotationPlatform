@@ -16,7 +16,7 @@ pip install .
 
 ## Usage
 
-Import the package in your python script and specify the URL of our server:
+Import the package in your python script and specify the URL of your server:
 
 ```python
 import liv4dcli as cli
