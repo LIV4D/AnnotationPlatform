@@ -32,13 +32,13 @@
     "passport": "0.4.0",
     "passport-jwt": "4.0.0",
     "passport-local": "1.0.0",
-    "pg": "7.6.1",
+    "pg": "8.3.3",
     "reflect-metadata": "0.1.12",
     "request": "2.88.0",
     "request-promise-native": "1.0.5",
     "serve-favicon": "2.5.0",
     "ts-node": "7.0.1",
-    "typeorm": "0.2.7",
+    "typeorm": "0.2.25",
     "xml2js": "0.4.19"
   },
   "devDependencies": {
