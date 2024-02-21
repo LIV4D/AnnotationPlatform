@@ -1,6 +1,6 @@
 {
     "server": {
-        "port": 80 
+        "port": 80
     },
     "database": {
         "type": "postgres",
@@ -9,7 +9,7 @@
         "username": "postgres",
         "password": "76hgrt34",
         "database": "liv4d", //"tumor_vessels", //"liv4d", // AV: "liv4dv1"
-        "synchronize": true,
+        "synchronize": false,
         "logging": false,
         "entities": ["./out/models/*.model.js"]
     },
